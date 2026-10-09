@@ -2,7 +2,7 @@
 
 Web app for planning projector installations with current Panasonic projectors and lenses (EU range).
 
-**Live:** https://bqnnestag.github.io/Projection-Throw-Planner/
+**Live:** https://throwplanner.github.io/
 
 ## Features
 - Throw distance, image size, zoom and throw ratio per aspect ratio (Panasonic formulas)
