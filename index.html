@@ -536,7 +536,7 @@ details[open] summary::after{content:" –"}
           <div class="vtools"><div class="sunbar" id="sunBar">
             <label class="switch" title="Sollys til/fra"><input type="checkbox" id="sunOn" aria-label="Medregn sollys"><span></span></label>
             <svg id="compass" viewBox="-30 -30 60 60" width="52" height="52" role="button" tabindex="0" aria-label="Kompas: klik i den retning lærredet vender mod publikum"></svg>
-            <div class="sunctl"><div class="suntop"><span id="sunTime">–</span><select id="sunWin" aria-label="Vinduer"><option value="back">Vindue: bag</option><option value="left">Vindue: venstre</option><option value="right">Vindue: højre</option><option value="sides">Vindue: sider</option><option value="none">Vindue: ingen</option><option value="custom">Vindue: custom</option></select></div>
+            <div class="sunctl"><div class="suntop"><span id="sunTime">–</span><select id="sunWin" aria-label="Vinduer"><option value="left">Vindue: venstre</option><option value="right">Vindue: højre</option><option value="sides">Vindue: sider</option><option value="none">Vindue: ingen</option><option value="custom">Vindue: custom</option></select></div>
               <div class="sunrow"><span class="hint">☀ op</span><input type="range" id="sunT" min="0" max="1000" step="1" aria-label="Solens position fra solopgang til solnedgang"><span class="hint">ned</span></div></div>
           </div>
           <div class="seg" role="group" aria-label="Indhold på lærredet">
@@ -636,7 +636,7 @@ const ASPECTS=['16:10','16:9','17:9','4:3','21:9'];
 // standardprojektor i alle temaer: PT-REQ15 med Supplied lens/ET-C1S600
 const DEFM=Math.max(0,MODELS.findIndex(m=>m.m==='PT-REQ15')),DEFL=Math.max(0,MODELS[DEFM].L.findIndex(l=>/C1S600/.test(l[0])));
 const S={cat:0,minLm:0,mi:DEFM,li:DEFL,defREQ:true,lang:'en',mode:'dark',venue:'aud',lockL:false,lockW:false,trows:4,rear:false,bsd:4,imm:{v:true,l:true,r:true,f:true},ak:'16:10',L:10,cw:5,sb:0.9,ceil:true,py:null,px:0,rd:16,rw:12,rh:5,r1:3,rp:0.95,gain:1,amb:100,
-  plan:{use:true,lock:false,v2:true,w:0,h:0,cal:null,calM:5,scr:null,tool:'cal',open:false},sun:{on:false,face:180,t:0.5,win:'back',off:[]},pcr:null,stack:1,crReq:'15',crCust:5,frame:false,frameId:null,openMount:false,openBlend:false,fw:null,fh:null,fd:null,blend:false,bc:2,br:1,ov:10,content:'none'};
+  plan:{use:true,lock:false,v2:true,w:0,h:0,cal:null,calM:5,scr:null,tool:'cal',open:false},sun:{on:false,face:180,t:0.5,win:'sides',off:[]},pcr:null,stack:1,crReq:'15',crCust:5,frame:false,frameId:null,openMount:false,openBlend:false,fw:null,fh:null,fd:null,blend:false,bc:2,br:1,ov:10,content:'none'};
 let IMG=null;let FRESH=true;
 const S0=JSON.parse(JSON.stringify(S));
 let SAVED={};try{FRESH=!localStorage.getItem('kasteplan5');SAVED=JSON.parse(localStorage.getItem('kasteplan5')||'{}')||{};Object.assign(S,SAVED)}catch(e){}
@@ -644,7 +644,7 @@ let MIG=false;if(!SAVED.defREQ){MIG=!FRESH;S.mi=DEFM;S.li=DEFL;S.pcr=null;S.fram
 if(!S.mode)S.mode='dark';   // mørk tilstand er standard
 if(S.plan&&!S.plan.v2){S.plan.lock=false;S.plan.v2=true}
 if(!S.imm||typeof S.imm!=='object')S.imm={v:true,l:true,r:true,f:true};if(S.imm.v===undefined)S.imm.v=true;
-if(S.sun){if(S.sun.win==='all')S.sun.win='custom';if(!Array.isArray(S.sun.off))S.sun.off=[];delete S.sun.sky}
+if(S.sun){if(S.sun.win==='all')S.sun.win='custom';if(S.sun.win==='back')S.sun.win='sides';if(!Array.isArray(S.sun.off))S.sun.off=[];delete S.sun.sky}
 const CROWDOPT=()=>S.venue==='museum'||S.venue==='immersive',NOCROWD=()=>CROWDOPT()&&S.crowd===false;
 const STAND=()=>S.venue==='museum'||S.venue==='immersive';
 const REAR=()=>S.venue==='theater'&&!!S.rear, RZ=()=>REAR()?S.bsd:0, ZS=()=>REAR()?-1:1, DEPTH=()=>REAR()?S.bsd:S.rd;
