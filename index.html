@@ -183,6 +183,8 @@ details.coll>summary:focus-visible{outline:2px solid var(--beam);outline-offset:
 .shiftbar .sbmax{text-align:left}
 .shiftbar b{font-family:var(--f-mono);font-variant-numeric:tabular-nums;min-width:52px;color:var(--beam)}
 .shiftbar .btn{padding:3px 8px}
+@keyframes lflash{0%{box-shadow:0 0 0 3px var(--beam)}100%{box-shadow:0 0 0 0 transparent}}
+.lflash{animation:lflash 1.4s ease-out}
 .shiftbar .btn.z0{padding:2px 6px;font-size:11.5px;margin-left:2px}
 .ksrow{flex-basis:100%;display:flex;flex-wrap:wrap;align-items:center;gap:6px 16px;padding-top:6px;border-top:1px dashed var(--line)}
 #ksBtn[aria-pressed=true]{background:var(--beam-soft);border-color:var(--beam);color:var(--ink)}
@@ -1823,7 +1825,24 @@ $('side').addEventListener('pointerdown',e=>{const sg=e.target.closest('.stgrab'
 $('side').addEventListener('pointermove',e=>{if(!stDrag)return;const q=sideRaw(e);if(stDrag==='d')S.stageD=Math.round(Math.max(1,Math.min(STAGEMAX(),q.z))*10)/10;else S.stageH=Math.round(Math.max(0.2,Math.min(1.6,q.y))*20)/20;if(!sideRaf)sideRaf=requestAnimationFrame(()=>{sideRaf=0;render()})});
 ['pointerup','pointercancel'].forEach(t=>$('side').addEventListener(t,()=>{if(stDrag){stDrag=null;save()}}));
 $('side').addEventListener('pointerdown',e=>{if(!SIDE||stDrag)return;if(e.target.closest('.scrgrab')){const q=sidePt(e);scrDrag={dy:q.y-S.sb,el:$('side'),pt:sidePt};$('side').setPointerCapture(e.pointerId);e.preventDefault();return}if(!e.target.closest('.sgrab'))return;const q=sidePt(e);sideDrag={dz:q.z-S.L,dy:q.y-S.py};$('side').setPointerCapture(e.pointerId);e.preventDefault()});
-$('side').addEventListener('pointermove',e=>{if(scrDrag){moveScreen(scrDrag.pt(e).y-scrDrag.dy);return}if(!sideDrag)return;const q=sidePt(e);const lim=lensLimits();let nz=Math.max(lim.lo,Math.min(lim.hi,q.z-sideDrag.dz)),ny=q.y-sideDrag.dy;if(lim.py)ny=Math.max(lim.py[0],Math.min(lim.py[1],ny));if(nz>DEPTH()-.2)hit('depth');if(ny>S.rh-.05)hit('pyTop');if(ny<.05)hit('pyBot');S.L=Math.max(.2,Math.min(DEPTH()-.2,nz));S.L=Math.round(S.L*100)/100;if(S.L<lim.lo-1e-9)S.L=Math.ceil(lim.lo*100)/100;if(S.L>lim.hi+1e-9)S.L=Math.floor(lim.hi*100)/100;if(S.L<lim.lo||S.L>lim.hi)S.L=Math.max(lim.lo,Math.min(lim.hi,S.L));guardShift({py:S.py},{py:Math.round(Math.max(.05,Math.min(S.rh-.05,ny))*100)/100});if(!sideRaf)sideRaf=requestAnimationFrame(()=>{sideRaf=0;render()})});
+/* træk ud over optikkens zoom/lens shift: skift automatisk til næste optik (samme projektor) i trækkets retning */
+function autoLens(z,y){if(S.lockL||SLOT()||S.venue==='immersive')return false;const m=M(),cur=S.li,L0=S.L,py0=S.py,r0=calc();
+  const lo0=Math.min(r0.Lw,r0.Lt),hi0=Math.max(r0.Lw,r0.Lt),dz=z>hi0+.005?1:z<lo0-.005?-1:0;
+  const out=(rr,yy)=>{if(rr.kon||!rr.pyRange)return 0;return Math.max(0,rr.pyRange[0]-yy,yy-rr.pyRange[1])};
+  const curZ=Math.abs(Math.max(lo0,Math.min(hi0,z))-z),curY=out(r0,y);if(!dz&&curY<.005)return false;
+  let best=null;
+  for(let i=0;i<m.L.length;i++){if(i===cur)continue;S.li=i;S.L=L0;let r=calc();if(!r.aspOK||!r.sizeOK)continue;
+    const lo=Math.min(r.Lw,r.Lt),hi=Math.max(r.Lw,r.Lt);let L=r.fixed?r.Lw:Math.max(lo,Math.min(hi,dz?z:L0));
+    if(L>DEPTH()-.2||L<.2)continue;
+    if(dz>0&&!(hi>hi0+1e-6))continue;if(dz<0&&!(lo<lo0-1e-6))continue;if(!dz&&Math.abs(L-L0)>.005)continue;
+    S.L=L;r=calc();const eZ=dz?Math.abs(L-z):0,eY=out(r,y);
+    if(dz&&eZ>=curZ-.005)continue;if(!dz&&eY>=curY-.005)continue;
+    const sc=eZ*10+eY*3+(dz>0?lo:dz<0?-hi:Math.abs((lo+hi)/2-L0))*.01;
+    if(!best||sc<best.sc)best={i,L,sc}}
+  if(!best){S.li=cur;S.L=L0;S.py=py0;return false}
+  S.li=best.i;S.L=Math.round(best.L*100)/100;const r=calc();if(r.pyRange&&!r.kon&&r.P.length)S.py=Math.max(r.pyRange[0],Math.min(r.pyRange[1],S.py));else if(!r.P.length&&!r.kon)zeroShift();
+  hit('lens');{const el=$('lens');el.classList.remove('lflash');void el.offsetWidth;el.classList.add('lflash')}return true}
+$('side').addEventListener('pointermove',e=>{if(scrDrag){moveScreen(scrDrag.pt(e).y-scrDrag.dy);return}if(!sideDrag)return;const q=sidePt(e);autoLens(q.z-sideDrag.dz,q.y-sideDrag.dy);const lim=lensLimits();let nz=Math.max(lim.lo,Math.min(lim.hi,q.z-sideDrag.dz)),ny=q.y-sideDrag.dy;if(lim.py)ny=Math.max(lim.py[0],Math.min(lim.py[1],ny));if(nz>DEPTH()-.2)hit('depth');if(ny>S.rh-.05)hit('pyTop');if(ny<.05)hit('pyBot');S.L=Math.max(.2,Math.min(DEPTH()-.2,nz));S.L=Math.round(S.L*100)/100;if(S.L<lim.lo-1e-9)S.L=Math.ceil(lim.lo*100)/100;if(S.L>lim.hi+1e-9)S.L=Math.floor(lim.hi*100)/100;if(S.L<lim.lo||S.L>lim.hi)S.L=Math.max(lim.lo,Math.min(lim.hi,S.L));guardShift({py:S.py},{py:Math.round(Math.max(.05,Math.min(S.rh-.05,ny))*100)/100});if(!sideRaf)sideRaf=requestAnimationFrame(()=>{sideRaf=0;render()})});
 ['pointerup','pointercancel'].forEach(t=>$('side').addEventListener(t,()=>{if(sideDrag||scrDrag){sideDrag=null;scrDrag=null;save()}}));
 $('svR').addEventListener('input',e=>setShift(+e.target.value/100,null));
 $('ksBtn').addEventListener('click',()=>{if(S.ks&&S.ks.on){const r=calc();S.py=r.cy-r.inv*(r.sv+r.off)*r.H;S.px=r.cx-r.inv*(r.sh+r.offH)*r.W;S.ks={v:0,h:0,on:false}}else S.ks={v:0,h:0,on:true};render()});
