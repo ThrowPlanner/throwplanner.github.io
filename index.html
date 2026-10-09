@@ -183,6 +183,7 @@ details.coll>summary:focus-visible{outline:2px solid var(--beam);outline-offset:
 .shiftbar .sbmax{text-align:left}
 .shiftbar b{font-family:var(--f-mono);font-variant-numeric:tabular-nums;min-width:52px;color:var(--beam)}
 .shiftbar .btn{padding:3px 8px}
+.shiftbar .btn.z0{padding:2px 6px;font-size:11.5px;margin-left:2px}
 .ksrow{flex-basis:100%;display:flex;flex-wrap:wrap;align-items:center;gap:6px 16px;padding-top:6px;border-top:1px dashed var(--line)}
 #ksBtn[aria-pressed=true]{background:var(--beam-soft);border-color:var(--beam);color:var(--ink)}
 .ksrow:not(.on) .ksc,.ksrow:not(.on) .ksloss{display:none}
@@ -484,13 +485,13 @@ details[open] summary::after{content:" –"}
         <div class="vhead"><h2><span class="no">10</span>Snit gennem lokalet</h2><span class="cap" id="sideCap" style="flex:1;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-variant-numeric:tabular-nums"></span></div>
         <div class="shiftbar" id="shiftBar">
           <span class="sbl">Lens shift</span>
-          <label class="sbr"><span class="notr">V</span><span class="sbmin" id="svMin"></span><input type="range" id="svR" step="0.5" aria-label="Lodret lens shift"><span class="sbmax" id="svMax"></span><b id="svVal"></b></label>
-          <label class="sbr"><span class="notr">H</span><span class="sbmin" id="shMin"></span><input type="range" id="shR" step="0.5" aria-label="Vandret lens shift"><span class="sbmax" id="shMax"></span><b id="shVal"></b></label>
-          <svg id="shMini" viewBox="-1.5 -1.3 3 2.6" width="110" height="96" role="img" aria-label="Lens shift-område med billedets position"></svg><button class="btn" type="button" id="shift0">0 %</button>
+          <label class="sbr"><span class="notr">V</span><span class="sbmin" id="svMin"></span><input type="range" id="svR" step="0.5" aria-label="Lodret lens shift"><span class="sbmax" id="svMax"></span><b id="svVal"></b><button class="btn z0" type="button" id="sv0" title="Lodret lens shift 0 %">0 %</button></label>
+          <label class="sbr"><span class="notr">H</span><span class="sbmin" id="shMin"></span><input type="range" id="shR" step="0.5" aria-label="Vandret lens shift"><span class="sbmax" id="shMax"></span><b id="shVal"></b><button class="btn z0" type="button" id="sh0" title="Vandret lens shift 0 %">0 %</button></label>
+          <svg id="shMini" viewBox="-1.5 -1.3 3 2.6" width="110" height="96" role="img" aria-label="Lens shift-område med billedets position"></svg>
           <span class="hint" id="shiftNote"></span>
           <div class="ksrow"><button class="btn" type="button" id="ksBtn" aria-pressed="false">Keystone</button>
-          <label class="sbr ksc"><span class="notr">V</span><span class="sbmin" id="kvMin"></span><input type="range" id="kvR" step="0.5" aria-label="Lodret keystone"><span class="sbmax" id="kvMax"></span><b id="kvVal"></b></label>
-          <label class="sbr ksc"><span class="notr">H</span><span class="sbmin" id="khMin"></span><input type="range" id="khR" step="0.5" aria-label="Vandret keystone"><span class="sbmax" id="khMax"></span><b id="khVal"></b></label>
+          <label class="sbr ksc"><span class="notr">V</span><span class="sbmin" id="kvMin"></span><input type="range" id="kvR" step="0.5" aria-label="Lodret keystone"><span class="sbmax" id="kvMax"></span><b id="kvVal"></b><button class="btn z0" type="button" id="kv0" title="Lodret keystone 0°">0°</button></label>
+          <label class="sbr ksc"><span class="notr">H</span><span class="sbmin" id="khMin"></span><input type="range" id="khR" step="0.5" aria-label="Vandret keystone"><span class="sbmax" id="khMax"></span><b id="khVal"></b><button class="btn z0" type="button" id="kh0" title="Vandret keystone 0°">0°</button></label>
           <span class="hint" id="ksNote"></span><span class="ksloss" id="ksLoss"></span></div></div>
         <div class="canvas"><svg class="draw" id="side" viewBox="0 0 1000 430" role="img" aria-label="Snit gennem lokalet set fra siden"></svg></div>
       </section>
@@ -1623,7 +1624,7 @@ function drawShiftBar(r){const P=r.P,none=!P.length,blend=S.blend&&(r.N>1||r.R>1
   set('svR',vr?vr[0]:0,vr?vr[1]:0,r.sv,none||!vr);set('shR',hr?hr[0]:0,hr?hr[1]:0,r.sh,none||!hr||(S.plan.use&&S.plan.lock&&planActive()));
   $('svMin').textContent=vr?pc(vr[0]):'–';$('svMax').textContent=vr?pc(vr[1]):'–';$('shMin').textContent=hr?pc(hr[0]):'–';$('shMax').textContent=hr?pc(hr[1]):'–';
   $('svVal').textContent=pc(r.sv);$('shVal').textContent=pc(r.sh);$('svVal').style.color=$('shVal').style.color=r.shOK?'':'var(--bad)';
-  $('shift0').disabled=none;
+  $('sv0').disabled=none||!vr;$('sh0').disabled=none||!hr||(S.plan.use&&S.plan.lock&&planActive());$('kv0').disabled=$('kh0').disabled=!(S.ks&&S.ks.on&&r.KL);
   {const KL=r.KL,on=!!(S.ks&&S.ks.on);$('ksBtn').disabled=!KL;$('ksBtn').setAttribute('aria-pressed',on&&!!KL);$('ksBtn').parentElement.classList.toggle('on',on&&!!KL);
    const dg=v=>(v>0?'+':'')+f2(v,v%1?1:0)+'°';
    if(KL){const cap=KL.cap,vh=Math.min(KL.vmax,cap-Math.abs(r.kh)),vl=Math.max(KL.vmin,-(cap-Math.abs(r.kh))),hh=Math.min(KL.h,cap-Math.abs(r.kv));
@@ -1834,7 +1835,9 @@ const ksSet=(k,val)=>{const r0=calc();if(!r0.KL)return;S.ks={...(S.ks||{}),on:tr
   render()};
 $('kvR').addEventListener('input',e=>ksSet('v',+e.target.value));$('khR').addEventListener('input',e=>ksSet('h',+e.target.value));
 $('shR').addEventListener('input',e=>setShift(null,+e.target.value/100));
-$('shift0').addEventListener('click',()=>setShift(0,0));
+// 0-knapper pr. bar: lens shift 0 % = billedet midt for optikken (uden vip); keystone 0° = projektoren tilbage inden for lens shift
+const zero=(k,e)=>{e.preventDefault();const r=calc();if(k==='sv')guardShift({py:S.py},{py:r.cy-r.inv*r.off*r.H});else if(k==='sh')guardShift({px:S.px},{px:r.cx-r.inv*r.offH*r.W});else ksSet(k==='kv'?'v':'h',0);render();save()};
+['sv','sh','kv','kh'].forEach(k=>$(k+'0').addEventListener('click',e=>zero(k,e)));
 
 {const fp=e=>{const svg=$('front'),pt=svg.createSVGPoint();pt.x=e.clientX;pt.y=e.clientY;const q=pt.matrixTransform(svg.getScreenCTM().inverse());return {x:(q.x-FRONT.X0)/FRONT.s0,y:FRONT.E-(q.y-FRONT.Yh)/FRONT.s0}};
  $('front').addEventListener('pointerdown',e=>{if(!FRONT||S.venue==='immersive')return;const q=fp(e);const r=calc();if(Math.abs(q.x-r.cx)>r.CW/2||q.y<S.sb||q.y>S.sb+r.CH)return;scrDrag={dy:q.y-S.sb,dx:q.x-r.cx,pt:fp,h:true};$('front').setPointerCapture(e.pointerId);e.preventDefault()});
