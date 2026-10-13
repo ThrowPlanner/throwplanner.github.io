@@ -1,0 +1,258 @@
+<title>Projection Throw Planner</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@100..125,500..800&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500;600&display=swap">
+<style>
+/*@styles*/
+</style>
+
+<div class="wrap">
+  <div class="top">
+    <div class="brand">
+      <svg viewBox="0 0 40 40" aria-hidden="true"><rect x="2" y="13" width="15" height="14" rx="3" fill="var(--pj-hi)"/><circle cx="17" cy="20" r="4" fill="var(--beam)"/><path d="M19 20 L38 6 L38 34 Z" fill="var(--beam-a)"/><line x1="38" y1="6" x2="38" y2="34" stroke="var(--beam)" stroke-width="2"/></svg>
+      <div><h1 class="notr">Projection Throw Planner</h1><div class="tag">Projektorplanlægning · <span id="nModels"></span> aktuelle Panasonic-modeller (EU)</div></div>
+    </div>
+    <div class="topmid">
+    <div class="seg lang notr" role="group" aria-label="Language / Sprog / 言語">
+      <button type="button" data-lang="da" aria-pressed="false" lang="da">Dansk</button>
+      <button type="button" data-lang="en" aria-pressed="true" lang="en">English</button>
+      <button type="button" data-lang="ja" aria-pressed="false" lang="ja">日本語</button>
+    </div>
+    <button type="button" class="modebtn" id="modeBtn" aria-pressed="false" title="Mørk tilstand til/fra" aria-label="Mørk tilstand til/fra"><svg class="i-moon" viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><path d="M20 14.5A8 8 0 0 1 9.5 4a8 8 0 1 0 10.5 10.5z" fill="currentColor"/></svg><svg class="i-sun" viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><circle cx="12" cy="12" r="4.2" fill="currentColor"/><g stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 2.5v2.2M12 19.3v2.2M2.5 12h2.2M19.3 12h2.2M5.3 5.3l1.6 1.6M17.1 17.1l1.6 1.6M5.3 18.7l1.6-1.6M17.1 6.9l1.6-1.6"/></g></svg></button>
+    <button type="button" class="pdfbtn" id="projSave" title="Gem projektet som en JSON-fil, der kan sendes til andre"><svg viewBox="0 0 24 24" width="15" height="15" aria-hidden="true"><path d="M5 4h11l3 3v13H5zM8 4v5h7V4M8 20v-6h8v6" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/></svg><span class="ptxt">Gem projekt</span></button>
+    <button type="button" class="pdfbtn" id="projOpen" title="Åbn en projektfil (JSON) – du kan også trække filen ind på siden"><svg viewBox="0 0 24 24" width="15" height="15" aria-hidden="true"><path d="M3 7h6l2 2h10v10H3zM12 17v-6m0 0-3 3m3-3 3 3" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg><span class="ptxt">Åbn projekt</span></button><input type="file" id="projFile" accept=".json,application/json" hidden>
+    <button type="button" class="pdfbtn" id="pdfBtn" title="Gem hele siden som PDF"><svg viewBox="0 0 24 24" width="15" height="15" aria-hidden="true"><path d="M12 4v11m0 0-4.5-4.5M12 15l4.5-4.5M5 19h14" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg><span id="pdfTxt" class="notr">PDF</span></button>
+    <button type="button" class="resetbtn" id="resetBtn" title="Nulstil alle indstillinger til standard"><svg viewBox="0 0 24 24" width="15" height="15" aria-hidden="true"><path d="M4 12a8 8 0 1 0 2.3-5.6M4 4v5h5" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg><span id="resetTxt">Nulstil</span></button>
+    </div>
+    <div class="seg venue" role="group" aria-label="Tema for lokalet">
+      <button type="button" data-venue="aud" aria-pressed="true">Auditorium</button>
+      <button type="button" data-venue="museum" aria-pressed="false">Museum</button>
+      <button type="button" data-venue="theater" aria-pressed="false">Teater</button>
+      <button type="button" data-venue="immersive" aria-pressed="false">Immersive</button>
+      <button type="button" data-venue="golf" aria-pressed="false">Golf Sim</button>
+    </div>
+  </div>
+  <div class="status" id="topStatus" aria-live="polite"></div>
+
+  <div class="toprow">
+    <section class="card fm" id="c01">
+      <h3><span class="no">01</span>Afstand og billedstørrelse</h3>
+      <div class="big">
+        <div class="bigf"><div class="bigl"><label for="dist">Afstand L</label><button type="button" class="lockb" id="lockL" aria-pressed="false" title="Lås afstanden – så kan du se, om projektor og optik passer"><svg viewBox="0 0 16 16" width="13" height="13" aria-hidden="true"><rect x="3" y="7" width="10" height="7" rx="1.5" fill="currentColor"/><path class="shk" d="M5 7V5a3 3 0 0 1 6 0v2" fill="none" stroke="currentColor" stroke-width="1.6"/></svg></button></div><span class="inl"><input type="number" id="dist" step="0.01" min="0.1"><span class="unit">m</span><span class="hitarr" id="ha_dist" hidden aria-live="polite"></span></span></div>
+        <div class="bigf"><div class="bigl"><label for="cw">Billedbredde</label><button type="button" class="lockb" id="lockW" aria-pressed="false" title="Lås billedbredden – så kan du se, om projektor og optik passer"><svg viewBox="0 0 16 16" width="13" height="13" aria-hidden="true"><rect x="3" y="7" width="10" height="7" rx="1.5" fill="currentColor"/><path class="shk" d="M5 7V5a3 3 0 0 1 6 0v2" fill="none" stroke="currentColor" stroke-width="1.6"/></svg></button></div><span class="inl"><input type="number" id="cw" step="0.01" min="0.2"><span class="unit">m</span><span class="hitarr" id="ha_cw" hidden aria-live="polite"></span></span></div>
+      </div>
+      <div class="row"><span>Billedhøjde</span><span class="inl"><input type="number" id="ch" step="0.01" min="0.1"><span class="unit">m</span><span class="hitarr" id="ha_ch" hidden aria-live="polite"></span></span></div>
+      <div class="row"><span>Diagonal</span><span class="inl"><input type="number" id="cd" step="1" min="10"><span class="unit">″</span><span class="hitarr" id="ha_cd" hidden aria-live="polite"></span></span></div>
+      <div class="row"><span>Format</span><span class="fsel"><select id="aspect" aria-label="Billedformat"></select></span></div>
+      <div class="row"><span>Lærredets underkant</span><span class="inl"><input type="number" id="sb" step="0.05" min="0"><span class="unit">m</span><span class="hitarr" id="ha_sb" hidden aria-live="polite"></span></span></div>
+      <div class="hint" id="sizeHint"></div>
+    </section>
+
+    <section class="card fm">
+      <h3><span class="no">02</span>Rum og lys</h3>
+      <div class="trio">
+        <label>Dybde m<input type="number" id="rd" step="0.1" min="2"></label>
+        <label>Bredde m<input type="number" id="rw" step="0.1" min="2"></label>
+        <label>Højde m<input type="number" id="rh" step="0.1" min="2"></label>
+      </div>
+      <div class="row" id="r1Row" style="margin-top:6px"><span id="r1Lbl">Første stolerække</span><span class="inl"><input type="number" id="r1" step="0.1" min="0.5"><span class="unit">m</span></span></div>
+      <div class="row" id="crowdRow" hidden><span>Publikum</span><div class="seg" role="group" aria-label="Vis eller skjul publikum" style="width:144px"><button type="button" data-crowd="1" aria-pressed="true">Vis</button><button type="button" data-crowd="0" aria-pressed="false">Skjul</button></div></div>
+      <div class="row" id="rpRow"><span>Rækkeafstand</span><span class="inl"><input type="number" id="rp" step="0.05" min="0.7"><span class="unit">m</span></span></div>
+      <div class="row" id="stDRow" hidden><span>Scenedybde</span><span class="inl"><input type="number" id="stD" step="0.1" min="1"><span class="unit">m</span></span></div>
+      <div class="row" id="stHRow" hidden><span>Scenehøjde</span><span class="inl"><input type="number" id="stH" step="0.05" min="0.2" max="1.6"><span class="unit">m</span></span></div>
+      <div class="row" id="trRow" hidden><span>Stolerækker (bagerst)</span><span class="inl"><input type="number" id="trows" step="1" min="1" max="30"><span class="unit">stk</span></span></div>
+      <div class="row" id="rearRow" hidden><span>Projektion</span><div class="seg" role="group" aria-label="Front- eller bagprojektion" style="width:144px"><button type="button" data-rear="0" aria-pressed="true">Forfra</button><button type="button" data-rear="1" aria-pressed="false">Bagfra</button></div></div>
+      <div class="row" id="bsdRow" hidden><span>Bagscene (lærred → bagvæg)</span><span class="inl"><input type="number" id="bsd" step="0.1" min="1"><span class="unit">m</span><span class="hitarr" id="ha_bsd" hidden aria-live="polite"></span></span></div>
+      <div class="row"><span>Lærred gain</span><span class="inl"><input type="number" id="gain" step="0.05" min="0.1"><span class="unit">×</span></span></div>
+      <div class="row"><span>Omgivelseslys</span><span class="inl"><input type="number" id="amb" step="10" min="0"><span class="unit">lux</span></span></div>
+    </section>
+
+    <section class="kpis" id="kpis" aria-label="Resultater"></section>
+  </div>
+
+  <div class="grid">
+    <aside class="controls" aria-label="Udstyr">
+      <section class="card fm">
+        <h3><span class="no">03</span>Projektor og linse</h3>
+        <div class="stack">
+          <div id="pjSlot" role="group" aria-label="Projektor pr. flade" hidden><b>Flade</b><button type="button" class="chip" data-slot="all">Alle flader</button><button type="button" class="chip" data-slot="v"><i style="background:#16B6D9"></i>Front-væg</button><button type="button" class="chip" data-slot="l"><i style="background:#8B5CF6"></i>Venstre væg</button><button type="button" class="chip" data-slot="r"><i style="background:#EC4899"></i>Højre væg</button><button type="button" class="chip" data-slot="f"><i style="background:#F59E0B"></i>Gulv</button></div>
+          <div id="pjSlotInfo" hidden></div>
+          <div class="trio" style="grid-template-columns:1.4fr 1fr"><label>Kategori<select id="cat"></select></label><label>Min. lumen<select id="minLm"><option value="0">Alle</option><option value="5000">5.000+</option><option value="10000">10.000+</option><option value="15000">15.000+</option><option value="20000">20.000+</option><option value="30000">30.000+</option></select></label></div>
+          <select id="model" aria-label="Projektormodel"></select>
+          <select id="lens" aria-label="Linse"></select>
+        </div>
+        <div class="gear">
+          <a class="spec" id="pjLink" target="_blank" rel="noopener noreferrer" title="Åbn specifikationer hos Panasonic"><figure><div class="ph" id="pjImg"></div><figcaption><span id="pjCap"></span><span class="ext" aria-hidden="true">↗</span></figcaption></figure></a>
+          <a class="spec" id="lnLink" target="_blank" rel="noopener noreferrer" title="Åbn specifikationer hos Panasonic"><figure><div class="ph" id="lnImg"></div><figcaption><span id="lnCap"></span><span class="ext" aria-hidden="true">↗</span></figcaption></figure></a>
+        </div>
+        <div class="hint" id="pjinfo"></div>
+      </section>
+
+      <details class="card coll" id="dMount">
+        <summary><h3><span class="no">04</span>Montering og flyramme<span class="sumtxt" id="sumMount"></span><span class="chev" aria-hidden="true"></span></h3></summary><div class="collbody">
+        <div class="seg" role="group" aria-label="Montering">
+          <button type="button" id="mDesk" aria-pressed="true">Bord / gulv</button>
+          <button type="button" id="mCeil" aria-pressed="false">Loft, inverteret</button>
+        </div>
+        <div class="row" style="margin-top:4px"><span style="color:var(--ink)">Flyramme</span><label class="switch"><input type="checkbox" id="frame" aria-label="Medregn flyramme"><span></span></label></div>
+        <div class="sub" id="frameBox" hidden>
+          <select id="frameSel" aria-label="Rammemodel"></select>
+          <div class="trio" style="margin-top:4px">
+            <label>Bredde mm<input type="number" id="fw" step="1"></label>
+            <label>Højde mm<input type="number" id="fh" step="1"></label>
+            <label>Dybde mm<input type="number" id="fd" step="1"></label>
+          </div>
+          <div class="hint" id="frameHint"></div>
+        </div>
+      </div></details>
+
+      <details class="card coll" id="dBlend">
+        <summary><h3><span class="no">05</span>Edge Blend &amp; Portrait Mode<span class="sumtxt" id="sumBlend"></span><span class="chev" aria-hidden="true"></span></h3></summary><div class="collbody">
+        <div id="blendStd">
+        <div class="row"><span style="color:var(--ink)">Portrait mode <span class="hint">(projektor drejet 90°)</span></span><label class="switch"><input type="checkbox" id="portrait" aria-label="Portrait mode"><span></span></label></div>
+        <div class="row"><span style="color:var(--ink)">Flere projektorer</span><label class="switch"><input type="checkbox" id="blend" aria-label="Edge blend"><span></span></label></div>
+        <div class="hint" id="blendOff">Slå til for flere projektorer, der danner ét billede med overlap.</div>
+        <div class="sub" id="blendBox" hidden>
+          <div class="row"><span>Beregn antal automatisk</span><label class="switch"><input type="checkbox" id="bauto" aria-label="Beregn antal projektorer automatisk"><span></span></label></div>
+          <div class="row" id="bthRow" hidden><span>Samlet billedhøjde (mål)</span><span class="inl"><input type="number" id="bth" step="0.1" min="0.2"><span class="unit">m</span></span></div>
+          <div class="row"><span>Projektorer vandret</span><span class="inl"><input type="number" id="bc" min="1" max="8" step="1"><span class="unit">stk</span></span></div>
+          <div class="row"><span>Projektorer lodret</span><span class="inl"><input type="number" id="br" min="1" max="4" step="1"><span class="unit">stk</span></span></div>
+          <div class="row"><span>Overlap</span><span class="inl"><input type="number" id="ov" min="0" max="50" step="1"><span class="unit">%</span></span></div>
+          <div class="hint" id="blendHint"></div>
+        </div>
+        </div>
+        <div id="blendImm" hidden>
+          <div class="ityp"><span>Projektortyper til bedste løsning</span><div class="chips" role="group" aria-label="Projektortyper"><button type="button" class="chip" data-ity="d1" aria-pressed="true">1-chip DLP</button><button type="button" class="chip" data-ity="d3" aria-pressed="true">3-chip DLP</button><button type="button" class="chip" data-ity="lcd" aria-pressed="true">LCD (3LCD)</button></div></div>
+          <div class="row"><span>Overlap (alle flader)</span><span class="inl"><input type="number" id="iov" min="0" max="50" step="1"><span class="unit">%</span></span></div>
+          <div id="iblBest" class="best" hidden></div>
+          <div class="ibl" id="iblRows"></div>
+          <div class="hint" id="iblHint"></div>
+        </div>
+      </div></details>
+      <section class="card" id="crCard">
+        <h3><span class="no">06</span>Kontrast<span class="crband" id="crBand" hidden title="Kontrastområde, som «bedste løsning» i 05 skal holde sig inden for"><span class="cbl" id="cbLo"></span><span class="cbw"><span class="cbfill" id="cbFill"></span><input type="range" id="cbMin" min="0" max="100" step="1" aria-label="Mindste kontrast"><input type="range" id="cbMax" min="0" max="100" step="1" aria-label="Største kontrast"></span><span class="cbl" id="cbHi"></span></span></h3>
+        <div class="crview"><svg id="crSvg" viewBox="0 0 320 180" role="img" aria-label="Simulering af billedet med den beregnede kontrast"></svg><span class="crtag" id="crTag"></span></div>
+        <details class="crmore" id="dCr"><summary><span id="crSum"></span><span class="chev" aria-hidden="true"></span></summary>
+        <div class="crscale" id="crScale"></div>
+        <div class="crnums" id="crNums"></div>
+        <div class="row" style="margin-top:8px"><span>Krav</span><span style="width:200px"><select id="crReq" aria-label="Kontrastkrav"><option value="7">Passiv visning · 7:1</option><option value="15">Enkle beslutninger · 15:1</option><option value="50">Analytisk · 50:1</option><option value="80">Fuld video · 80:1</option><option value="custom">Eget krav…</option></select></span></div>
+        <div class="row" id="crCustRow" hidden><span>Eget minimum</span><span class="inl"><input type="number" id="crCust" step="0.5" min="1"><span class="unit">:1</span></span></div>
+        <div id="crPill" style="margin:4px 0 2px"></div>
+        <div class="row" style="margin-top:6px"><span>Omgivelseslys på lærred</span><span class="inl"><input type="number" id="amb2" step="10" min="0"><span class="unit">lux</span></span></div>
+        <input type="range" id="ambR" min="0" max="1000" step="5" aria-label="Omgivelseslys">
+        <div class="row"><span>Projektorens kontrast</span><span class="inl"><input type="number" id="pcr" step="100" min="10"><span class="unit">:1</span></span></div>
+        <div class="row"><span>Stablede projektorer</span><span class="inl"><input type="number" id="stack" step="1" min="1" max="4"><span class="unit">stk</span></span></div>
+        <div class="hint" id="crHint"></div>
+        </details>
+      </section>
+    </aside>
+
+    <main class="out">
+      <section class="view">
+        <div class="vhead"><h2><span class="no">10</span>Snit gennem lokalet</h2><span class="cap" id="sideCap" style="flex:1;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-variant-numeric:tabular-nums"></span></div>
+        <div class="shiftbar" id="shiftBar">
+          <span class="sbl">Lens shift</span>
+          <label class="sbr"><span class="notr">V</span><span class="sbmin" id="svMin"></span><input type="range" id="svR" step="0.5" aria-label="Lodret lens shift"><span class="sbmax" id="svMax"></span><b id="svVal"></b><button class="btn z0" type="button" id="sv0" title="Lodret lens shift 0 %">0 %</button></label>
+          <label class="sbr"><span class="notr">H</span><span class="sbmin" id="shMin"></span><input type="range" id="shR" step="0.5" aria-label="Vandret lens shift"><span class="sbmax" id="shMax"></span><b id="shVal"></b><button class="btn z0" type="button" id="sh0" title="Vandret lens shift 0 %">0 %</button></label>
+          <svg id="shMini" viewBox="-1.5 -1.3 3 2.6" width="110" height="96" role="img" aria-label="Lens shift-område med billedets position"></svg>
+          <span class="hint" id="shiftNote"></span>
+          <div class="ksrow"><button class="btn" type="button" id="ksBtn" aria-pressed="false">Keystone</button><button class="btn" type="button" id="lensLock" aria-pressed="false" title="Når optikken er låst, skifter den ikke optik, når du trækker i projektoren"><span id="lensLockTxt">Lås optik</span></button>
+          <label class="sbr ksc"><span class="notr">V</span><span class="sbmin" id="kvMin"></span><input type="range" id="kvR" step="0.5" aria-label="Lodret keystone"><span class="sbmax" id="kvMax"></span><b id="kvVal"></b><button class="btn z0" type="button" id="kv0" title="Lodret keystone 0°">0°</button></label>
+          <label class="sbr ksc"><span class="notr">H</span><span class="sbmin" id="khMin"></span><input type="range" id="khR" step="0.5" aria-label="Vandret keystone"><span class="sbmax" id="khMax"></span><b id="khVal"></b><button class="btn z0" type="button" id="kh0" title="Vandret keystone 0°">0°</button></label>
+          <span class="hint" id="ksNote"></span><span class="ksloss" id="ksLoss"></span></div></div>
+        <div class="canvas"><svg class="draw" id="side" viewBox="0 0 1000 430" role="img" aria-label="Snit gennem lokalet set fra siden"></svg></div>
+      </section>
+
+      <details class="view coll2" id="dPlan">
+        <summary class="vhead"><h2><span class="no">08</span>Plantegning</h2><span class="cap" id="planCap">valgfri – indsæt en tegning og placér projektoren på den</span><span class="sp"></span><span class="chev" aria-hidden="true"></span></summary>
+        <div class="ptool">
+          <input type="file" id="planFile" accept="image/*,application/pdf" hidden>
+          <button class="btn" type="button" id="planUp">Indsæt plantegning…</button>
+          <div class="seg" role="group" aria-label="Værktøj" id="planTools">
+            <button type="button" data-tool="cal" aria-pressed="false">1 · Målestok</button>
+            <button type="button" data-tool="scr" aria-pressed="false">2 · Lærred</button>
+            <button type="button" data-tool="pj" aria-pressed="false">3 · Projektor</button>
+          </div>
+          <span class="calbox" id="calBox"><span class="seg calseg" role="group" aria-label="Målestok"><button type="button" data-cal="w" title="Klik to punkter på tværs af rummet">Tegn bredde</button><button type="button" data-cal="l" title="Klik to punkter på langs af rummet">Tegn længde</button></span>
+            <span class="inl"><span class="hint">Bredde</span><input type="number" id="calM" step="0.1" min="0.1" style="width:70px" aria-label="Rummets bredde"><span class="unit">m</span></span>
+            <span class="inl"><span class="hint">Længde</span><input type="number" id="calL" step="0.1" min="0.1" style="width:70px" aria-label="Rummets længde"><span class="unit">m</span></span>
+            <span class="inl"><span class="hint">Højde</span><input type="number" id="calH" step="0.1" min="2" style="width:84px" placeholder="valgfri" aria-label="Rummets højde (valgfri)"><span class="unit">m</span></span></span>
+          <label class="inl hint" style="gap:6px"><input type="checkbox" id="planLock">Hold midt for lærredet</label>
+          <label class="inl hint" style="gap:6px"><input type="checkbox" id="planUse">Brug plantegningens mål</label>
+          <span class="sp"></span>
+          <button class="btn" type="button" id="planDel">Fjern</button>
+        </div>
+        <div class="pinfo" id="planInfo"></div>
+        <div class="pstage" id="planStage"><svg id="planSvg" class="draw" role="img" aria-label="Plantegning med projektor"></svg>
+          <div class="pempty" id="planEmpty"><b>Ingen plantegning</b><span>Indsæt en PNG, JPG eller PDF. Sæt derefter målestok, markér lærredet og træk projektoren på plads.</span><button class="btn" type="button" id="planUp2">Indsæt plantegning…</button></div>
+        </div>
+      </details>
+
+      <section class="view">
+        <div class="vhead">
+          <h2><span class="no">09</span>Lokalet set bagfra</h2><span class="cap">mål på lærredsvæggen er i målestok · træk i lærredet for at flytte det</span><span class="sp"></span>
+          <div class="vtools"><div class="sunbar" id="sunBar">
+            <label class="switch" title="Sollys til/fra"><input type="checkbox" id="sunOn" aria-label="Medregn sollys"><span></span></label>
+            <svg id="compass" viewBox="-30 -30 60 60" width="52" height="52" role="button" tabindex="0" aria-label="Kompas: klik i den retning lærredet vender mod publikum"></svg>
+            <div class="sunctl"><div class="suntop"><span id="sunTime">–</span><select id="sunWin" aria-label="Vinduer"><option value="left">Vindue: venstre</option><option value="right">Vindue: højre</option><option value="sides">Vindue: sider</option><option value="none">Vindue: ingen</option><option value="custom">Vindue: custom</option></select></div>
+              <div class="sunrow"><span class="hint">☀ op</span><input type="range" id="sunT" min="0" max="1000" step="1" aria-label="Solens position fra solopgang til solnedgang"><span class="hint">ned</span></div></div>
+          </div>
+          <div class="seg" role="group" aria-label="Indhold på lærredet">
+            <button type="button" data-content="none" aria-pressed="true">Lærred</button>
+            <button type="button" data-content="test" aria-pressed="false">Testbillede</button>
+            <button type="button" data-content="golf" aria-pressed="false" hidden>Golfbane</button>
+            <button type="button" data-content="img" aria-pressed="false">Eget billede</button>
+          </div>
+          <input type="file" id="file" accept="image/*" hidden></div>
+        </div>
+        <div class="canvas"><svg class="draw" id="front" viewBox="0 0 1000 560" role="img" aria-label="Lokalet set bagfra med lærred og projektor"></svg></div>
+        <div class="immp" id="immPanel" hidden>
+          <div class="immbar"><div class="chips" role="group" aria-label="Projektionsflader"><b>Flader</b><button type="button" class="chip" data-imm="v">Front-væg</button><button type="button" class="chip" data-imm="l">Venstre væg</button><button type="button" class="chip" data-imm="r">Højre væg</button><button type="button" class="chip" data-imm="f">Gulv</button></div>
+            <div class="chips" role="group" aria-label="Træk-funktion"><b>Træk</b><button type="button" class="chip" data-imode="h" aria-pressed="true" title="Træk vandret">↔ Vandret</button><button type="button" class="chip" data-imode="v" aria-pressed="false" title="Træk op/ned (eller hold Shift nede)">↕ Op/ned</button><button type="button" class="chip" id="immLensLock" aria-pressed="false" title="Når optikken er låst, skifter den ikke optik, når du trækker i projektorerne"><span id="immLensLockTxt">Lås optik</span></button></div></div>
+          <div class="tbl"><table id="immTbl"></table></div>
+          <div class="hint" id="immHint"></div>
+        </div>
+        <div class="immp golfp" id="golfPanel" hidden>
+          <h3 class="gh">Golfsimulator</h3>
+          <div class="gf">
+            <label><span>Spillerens højde</span><span class="inl"><input type="number" id="gH" step="0.01" min="1.4" max="2.1"><span class="unit">m</span></span></label>
+            <label><span>Svingradius</span><span class="inl"><input type="number" id="gR" step="0.05" min="1" max="2.4"><span class="unit">m</span></span></label>
+            <label><span>Svingplan</span><span class="inl"><input type="number" id="gTh" step="1" min="30" max="80"><span class="unit">°</span></span></label>
+            <label><span>Tee til lærred</span><span class="inl"><input type="number" id="gTee" step="0.05" min="1"><span class="unit">m</span></span></label>
+            <label class="gmat"><span>Måtte (B × D)</span><span class="inl"><input type="number" id="gMW" step="0.1" min="0.5"><span class="unit">×</span><input type="number" id="gMD" step="0.1" min="0.5"><span class="unit">m</span></span></label>
+            <label><span>TrackMan</span><select id="gTM"><option value="auto">iO · auto højde</option><option value="LOW">iO LOW (2,70–2,90 m)</option><option value="MID">iO MID (2,85–3,05 m)</option><option value="HIGH">iO HIGH (3,00–3,20 m)</option><option value="TM4">TrackMan 4 (gulv)</option><option value="none">Ingen TrackMan</option></select></label>
+            <div class="seg" role="group" aria-label="Spillerens hånd"><button type="button" data-ghand="R" aria-pressed="true">Højrehåndet</button><button type="button" data-ghand="L" aria-pressed="false">Venstrehåndet</button></div>
+          </div>
+          <div class="gpose"><span>Svingposition</span><input type="range" id="gPose" min="0" max="100" step="1" aria-label="Svingposition"><b id="gPoseTxt"></b><button type="button" id="gPlay">▶ Afspil sving</button></div>
+          <ul class="gchk" id="gChk"></ul>
+          <div class="hint" id="gHint">TrackMan-enheden er tegnet generisk – ikke med TrackMans design eller logo. Svinget er forenklet som en cirkel (svingradius) i et skråt svingplan gennem bolden. Skyggen er beregnet fra projektorens linse. Kravene er fra TrackMans offentlige installationsvejledninger. Spilleren kan trækkes i snittet.</div>
+        </div>
+        <div class="legend lgtog" id="lg9" role="group" aria-label="Vis/skjul i tegningen">
+          <button type="button" data-l9="beam" aria-pressed="true" title="Vis/skjul"><i style="background:var(--beam-a);border:1px solid var(--beam)"></i>Lysstråle / blend-zone</button>
+          <button type="button" data-l9="shift" aria-pressed="true" title="Vis/skjul"><i style="border:1px dashed var(--beam)"></i>Lens shift-område</button>
+          <button type="button" data-l9="pj" aria-pressed="true" title="Vis/skjul"><i style="background:var(--pj);border:2px solid var(--frame)"></i>Projektor / flyramme</button>
+          <button type="button" data-l9="dim" aria-pressed="true" title="Vis/skjul"><i style="border-top:2px solid var(--dim);height:0;border-radius:0"></i>Mål</button>
+          <button type="button" data-l9="gsw" aria-pressed="true" title="Vis/skjul" hidden><i style="border:1.5px dashed #F5A524"></i>Sving</button>
+          <button type="button" data-l9="gsh" aria-pressed="true" title="Vis/skjul" hidden><i style="background:#000;border:1px solid var(--bad)"></i>Skygge</button>
+        </div>
+      </section>
+
+      <section class="view" id="solView">
+        <div class="vhead"><h2><span class="no">11</span>Løsninger</h2><span class="cap" id="solCap"></span></div>
+        <div class="tbl"><table>
+          <thead><tr><th></th><th>Projektor</th><th>Linse</th><th>Zoom</th><th class="n">Linsens L</th><th class="n">TR (Panasonic)</th><th class="n">Lys</th><th>Status</th></tr></thead>
+          <tbody id="solCur"></tbody>
+        </table></div>
+        <details class="solmore" id="dSol"><summary><span id="solSum"></span><span class="chev" aria-hidden="true"></span></summary>
+        <div class="tbl"><table><tbody id="sol"></tbody></table></div>
+        </details>
+      </section>
+
+      <section class="view"><details><summary><span class="no">12</span>Formler bag beregningen</summary><pre class="formula" id="formula"></pre></details></section>
+    </main>
+  </div>
+</div>
+
+
+<script>
+/*@scripts*/
+</script>

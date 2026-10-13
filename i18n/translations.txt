@@ -1,0 +1,622 @@
+
+Projektorplanlægning ·|Projector planning ·|プロジェクター計画 ·
+aktuelle Panasonic-modeller (EU)|current Panasonic models (EU)|現行パナソニックモデル（EU）
+Auditorium|Auditorium|講堂
+Museum|Museum|美術館
+Teater|Theatre|劇場
+Immersive|Immersive|イマーシブ
+Tema for lokalet|Room theme|部屋のテーマ
+Sprog|Language|言語
+Kontrast under #:#|Contrast below #:#|コントラスト #:# 未満
+Afstand og billedstørrelse|Distance and image size|投写距離と画面サイズ
+Afstand L|Distance L|投写距離 L
+Billedbredde|Image width|画面幅
+Billedhøjde|Image height|画面高さ
+Diagonal|Diagonal|対角
+Format|Aspect ratio|アスペクト比
+Billedformat|Aspect ratio|アスペクト比
+Lærredets underkant|Screen bottom edge|スクリーン下端
+Ved # m kan linsen give|At # m the lens can give|# m でのレンズ投写幅：
+bredde.|width.|。
+Fast linse: ved # m bliver billedet|Fixed lens: at # m the image is|固定レンズ：# m で画面幅
+bredt.|wide.|。
+Samlet billede. Pr. projektor:|Combined image. Per projector:|合成画面。プロジェクターごと：
+Bredden kommer fra plantegningen.|The width comes from the floor plan.|幅は図面から取得しています。
+Billedet er gjort så bredt som rummet.|The image has been made as wide as the room.|画面を部屋の幅に合わせました。
+Billedet er gjort så højt som rummet.|The image has been made as tall as the room.|画面を部屋の高さに合わせました。
+Lærredets underkant er sænket, så lærredet er under loftet.|The screen bottom edge has been lowered so the screen is below the ceiling.|スクリーンが天井より下になるよう下端を下げました。
+Afstanden er begrænset, så projektoren er inden for bagvæggen.|The distance has been limited so the projector is inside the back wall.|プロジェクターが後壁の内側に収まるよう距離を制限しました。
+Afstanden er begrænset, så projektoren er inden for bagscenen.|The distance has been limited so the projector is inside the backstage.|プロジェクターがバックステージ内に収まるよう距離を制限しました。
+Passer ikke: # m og # m bredde – med denne optik skal afstanden være #–# m for # m bredde|Does not fit: # m and # m width – with this lens the distance must be #–# m for # m width|不適合：# m・幅 # m – このレンズでは幅 # m に #–# m の距離が必要
+Passer ikke: afstand # m – med denne optik skal afstanden være #–# m for # m bredde|Does not fit: distance # m – with this lens the distance must be #–# m for # m width|不適合：距離 # m – このレンズでは幅 # m に #–# m の距離が必要
+Passer ikke: bredde # m – med denne optik skal afstanden være #–# m for # m bredde|Does not fit: width # m – with this lens the distance must be #–# m for # m width|不適合：幅 # m – このレンズでは幅 # m に #–# m の距離が必要
+Passer ikke: # m og # m bredde – med denne optik skal afstanden være # m for # m bredde|Does not fit: # m and # m width – with this lens the distance must be # m for # m width|不適合：# m・幅 # m – このレンズでは幅 # m に # m の距離が必要
+Passer: # m og # m bredde|Fits: # m and # m width|適合：# m・幅 # m
+Passer: afstand # m|Fits: distance # m|適合：距離 # m
+Passer: bredde # m|Fits: width # m|適合：幅 # m
+Lås afstanden – så kan du se, om projektor og optik passer|Lock the distance – to see whether projector and lens fit|距離をロック – プロジェクターとレンズが適合するか確認できます
+Lås billedbredden – så kan du se, om projektor og optik passer|Lock the image width – to see whether projector and lens fit|画面幅をロック – プロジェクターとレンズが適合するか確認できます
+Afstanden er låst – klik for at låse op|The distance is locked – click to unlock|距離はロック中 – クリックで解除
+Billedbredden er låst – klik for at låse op|The image width is locked – click to unlock|画面幅はロック中 – クリックで解除
+Grænsen for rummet er nået|The room limit has been reached|部屋の限界に達しました
+Rum og lys|Room and light|部屋と照明
+Dybde m|Depth m|奥行 m
+Bredde m|Width m|幅 m
+Højde m|Height m|高さ m
+Første stolerække|First seat row|最前列
+Publikum fra|Audience from|観客位置
+Rækkeafstand|Row spacing|列間隔
+Stolerækker (bagerst)|Seat rows (at the back)|座席列（後方）
+Projektion|Projection|投写方式
+Front- eller bagprojektion|Front or rear projection|フロントまたはリア投写
+Forfra|Front|フロント
+Bagfra|Rear|リア
+Bagscene (lærred → bagvæg)|Backstage (screen → back wall)|バックステージ（スクリーン→後壁）
+Lærred gain|Screen gain|スクリーンゲイン
+Omgivelseslys|Ambient light|環境光
+stk|pcs|台
+Zoom|Zoom|ズーム
+inden for linsens zoom|within the lens zoom|レンズのズーム範囲内
+uden for linsens zoom|outside the lens zoom|レンズのズーム範囲外
+linse #–# m · TR #:#|lens #–# m · TR #:#|レンズ #–# m · TR #:#
+fast linse · TR #:#|fixed lens · TR #:#|固定レンズ · TR #:#
+Billede|Image|画面
+samlet|total|合計
+Lens shift V / H|Lens shift V / H|レンズシフト V / H
+inden for linsens shift|within the lens shift|レンズシフト範囲内
+uden for linsens shift|outside the lens shift|レンズシフト範囲外
+fast offset # % + shift|fixed offset # % + shift|固定オフセット # % + シフト
+Lys pr. projektor|Light per projector|プロジェクターごとの照度
+# cd/m² · kontrast #:#|# cd/m² · contrast #:#|# cd/m² · コントラスト #:#
+Projektor (B×H×D)|Projector (W×H×D)|プロジェクター（幅×高×奥）
+Flyramme (B×H×D)|Flying frame (W×H×D)|フライングフレーム（幅×高×奥）
+bagkant # m fra lærred|rear edge # m from screen|後端までスクリーンから # m
+Projektor og linse|Projector and lens|プロジェクターとレンズ
+Kategori|Category|カテゴリー
+Alle (#)|All (#)|すべて (#)
+Alle|All|すべて
+Min. lumen|Min. lumens|最小ルーメン
+Projektormodel|Projector model|プロジェクターモデル
+Linse|Lens|レンズ
+Supplied lens|Supplied lens|付属レンズ
+· zoom|· zoom|· ズーム
+· fast|· fixed|· 固定
+# lm · kontrast #:#|# lm · contrast #:#|# lm · コントラスト #:#
+linse rager # mm frem|lens protrudes # mm|レンズ突出 # mm
+ultrakort kast (kabinet foran spejlet)|ultra short throw (cabinet in front of the mirror)|超短焦点（ミラー前に本体）
+L-formet linse (kabinet lodret)|L-shaped lens (cabinet vertical)|L字型レンズ（本体は縦置き）
+Montering og flyramme|Mounting and flying frame|設置とフライングフレーム
+Montering|Mounting|設置
+Loft · linse # m|Ceiling · lens # m|天吊り · レンズ # m
+Bord · linse # m|Table · lens # m|床置き · レンズ # m
+Bord / gulv|Table / floor|床置き
+Loft, inverteret|Ceiling, inverted|天吊り（反転）
+Flyramme|Flying frame|フライングフレーム
+Medregn flyramme|Include flying frame|フライングフレームを含める
+Rammemodel|Frame model|フレームモデル
+Egen ramme – indtast mål|Custom frame – enter dimensions|カスタムフレーム – 寸法入力
+Bredde mm|Width mm|幅 mm
+Højde mm|Height mm|高さ mm
+Dybde mm|Depth mm|奥行 mm
+Officielle mål fra Panasonic · # kg uden projektor|Official Panasonic dimensions · # kg without projector|パナソニック公式寸法 · プロジェクター除く # kg
+Egne mål.|Custom dimensions.|カスタム寸法。
+Panasonic har ikke offentliggjort mål for #. Skøn ud fra ET-RFD# – ret til de rigtige mål.|Panasonic has not published dimensions for #. Estimated from ET-RFD# – correct to the real dimensions.|パナソニックは # の寸法を公開していません。ET-RFD# からの推定 – 実寸に修正してください。
+Panasonic har ingen ramme i ET-RFD-serien til #. Skøn: projektor + # mm.|Panasonic has no ET-RFD frame for #. Estimate: projector + # mm.|# 用の ET-RFD フレームはありません。推定：プロジェクター + # mm。
+Edge blend|Edge blend|エッジブレンド
+Fra|Off|オフ
+Flere projektorer|Multiple projectors|複数プロジェクター
+Slå til for flere projektorer, der danner ét billede med overlap.|Turn on for several projectors forming one image with overlap.|オンにすると複数台で重ね合わせた1つの画面を作ります。
+Projektorer vandret|Projectors horizontal|水平方向の台数
+Projektorer lodret|Projectors vertical|垂直方向の台数
+Overlap (alle flader)|Overlap (all surfaces)|オーバーラップ（全面）
+Overlap|Overlap|オーバーラップ
+Billede pr. projektor|Image per projector|プロジェクターごとの画面
+Blend-zone|Blend zone|ブレンド領域
+afstand mellem projektorer # m|distance between projectors # m|プロジェクター間隔 # m
+Kontrast|Contrast|コントラスト
+Under krav|Below requirement|要件未満
+Opfylder krav|Meets requirement|要件を満たす
+Detaljer og indstillinger|Details and settings|詳細と設定
+krav #|requirement #|要件 #
+krav|req.|要件
+Hvid|White|白
+Sort|Black|黒
+Krav|Requirement|要件
+Kontrastkrav|Contrast requirement|コントラスト要件
+Passiv visning · #:#|Passive viewing · #:#|受動的視聴 · #:#
+Enkle beslutninger · #:#|Basic decision making · #:#|基本的な判断 · #:#
+Analytisk · #:#|Analytical · #:#|分析的 · #:#
+Fuld video · #:#|Full motion video · #:#|フルモーションビデオ · #:#
+Passiv visning|Passive viewing|受動的視聴
+Eget krav…|Custom requirement…|カスタム要件…
+Eget minimum|Custom minimum|カスタム最小値
+passiv visning|passive viewing|受動的視聴
+enkle beslutninger|basic decision making|基本的な判断
+analytisk|analytical|分析的
+fuld video|full motion video|フルモーションビデオ
+eget krav|custom requirement|カスタム要件
+Opfylder #:#|Meets #:#|#:# を満たす
+Under kravet #:# – mangler #× kontrast|Below the #:# requirement – needs #× more contrast|#:# 要件未満 – コントラストが #× 不足
+Under #:#|Below #:#|#:# 未満
+blend-zone #:#|blend zone #:#|ブレンド領域 #:#
+blend #:#|blend #:#|ブレンド #:#
+Omgivelseslys på lærred|Ambient light on screen|スクリーン上の環境光
+Projektorens kontrast|Projector contrast|プロジェクターのコントラスト
+Stablede projektorer|Stacked projectors|スタック台数
+Simulering af billedet med den beregnede kontrast|Simulation of the image with the calculated contrast|計算されたコントラストでの画面シミュレーション
+Omgivelseslyset (# lux kunstlys + # lux sollys) står for|The ambient light (# lux artificial + # lux sunlight) accounts for|環境光（人工光 # lux + 日光 # lux）が占める割合：
+Omgivelseslyset står for|The ambient light accounts for|環境光が占める割合：
+af sortniveauet. Databladets kontrast er full on/off – ret til ANSI-kontrast for et mere realistisk tal. Krav efter ANSI/INFOCOMM #M-# (nu AVIXA V#): målt i lokalet med ANSI-skakbræt, så brug projektorens ANSI-kontrast.|of the black level. The datasheet contrast is full on/off – change to ANSI contrast for a more realistic figure. Requirements per ANSI/INFOCOMM #M-# (now AVIXA V#): measured in the room with an ANSI checkerboard, so use the projector's ANSI contrast.|（黒レベルに対して）。データシートのコントラストはフルオン/オフです – より現実的な値にはANSIコントラストを使用してください。要件は ANSI/INFOCOMM #M-#（現 AVIXA V#）：室内でANSIチェッカーボードにより測定するため、プロジェクターのANSIコントラストを使用してください。
+Sort niveau i blend-zonen er|The black level in the blend zone is|ブレンド領域の黒レベルは
+højere og #× i hjørnerne (synligt gråt bånd i mørke scener uden black level-korrektion).|higher and #× in the corners (visible grey band in dark scenes without black level correction).|倍高く、角では #×（黒レベル補正なしでは暗いシーンに灰色の帯が見えます）。
+højere (synligt gråt bånd i mørke scener uden black level-korrektion).|higher (visible grey band in dark scenes without black level correction).|倍高い（黒レベル補正なしでは暗いシーンに灰色の帯が見えます）。
+Plantegning|Floor plan|図面
+valgfri – indsæt en tegning og placér projektoren på den|optional – insert a drawing and place the projector on it|任意 – 図面を挿入してプロジェクターを配置
+indsat – ikke i brug|inserted – not in use|挿入済み – 未使用
+styrer afstand # m og bredde # m|controls distance # m and width # m|距離 # m と幅 # m を制御
+Indsæt plantegning…|Insert floor plan…|図面を挿入…
+# · Målestok|# · Scale|# · 縮尺
+# · Lærred|# · Screen|# · スクリーン
+# · Projektor|# · Projector|# · プロジェクター
+# · Målestok:|# · Scale:|# · 縮尺：
+# · Lærred:|# · Screen:|# · スクリーン：
+# · Projektor:|# · Projector:|# · プロジェクター：
+klik på to punkter med kendt afstand (fx en væg) og skriv afstanden i meter.|click two points with a known distance (e.g. a wall) and enter the distance in metres.|距離が分かっている2点（壁など）をクリックし、距離をメートルで入力。
+klik på lærredets venstre kant og derefter højre kant, set fra publikum.|click the left edge of the screen and then the right edge, as seen from the audience.|観客側から見てスクリーンの左端、次に右端をクリック。
+træk projektoren på plads. Afstand|drag the projector into place. Distance|プロジェクターをドラッグして配置。距離
+sideforskydning # m · lærred # m bredt (målestok # px/m)|side offset # m · screen # m wide (scale # px/m)|横オフセット # m · スクリーン幅 # m（縮尺 # px/m）
+Plantegningen er ikke i brug. Slå «Brug plantegningens mål» til.|The floor plan is not in use. Turn on “Use floor plan dimensions”.|図面は未使用です。「図面の寸法を使用」をオンにしてください。
+Afstand|Distance|距離
+Hold midt for lærredet|Keep centred on the screen|スクリーン中央に固定
+Brug plantegningens mål|Use floor plan dimensions|図面の寸法を使用
+Fjern|Remove|削除
+Ingen plantegning|No floor plan|図面なし
+Indsæt en PNG, JPG eller PDF. Sæt derefter målestok, markér lærredet og træk projektoren på plads.|Insert a PNG, JPG or PDF. Then set the scale, mark the screen and drag the projector into place.|PNG・JPG・PDFを挿入し、縮尺を設定、スクリーンを指定してプロジェクターを配置します。
+Læser PDF…|Reading PDF…|PDFを読み込み中…
+PDF-læseren kunne ikke hentes. Indsæt tegningen som PNG eller JPG.|The PDF reader could not be loaded. Insert the drawing as PNG or JPG.|PDFリーダーを読み込めません。PNGまたはJPGで挿入してください。
+PDF’en kunne ikke læses. Gem første side som PNG eller JPG og indsæt den i stedet.|The PDF could not be read. Save the first page as PNG or JPG and insert that instead.|PDFを読み込めません。1ページ目をPNGかJPGで保存して挿入してください。
+Værktøj|Tool|ツール
+Plantegning med projektor|Floor plan with projector|プロジェクター付き図面
+Lokalet set bagfra|Room seen from the back|後方から見た部屋
+mål på lærredsvæggen er i målestok|dimensions on the screen wall are to scale|スクリーン壁の寸法は縮尺通り
+Lærredet vender mod #° (#)|The screen faces #° (#)|スクリーンの向き #° (#)
+Kompas: klik i den retning lærredet vender mod publikum|Compass: click in the direction the screen faces the audience|方位：スクリーンが観客側を向く方向をクリック
+Sollys til/fra|Sunlight on/off|日光 オン/オフ
+Medregn sollys|Include sunlight|日光を含める
+Sollys er slået fra|Sunlight is off|日光はオフ
+Solhøjde #°, retning #° · København, i dag|Sun elevation #°, direction #° · Copenhagen, today|太陽高度 #°・方位 #° · コペンハーゲン、本日
+Solens position fra solopgang til solnedgang|Sun position from sunrise to sunset|日の出から日の入りまでの太陽位置
+Vinduer|Windows|窓
+Vindue: bag|Window: back|窓：後方
+Vindue: venstre|Window: left|窓：左
+Vindue: højre|Window: right|窓：右
+Vindue: sider|Window: sides|窓：両側
+Vindue: ingen|Window: none|窓：なし
+Vindue: custom|Window: custom|窓：カスタム
+Vindue venstre væg # – klik for at fjerne|Window left wall # – click to remove|左壁の窓 # – クリックで削除
+Vindue højre væg # – klik for at fjerne|Window right wall # – click to remove|右壁の窓 # – クリックで削除
+Vindue venstre væg # – klik for at tilføje|Window left wall # – click to add|左壁の窓 # – クリックで追加
+Vindue højre væg # – klik for at tilføje|Window right wall # – click to add|右壁の窓 # – クリックで追加
+Ovenlys # – klik for at fjerne|Skylight # – click to remove|天窓 # – クリックで削除
+Ovenlys # – klik for at tilføje|Skylight # – click to add|天窓 # – クリックで追加
+klik på et vindue for at fjerne/tilføje · # af # aktive|click a window to remove/add · # of # active|窓をクリックで削除/追加 · # / # 有効
+☀ op|☀ rise|☀ 日の出
+ned|set|日の入り
+mørkt|dark|暗い
+Indhold på lærredet|Content on the screen|スクリーンの内容
+Lærred|Screen|スクリーン
+Testbillede|Test pattern|テストパターン
+Eget billede|Own image|自分の画像
+Vælg et billede fra din computer|Choose an image from your computer|コンピューターから画像を選択
+Klik igen for at skifte billede|Click again to change image|もう一度クリックで画像を変更
+Klik «Eget billede» for at vælge et billede|Click “Own image” to choose an image|「自分の画像」をクリックして画像を選択
+Lokalet set bagfra med lærred og projektor|Room seen from the back with screen and projector|スクリーンとプロジェクターのある部屋（後方から）
+underkant # m|bottom edge # m|下端 # m
+lokale # × # × # m · # pladser|room # × # × # m · # seats|部屋 # × # × # m · # 席
+lokale # × # × # m|room # × # × # m|部屋 # × # × # m
+Flader|Surfaces|投写面
+Projektionsflader|Projection surfaces|投写面
+Front-væg|Front wall|正面壁
+Venstre væg|Left wall|左壁
+Højre væg|Right wall|右壁
+Gulv|Floor|床
+Front (lærred)|Front (screen)|正面（スクリーン）
+Lysstråle / blend-zone|Light beam / blend zone|光線 / ブレンド領域
+Lens shift-område|Lens shift area|レンズシフト範囲
+Projektor / flyramme|Projector / flying frame|プロジェクター / フレーム
+Mål|Dimensions|寸法
+Snit gennem lokalet|Section through the room|部屋の断面
+Snit gennem lokalet set fra siden|Section through the room seen from the side|側面から見た部屋の断面
+træk projektoren · L # m · linse # m|drag the projector · L # m · lens # m|プロジェクターをドラッグ · L # m · レンズ # m
+H-shift: projektor # m til højre|H-shift: projector # m to the right|水平シフト：プロジェクター右へ # m
+H-shift: projektor # m til venstre|H-shift: projector # m to the left|水平シフト：プロジェクター左へ # m
+Lodret lens shift|Vertical lens shift|垂直レンズシフト
+Vandret lens shift|Horizontal lens shift|水平レンズシフト
+Lens shift-område med billedets position|Lens shift area with image position|画面位置とレンズシフト範囲
+Lens shift|Lens shift|レンズシフト
+L # m|L # m|L # m
+bagkant # m|rear edge # m|後端 # m
+# række # m|row # # m|# 列目 # m
+publikum fra # m|audience from # m|観客位置 # m
+snit # × # m|section # × # m|断面 # × # m
+bagscene # m|backstage # m|バックステージ # m
+fast|fixed|固定
+Løsninger|Solutions|解決策
+# kombinationer (viser #) giver # m ved # m · #:#|# combinations (showing #) give # m at # m · #:#|# 通りの組み合わせ（# 件表示）で # m 距離で # m 幅 · #:#
+# kombinationer giver # m ved # m · #:#|# combinations give # m at # m · #:#|# 通りの組み合わせで # m 距離で # m 幅 · #:#
+· pr. projektor|· per projector|· プロジェクターごと
+Projektor|Projector|プロジェクター
+Linsens L|Lens L|レンズ L
+Throw ratio|Throw ratio|スローレシオ
+Lys|Light|照度
+Status|Status|状態
+Passer|Fits|適合
+For tæt|Too close|近すぎ
+For langt|Too far|遠すぎ
+Tæt på:|Close:|近い：
+Vis alle løsninger|Show all solutions|すべての解決策を表示
+· # passer|· # fit|· # 件適合
+Resultater|Results|結果
+Udstyr|Equipment|機材
+Formler bag beregningen|Formulas behind the calculation|計算式
+Afstand (Panasonic):|Distance (Panasonic):|投写距離（パナソニック）：
+Størrelse:|Size:|サイズ：
+fast linse|fixed lens|固定レンズ
+samlet bredde|total width|合計幅
+lærredcentrum|screen centre|スクリーン中心
+linsehøjde|lens height|レンズ高さ
+Fysisk:|Physical:|物理寸法：
+mm frem foran kabinettet|mm in front of the cabinet|mm 本体から突出
+linse rager|lens protrudes|レンズ突出
+ultrakort kast: L måles til spejlet, kabinettet står mellem spejl og lærred (Panasonic-mål)|ultra short throw: L is measured to the mirror, the cabinet stands between mirror and screen (Panasonic dimensions)|超短焦点：L はミラーまでの距離、本体はミラーとスクリーンの間（パナソニック寸法）
+L-formet linse: kabinettet står lodret under linsehovedet|L-shaped lens: the cabinet stands vertically below the lens head|L字型レンズ：本体はレンズヘッドの下に縦置き
+kabinet|cabinet|本体
+ramme|frame|フレーム
+nærmest lærred|nearest screen|スクリーン最近点
+bagkant|rear edge|後端
+Skygge:|Shadow:|影：
+strålens underkant ved række z|beam bottom edge at row z|列 z での光線下端
+lærred_underkant|screen_bottom|スクリーン下端
+hoved i lyset|head in the beam|頭が光線内
+Belysning:|Illuminance:|照度：
+Luminans:|Luminance:|輝度：
+Kontrast:|Contrast:|コントラスト：
+omg.|amb.|環境
+kontrast|contrast|コントラスト
+inkl. sollys|incl. sunlight|日光含む
+Opstillingen virker|The setup works|設置OK
+Uden for zoom|Outside zoom|ズーム範囲外
+Afstand passer ikke|Distance does not fit|距離不適合
+Størrelse uden for linsens område|Size outside the lens range|サイズがレンズ範囲外
+Uden for lens shift|Outside lens shift|レンズシフト範囲外
+Projektorer kolliderer|Projectors collide|プロジェクターが干渉
+Publikum i lysstrålen (# række)|Audience in the beam (# row)|観客が光線内（# 列）
+Publikum i lysstrålen (# rækker)|Audience in the beam (# rows)|観客が光線内（# 列）
+Publikum i lysstrålen|Audience in the beam|観客が光線内
+Rum:|Room:|部屋：
+for bredt|too wide|幅超過
+for dybt|too deep|奥行超過
+bagscenen er for lav|backstage too shallow|バックステージ不足
+lærred for højt|screen too high|スクリーンが高すぎ
+over loftet|above the ceiling|天井より上
+under gulvet|below the floor|床より下
+projektor for tæt på|projector too close|プロジェクターが近すぎ
+projektor for langt væk|projector too far|プロジェクターが遠すぎ
+✓ placering virker|✓ position works|✓ 配置OK
+✗ uden for zoom|✗ outside zoom|✗ ズーム範囲外
+✗ tjek shift/størrelse|✗ check shift/size|✗ シフト/サイズ確認
+linse kaster # m|lens throws # m|レンズ投写 # m
+lærred # m|screen # m|スクリーン # m
+Auto|Auto|自動
+Auto: største billede pr. projektor ud fra kastet|Auto: largest image per projector from the throw|自動：投写距離から最大の画面
+vandret|horizontal|水平
+lodret|vertical|垂直
+på langs|lengthwise|縦方向
+på tværs|crosswise|横方向
+billede|image|画面
+· blend|· blend|· ブレンド
+· kast|· throw|· 投写
+kast|throw|投写
+dækker kun # af # m – flere projektorer på tværs|covers only # of # m – more projectors needed crosswise|# / # m のみカバー – 横方向にさらに台数が必要
+kræver mindst # m kast – der er kun # m|needs at least # m throw – only # m available|最低 # m の投写距離が必要 – # m しかありません
+optikken kan ikke give et billede på # m afstand|the lens cannot give an image at # m distance|# m の距離ではこのレンズで投写できません
+optikkens største billede (#″)|largest image of the lens (#″)|レンズの最大画面 (#″)
+pr. projektor ligger uden for optikkens område|per projector is outside the lens range|（台あたり）がレンズ範囲外
+kan ikke dækkes|cannot be covered|カバーできません
+– vælg en anden optik|– choose another lens|– 別のレンズを選択
+Skriv et fast antal projektorer for at låse opdelingen – billedet tilpasses, så det fylder fladen med # % overlap, og kastet holdes inden for optikkens zoom (træk i projektorerne i «Lokalet set bagfra»).|Enter a fixed number of projectors to lock the layout – the image is adjusted to fill the surface with # % overlap, and the throw is kept within the lens zoom (drag the projectors in “Room seen from the back”).|台数を入力すると分割が固定されます – 画面は # % のオーバーラップで面を埋めるよう調整され、投写距離はレンズのズーム範囲内に保たれます（「後方から見た部屋」でプロジェクターをドラッグ）。
+Vælg en eller flere flader ovenfor.|Choose one or more surfaces above.|上で投写面を1つ以上選択してください。
+Vælg flader under «Lokalet set bagfra».|Choose surfaces under “Room seen from the back”.|「後方から見た部屋」で投写面を選択してください。
+træk for at flytte hele gruppen|drag to move the whole group|ドラッグでグループ全体を移動
+træk i en projektor for at flytte dens gruppe · hold musen over for at se, hvor den skyder hen, og billedets mål|drag a projector to move its group · hover to see where it projects and the image size|プロジェクターをドラッグでグループ移動 · マウスを重ねると投写先と画面寸法を表示
+Flade|Surface|投写面
+Billede pr. stk|Image per unit|台あたりの画面
+Projektorer|Projectors|プロジェクター
+I alt|Total|合計
+Træk i en projektor i «Lokalet set bagfra» for at flytte hele gruppen: på tværs ændrer kastafstanden, langs fladen forskyder billederne – overlappet (edge blend) bliver det samme.|Drag a projector in “Room seen from the back” to move the whole group: across changes the throw distance, along the surface shifts the images – the overlap (edge blend) stays the same.|「後方から見た部屋」でプロジェクターをドラッグするとグループ全体が移動します：横方向は投写距離を変更、面に沿うと画面がずれます – オーバーラップ（エッジブレンド）は変わりません。
+Beregnet med den valgte projektor og optik, uafhængigt af lærredet ovenfor.|Calculated with the selected projector and lens, independent of the screen above.|選択したプロジェクターとレンズで計算（上のスクリーンとは独立）。
+Front-væggen projiceres fra bagvæggen (# m kast), side-projektorerne hænger i loftet ved den modsatte væg (# m kast), gulv-projektorerne i loftet over gulvet (# m kast).|The front wall is projected from the back wall (# m throw), the side projectors hang from the ceiling at the opposite wall (# m throw), the floor projectors from the ceiling above the floor (# m throw).|正面壁は後壁から投写（# m）、側面用は反対側の壁際の天井に設置（# m）、床用は床上の天井に設置（# m）。
+Optikken står på widest zoom for størst muligt billede pr. projektor, med # % overlap til edge blend (indstilles under # Edge blend).|The lens is at widest zoom for the largest possible image per projector, with # % overlap for edge blend (set under # Edge blend).|レンズはワイド端で台あたり最大の画面、エッジブレンド用に # % のオーバーラップ（# エッジブレンドで設定）。
+Projektion på vægge fra loftet kræver lens shift og/eller geometrisk korrektion (warp).|Projecting onto walls from the ceiling requires lens shift and/or geometric correction (warp).|天井から壁への投写にはレンズシフトや幾何補正（ワープ）が必要です。
+Lys og kontrast er pr. projektor uden refleksioner – i et immersive rum lyser fladerne hinanden op, så den reelle kontrast bliver lavere.|Light and contrast are per projector without reflections – in an immersive room the surfaces light each other, so the real contrast will be lower.|照度とコントラストは反射を含まない台あたりの値です – イマーシブ空間では面同士が照らし合うため、実際のコントラストは低くなります。
+venstre væg: # projektorer i loftet, # m fra væggen (skyder vinkelret på snittet)|left wall: # projectors in the ceiling, # m from the wall (projecting perpendicular to the section)|左壁：天井に # 台、壁から # m（断面に垂直に投写）
+højre væg: # projektorer i loftet, # m fra væggen (skyder vinkelret på snittet)|right wall: # projectors in the ceiling, # m from the wall (projecting perpendicular to the section)|右壁：天井に # 台、壁から # m（断面に垂直に投写）
+front-væg: # projektorer, # m fra væggen|front wall: # projectors, # m from the wall|正面壁：# 台、壁から # m
+gulv: # projektorer, # m over gulvet|floor: # projectors, # m above the floor|床：# 台、床から # m
+Markér på siden (tegn og skriv), og tag så et skærmklip|Mark up the page (draw and write), then take a screenshot|ページに書き込み（描画・文字）してスクリーンショット
+Markeringsværktøj|Markup tool|マークアップツール
+✎ Markér|✎ Mark up|✎ マーク
+✎ Markerer…|✎ Marking…|✎ マーク中…
+✎ Tegn|✎ Draw|✎ 描く
+➜ Pil|➜ Arrow|➜ 矢印
+▭ Firkant|▭ Box|▭ 四角
+T Tekst|T Text|T 文字
+↶ Fortryd|↶ Undo|↶ 元に戻す
+Ryd alt|Clear all|すべて消去
+Færdig|Done|完了
+Rød|Red|赤
+Blå|Blue|青
+Grøn|Green|緑
+Skriv og tryk Enter|Type and press Enter|入力してEnter
+Tag derefter et skærmklip med|Then take a screenshot with|その後スクリーンショット：
+og sæt det ind i chatten med|and paste it into the chat with|チャットに貼り付け：
+Detalje · ultrakort kast|Detail · ultra short throw|詳細 · 超短焦点
+Fast afstand|Fixed distance|固定距離
+findes ikke på denne model – bruger #.|is not available on this model – using #.|このモデルにはありません – # を使用。
+Den valgte kombination understøtter ikke #.|The selected combination does not support #.|選択した組み合わせは # に対応していません。
+Lærredet vender mod #° (N)|The screen faces #° (N)|スクリーンの向き #°（北）
+Lærredet vender mod #° (NØ)|The screen faces #° (NE)|スクリーンの向き #°（北東）
+Lærredet vender mod #° (Ø)|The screen faces #° (E)|スクリーンの向き #°（東）
+Lærredet vender mod #° (SØ)|The screen faces #° (SE)|スクリーンの向き #°（南東）
+Lærredet vender mod #° (S)|The screen faces #° (S)|スクリーンの向き #°（南）
+Lærredet vender mod #° (SV)|The screen faces #° (SW)|スクリーンの向き #°（南西）
+Lærredet vender mod #° (V)|The screen faces #° (W)|スクリーンの向き #°（西）
+Lærredet vender mod #° (NV)|The screen faces #° (NW)|スクリーンの向き #°（北西）
+#. række # m|row # · # m|# 列目 # m
+Åbn specifikationer hos Panasonic|Open specifications at Panasonic|パナソニックで仕様を開く
+– specifikationer hos Panasonic|– specifications at Panasonic|– パナソニックの仕様
+Indbygget standardlinse|Built-in standard lens|内蔵標準レンズ
+Intet billede|No image|画像なし
+Henter billede…|Loading image…|画像を読み込み中…
+Pixels langs|Pixels along|ピクセル数：
+(samlet, efter overlap)|(total, after overlap)|（合計、オーバーラップ後）
+Ingen valgt flade i denne retning|No surface selected in this direction|この方向の投写面が選択されていません
+venstre væg|left wall|左壁
+højre væg|right wall|右壁
+front-væg|front wall|正面壁
+gulv|floor|床
+Skift til lys tilstand|Switch to light mode|ライトモードに切替
+Skift til mørk tilstand|Switch to dark mode|ダークモードに切替
+Mørk tilstand til/fra|Dark mode on/off|ダークモード オン/オフ
+2 · Lærred:|2 · Screen:|2 · スクリーン：
+tryk på lærredets venstre kant (set fra publikum) og træk hen til højre kant – længden vises i meter. Træk bagefter i de to punkter for at flytte eller rotere lærredet. Bredden kan også rettes under # «Billedbredde».|press on the left edge of the screen (seen from the audience) and drag to the right edge – the length is shown in metres. Afterwards drag the two points to move or rotate the screen. The width can also be edited under # “Image width”.|スクリーンの左端（観客側から見て）を押して右端までドラッグ – 長さがメートルで表示されます。その後、2つの点をドラッグしてスクリーンを移動・回転できます。幅は # 「画面幅」でも変更できます。
+3 · Projektor:|3 · Projector:|3 · プロジェクター：
+klik eller træk projektoren på plads – den holder sig inden for billedets bredde og optikkens zoom. Afstand|click or drag the projector into place – it stays within the image width and the lens zoom. Distance|クリックまたはドラッグで配置 – 画面幅とレンズのズーム範囲内に保たれます。距離
+Bredden er koblet til lærredet på plantegningen.|The width is linked to the screen on the floor plan.|幅は図面上のスクリーンと連動しています。
+lærred # m|screen # m|スクリーン # m
+Scenedybde|Stage depth|ステージ奥行
+Scenehøjde|Stage height|ステージ高さ
+Alle flader|All surfaces|全ての面
+Projektor pr. flade|Projector per surface|面ごとのプロジェクター
+har sin egen projektor og optik.|has its own projector and lens.|には専用のプロジェクターとレンズが設定されています。
+Brug standard|Use default|標準を使用
+bruger standard (alle flader). Vælg en model eller optik herunder for at give fladen sin egen.|uses the default (all surfaces). Choose a model or lens below to give this surface its own.|は標準（全ての面）を使用しています。下でモデルまたはレンズを選ぶと、この面専用になります。
+Fladen er slået fra under «Lokalet set bagfra».|The surface is switched off under “Room seen from the back”.|この面は「後方から見た部屋」でオフになっています。
+Standard for alle flader uden egen projektor. Vælg en flade for at give den en anden model eller optik.|Default for all surfaces without their own projector. Choose a surface to give it a different model or lens.|専用プロジェクターのない全ての面の標準です。面を選ぶと別のモデルやレンズを設定できます。
+Hver flade beregnes med sin projektor og optik fra 03 (standard eller fladens egen), uafhængigt af lærredet ovenfor.|Each surface is calculated with its projector and lens from 03 (default or the surface's own), independent of the screen above.|各面は03で選んだプロジェクターとレンズ（標準または面専用）で計算され、上のスクリーンとは独立しています。
+Auto vælger det mindste antal projektorer og tilpasser billedet, så det præcis fylder fladen.|Auto picks the fewest projectors and fits the image so it exactly fills the surface.|自動は最少台数を選び、面をちょうど埋めるよう画面を合わせます。
+Auto: færrest mulige projektorer|Auto: fewest possible projectors|自動：最少台数
+drejet 90°|rotated 90°|90°回転
+Færre med|Fewer with|より少ない台数：
+Brug|Use|使用
+Med den bedste optik pr. flade:|With the best lens per surface:|面ごとに最適なレンズで：
+i stedet for # projektorer|instead of # projectors|（現在 # 台）
+Færrest projektorer|Fewest projectors|最少台数にする
+Publikum|Audience|観客
+Vis|Show|表示
+Skjul|Hide|非表示
+Vis eller skjul publikum|Show or hide audience|観客の表示／非表示
+Taleren skygger foran lærredet|Presenter casts a shadow in front of the screen|発表者がスクリーン前で影を落とします
+skygger|shadow|影
+Pixels (samlet)|Pixels (total)|ピクセル（合計）
+Nulstil|Reset|リセット
+Klik igen for at nulstille|Click again to reset|もう一度クリックでリセット
+Nulstil alle indstillinger til standard|Reset all settings to default|全ての設定を初期値に戻す
+Hver flade beregnes med sin egen projektor og optik, uafhængigt af lærredet.|Each surface is calculated with its own projector and lens, independent of the screen.|各面はそれぞれのプロジェクターとレンズで、スクリーンとは独立して計算されます。
+Front-væggen projiceres fra bagvæggen, side-projektorerne hænger i loftet ved den modsatte væg, og gulv-projektorerne i loftet over gulvet – det faktiske kast pr. flade står i tabellen.|The front wall is projected from the back wall, the side projectors hang from the ceiling at the opposite wall, and the floor projectors from the ceiling above the floor – the actual throw per surface is shown in the table.|正面壁は後壁から投写、側面用は反対側の壁際の天井、床用は床上の天井に設置 – 面ごとの実際の投写距離は表に記載されています。
+Auto vælger færrest mulige projektorer og tilpasser billedet, så det præcis fylder fladen med # % overlap (indstilles under # Edge blend).|Auto picks the fewest possible projectors and fits the image so it exactly fills the surface with # % overlap (set under # Edge blend).|自動は最少台数を選び、# % のオーバーラップで面をちょうど埋めるよう画面を合わせます（# エッジブレンドで設定）。
+Nøgletal|Key figures|主要数値
+Projektorer i alt|Projectors in total|プロジェクター合計
+Flader|Surfaces|投写面
+af #|of #|/ #
+Pixels i alt|Total pixels|総ピクセル
+alle flader, overlap talt én gang|all surfaces, overlap counted once|全ての面、オーバーラップは1回のみ計上
+Kast|Throw|投写距離
+korteste og længste kast|shortest and longest throw|最短と最長の投写距離
+Mindste lys|Lowest light|最小照度
+Laveste kontrast|Lowest contrast|最低コントラスト
+krav #:#|requirement #:#|要件 #:#
+kan ikke dækkes|cannot be covered|カバーできません
+ingen flader valgt|no surfaces selected|面が選択されていません
+vælg flader under «Lokalet set bagfra»|choose surfaces under “Room seen from the back”|「後方から見た部屋」で面を選択
+Taleren skygger, hvis han går ind foran lærredet|The presenter casts a shadow if he walks in front of the screen|発表者がスクリーン前に入ると影になります
+aktuel TR|current TR|現在のTR
+Throw ratio (Panasonic)|Throw ratio (Panasonic)|スローレシオ（Panasonic）
+flader og projektorer set fra siden|surfaces and projectors seen from the side|横から見た投写面とプロジェクター
+linse #–# m · aktuel TR #:#|lens #–# m · current TR #:#|レンズ #–# m · 現在のTR #:#
+aktuel TR #:#|current TR #:#|現在のTR #:#
+lærred forskudt # m til højre|screen offset # m to the right|スクリーンを右へ # m 移動
+lærred forskudt # m til venstre|screen offset # m to the left|スクリーンを左へ # m 移動
+træk i lærredet for at flytte det|drag the screen to move it|スクリーンをドラッグして移動
+Gem hele siden som PDF|Save the whole page as PDF|ページ全体をPDFで保存
+TR (Panasonic)|TR (Panasonic)|TR（Panasonic）
+foran kabinettet|in front of the cabinet|本体の前方
+Taleren skygger på lærredet|The presenter casts a shadow on the screen|発表者がスクリーンに影を落としています
+Træk for at flytte taleren|Drag to move the presenter|ドラッグして発表者を移動
+H pr. projektor|H per projector|プロジェクターごとのH
+(træk hver projektor ud til siden inden for dens lens shift)|(drag each projector sideways within its lens shift)|（各プロジェクターをレンズシフト範囲内で横にドラッグ）
+Passende optik ved # m og # m bredde:|Lenses that fit at # m and # m width:|# m・幅 # m に適合するレンズ：
+Ingen passende optik ved # m og # m bredde.|No lens fits at # m and # m width.|# m・幅 # m に適合するレンズはありません。
+sikker værdi|safe value|安全値
+tilsammen maks. #°|combined max. #°|合計最大 #°
+ca. # % af panelet bruges|approx. # % of the panel used|パネルの約 # % を使用
+Ingen keystone-data for denne model|No keystone data for this model|この機種のキーストーンデータはありません
+Lodret keystone|Vertical keystone|垂直キーストーン
+Vandret keystone|Horizontal keystone|水平キーストーン
+Laver PDF …|Making PDF …|PDFを作成中…
+PDF'en er klar, men kunne ikke gemmes automatisk i denne visning|The PDF is ready but could not be saved automatically in this view|PDFは作成されましたが、この表示では自動保存できませんでした
+Hent PDF|Download PDF|PDFをダウンロード
+Åbn PDF|Open PDF|PDFを開く
+PDF-modulet kunne ikke hentes – tjek internetforbindelsen og prøv igen.|The PDF module could not be loaded – check the internet connection and try again.|PDFモジュールを読み込めませんでした。接続を確認して再試行してください。
+PDF'en kunne ikke laves i denne browser.|The PDF could not be made in this browser.|このブラウザではPDFを作成できませんでした。
+Luk|Close|閉じる
+På et claude.ai-link kan kun ejeren af appen gemme filer|On a claude.ai link only the owner of the app can save files|claude.aiのリンクではアプリの所有者だけがファイルを保存できます
+Prøv i stedet browserens udskrift og vælg «Gem som PDF».|Instead, try the browser's print dialog and choose “Save as PDF”.|代わりにブラウザの印刷で「PDFとして保存」を選んでください。
+Udskriv / gem som PDF|Print / save as PDF|印刷 / PDFとして保存
+Brug web-app-versionen af Projection Throw Planner for at gemme PDF.|Use the web app version of Projection Throw Planner to save the PDF.|PDFを保存するには Projection Throw Planner のウェブアプリ版を使ってください。
+Edge Blend & Portrait Mode|Edge Blend & Portrait Mode|エッジブレンド & ポートレートモード
+Portrait mode|Portrait mode|ポートレートモード
+(projektor drejet #°)|(projector rotated #°)|（プロジェクターを#°回転）
+Portræt|Portrait|縦置き
+Beregn antal automatisk|Calculate number automatically|台数を自動計算
+Beregn antal projektorer automatisk|Calculate the number of projectors automatically|プロジェクター台数を自動計算
+Samlet billedhøjde (mål)|Total image height (target)|合計画面高さ（目標）
+Auto: # × # = # projektorer giver # × # m ved # m|Auto: # × # = # projectors give # × # m at # m|自動：# × # = # 台で # × # m（距離 # m）
+Billedet pr. projektor bliver for lille til optikken ved # m – brug færre projektorer, en anden optik eller en kortere afstand|The image per projector becomes too small for the lens at # m – use fewer projectors, another lens or a shorter distance|# m では台あたりの画面がレンズに対して小さすぎます – 台数を減らすか、別のレンズか、短い距離を使ってください
+Kan ikke dækkes med højst # × # projektorer ved # m – vælg en anden optik eller afstand|Cannot be covered with at most # × # projectors at # m – choose another lens or distance|最大 # × # 台でも # m ではカバーできません – 別のレンズまたは距離を選んでください
+keystone bruges kun uden for lens shift|keystone is only used outside the lens shift|キーストーンはレンズシフト範囲外でのみ使用
+Tabte pixels:|Lost pixels:|失われる画素：
+Lystab:|Light loss:|光の損失：
+pr. projektor|per projector|台あたり
+Inden for lens shift – keystone #°|Within the lens shift – keystone #°|レンズシフト範囲内 – キーストーン #°
+ingen tab af pixels eller lys|no loss of pixels or light|画素・光の損失なし
+uden for keystone-grænsen|outside the keystone limit|キーストーン限界外
+Gem projekt|Save project|プロジェクトを保存
+Åbn projekt|Open project|プロジェクトを開く
+Gem projektet som en JSON-fil, der kan sendes til andre|Save the project as a JSON file that can be sent to others|他の人に送れるJSONファイルとしてプロジェクトを保存
+Åbn en projektfil (JSON) – du kan også trække filen ind på siden|Open a project file (JSON) – you can also drag the file onto the page|プロジェクトファイル（JSON）を開く – ファイルをページにドラッグすることもできます
+Brug web-app-versionen af Projection Throw Planner for at gemme projektet.|Use the web app version of Projection Throw Planner to save the project.|プロジェクトを保存するには Projection Throw Planner のウェブアプリ版を使ってください。
+Filen kunne ikke læses – den er ikke en gyldig projektfil.|The file could not be read – it is not a valid project file.|ファイルを読み込めませんでした – 有効なプロジェクトファイルではありません。
+Vis/skjul i tegningen|Show/hide in the drawing|図面で表示／非表示
+Vis/skjul|Show/hide|表示／非表示
+Lås optik|Lock lens|レンズを固定
+Optik låst|Lens locked|レンズ固定中
+Når optikken er låst, skifter den ikke optik, når du trækker i projektoren|When the lens is locked, it will not switch lens when you drag the projector|レンズを固定すると、プロジェクターをドラッグしてもレンズは切り替わりません
+Projektortyper til bedste løsning|Projector types for the best solution|最適解に使うプロジェクター種類
+Projektortyper|Projector types|プロジェクター種類
+Bedste løsning:|Best solution:|最適解：
+Bedste løsning pr. flade:|Best solution per surface:|面ごとの最適解：
+Brug bedste løsning|Use best solution|最適解を使用
+portræt|portrait|縦置き
+Kontrastområde, som «bedste løsning» i 05 skal holde sig inden for|Contrast range that the “best solution” in 05 must stay within|05の「最適解」が守るコントラスト範囲
+Mindste kontrast|Minimum contrast|最小コントラスト
+Største kontrast|Maximum contrast|最大コントラスト
+uden for kontrastområdet|outside the contrast range|コントラスト範囲外
+Ingen projektor/optik giver #-#:1 på denne flade|No projector/lens gives #–#:1 on this surface|この面で#–#:1を満たすプロジェクター／レンズはありません
+Træk|Drag|ドラッグ
+↔ Vandret|↔ Horizontal|↔ 水平
+↕ Op/ned|↕ Up/down|↕ 上下
+(eller hold Shift nede)|(or hold Shift)|（またはShiftを押したまま）
+Træk-funktion|Drag mode|ドラッグモード
+Med «Op/ned» (eller Shift) hæves og sænkes gulv-projektorerne – optikken skiftes automatisk, og «Auto» for gulvet i 05 slås fra, så opdelingen bevares.|With “Up/down” (or Shift) the floor projectors are raised and lowered – the lens is switched automatically, and “Auto” for the floor in 05 is turned off so the layout is kept.|「上下」（またはShift）で床用プロジェクターを上下できます – レンズは自動で切り替わり、05の床の「自動」はオフになり配置が保たれます。
+træk i en projektor for at flytte dens gruppe · Shift eller «Op/ned» = hæv/sænk · hold musen over for at se, hvor den skyder hen|drag a projector to move its group · Shift or “Up/down” = raise/lower · hover to see where it projects|プロジェクターをドラッグしてグループを移動 · Shiftまたは「上下」＝上げ下げ · ホバーで投写先を表示
+Træk vandret|Drag horizontally|水平にドラッグ
+Træk op/ned (eller hold Shift nede)|Drag up/down (or hold Shift)|上下にドラッグ（またはShift）
+Når optikken er låst, skifter den ikke optik, når du trækker i projektorerne|When the lens is locked, it will not switch lens when you drag the projectors|レンズを固定すると、プロジェクターをドラッグしてもレンズは切り替わりません
+#: kortest mulige kast er # m med denne projektor (#) og opdeling|#: shortest possible throw is # m with this projector (#) and layout|#：このプロジェクター（#）と配置での最短投写距離は # m
+#: længst mulige kast er # m med denne projektor (#) og opdeling|#: longest possible throw is # m with this projector (#) and layout|#：このプロジェクター（#）と配置での最長投写距離は # m
+kortest mulige kast er # m med den låste optik|shortest possible throw is # m with the locked lens|固定レンズでの最短投写距離は # m
+længst mulige kast er # m med den låste optik|longest possible throw is # m with the locked lens|固定レンズでの最長投写距離は # m
+med denne projektor|with this projector|このプロジェクターで
+og opdeling|and layout|と配置
+Tegn bredde|Draw width|幅を描く
+Tegn længde|Draw length|長さを描く
+valgfri|optional|任意
+Målestok|Scale|縮尺
+Klik to punkter på tværs af rummet|Click two points across the room|部屋を横切る2点をクリック
+Klik to punkter på langs af rummet|Click two points along the room|部屋の縦方向に2点をクリック
+Rummets bredde|Room width|部屋の幅
+Rummets længde|Room length|部屋の長さ
+Rummets højde (valgfri)|Room height (optional)|部屋の高さ（任意）
+1 · Målestok – bredde:|1 · Scale – width:|1 · 縮尺 – 幅：
+klik på rummets to sidevægge (på tværs af rummet) og skriv bredden i meter i feltet «Bredde».|click the room's two side walls (across the room) and enter the width in metres in the “Width” field.|部屋の両側の壁（横方向）をクリックし、「幅」欄に幅をメートルで入力します。
+1 · Målestok – længde:|1 · Scale – length:|1 · 縮尺 – 長さ：
+klik på forvæggen og bagvæggen (på langs af rummet) og skriv længden i feltet «Længde». Højden kan skrives i feltet «Højde» (valgfri). Rummets mål i 02, 09 og 10 opdateres med det samme.|click the front wall and the back wall (along the room) and enter the length in the “Length” field. The height can be entered in the “Height” field (optional). The room size in 02, 09 and 10 updates immediately.|前壁と後壁（縦方向）をクリックし、「長さ」欄に入力します。高さは「高さ」欄に入力できます（任意）。02・09・10の部屋の寸法はすぐに更新されます。
+1 · Målestok:|1 · Scale:|1 · 縮尺：
+bredde og længde er sat|width and length are set|幅と長さを設定済み
+ – og højden| – and the height| – 高さも
+ – skriv evt. højden i feltet «Højde»| – optionally enter the height in the “Height” field| – 必要なら「高さ」欄に入力
+Tryk derefter på «2 · Lærred».|Then press “2 · Screen”.|次に「2 · スクリーン」を押してください。
+Længden måler # m på tegningen med breddens målestok – tjek tallene eller tegningen.|The length measures # m on the drawing using the width's scale – check the numbers or the drawing.|幅の縮尺で図面上の長さは # m です – 数値または図面を確認してください。
+Bredde|Width|幅
+Længde|Length|長さ
+Højde|Height|高さ
+Golf|Golf|ゴルフ
+Golf Sim|Golf Sim|ゴルフシム
+Golfsimulator|Golf simulator|ゴルフシミュレーター
+Svingposition|Swing position|スイング位置
+Adresse|Address|アドレス
+Baglæns sving|Backswing|バックスイング
+=Top|Top|トップ
+Træf|Impact|インパクト
+Gennemsving|Follow-through|フォロースルー
+Finish|Finish|フィニッシュ
+▶ Afspil sving|▶ Play swing|▶ スイング再生
+Golfbane|Golf course|ゴルフコース
+Golfsimulator (test)|Golf simulator (test)|ゴルフシミュレーター（テスト）
+Spillerens højde|Player height|プレーヤーの身長
+Svingradius|Swing radius|スイング半径
+Svingplan|Swing plane|スイングプレーン
+Tee til lærred|Tee to screen|ティーからスクリーン
+Måtte (B × D)|Mat (W × D)|マット（幅 × 奥行）
+iO · auto højde|iO · auto height|iO · 高さ自動
+TrackMan 4 (gulv)|TrackMan 4 (floor)|TrackMan 4（床置き）
+Ingen TrackMan|No TrackMan|TrackMan なし
+Spillerens hånd|Player's hand|利き手
+Højrehåndet|Right-handed|右打ち
+Venstrehåndet|Left-handed|左打ち
+Sving|Swing|スイング
+Skygge|Shadow|影
+skygge|shadow|影
+TrackMan-enheden er tegnet generisk – ikke med TrackMans design eller logo. Svinget er forenklet som en cirkel (svingradius) i et skråt svingplan gennem bolden. Skyggen er beregnet fra projektorens linse. Kravene er fra TrackMans offentlige installationsvejledninger. Spilleren kan trækkes i snittet.|The TrackMan unit is drawn generically – not with TrackMan's design or logo. The swing is simplified as a circle (swing radius) in an inclined swing plane through the ball. The shadow is calculated from the projector lens. The requirements come from TrackMan's public installation guides. The player can be dragged in the section.|TrackMan ユニットは汎用的に描画しています（TrackMan のデザインやロゴは使用していません）。スイングはボールを通る傾いたスイングプレーン上の円（スイング半径）として簡略化しています。影はプロジェクターのレンズから計算しています。要件は TrackMan の公開設置ガイドに基づきます。プレーヤーは断面図でドラッグできます。
+Tee # m fra lærredet (krav mindst # m, anbefalet # m)|Tee # m from the screen (min. # m, recommended # m)|ティーはスクリーンから # m（最小 # m、推奨 # m）
+Loftet er for lavt til TrackMan iO (mindst # m)|The ceiling is too low for TrackMan iO (min. # m)|TrackMan iO には天井が低すぎます（最小 # m）
+Loftet er for lavt til den valgte iO-version|The ceiling is too low for the selected iO version|選択した iO バージョンには天井が低すぎます
+TrackMan iO LOW i # m|TrackMan iO LOW at # m|TrackMan iO LOW（# m）
+TrackMan iO MID i # m|TrackMan iO MID at # m|TrackMan iO MID（# m）
+TrackMan iO HIGH i # m|TrackMan iO HIGH at # m|TrackMan iO HIGH（# m）
+TrackMan-enheden er i lysstrålen|The TrackMan unit is in the light beam|TrackMan ユニットが光線の中にあります
+TrackMan-enheden er fri af lysstrålen|The TrackMan unit is clear of the light beam|TrackMan ユニットは光線にかかっていません
+TrackMan 4 # m bag bolden (krav #–# m)|TrackMan 4 # m behind the ball (required #–# m)|TrackMan 4 はボールの # m 後方（必要 #–# m）
+Loftet er lavere end anbefalet for TrackMan 4 (mindst # m)|The ceiling is lower than recommended for TrackMan 4 (min. # m)|TrackMan 4 の推奨より天井が低いです（最小 # m）
+Ingen TrackMan valgt|No TrackMan selected|TrackMan 未選択
+Svinget rammer loftet (top # m, loft # m)|The swing hits the ceiling (top # m, ceiling # m)|スイングが天井に当たります（最高点 # m、天井 # m）
+Frihøjde over svinget # cm (top # m)|Clearance above the swing # cm (top # m)|スイング上のクリアランス # cm（最高点 # m）
+Svinget rammer projektoren|The swing hits the projector|スイングがプロジェクターに当たります
+Svinget rammer TrackMan-enheden|The swing hits the TrackMan unit|スイングが TrackMan ユニットに当たります
+Svinget rammer sidevæggen|The swing hits the side wall|スイングが側壁に当たります
+Frit til sidevæggene: # m|Clear of the side walls: # m|側壁までの余裕：# m
+Svinget kommer for tæt på lærredet|The swing comes too close to the screen|スイングがスクリーンに近すぎます
+Måtten er mindre end slagområdet (mindst # × # m)|The mat is smaller than the hitting area (min. # × # m)|マットが打席エリアより小さいです（最小 # × # m）
+Måtten er ikke inden for lokalet|The mat is not inside the room|マットが部屋に収まっていません
+Spilleren skygger på billedet (# % af billedet)|The player casts a shadow on the image (# % of the image)|プレーヤーの影が映像にかかります（映像の # %）
+Svinget skygger på billedet (# % af billedet)|The swing casts a shadow on the image (# % of the image)|スイングの影が映像にかかります（映像の # %）
+Ingen skygge fra spilleren|No shadow from the player|プレーヤーの影なし
+Ingen skygge fra svinget|No shadow from the swing|スイングの影なし
+sving R # m · top # m|swing R # m · top # m|スイング R # m · 最高点 # m
+top # m|top # m|最高点 # m
+tee # m|tee # m|ティー # m
+iO LOW · # m|iO LOW · # m|iO LOW · # m
+Træk for at flytte spilleren (tee)|Drag to move the player (tee)|ドラッグしてプレーヤー（ティー）を移動
+=N|N|北
+=Ø|E|東
+=S|S|南
+=V|W|西
+=V#|L#|L#
+=H#|R#|R#
+=G#|Fl#|Fl#
+=min|min|最小
+=max|max|最大
+=H|H|H
+=m|m|m
+=Fra|Off|オフ
