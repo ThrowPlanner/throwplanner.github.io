@@ -102,6 +102,11 @@ function drawFront(r){IMMPJ=null;if(S.venue==='golf')GCUR=golfCalc(r);
   if(SUN){const sl=sunLux();if(sl.lux>0){const a=Math.min(.8,sl.lux/(sl.lux+r.lux)*0.9);s+=`<rect x="${cl}" y="${ctp}" width="${cwp}" height="${chp}" style="fill:${sunColor(sl.el)}" opacity="${a.toFixed(2)}" pointer-events="none"/>`}}
   s+=`<rect x="${cl}" y="${ctp}" width="${cwp}" height="${chp}" fill="none" style="stroke:${ok?'var(--ok)':'var(--bad)'}" stroke-width="2"/>`;
   if(VN==='golf'&&GCUR)s+=golfShadowFront(GCUR,X,Y);
+  // museum: talerens skygge – silhuetten projiceret fra hver linse ind på lærredsvæggen (z = 0), klippet til billedet
+  if(VN==='museum'&&!rear&&!NOCROWD()&&r.presZ<S.L-.05){const kk=S.L/(S.L-r.presZ);s+='<g pointer-events="none" clip-path="url(#cclip)">';
+    r.pjs.forEach((p,i)=>{const PS=(x,y)=>[X(p.lx+(x-p.lx)*kk),Y(p.ly+(y-p.ly)*kk)];
+      s+=`<clipPath id="pshc${i}"><rect x="${X(p.tx-r.W/2)}" y="${Y(p.ty+r.H/2)}" width="${r.W*s0}" height="${r.H*s0}"/></clipPath><g clip-path="url(#pshc${i})">`+
+        person(PS,r.presX,r.presZ,'stand').replace('fill:var(--r-person)','fill:#000;fill-opacity:.62;stroke:var(--bad);stroke-width:1.2')+'</g>'});s+='</g>'}
   if(NS)s=s.slice(0,mS);
   // teater: tæppe/sidedraperier om lærredet og scene foran det
   if(VN==='theater'){const gap=0.35,vb=Math.min(h,Math.max(r.cy+r.CH/2+0.15,h-0.9));
