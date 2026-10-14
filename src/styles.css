@@ -181,6 +181,7 @@ details.coll>summary:focus-visible{outline:2px solid var(--beam);outline-offset:
 .crview{position:relative;border-radius:8px;overflow:hidden;background:#000;line-height:0;border:1px solid var(--line)}
 .crview svg{width:100%;height:auto;display:block}
 .crtag{position:absolute;left:8px;top:8px;font-family:var(--f-mono);font-size:11px;line-height:1.3;color:#fff;background:rgba(0,0,0,.55);padding:3px 7px;border-radius:5px}
+[data-venue="golf"] .crtag{top:auto;bottom:8px}
 .crscale{margin:12px 0 4px;position:relative;height:58px}
 .crscale .bar{position:absolute;left:0;right:0;top:22px;height:8px;border-radius:4px;background:linear-gradient(90deg,var(--bad),var(--warn) 45%,var(--ok) 80%);opacity:.85}
 .crscale .tick{position:absolute;top:18px;width:1px;height:16px;background:var(--ink);opacity:.5}
