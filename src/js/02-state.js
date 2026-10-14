@@ -5,7 +5,7 @@ const ASPECTS=['16:10','16:9','17:9','4:3','21:9'];
 window.__T={get immDragApply(){return immDragApply},get immCalc(){return immCalc}};
 const DEFM=Math.max(0,MODELS.findIndex(m=>m.m==='PT-REQ15')),DEFL=Math.max(0,MODELS[DEFM].L.findIndex(l=>/C1S600/.test(l[0])));
 const S={cat:0,minLm:0,mi:DEFM,li:DEFL,defREQ:true,lang:'en',mode:'dark',venue:'aud',lockL:false,lockW:false,trows:4,rear:false,bsd:4,imm:{v:true,l:true,r:true,f:true},ak:'16:10',L:10,cw:5,sb:0.9,ceil:true,py:null,px:0,rd:16,rw:12,rh:5,r1:3,rp:0.95,gain:1,amb:100,
-  plan:{use:true,lock:false,v2:true,w:0,h:0,cal:null,calM:5,scr:null,tool:'cal',open:false},sun:{on:false,face:180,t:0.5,win:'sides',off:[]},pcr:null,stack:1,crReq:'15',crCust:5,frame:false,frameId:null,openMount:false,openBlend:false,fw:null,fh:null,fd:null,blend:false,bc:2,br:1,ov:10,content:'none'};
+  plan:{use:true,lock:false,v2:true,w:0,h:0,cal:null,calM:5,scr:null,tool:'cal',open:false},sun:{on:false,face:180,t:0.5,win:'sides',off:[]},pcr:null,stack:1,crReq:'7',crCust:5,frame:false,frameId:null,openMount:false,openBlend:false,fw:null,fh:null,fd:null,blend:false,bc:2,br:1,ov:10,content:'none'};
 let IMG=null;let FRESH=true;
 const S0=JSON.parse(JSON.stringify(S));
 let SAVED={};try{FRESH=!localStorage.getItem('kasteplan5');SAVED=JSON.parse(localStorage.getItem('kasteplan5')||'{}')||{};Object.assign(S,SAVED)}catch(e){}
