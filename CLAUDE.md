@@ -17,7 +17,7 @@ Claude-artifact (én-fils-udgaven): https://claude.ai/artifact/VCjkMS7no1dYqKRxV
   - 00-data (katalog-indlæsning), 01-core (Panasonic-formler), 02-state (`S`, temaer, gem i localStorage `kasteplan5`),
     03-calc (`calc()`), 04-ui (lister, `fitLens`, `constrain`), 05-i18n (`I18`, `render()`), 06-draw-helpers,
     07-golf (Golf Sim), 08-view09-rear (`drawFront`, boks 09), 09-view10-section (`drawSide`, boks 10), 10-contrast (boks 06),
-    11-floorplan (boks 08), 12/13 træk og lens shift-bar, 14-sun, 15-solutions (boks 11), 16-events, 17-project-file (JSON), 18-start.
+    11-floorplan (boks 08), 12/13 træk og lens shift-bar, 14-sun, 15-solutions (boks 11), 16-events, 17-project-file (JSON), 18-start, 19-quick-guide (rundvisning).
 - `data/catalog.json` katalog: `{cats, models}`; optikrække `[A,B,At,Bt,minD",maxD"]`, kast L = A·D + B.
 - `i18n/translations.txt`: dansk er kildesproget i koden. Ny dansk tekst i UI → tilføj linje `dansk|english|日本語`
   (tal skrives som `#`; `=` foran = kun hele tekster). Standardsprog for brugere er engelsk.
@@ -36,6 +36,7 @@ Claude-artifact (én-fils-udgaven): https://claude.ai/artifact/VCjkMS7no1dYqKRxV
 | Katalog og throw ratios | `data/catalog.json`, `PANTR` i `04-ui.js` |
 | Løsninger (boks 11) | `15-solutions.js` |
 | Projektfil (JSON) | `17-project-file.js` |
+| Quick Guide (rundvisning) | `src/js/19-quick-guide.js` (trin i `STEPS`), knap `#qgBtn` i `src/page.html`, `.qg*` i `src/styles.css` |
 | Oversættelser | `i18n/translations.txt` |
 | Layout og design | `src/page.html`, `src/styles.css` |
 

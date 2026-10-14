@@ -620,3 +620,22 @@ Træk for at flytte spilleren (tee)|Drag to move the player (tee)|ドラッグ�
 =H|H|H
 =m|m|m
 =Fra|Off|オフ
+=Kort rundvisning i appen|Short guided tour of the app|アプリの簡単なガイドツアー
+=Næste|Next|次へ
+=Tilbage|Back|戻る
+=Vælg lokaletype|Choose venue type|会場タイプを選択
+=Start her: vælg Auditorium, Museum, Teater, Immersive eller Golf Sim. Det ændrer tegninger og regler.|Start here: choose Auditorium, Museum, Theatre, Immersive or Golf Sim. This changes the drawings and rules.|ここから開始：講堂、美術館、劇場、イマーシブ、ゴルフシミュレーターから選択します。図面とルールが変わります。
+=Afstand og billedbredde|Distance and image width|投写距離と画面幅
+=Det vigtigste: indtast afstand L og billedbredde. Hængelåsen holder en værdi fast, så du kan se, om projektor og optik passer.|Most important: enter distance L and image width. The padlock keeps a value fixed so you can see whether projector and lens fit.|最も重要：投写距離 L と画面幅を入力します。鍵アイコンで値を固定すると、プロジェクターとレンズが合うか確認できます。
+=Rummets mål|Room size|部屋の寸法
+=Indtast rummets dybde, bredde og højde. Målene bruges i tegningerne og til at tjekke, at alt kan være i rummet.|Enter the room depth, width and height. They are used in the drawings and to check that everything fits in the room.|部屋の奥行き・幅・高さを入力します。図面と、すべてが部屋に収まるかの確認に使われます。
+=Throw ratio, lysstyrke og kontrast opdateres med det samme. Grøn = passer, rød = passer ikke.|Throw ratio, brightness and contrast update instantly. Green = fits, red = does not fit.|スローレシオ、明るさ、コントラストはすぐに更新されます。緑＝適合、赤＝不適合。
+=Vælg projektor. Appen vælger automatisk den optik, der passer til afstand og billedbredde. Klik på billedet af projektoren eller optikken for at se specifikationerne hos Panasonic.|Pick a projector. The app automatically selects the lens that fits your distance and image width. Click the projector or lens picture to open the specifications at Panasonic.|プロジェクターを選択します。距離と画面幅に合うレンズが自動で選ばれます。プロジェクターまたはレンズの画像をクリックすると、パナソニックの仕様ページが開きます。
+=Billedet giver et skøn over kontrastniveauet og ændrer sig, når du ændrer lys, lærred eller projektor. Fold ud for tal og krav.|The picture gives an estimate of the contrast level and changes as you change light, screen or projector. Expand for numbers and requirements.|画像はコントラストレベルの目安を示し、照明・スクリーン・プロジェクターを変えると変化します。数値と要件は展開して確認できます。
+=Lens shift og keystone|Lens shift and keystone|レンズシフトと台形補正
+=Flyt billedet op/ned og til siden. Den lille boks viser, hvor meget lens shift der er tilbage. Slå «Lås optik» til, hvis appen ikke automatisk skal skifte optik, når du flytter projektoren.|Move the image up/down and sideways. The small box shows how much lens shift is left. Turn on «Lock lens» if the app should not switch lens automatically when you move the projector.|画像を上下左右に移動します。小さな枠で残りのレンズシフト量がわかります。プロジェクターを動かしたときにレンズが自動で切り替わらないようにするには「レンズを固定」をオンにします。
+=Set fra siden. Du kan trække direkte i projektoren og lærredet.|Side view. Drag the projector and screen directly.|側面図です。プロジェクターとスクリーンを直接ドラッグできます。
+=Lærredet i målestok – vis testbillede eller dit eget billede, og slå sollys til.|The screen to scale – show a test image or your own picture, and switch on sunlight.|縮尺どおりのスクリーン – テスト画像や自分の画像を表示し、日光をオンにできます。
+=Alle projektor/optik-kombinationer, der passer til dit lokale.|Every projector/lens combination that fits your room.|部屋に合うすべてのプロジェクター／レンズの組み合わせ。
+=Gem og del|Save and share|保存と共有
+=Gem projektet som fil, åbn det igen senere, eller gem hele siden som PDF.|Save the project as a file, open it again later, or save the whole page as PDF.|プロジェクトをファイルとして保存して後で開いたり、ページ全体を PDF として保存したりできます。
