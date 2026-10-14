@@ -1,37 +1,43 @@
 /* Layout: topbar · toprække (01 mål, 02 rum, KPI) · hovedgrid (03–05 til venstre, lokale-tegninger og løsninger til højre). Mørk som standard: et mørklagt auditorium. */
 :root{
-  --bg:#0B1016; --bg2:#0F161E; --surface:#131C25; --surface2:#1A2531; --ink:#E7EEF4; --muted:#8C9DAD; --faint:#5D6E7E; --line:#233140;
-  --beam:#FFB547; --beam-a:rgba(255,181,71,.34); --beam-soft:rgba(255,181,71,.14);
-  --dim:#62C9EC; --ok:#4FD49C; --ok-bg:rgba(79,212,156,.13); --bad:#FF7C68; --bad-bg:rgba(255,124,104,.14); --warn:#F1CB5A; --warn-bg:rgba(241,203,90,.13);
+  --bg:#252A31; --bg2:#252A31; --surface:#252A31; --surface2:#2B3139; --ink:#E9EDF2; --muted:#9CA6B2; --faint:#68727E; --line:#343B44;
+  --beam:#FF9840; --beam-a:rgba(255,152,64,.32); --beam-soft:rgba(255,152,64,.13);
+  --hi:#2F353E; --lo:#1A1E23; /* blød 3D: lys- og skyggekant */
+  --dim:#79C2FF; --ok:#4FD49C; --ok-bg:rgba(79,212,156,.13); --bad:#FF7C68; --bad-bg:rgba(255,124,104,.14); --warn:#F1CB5A; --warn-bg:rgba(241,203,90,.13);
   --screen:#EEF2F5; --pj:#3A5673; --pj-hi:#5B7FA5; --pj-dk:#24384D; --frame:#C9D3DC; --tile:#FFFFFF;
   /* lokale */
   --r-wall:#1B232D; --r-side:#151C25; --r-panel:#1D2732; --r-ceil:#10161D; --r-floor:#1A1F27; --r-floor2:#20262F; --r-base:#0C1015;
   --r-seat:#3B4B5E; --r-seat2:#4C5F75; --r-seat3:#26313E; --r-out:#080C11; --r-ceil2:#1C2530; --r-tile:#26313D; --r-cornice:#3A4756; --r-person:#465567; --r-light:#FFE6AE; --r-door:#232D38; --r-exit:#3BD27A; --r-cut:#2A3542; --r-truss:#7D8A97;
-  --f-display:"Archivo","Arial Narrow",system-ui,sans-serif;
-  --f-body:"IBM Plex Sans",system-ui,-apple-system,"Segoe UI",sans-serif;
-  --f-mono:"IBM Plex Mono",ui-monospace,"SF Mono",Consolas,monospace;
+  --f-display:"Manrope",system-ui,-apple-system,"Segoe UI",sans-serif;
+  --f-body:"Manrope",system-ui,-apple-system,"Segoe UI",sans-serif;
+  --f-mono:"JetBrains Mono",ui-monospace,"SF Mono",Consolas,monospace;
   color-scheme:dark;
 }
 @media (prefers-color-scheme: light){:root:not([data-theme="dark"]){
-  --bg:#EDF1F5; --bg2:#E4EAF0; --surface:#FFFFFF; --surface2:#F4F7FA; --ink:#0F1821; --muted:#566778; --faint:#8695A3; --line:#D4DDE5;
-  --beam:#D98300; --beam-a:rgba(232,150,20,.36); --beam-soft:rgba(232,150,20,.14);
-  --dim:#0B6E9C; --ok:#17834F; --ok-bg:#DDF2E7; --bad:#C23A22; --bad-bg:#F9E1DB; --warn:#8E6B00; --warn-bg:#F7EDC6;
+  --bg:#E2E5EA; --bg2:#E2E5EA; --surface:#E2E5EA; --surface2:#E8EBEF; --ink:#232A33; --muted:#5E6875; --faint:#98A1AC; --line:#CDD2D9;
+  --beam:#EE7A1E; --beam-a:rgba(238,122,30,.32); --beam-soft:rgba(238,122,30,.12);
+  --hi:#FFFFFF; --lo:#BEC4CC;
+  --dim:#1F6FB5; --ok:#17834F; --ok-bg:#DDF2E7; --bad:#C23A22; --bad-bg:#F9E1DB; --warn:#8E6B00; --warn-bg:#F7EDC6;
   --screen:#FFFFFF; --pj:#2F4D6C; --pj-hi:#4C719A; --pj-dk:#1F354B; --frame:#3F4B57; --tile:#FFFFFF;
   --r-wall:#ECE7DF; --r-side:#DDD6CB; --r-panel:#CDC4B6; --r-ceil:#F3F0EB; --r-floor:#767C87; --r-floor2:#6C727C; --r-base:#5A5550;
   --r-seat:#5A3E48; --r-seat2:#7A5662; --r-seat3:#3B2830; --r-out:#D9DEE4; --r-ceil2:#F7F5F1; --r-tile:#DCD7CF; --r-cornice:#C9C1B4; --r-person:#5F6B79; --r-light:#FFF4D6; --r-door:#B8AE9F; --r-exit:#169C52; --r-cut:#9AA3AD; --r-truss:#5B6672;
   color-scheme:light }}
 :root[data-theme="light"]{
-  --bg:#EDF1F5; --bg2:#E4EAF0; --surface:#FFFFFF; --surface2:#F4F7FA; --ink:#0F1821; --muted:#566778; --faint:#8695A3; --line:#D4DDE5;
-  --beam:#D98300; --beam-a:rgba(232,150,20,.36); --beam-soft:rgba(232,150,20,.14);
-  --dim:#0B6E9C; --ok:#17834F; --ok-bg:#DDF2E7; --bad:#C23A22; --bad-bg:#F9E1DB; --warn:#8E6B00; --warn-bg:#F7EDC6;
+  --bg:#E2E5EA; --bg2:#E2E5EA; --surface:#E2E5EA; --surface2:#E8EBEF; --ink:#232A33; --muted:#5E6875; --faint:#98A1AC; --line:#CDD2D9;
+  --beam:#EE7A1E; --beam-a:rgba(238,122,30,.32); --beam-soft:rgba(238,122,30,.12);
+  --hi:#FFFFFF; --lo:#BEC4CC;
+  --dim:#1F6FB5; --ok:#17834F; --ok-bg:#DDF2E7; --bad:#C23A22; --bad-bg:#F9E1DB; --warn:#8E6B00; --warn-bg:#F7EDC6;
   --screen:#FFFFFF; --pj:#2F4D6C; --pj-hi:#4C719A; --pj-dk:#1F354B; --frame:#3F4B57; --tile:#FFFFFF;
   --r-wall:#ECE7DF; --r-side:#DDD6CB; --r-panel:#CDC4B6; --r-ceil:#F3F0EB; --r-floor:#767C87; --r-floor2:#6C727C; --r-base:#5A5550;
   --r-seat:#5A3E48; --r-seat2:#7A5662; --r-seat3:#3B2830; --r-out:#D9DEE4; --r-ceil2:#F7F5F1; --r-tile:#DCD7CF; --r-cornice:#C9C1B4; --r-person:#5F6B79; --r-light:#FFF4D6; --r-door:#B8AE9F; --r-exit:#169C52; --r-cut:#9AA3AD; --r-truss:#5B6672;
   color-scheme:light }
 :root[data-theme="dark"]{color-scheme:dark}
 *{box-sizing:border-box}
-body{background:var(--bg);color:var(--ink);font-family:var(--f-body);font-size:14.5px;line-height:1.45;margin:0;
-  background-image:radial-gradient(1200px 500px at 85% -10%,var(--beam-soft),transparent 60%),linear-gradient(var(--bg),var(--bg))}
+body{background:var(--bg);color:var(--ink);font-family:var(--f-body);font-size:14.5px;line-height:1.45;margin:0}
+/* stor stregtegning af en projektor som vandmærke bag alt */
+body::before{content:"";position:fixed;inset:0;z-index:-1;pointer-events:none;opacity:.06;background:no-repeat right -6vw bottom -4vh/min(1100px,90vw) auto url('data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 600" fill="none" stroke="%23000" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"%3E%3Cpath d="M120 200 L560 200 Q600 200 600 240 L600 420 Q600 460 560 460 L120 460 Q80 460 80 420 L80 240 Q80 200 120 200Z"/%3E%3Cpath d="M110 200 L170 140 L610 140 L600 200"/%3E%3Cpath d="M610 140 Q640 150 640 180 L640 380 Q640 420 600 440"/%3E%3Ccircle cx="440" cy="330" r="96"/%3E%3Ccircle cx="440" cy="330" r="70"/%3E%3Ccircle cx="440" cy="330" r="34"/%3E%3Cpath d="M130 260 L280 260 M130 300 L280 300 M130 340 L280 340 M130 380 L280 380"/%3E%3Ccircle cx="560" cy="240" r="9"/%3E%3Cpath d="M130 460 L130 490 M550 460 L550 490"/%3E%3C/svg%3E')}
+:root.isdark body::before{filter:invert(1);opacity:.05}
+@media print{body::before{display:none}}
 .wrap{max-width:1480px;margin:0 auto;padding-inline:20px;padding-block:18px 48px}
 @media (max-width:600px){.wrap{padding-inline:16px}}
 .top{display:grid;grid-template-columns:1fr auto 1fr;align-items:center;gap:10px 20px;margin-bottom:16px}
@@ -383,3 +389,25 @@ details summary::after{content:" +";color:var(--beam)}
 details[open] summary::after{content:" –"}
 .empty{padding:18px 16px;color:var(--muted)}
 @media (prefers-reduced-motion:reduce){*{transition:none!important}}
+
+/* Blød 3D: kasser presset ud af fladen, felter trykket ind (--hi/--lo = lys- og skyggekant) */
+h1{font-weight:800;letter-spacing:-.02em}
+.card,.view,.kpi{border:0;border-radius:20px;background:var(--surface);box-shadow:9px 9px 20px var(--lo),-9px -9px 20px var(--hi)}
+.toprow,.grid{gap:26px}.controls,.out{gap:24px}.kpis{gap:16px}
+.card{padding:18px 20px 20px}
+.vhead,.legend,.shiftbar,.ptool,details.solmore>summary,.pinfo{padding-left:20px;padding-right:20px}
+.kpi{padding:12px 14px}
+.kpi::before{left:14px;top:14px;bottom:auto;width:8px;height:8px;border-radius:50%;background:var(--st,var(--line));box-shadow:0 0 6px var(--st,transparent)}
+.kpi .k{padding-left:14px}
+select,input[type=number],.bigf,.seg,.crnums div,.iblr,.switch span,.zbar{border-color:transparent;background:var(--bg);box-shadow:inset 3px 3px 7px var(--lo),inset -3px -3px 7px var(--hi)}
+select,input[type=number]{border-radius:10px}
+.bigf{border-radius:14px}.seg{border-radius:14px;padding:4px}
+.seg button{border-radius:10px}
+.seg button[aria-pressed=true]{background:var(--surface);color:var(--beam);font-weight:600;box-shadow:3px 3px 7px var(--lo),-3px -3px 7px var(--hi)}
+.btn,.modebtn,.pdfbtn,.seg.venue button,.chip,.lgtog button,.autob{border-color:transparent;background:var(--surface);border-radius:12px;box-shadow:4px 4px 9px var(--lo),-4px -4px 9px var(--hi)}
+.btn:active,.modebtn:active,.pdfbtn:active,.seg.venue button[aria-pressed=true],.chip[aria-pressed=true],.autob[aria-pressed=true]{color:var(--beam);background:var(--bg);border-color:transparent;box-shadow:inset 3px 3px 7px var(--lo),inset -3px -3px 7px var(--hi)}
+.resetbtn{border-radius:12px;box-shadow:4px 4px 9px var(--lo),-4px -4px 9px var(--hi)}
+.card h3 .no,.vhead h2 .no,.kh .no,.view summary .no{border:0;border-radius:8px;padding:3px 7px;box-shadow:inset 2px 2px 4px var(--lo),inset -2px -2px 4px var(--hi)}
+.gear figure,.crview{border:0;border-radius:14px;box-shadow:4px 4px 10px var(--lo),-4px -4px 10px var(--hi)}
+th{background:transparent}
+@media print{.card,.view,.kpi,.gear figure,.crview{box-shadow:none;border:1px solid var(--line)}}

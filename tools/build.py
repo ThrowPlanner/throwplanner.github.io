@@ -42,7 +42,7 @@ HEAD = '''<!doctype html>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="description" content="Projector throw distance, lens shift, edge blend and contrast planner based on Panasonic data.">
-<meta name="theme-color" content="#0B1016">
+<meta name="theme-color" content="#252A31">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-title" content="Throw Planner">
