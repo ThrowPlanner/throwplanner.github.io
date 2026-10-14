@@ -27,7 +27,7 @@ function drawContrast(r){
     s=s.replace('</defs>',`<clipPath id="cz4">${cz}</clipPath></defs>`)+`<g clip-path="url(#cz4)" filter="url(#cf4)">${content}</g>`}
   $('crSvg').innerHTML=s;
   $('crSum').innerHTML=`${worst>=req?pill('ok','Opfylder krav'):pill('bad','Under krav')} <span class="hint">Detaljer og indstillinger</span>`;$('dCr').open=!!S.openCr;
-  $('crTag').innerHTML=`${fi(r.cr)}:1 · ${r.cr>=crMin()?'✓':'✗'} krav ${f2(crMin(),crMin()%1?1:0)}:1`+(blend?`<br>blend-zone ${fi(r.cr2)}:1`:'');
+  $('crTag').innerHTML=`${fi(r.cr)}:1 · ${r.cr>=crMin()?'✓':'✗'} krav ${f2(crMin(),crMin()%1?1:0)}:1 · ${crName()}`+(blend?`<br>blend-zone ${fi(r.cr2)}:1`:'');
   // skala (log 1–1000)
   const pos=c=>Math.max(0,Math.min(100,Math.log10(Math.max(1,c))/3*100));
   let sc='<div class="bar"></div>';
