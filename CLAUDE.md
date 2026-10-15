@@ -43,6 +43,7 @@ Claude-artifact (én-fils-udgaven): https://claude.ai/artifact/VCjkMS7no1dYqKRxV
 ## Faste regler fra Simon
 - Throw ratios skal være 100 % Panasonics officielle (TDC). Ændr aldrig kast-/optikdata uden at tjekke Panasonics side.
 - Ingen Panasonic/MEVIX- eller TrackMan-logoer/brandfarver/design (TrackMan-enheden tegnes generisk).
+- Navnet TrackMan og modelnavne (iO, TM4 …) må ikke stå i appen – brug «Sim-kamera», «Loftkamera» (lav/mellem/høj) og «Gulvkamera». Interne nøgler (`tm:'LOW'|'TM4'`) bevares for gemte projekter.
 - Standard: engelsk, mørk tilstand; Nulstil beholder lys/mørk.
 - Store nye funktioner: lav først en testversion (separat artifact) – tilføj ikke til appen før Simon har testet.
 - Svar Simon på dansk, kort.

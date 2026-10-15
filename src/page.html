@@ -219,12 +219,12 @@
             <label><span>Svingplan</span><span class="inl"><input type="number" id="gTh" step="1" min="30" max="80"><span class="unit">°</span></span></label>
             <label><span>Tee til lærred</span><span class="inl"><input type="number" id="gTee" step="0.05" min="1"><span class="unit">m</span></span></label>
             <label class="gmat"><span>Måtte (B × D)</span><span class="inl"><input type="number" id="gMW" step="0.1" min="0.5"><span class="unit">×</span><input type="number" id="gMD" step="0.1" min="0.5"><span class="unit">m</span></span></label>
-            <label><span>TrackMan</span><select id="gTM"><option value="auto">iO · auto højde</option><option value="LOW">iO LOW (2,70–2,90 m)</option><option value="MID">iO MID (2,85–3,05 m)</option><option value="HIGH">iO HIGH (3,00–3,20 m)</option><option value="TM4">TrackMan 4 (gulv)</option><option value="none">Ingen TrackMan</option></select></label>
+            <label><span>Sim-kamera</span><select id="gTM"><option value="auto">Loftkamera · auto højde</option><option value="LOW">Loftkamera lav (2,70–2,90 m)</option><option value="MID">Loftkamera mellem (2,85–3,05 m)</option><option value="HIGH">Loftkamera høj (3,00–3,20 m)</option><option value="TM4">Gulvkamera</option><option value="none">Intet sim-kamera</option></select></label>
             <div class="seg" role="group" aria-label="Spillerens hånd"><button type="button" data-ghand="R" aria-pressed="true">Højrehåndet</button><button type="button" data-ghand="L" aria-pressed="false">Venstrehåndet</button></div>
           </div>
           <div class="gpose"><span>Svingposition</span><input type="range" id="gPose" min="0" max="100" step="1" aria-label="Svingposition"><b id="gPoseTxt"></b><button type="button" id="gPlay">▶ Afspil sving</button></div>
           <ul class="gchk" id="gChk"></ul>
-          <div class="hint" id="gHint">TrackMan-enheden er tegnet generisk – ikke med TrackMans design eller logo. Svinget er forenklet som en cirkel (svingradius) i et skråt svingplan gennem bolden. Skyggen er beregnet fra projektorens linse. Kravene er fra TrackMans offentlige installationsvejledninger. Spilleren kan trækkes i snittet.</div>
+          <div class="hint" id="gHint">Sim-kameraet er tegnet generisk. Svinget er forenklet som en cirkel (svingradius) i et skråt svingplan gennem bolden. Skyggen er beregnet fra projektorens linse. Kravene er typiske værdier fra offentlige installationsvejledninger for golfsimulatorer. Spilleren kan trækkes i snittet.</div>
         </div>
         <div class="legend lgtog" id="lg9" role="group" aria-label="Vis/skjul i tegningen">
           <button type="button" data-l9="beam" aria-pressed="true" title="Vis/skjul"><i style="background:var(--beam-a);border:1px solid var(--beam)"></i>Lysstråle / blend-zone</button>
