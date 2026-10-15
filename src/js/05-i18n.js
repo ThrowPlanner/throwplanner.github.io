@@ -57,7 +57,7 @@ function render(){
        :'Standard for alle flader uden egen projektor. Vælg en flade for at give den en anden model eller optik.'}}
   const _sm=MODELS[slotMI()],_sl=_sm.L[slotLI()];const ri={m:_sm,ln:_sl};
   const pk='p:'+ri.m.img, lk='l:'+ri.ln[6];
-  $('pjImg').innerHTML=imgTag(pk,ri.m.m)||`<span class="none">${Object.keys(IMGS).length?'Intet billede':'Henter billede…'}</span>`;
+  $('pjImg').innerHTML=(imgTag(pk,ri.m.m)||`<span class="none">${Object.keys(IMGS).length?'Intet billede':'Henter billede…'}</span>`)+(is4K(ri.m)?'<span class="b4k" title="4K"><b>4K</b><i>ULTRA <u>HD</u></i></span>':'');
   $('pjCap').textContent=ri.m.m;$('pjLink').href=pjURL(ri.m);$('pjLink').setAttribute('aria-label',`${ri.m.m} – specifikationer hos Panasonic`);
   $('lnImg').innerHTML=(ri.ln[6]&&ri.ln[6]!=='NONE'&&imgTag(lk,ri.ln[0]))||`<span class="none">${/Supplied|Standard/i.test(ri.ln[0])?'Indbygget standardlinse':'Intet billede'}</span>`;
   $('lnCap').textContent=ri.ln[0];$('lnLink').href=lnURL(ri.m,ri.ln);$('lnLink').setAttribute('aria-label',`${ri.ln[0]} – specifikationer hos Panasonic`);

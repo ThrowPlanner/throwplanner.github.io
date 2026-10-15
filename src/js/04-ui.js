@@ -1,7 +1,8 @@
 /* ===== UI ===== */
 const pill=(c,t)=>`<span class="pill ${c}">${t}</span>`;
 function fillCats(){const ok=MODELS.filter(m=>m.lm>=S.minLm&&(S.venue!=='golf'||m.c===3));const cs=CAT_ORDER.filter(c=>ok.some(m=>m.c===c));if(S.cat&&!cs.includes(S.cat))S.cat=0;$('cat').innerHTML='<option value="0">Alle ('+ok.length+')</option>'+cs.map(c=>`<option value="${c}">${CATS[c]} (${ok.filter(m=>m.c===c).length})</option>`).join('');$('cat').value=S.cat}
-function fillModels(){$('model').innerHTML=CAT_ORDER.filter(c=>!S.cat||c==S.cat).map(c=>{const ms=MODELS.map((m,i)=>[m,i]).filter(([m,i])=>m.c===c&&m.lm>=S.minLm&&(S.venue!=='golf'||m.c===3));return ms.length?`<optgroup label="${CATS[c]}">`+ms.map(([m,i])=>`<option value="${i}">${m.m} · ${fi(m.lm)} lm</option>`).join('')+'</optgroup>':''}).join('');
+const is4K=m=>/^PT-(RQ|REQ|FRQ|VMQ)/.test(m.m);
+function fillModels(){$('model').innerHTML=CAT_ORDER.filter(c=>!S.cat||c==S.cat).map(c=>{const ms=MODELS.map((m,i)=>[m,i]).filter(([m,i])=>m.c===c&&m.lm>=S.minLm&&(S.venue!=='golf'||m.c===3));return ms.length?`<optgroup label="${CATS[c]}">`+ms.map(([m,i])=>`<option value="${i}">${m.m} · ${fi(m.lm)} lm${is4K(m)?' · 4K':''}</option>`).join('')+'</optgroup>':''}).join('');
   const k=SLOT();if(k){if(![...$('model').options].some(o=>+o.value===slotMI())&&$('model').options.length){S.immPj={...(S.immPj||{}),[k]:{mi:+$('model').options[0].value,li:0}};S.immAdj={...(S.immAdj||{}),[k]:{}};fillLens()}return}
   if(![...$('model').options].some(o=>+o.value===S.mi)&&$('model').options.length){S.mi=+$('model').options[0].value;S.li=0;fillLens();frameDefaults();if(typeof fitLens==='function')fitLens();zeroShift()}}
 // throw ratio: Panasonics officielle værdier (TDC ThrowRatio pr. projektor/optik); beregnet kun som nødløsning
