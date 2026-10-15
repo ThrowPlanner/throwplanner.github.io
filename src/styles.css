@@ -406,6 +406,7 @@ h1{font-weight:800;letter-spacing:-.02em}
 select,input[type=number],.bigf,.seg,.crnums div,.iblr,.switch span,.zbar{border-color:transparent;background:var(--bg);box-shadow:inset 1.5px 1.5px 3px var(--lo),inset -1.5px -1.5px 3px var(--hi)}
 select,input[type=number]{border-radius:10px}
 .bigf{border-radius:14px}.seg{border-radius:14px;padding:4px}
+.seg.venue{background:none;box-shadow:none;padding:0}
 .seg button{border-radius:10px}
 .seg button[aria-pressed=true]{background:var(--surface);color:var(--beam);font-weight:600;box-shadow:2px 2px 4px var(--lo),-1px -1px 3px var(--hi)}
 .btn,.modebtn,.pdfbtn,.seg.venue button,.chip,.lgtog button,.autob{border-color:transparent;background:var(--surface);border-radius:12px;box-shadow:2px 2px 5px var(--lo),-2px -2px 4px var(--hi)}
