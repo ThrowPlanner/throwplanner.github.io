@@ -1,11 +1,11 @@
-/* ===== GOLF SIM: golfsimulator med TrackMan – spiller, sving, slagmåtte og skygge ===== */
+/* ===== GOLF SIM: golfsimulator med sim-kamera – spiller, sving, slagmåtte og skygge ===== */
 // koordinater: x fra lokalets midte (+ = højre set bagfra), y op fra gulvet, z fra lærredsvæggen
 // svinget er forenklet som en cirkel (svingradius R) i et skråt svingplan (vinkel th) gennem bolden – køllehovedets bane
 const GDEF={v:2,pose:0,h:1.78,R:1.6,th:60,hand:'R',tee:3.0,tm:'auto',matW:3.0,matD:1.8};
 // v2: svingcirklen går gennem bolden og skuldrene (centrum = skuldermidten) – ældre gemte værdier (R 1,75 m / 55°) opdateres
 const GS=()=>{if(S.golf&&S.golf.v!==2)S.golf={...S.golf,R:Math.round(1.6*(S.golf.h||1.78)/1.78*100)/100,th:60,v:2};return Object.assign({},GDEF,S.golf||{})};
-// TrackMan iO: monteringshøjde pr. version (offentlig installationsvejledning) og placering ~1 m bag tee
-const TMV={LOW:[2.70,2.90],MID:[2.85,3.05],HIGH:[3.00,3.20]},IO={w:.46,d:.36,h:.12,dz:1.0};
+// loftkamera: monteringshøjde pr. version (lav/mellem/høj) og placering ~1 m bag tee
+const TMV={LOW:[2.70,2.90],MID:[2.85,3.05],HIGH:[3.00,3.20]},IO={w:.46,d:.36,h:.12,dz:1.0},VN={LOW:'lav',MID:'mellem',HIGH:'høj'};
 const GKEEP=['frame','amb','rw','rd','rh','cw','sb','ceil','blend','portrait','sx','ak','cat','mi','li','L','py','px','content','lockL','lockW'];
 function golfEnter(){S.preGolf={};GKEEP.forEach(k=>S.preGolf[k]=S[k]===undefined?null:JSON.parse(JSON.stringify(S[k])));
   S.golf=Object.assign({},GDEF,S.golf||{});
@@ -82,7 +82,7 @@ function golfCalc(r){const G=GS(),s=G.hand==='L'?1:-1,h=G.h,R=G.R,th=G.th*RAD,bx
   const ring=f=>{const o=[];for(let i=0;i<96;i++){const a=i/96*2*Math.PI,c=Math.cos(a);o.push([hub[0]+f*R*c*e1[0],hub[1]+f*R*c*e1[1],tz-f*R*Math.sin(a)])}return o};
   const arc=ring(1),disk=[...ring(1),...ring(.75),...ring(.5),hub];
   const t0=Math.max(0,Math.min(1,G.pose??0)),GC0={bx,tz,s,h,th},pose=golfPose(GC0,t0),body=poseShadowPts(pose);
-  // TrackMan
+  // sim-kamera
   const tm=G.tm,io=tm!=='none'&&tm!=='TM4';let ver=null,yb=null,ioBad=false,drop=false;const maxB=S.rh-IO.h-.02;
   if(io){if(tm==='auto'){ver=maxB>=TMV.HIGH[0]?'HIGH':maxB>=TMV.MID[0]?'MID':maxB>=TMV.LOW[0]?'LOW':null;if(!ver){ver='LOW';ioBad=true}}else ver=tm;
     const [a,b]=TMV[ver];yb=Math.min(maxB,b);if(yb<a-1e-6)ioBad=true;drop=maxB>b+.05}
@@ -102,21 +102,21 @@ function golfCalc(r){const G=GS(),s=G.hand==='L'?1:-1,h=G.h,R=G.R,th=G.th*RAD,bx
   const top=Math.max(...arc.map(q=>q[1])),xs=arc.map(q=>q[0]),zs=arc.map(q=>q[2]);
   const pjBoxes=r.pjs.map(p=>({x0:p.lx+r.F.x0,x1:p.lx+r.F.x1,y0:p.ly+r.F.y0,y1:p.ly+r.F.y1,z0:S.L+r.F.z0,z1:S.L+r.F.z1}));
   const hitPj=pjBoxes.some(B=>disk.some(q=>inBox(q,B))),hitIO=!!ioBox&&disk.some(q=>inBox(q,ioBox));
-  // TrackMan i lysstrålen: enhedens kasse inden for strålens pyramide (fra linsen til billedets hjørner)
+  // kameraet i lysstrålen: enhedens kasse inden for strålens pyramide (fra linsen til billedets hjørner)
   const inBeam=B=>r.pjs.some(p=>{if(B.z0>=S.L)return false;for(const z of [B.z0,(B.z0+B.z1)/2,Math.min(B.z1,S.L-.01)]){const k=z/S.L,yt=p.ty+r.H/2+(p.ly-p.ty-r.H/2)*k,yb2=p.ty-r.H/2+(p.ly-p.ty+r.H/2)*k,xl=p.tx-r.W/2+(p.lx-p.tx+r.W/2)*k,xr=p.tx+r.W/2+(p.lx-p.tx-r.W/2)*k;
     if(B.y0<yt&&B.y1>yb2&&B.x0<xr&&B.x1>xl)return true}return false});
   const ioBeam=!!ioBox&&inBeam(ioBox);
   const ck=[];const add=(l,t)=>ck.push({l,t});
   const need=tm==='TM4'?[3.0,3.65]:[2.5,3.0];
   if(tm!=='none')add(tz<need[0]-1e-6?'bad':tz<need[1]-1e-6?'warn':'ok',`Tee ${f2(tz)} m fra lærredet (krav mindst ${f2(need[0],1)} m, anbefalet ${f2(need[1],need[1]*10%1>.01?2:1)} m)`);
-  if(io){if(ioBad)add('bad',tm==='auto'?`Loftet er for lavt til TrackMan iO (mindst ${f2(TMV.LOW[0]+IO.h+.02)} m)`:'Loftet er for lavt til den valgte iO-version');
-    else add('ok',`TrackMan iO ${ver} i ${f2(yb)} m`);
-    add(ioBeam?'bad':'ok',ioBeam?'TrackMan-enheden er i lysstrålen':'TrackMan-enheden er fri af lysstrålen')}
-  if(tm==='TM4'){const d=t4z-tz;add(d<1.8-1e-6?'bad':d>2.9?'warn':'ok',`TrackMan 4 ${f2(d)} m bag bolden (krav ${f2(1.8,1)}–${f2(2.9,1)} m)`);if(S.rh<2.75)add('warn',`Loftet er lavere end anbefalet for TrackMan 4 (mindst ${f2(2.75)} m)`)}
-  if(tm==='none')add('warn','Ingen TrackMan valgt');
+  if(io){if(ioBad)add('bad',tm==='auto'?`Loftet er for lavt til loftkameraet (mindst ${f2(TMV.LOW[0]+IO.h+.02)} m)`:'Loftet er for lavt til den valgte loftkamera-version');
+    else add('ok',`Loftkamera ${VN[ver]} i ${f2(yb)} m`);
+    add(ioBeam?'bad':'ok',ioBeam?'Kameraet er i lysstrålen':'Kameraet er fri af lysstrålen')}
+  if(tm==='TM4'){const d=t4z-tz;add(d<1.8-1e-6?'bad':d>2.9?'warn':'ok',`Gulvkamera ${f2(d)} m bag bolden (krav ${f2(1.8,1)}–${f2(2.9,1)} m)`);if(S.rh<2.75)add('warn',`Loftet er lavere end anbefalet for gulvkameraet (mindst ${f2(2.75)} m)`)}
+  if(tm==='none')add('warn','Intet sim-kamera valgt');
   add(top>S.rh-.02?'bad':'ok',top>S.rh-.02?`Svinget rammer loftet (top ${f2(top)} m, loft ${f2(S.rh)} m)`:`Frihøjde over svinget ${fi((S.rh-top)*100)} cm (top ${f2(top)} m)`);
   if(hitPj)add('bad','Svinget rammer projektoren');
-  if(hitIO)add('bad','Svinget rammer TrackMan-enheden');
+  if(hitIO)add('bad','Svinget rammer kameraet');
   {const gap=Math.min(Math.min(...xs)+S.rw/2,S.rw/2-Math.max(...xs));add(gap<.05?'bad':gap<.3?'warn':'ok',gap<.05?'Svinget rammer sidevæggen':`Frit til sidevæggene: ${f2(gap)} m`)}
   if(Math.min(...zs)<.3)add('bad','Svinget kommer for tæt på lærredet');
   if(Math.min(G.matW,G.matD)<1.5-1e-6||Math.max(G.matW,G.matD)<1.8-1e-6)add('warn',`Måtten er mindre end slagområdet (mindst ${f2(1.5,1)} × ${f2(1.8,1)} m)`);
@@ -162,15 +162,15 @@ function golfUnitFront(P,GC,r){let s='';const {ioBox,ver,ioBeam,ioBad,t4z,bx}=GC
     s+=`<polygon points="${pts([c(B.x0,B.y0,B.z1),c(B.x1,B.y0,B.z1),c(B.x1,B.y1,B.z1),c(B.x0,B.y1,B.z1)])}" style="fill:#2B3038;stroke:${st}" stroke-width="1.4"/>`;
     const m=c(bx,B.y0,B.z0+.06);s+=`<circle cx="${m[0]}" cy="${m[1]}" r="2.6" fill="#59C3FF"/>`;
     // navnet står øverst i tegningen (over loftkanten) med en stiplet linje ned til enheden – så det aldrig dækker målene
-    const L0=c(bx,B.y1,(B.z0+B.z1)/2),ly=16;s+=`<line x1="${L0[0]}" y1="${ly+9}" x2="${L0[0]}" y2="${L0[1]}" style="stroke:${bad?'var(--bad)':'#8B95A3'}" stroke-width="1" stroke-dasharray="2 3" opacity=".8"/>`+lbl(L0[0],ly,`TrackMan iO ${ver}`,bad?'d':'m')}
+    const L0=c(bx,B.y1,(B.z0+B.z1)/2),ly=16;s+=`<line x1="${L0[0]}" y1="${ly+9}" x2="${L0[0]}" y2="${L0[1]}" style="stroke:${bad?'var(--bad)':'#8B95A3'}" stroke-width="1" stroke-dasharray="2 3" opacity=".8"/>`+lbl(L0[0],ly,`Loftkamera ${VN[ver]}`,bad?'d':'m')}
   if(t4z!=null){const z=t4z,x=bx,c=(dx,y,dz)=>P(x+dx,y,z+dz);s+=`<polygon points="${pts([c(-.15,.04,-.03),c(.15,.04,-.03),c(.15,.32,-.08),c(-.15,.32,-.08)])}" style="fill:#2B3038;stroke:#8B95A3" stroke-width="1.2"/><polygon points="${pts([c(-.12,0,0),c(.12,0,0),c(.12,.04,-.03),c(-.12,.04,-.03)])}" fill="#14171B"/>`;
-    const L0=c(.15,.32,-.08);s+=lbl(L0[0]+6,L0[1]-6,'TrackMan 4','m','start')}
+    const L0=c(.15,.32,-.08);s+=lbl(L0[0]+6,L0[1]-6,'Gulvkamera','m','start')}
   return s}
 function golfShadowFront(GC,X,Y){let s='<g class="Lgsh" pointer-events="none" clip-path="url(#cclip)">';
   GC.shSwing.forEach(p=>s+=`<polygon points="${pts(p.map(([x,y])=>[X(x),Y(y)]))}" fill="#000" fill-opacity=".38" style="stroke:var(--bad)" stroke-width="1.2" stroke-dasharray="5 3"/>`);
   GC.shBody.forEach(p=>s+=`<polygon points="${pts(p.map(([x,y])=>[X(x),Y(y)]))}" fill="#000" fill-opacity=".62" style="stroke:var(--bad)" stroke-width="1.4"/>`);
   return s+'</g>'}
-/* 10: snit – måtte, spiller set forfra, svingets ellipse, TrackMan, skyggens kegle og skyggen på lærredet */
+/* 10: snit – måtte, spiller set forfra, svingets ellipse, sim-kamera, skyggens kegle og skyggen på lærredet */
 function golfSide(X,Y,sc,r,GC){const {G,tz,h,R,th,hr,ioBox,t4z}=GC;let s='';
   s+=`<rect x="${X(Math.max(0,tz-G.matD/2))}" y="${Y(.03)-3}" width="${Math.min(G.matD,S.rd)*sc}" height="${.03*sc+3}" style="fill:#2E7D32"/>`;
   // skygge-kegle: fra linsen forbi spilleren/svinget ind på lærredet – klippet til lysstrålen
@@ -184,11 +184,11 @@ function golfSide(X,Y,sc,r,GC){const {G,tz,h,R,th,hr,ioBox,t4z}=GC;let s='';
   s+=`<g class="Lgsh" pointer-events="none"><g clip-path="url(#gbeam)">`+vol(side2(GC.disk),'#000',.22)+vol(side2(GC.body),'#000',.32)+`</g>`;
   {const ys=[];[...GC.disk,...GC.body].forEach(q=>{const v=ps([q[2],q[1]]);if(v)ys.push(v[1])});const a=Math.max(yb,Math.min(...ys)),b=Math.min(yt,Math.max(...ys));if(ys.length&&b>a)s+=lbl(X(0)+.07*sc+8,Y((a+b)/2),'skygge','d','start').replace('class="d"','class="d" style="fill:var(--bad);font-weight:700"')}
   s+='</g>';
-  // TrackMan
+  // sim-kamera
   if(ioBox){const B=ioBox,bad=GC.ioBeam||GC.ioBad||GC.hitIO;s+=`<line x1="${X((B.z0+B.z1)/2)}" y1="${Y(B.y1)}" x2="${X((B.z0+B.z1)/2)}" y2="${Y(S.rh)}" stroke="#5B6470" stroke-width="3"/><rect x="${X(B.z0)}" y="${Y(B.y1)}" width="${(B.z1-B.z0)*sc}" height="${(B.y1-B.y0)*sc}" rx="2" style="fill:#2B3038;stroke:${bad?'var(--bad)':'#8B95A3'}" stroke-width="1.4"/><circle cx="${X(B.z0+.06)}" cy="${Y(B.y0)}" r="2.6" fill="#59C3FF"/>`;
     s+=`<polygon points="${X(B.z0+.06)},${Y(B.y0)} ${X(tz-.9)},${Y(0)} ${X(tz+.9)},${Y(0)}" fill="#59C3FF" opacity=".05"/>`;
-    s+=lbl(X(B.z1),Y(S.rh+.28)-8,`TrackMan iO ${GC.ver} · ${f2(B.y0)} m`,bad?'d':'m','end')}
-  if(t4z!=null){s+=`<polygon points="${X(t4z-.03)},${Y(.04)} ${X(t4z+.05)},${Y(.32)} ${X(t4z+.11)},${Y(.32)} ${X(t4z+.03)},${Y(.04)}" style="fill:#2B3038;stroke:#8B95A3" stroke-width="1.2"/>`+lbl(X(t4z)+10,Y(.5),`TrackMan 4 · ${f2(t4z-tz)} m`,'m','start')}
+    s+=lbl(X(B.z1),Y(S.rh+.28)-8,`Loftkamera ${VN[GC.ver]} · ${f2(B.y0)} m`,bad?'d':'m','end')}
+  if(t4z!=null){s+=`<polygon points="${X(t4z-.03)},${Y(.04)} ${X(t4z+.05)},${Y(.32)} ${X(t4z+.11)},${Y(.32)} ${X(t4z+.03)},${Y(.04)}" style="fill:#2B3038;stroke:#8B95A3" stroke-width="1.2"/>`+lbl(X(t4z)+10,Y(.5),`Gulvkamera · ${f2(t4z-tz)} m`,'m','start')}
   // spiller (forfra) – kan trækkes langs gulvet
   s+=`<g class="ggrab"><title>Træk for at flytte spilleren (tee)</title><rect x="${X(tz-.5)}" y="${Y(h+.1)}" width="${sc}" height="${(h+.1)*sc}" fill="transparent"/>`+golferSVG(GC.pose,q=>[X(q[2]),Y(q[1])],()=>sc,q=>q[0])+'</g>';
   // svinget: cirklen i det skrå svingplan ses som en ellipse fra siden

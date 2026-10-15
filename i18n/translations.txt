@@ -569,31 +569,35 @@ Svingradius|Swing radius|スイング半径
 Svingplan|Swing plane|スイングプレーン
 Tee til lærred|Tee to screen|ティーからスクリーン
 Måtte (B × D)|Mat (W × D)|マット（幅 × 奥行）
-iO · auto højde|iO · auto height|iO · 高さ自動
-TrackMan 4 (gulv)|TrackMan 4 (floor)|TrackMan 4（床置き）
-Ingen TrackMan|No TrackMan|TrackMan なし
+Sim-kamera|Sim camera|シミュレーターカメラ
+Loftkamera · auto højde|Ceiling camera · auto height|天井カメラ · 高さ自動
+Loftkamera lav|Ceiling camera low|天井カメラ 低
+Loftkamera mellem|Ceiling camera mid|天井カメラ 中
+Loftkamera høj|Ceiling camera high|天井カメラ 高
+Gulvkamera|Floor camera|床置きカメラ
+Intet sim-kamera|No sim camera|シミュレーターカメラなし
 Spillerens hånd|Player's hand|利き手
 Højrehåndet|Right-handed|右打ち
 Venstrehåndet|Left-handed|左打ち
 Sving|Swing|スイング
 Skygge|Shadow|影
 skygge|shadow|影
-TrackMan-enheden er tegnet generisk – ikke med TrackMans design eller logo. Svinget er forenklet som en cirkel (svingradius) i et skråt svingplan gennem bolden. Skyggen er beregnet fra projektorens linse. Kravene er fra TrackMans offentlige installationsvejledninger. Spilleren kan trækkes i snittet.|The TrackMan unit is drawn generically – not with TrackMan's design or logo. The swing is simplified as a circle (swing radius) in an inclined swing plane through the ball. The shadow is calculated from the projector lens. The requirements come from TrackMan's public installation guides. The player can be dragged in the section.|TrackMan ユニットは汎用的に描画しています（TrackMan のデザインやロゴは使用していません）。スイングはボールを通る傾いたスイングプレーン上の円（スイング半径）として簡略化しています。影はプロジェクターのレンズから計算しています。要件は TrackMan の公開設置ガイドに基づきます。プレーヤーは断面図でドラッグできます。
+Sim-kameraet er tegnet generisk. Svinget er forenklet som en cirkel (svingradius) i et skråt svingplan gennem bolden. Skyggen er beregnet fra projektorens linse. Kravene er typiske værdier fra offentlige installationsvejledninger for golfsimulatorer. Spilleren kan trækkes i snittet.|The sim camera is drawn generically. The swing is simplified as a circle (swing radius) in an inclined swing plane through the ball. The shadow is calculated from the projector lens. The requirements are typical values from public golf simulator installation guides. The player can be dragged in the section.|シミュレーターカメラは汎用的に描画しています。スイングはボールを通る傾いたスイングプレーン上の円（スイング半径）として簡略化しています。影はプロジェクターのレンズから計算しています。要件はゴルフシミュレーターの公開設置ガイドに基づく一般的な値です。プレーヤーは断面図でドラッグできます。
 Tee # m fra lærredet (krav mindst # m, anbefalet # m)|Tee # m from the screen (min. # m, recommended # m)|ティーはスクリーンから # m（最小 # m、推奨 # m）
-Loftet er for lavt til TrackMan iO (mindst # m)|The ceiling is too low for TrackMan iO (min. # m)|TrackMan iO には天井が低すぎます（最小 # m）
-Loftet er for lavt til den valgte iO-version|The ceiling is too low for the selected iO version|選択した iO バージョンには天井が低すぎます
-TrackMan iO LOW i # m|TrackMan iO LOW at # m|TrackMan iO LOW（# m）
-TrackMan iO MID i # m|TrackMan iO MID at # m|TrackMan iO MID（# m）
-TrackMan iO HIGH i # m|TrackMan iO HIGH at # m|TrackMan iO HIGH（# m）
-TrackMan-enheden er i lysstrålen|The TrackMan unit is in the light beam|TrackMan ユニットが光線の中にあります
-TrackMan-enheden er fri af lysstrålen|The TrackMan unit is clear of the light beam|TrackMan ユニットは光線にかかっていません
-TrackMan 4 # m bag bolden (krav #–# m)|TrackMan 4 # m behind the ball (required #–# m)|TrackMan 4 はボールの # m 後方（必要 #–# m）
-Loftet er lavere end anbefalet for TrackMan 4 (mindst # m)|The ceiling is lower than recommended for TrackMan 4 (min. # m)|TrackMan 4 の推奨より天井が低いです（最小 # m）
-Ingen TrackMan valgt|No TrackMan selected|TrackMan 未選択
+Loftet er for lavt til loftkameraet (mindst # m)|The ceiling is too low for the ceiling camera (min. # m)|天井カメラには天井が低すぎます（最小 # m）
+Loftet er for lavt til den valgte loftkamera-version|The ceiling is too low for the selected ceiling camera version|選択した天井カメラのバージョンには天井が低すぎます
+Loftkamera lav i # m|Ceiling camera low at # m|天井カメラ 低（# m）
+Loftkamera mellem i # m|Ceiling camera mid at # m|天井カメラ 中（# m）
+Loftkamera høj i # m|Ceiling camera high at # m|天井カメラ 高（# m）
+Kameraet er i lysstrålen|The camera is in the light beam|カメラが光線の中にあります
+Kameraet er fri af lysstrålen|The camera is clear of the light beam|カメラは光線にかかっていません
+Gulvkamera # m bag bolden (krav #–# m)|Floor camera # m behind the ball (required #–# m)|床置きカメラはボールの # m 後方（必要 #–# m）
+Loftet er lavere end anbefalet for gulvkameraet (mindst # m)|The ceiling is lower than recommended for the floor camera (min. # m)|床置きカメラの推奨より天井が低いです（最小 # m）
+Intet sim-kamera valgt|No sim camera selected|シミュレーターカメラ未選択
 Svinget rammer loftet (top # m, loft # m)|The swing hits the ceiling (top # m, ceiling # m)|スイングが天井に当たります（最高点 # m、天井 # m）
 Frihøjde over svinget # cm (top # m)|Clearance above the swing # cm (top # m)|スイング上のクリアランス # cm（最高点 # m）
 Svinget rammer projektoren|The swing hits the projector|スイングがプロジェクターに当たります
-Svinget rammer TrackMan-enheden|The swing hits the TrackMan unit|スイングが TrackMan ユニットに当たります
+Svinget rammer kameraet|The swing hits the camera|スイングがカメラに当たります
 Svinget rammer sidevæggen|The swing hits the side wall|スイングが側壁に当たります
 Frit til sidevæggene: # m|Clear of the side walls: # m|側壁までの余裕：# m
 Svinget kommer for tæt på lærredet|The swing comes too close to the screen|スイングがスクリーンに近すぎます
@@ -606,7 +610,10 @@ Ingen skygge fra svinget|No shadow from the swing|スイングの影なし
 sving R # m · top # m|swing R # m · top # m|スイング R # m · 最高点 # m
 top # m|top # m|最高点 # m
 tee # m|tee # m|ティー # m
-iO LOW · # m|iO LOW · # m|iO LOW · # m
+Loftkamera lav · # m|Ceiling camera low · # m|天井カメラ 低 · # m
+Loftkamera mellem · # m|Ceiling camera mid · # m|天井カメラ 中 · # m
+Loftkamera høj · # m|Ceiling camera high · # m|天井カメラ 高 · # m
+Gulvkamera · # m|Floor camera · # m|床置きカメラ · # m
 Træk for at flytte spilleren (tee)|Drag to move the player (tee)|ドラッグしてプレーヤー（ティー）を移動
 =N|N|北
 =Ø|E|東
