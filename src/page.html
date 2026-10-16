@@ -119,6 +119,11 @@
           <div class="row"><span>Overlap</span><span class="inl"><input type="number" id="ov" min="0" max="50" step="1"><span class="unit">%</span></span></div>
           <div class="hint" id="blendHint"></div>
         </div>
+        <div class="row"><span style="color:var(--ink)">Stacking <span class="hint">(flere projektorer på samme billede)</span></span><label class="switch"><input type="checkbox" id="stackOn" aria-label="Stacking"><span></span></label></div>
+        <div class="sub" id="stackBox" hidden>
+          <div class="row"><span>Projektorer pr. billede</span><span class="inl"><input type="number" id="stack" step="1" min="2" max="4"><span class="unit">stk</span></span></div>
+          <div class="hint" id="stackHint"></div>
+        </div>
         </div>
         <div id="blendImm" hidden>
           <div class="ityp"><span>Projektortyper til bedste løsning</span><div class="chips" role="group" aria-label="Projektortyper"><button type="button" class="chip" data-ity="d1" aria-pressed="true">1-chip DLP</button><button type="button" class="chip" data-ity="d3" aria-pressed="true">3-chip DLP</button><button type="button" class="chip" data-ity="lcd" aria-pressed="true">LCD (3LCD)</button></div></div>
@@ -140,7 +145,6 @@
         <div class="row" style="margin-top:6px"><span>Omgivelseslys på lærred</span><span class="inl"><input type="number" id="amb2" step="10" min="0"><span class="unit">lux</span></span></div>
         <input type="range" id="ambR" min="0" max="1000" step="5" aria-label="Omgivelseslys">
         <div class="row"><span>Projektorens kontrast</span><span class="inl"><input type="number" id="pcr" step="100" min="10"><span class="unit">:1</span></span></div>
-        <div class="row"><span>Stablede projektorer</span><span class="inl"><input type="number" id="stack" step="1" min="1" max="4"><span class="unit">stk</span></span></div>
         <div class="hint" id="crHint"></div>
         </details>
       </section>

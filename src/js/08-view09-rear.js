@@ -96,8 +96,10 @@ function drawFront(r){IMMPJ=null;if(S.venue==='golf')GCUR=golfCalc(r);
     s+='<g class="Lbeam">';r.pjs.forEach(p=>{s+=`<rect x="${X(p.tx-r.W/2)}" y="${Y(p.ty+r.H/2)}" width="${r.W*s0}" height="${r.H*s0}" fill="none" style="stroke:var(--beam)" stroke-width="1.2" stroke-dasharray="6 4"/>`});
     for(let c=1;c<r.N;c++){const x0=r.cx-r.CW/2+c*r.W*(1-r.o);s+=`<rect x="${X(x0)}" y="${ctp}" width="${r.W*r.o*s0}" height="${chp}" fill="url(#bzf)" opacity=".8"/>`}
     for(let k=1;k<r.R;k++){const y0=r.cy+r.CH/2-k*r.H*(1-r.o);s+=`<rect x="${cl}" y="${Y(y0)}" width="${cwp}" height="${r.H*r.o*s0}" fill="url(#bzf)" opacity=".8"/>`}s+='</g>';
-  } else if(r.P.length){const p=r.pjs[0],zx=p.lx,zy=p.ly+r.inv*r.off*r.H;
-    s+=`<polygon class="Lshift" points="${r.P.map(([a,b])=>`${X(zx+r.inv*(a+r.th)*r.W)},${Y(zy+r.inv*(b+r.tv)*r.H)}`).join(' ')}" style="fill:none;stroke:var(--beam)" stroke-width="1.2" stroke-dasharray="5 4" opacity=".85"/>`}
+  }
+  // lens shift-område for hver projektor (ved edge blend har hver sin linse)
+  if(r.P.length)r.pjs.forEach(p=>{const zx=p.lx,zy=p.ly+r.inv*r.off*r.H;
+    s+=`<polygon class="Lshift" points="${r.P.map(([a,b])=>`${X(zx+r.inv*(a+r.th)*r.W)},${Y(zy+r.inv*(b+r.tv)*r.H)}`).join(' ')}" style="fill:none;stroke:var(--beam)" stroke-width="1.2" stroke-dasharray="5 4" opacity=".85"/>`});
   const ok=r.zoomOK&&r.shOK&&r.sizeOK;
   if(SUN){const sl=sunLux();if(sl.lux>0){const a=Math.min(.8,sl.lux/(sl.lux+r.lux)*0.9);s+=`<rect x="${cl}" y="${ctp}" width="${cwp}" height="${chp}" style="fill:${sunColor(sl.el)}" opacity="${a.toFixed(2)}" pointer-events="none"/>`}}
   s+=`<rect x="${cl}" y="${ctp}" width="${cwp}" height="${chp}" fill="none" style="stroke:${ok?'var(--ok)':'var(--bad)'}" stroke-width="2"/>`;
@@ -159,7 +161,7 @@ function drawFront(r){IMMPJ=null;if(S.venue==='golf')GCUR=golfCalc(r);
       const zp=Math.min(S.rd-0.8,S.r1+0.4),xp=w-1.1;items.push({z:zp+.5,draw:()=>{const f=[P(xp-.25,0,zp+.5),P(xp+.25,0,zp+.5),P(xp+.25,1.0,zp+.5),P(xp-.25,1.0,zp+.5)],t=[P(xp-.25,1.0,zp),P(xp+.25,1.0,zp),P(xp+.25,1.0,zp+.5),P(xp-.25,1.0,zp+.5)],c=P(xp,1.25,zp+.25),k=sc(zp+.25);return `<polygon points="${pts(t)}" style="fill:#FFFFFF"/><polygon points="${pts(f)}" style="fill:#E4E0D8"/><path d="M${c[0]-.1*k},${c[1]+.25*k} q${-.08*k},${-.3*k} ${.05*k},${-.5*k} q${.13*k},${.2*k} ${.05*k},${.5*k} z" style="fill:#7A5A3A"/>`}})}}
   else r.rows.forEach(z=>{if(z<S.rd-0.4)items.push({z:z+0.5,draw:()=>seatRow(P,z,seatX)})});
   if(!rear&&!NS)r.pjs.forEach(p=>items.push({z:r.outBack,draw:()=>'<g class="Lpj">'+projector3D(PJ,r,p)+'</g>'}));
-  if(VN==='golf'&&GCUR){const GC=GCUR;s+=golfFloor(P,GC);items.push({z:GC.tz,draw:()=>golferFront(P,sc,GC)+golfSwingFront(P,GC)});items.push({z:GC.ioBox?GC.ioBox.z1:(GC.t4z||0),draw:()=>golfUnitFront(P,GC,r)});const zc=(r.outFront+r.outBack)/2;r.pjs.forEach(p=>items.push({z:r.outBack-.001,draw:()=>{const a=P(p.lx,r.topY,zc),b=P(p.lx,S.rh,zc);return S.ceil&&r.topY<S.rh-.02?`<line class="Lpj" x1="${a[0]}" y1="${a[1]}" x2="${b[0]}" y2="${b[1]}" style="stroke:var(--r-truss)" stroke-width="3"/>`:''}}))}
+  if(VN==='golf'&&GCUR){const GC=GCUR;s+=golfFloor(P,GC);items.push({z:GC.tz,draw:()=>golferFront(P,sc,GC)+golfSwingFront(P,GC)});items.push({z:GC.ioBox?GC.ioBox.z1:(GC.t4z||0),draw:()=>golfUnitFront(P,GC,r)});const zc=(r.outFront+r.outBack)/2;r.pjs.filter(p=>!p.s).forEach(p=>items.push({z:r.outBack-.001,draw:()=>{const a=P(p.lx,r.topY,zc),b=P(p.lx,S.rh,zc);return S.ceil&&r.topY<S.rh-.02?`<line class="Lpj" x1="${a[0]}" y1="${a[1]}" x2="${b[0]}" y2="${b[1]}" style="stroke:var(--r-truss)" stroke-width="3"/>`:''}}))}
   items.sort((a,b)=>a.z-b.z);
   // stråler under projektorer
   function beams(){let s='';r.pjs.forEach(p=>{const cw=[[p.tx-r.W/2,p.ty+r.H/2],[p.tx+r.W/2,p.ty+r.H/2],[p.tx+r.W/2,p.ty-r.H/2],[p.tx-r.W/2,p.ty-r.H/2]];
@@ -176,15 +178,15 @@ function drawFront(r){IMMPJ=null;if(S.venue==='golf')GCUR=golfCalc(r);
   // loftstruss ved loftmontering
   function truss(){let s='';if(S.ceil){const zt=(r.outFront+r.outBack)/2,a=PJ(-w,h-0.12,zt),b=PJ(w,h-0.42,zt);s+=`<rect x="${a[0]}" y="${a[1]}" width="${b[0]-a[0]}" height="${b[1]-a[1]}" fill="none" style="stroke:var(--r-truss)" stroke-width="2"/>`;
     const n=Math.round(S.rw/0.5);for(let i=0;i<n;i++){const x0=a[0]+(b[0]-a[0])*i/n,x1=a[0]+(b[0]-a[0])*(i+1)/n;s+=`<line x1="${x0}" y1="${a[1]}" x2="${x1}" y2="${b[1]}" style="stroke:var(--r-truss)" stroke-width="1"/>`}
-    r.pjs.forEach(p=>{const t=PJ(p.lx,p.ly+r.F.y1,zt),u=PJ(p.lx,h-0.42,zt);s+=`<line class="Lpj" x1="${t[0]}" y1="${t[1]}" x2="${u[0]}" y2="${u[1]}" style="stroke:var(--r-truss)" stroke-width="2.5"/>`})}return s};
+    r.pjs.filter(p=>!p.s).forEach(p=>{const t=PJ(p.lx,p.ly+r.F.y1,zt),u=PJ(p.lx,h-0.42,zt);s+=`<line class="Lpj" x1="${t[0]}" y1="${t[1]}" x2="${u[0]}" y2="${u[1]}" style="stroke:var(--r-truss)" stroke-width="2.5"/>`})}return s};
   if(!rear&&!NS&&VN!=='golf')s+=truss();
   // afstand mellem projektorer (edge blend)
   if(!NS&&S.blend&&(r.N>1||r.R>1)){s+='<g class="Ldim">';const zb=r.outBack,oh=r.outer[1],ow=r.outer[0];
-    const row0=r.pjs.filter(p=>p.r===r.R-1).sort((a,b)=>a.c-b.c);
+    const sLow=S.ceil?r.stk-1:0,row0=r.pjs.filter(p=>p.r===r.R-1&&p.s===sLow).sort((a,b)=>a.c-b.c);
     for(let i=0;i<row0.length-1;i++){const a=row0[i],b=row0[i+1];const yy=a.ly+r.F.y0-0.25;const A=PJ(a.lx,yy,zb),B=PJ(b.lx,yy,zb);
       const gap=r.pitchX-ow;s+=dimH(A[0],B[0],A[1],`c/c ${f2(r.pitchX)} m`,PJ(a.lx,a.ly+r.F.y0,zb)[1],PJ(b.lx,b.ly+r.F.y0,zb)[1]);
       const G1=PJ(a.lx+r.F.x1,yy-0.32,zb),G2=PJ(b.lx+r.F.x0,yy-0.32,zb);if(gap>0)s+=lbl((G1[0]+G2[0])/2,A[1]+22,`fri ${mm(gap)} mm`,'m');else s+=lbl((A[0]+B[0])/2,A[1]+22,`overlap ${mm(-gap)} mm`,'d')}
-    if(r.R>1){const col=r.pjs.filter(p=>p.c===r.N-1).sort((a,b)=>b.r-a.r);for(let i=0;i<col.length-1;i++){const a=col[i],b=col[i+1];const xx=a.lx+r.F.x1+0.3;const A=PJ(xx,a.ly,zb),B=PJ(xx,b.ly,zb);
+    if(r.R>1){const col=r.pjs.filter(p=>p.c===r.N-1&&!p.s).sort((a,b)=>b.r-a.r);for(let i=0;i<col.length-1;i++){const a=col[i],b=col[i+1];const xx=a.lx+r.F.x1+0.3;const A=PJ(xx,a.ly,zb),B=PJ(xx,b.ly,zb);
       s+=dimV(A[0],A[1],B[1],`c/c ${f2(r.pitchY)} m`,PJ(a.lx+r.F.x1,a.ly,zb)[0],PJ(b.lx+r.F.x1,b.ly,zb)[0])}}
   s+='</g>'}
   // immersive: projektorer til sidevægge (i loftet ved modsatte væg) og gulv (i loftet, pegende ned)
@@ -210,8 +212,8 @@ function drawFront(r){IMMPJ=null;if(S.venue==='golf')GCUR=golfCalc(r);
           lbl(mu[0],mu[1],`${t.id} ${ML(du,q.su)}`,'d')+lbl(mv[0],mv[1],ML(dv,q.sv),'d')+'</g>'}}
     s+=(IMMSG&&Date.now()-IMMSG.t<4000)?lbl(14,vh-18,IMMSG.txt,'d','start'):lbl(14,vh-18,'træk i en projektor for at flytte dens gruppe · Shift eller «Op/ned» = hæv/sænk · hold musen over for at se, hvor den skyder hen','m','start')+DIMS}
   // mål på projektor
-  const p0=r.pjs[r.pjs.length-1],lp=PJ(p0.lx+r.F.x0,p0.ly,r.outBack);
-  if(!NS&&!REAR())s+='<g class="Ldim">'+lbl(lp[0]-8,lp[1],`${mm(r.outer[0])} × ${mm(r.outer[1])} mm`,'d','end')+'</g>';
+  const p0=r.pjs.filter(p=>!p.s).pop(),lp=PJ(p0.lx+r.F.x0,p0.ly+(r.stk>1?(S.ceil?-1:1)*(r.stk-1)*r.outer[1]/2:0),r.outBack);
+  if(!NS&&!REAR())s+='<g class="Ldim">'+lbl(lp[0]-8,lp[1],r.stk>1?`stak ${r.stk} × ${mm(r.outer[1])} = ${mm(r.outer[0])} × ${mm(r.stk*r.outer[1])} mm`:`${mm(r.outer[0])} × ${mm(r.outer[1])} mm`,'d','end')+'</g>';
   {const t=`lokale ${f2(S.rw,1)} × ${f2(S.rd,1)} × ${f2(S.rh,1)} m${r.stand||VN==='golf'?'':` · ${fi(r.rows.length*r.seatsRow)} pladser`}`;s+=lbl(vw-14,vh-18,t,'m','end')}
   if(!NS&&S.content==='img'&&!IMG)s+=lbl(cl+cwp/2,ctp+chp/2,'Klik «Eget billede» for at vælge et billede','m');
   // klikflader for vinduer (custom) – øverst, så de kan rammes over alt andet

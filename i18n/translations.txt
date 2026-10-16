@@ -16,9 +16,9 @@ Diagonal|Diagonal|対角
 Format|Aspect ratio|アスペクト比
 Billedformat|Aspect ratio|アスペクト比
 Lærredets underkant|Screen bottom edge|スクリーン下端
-Ved # m kan linsen give|At # m the lens can give|# m でのレンズ投写幅：
+Maksimal billedstørrelse ved # m:|Maximum screen size at # m:|# m での最大画面サイズ：
+Billedstørrelse ved # m:|Screen size at # m:|# m での画面サイズ：
 bredde.|width.|。
-Fast linse: ved # m bliver billedet|Fixed lens: at # m the image is|固定レンズ：# m で画面幅
 bredt.|wide.|。
 Samlet billede. Pr. projektor:|Combined image. Per projector:|合成画面。プロジェクターごと：
 Bredden kommer fra plantegningen.|The width comes from the floor plan.|幅は図面から取得しています。
@@ -57,6 +57,8 @@ Omgivelseslys|Ambient light|環境光
 stk|pcs|台
 Zoom|Zoom|ズーム
 inden for linsens zoom|within the lens zoom|レンズのズーム範囲内
+Zoomfaktor|Zoom factor|ズーム倍率
+linsen kan #–#x|lens range #–#x|レンズ範囲 #–#x
 uden for linsens zoom|outside the lens zoom|レンズのズーム範囲外
 linse #–# m · TR #:#|lens #–# m · TR #:#|レンズ #–# m · TR #:#
 fast linse · TR #:#|fixed lens · TR #:#|固定レンズ · TR #:#
@@ -100,8 +102,13 @@ Højde mm|Height mm|高さ mm
 Dybde mm|Depth mm|奥行 mm
 Officielle mål fra Panasonic · # kg uden projektor|Official Panasonic dimensions · # kg without projector|パナソニック公式寸法 · プロジェクター除く # kg
 Egne mål.|Custom dimensions.|カスタム寸法。
-Panasonic har ikke offentliggjort mål for #. Skøn ud fra ET-RFD# – ret til de rigtige mål.|Panasonic has not published dimensions for #. Estimated from ET-RFD# – correct to the real dimensions.|パナソニックは # の寸法を公開していません。ET-RFD# からの推定 – 実寸に修正してください。
-Panasonic har ingen ramme i ET-RFD-serien til #. Skøn: projektor + # mm.|Panasonic has no ET-RFD frame for #. Estimate: projector + # mm.|# 用の ET-RFD フレームはありません。推定：プロジェクター + # mm。
+Panasonic har ikke offentliggjort mål for|Panasonic has not published dimensions for|パナソニックが寸法を公開していないモデル：
+Skøn ud fra ET-RFD# – ret til de rigtige mål.|Estimated from ET-RFD# – correct to the real dimensions.|ET-RFD# からの推定 – 実寸に修正してください。
+Panasonic har ingen ramme i ET-RFD-serien til|Panasonic has no ET-RFD frame for|ET-RFD フレームがないモデル：
+Skøn: projektor +|Estimate: projector +|推定：プロジェクター +
+(egen)|(custom)|（カスタム）
+egen ramme|custom frame|カスタムフレーム
+har ingen lens shift|has no lens shift|はレンズシフトなし
 Edge blend|Edge blend|エッジブレンド
 Fra|Off|オフ
 Flere projektorer|Multiple projectors|複数プロジェクター
@@ -388,9 +395,9 @@ gulv|floor|床
 Skift til lys tilstand|Switch to light mode|ライトモードに切替
 Skift til mørk tilstand|Switch to dark mode|ダークモードに切替
 Mørk tilstand til/fra|Dark mode on/off|ダークモード オン/オフ
-2 · Lærred:|2 · Screen:|2 · スクリーン：
+# · Lærred:|# · Screen:|# · スクリーン：
 tryk på lærredets venstre kant (set fra publikum) og træk hen til højre kant – længden vises i meter. Træk bagefter i de to punkter for at flytte eller rotere lærredet. Bredden kan også rettes under # «Billedbredde».|press on the left edge of the screen (seen from the audience) and drag to the right edge – the length is shown in metres. Afterwards drag the two points to move or rotate the screen. The width can also be edited under # “Image width”.|スクリーンの左端（観客側から見て）を押して右端までドラッグ – 長さがメートルで表示されます。その後、2つの点をドラッグしてスクリーンを移動・回転できます。幅は # 「画面幅」でも変更できます。
-3 · Projektor:|3 · Projector:|3 · プロジェクター：
+# · Projektor:|# · Projector:|# · プロジェクター：
 klik eller træk projektoren på plads – den holder sig inden for billedets bredde og optikkens zoom. Afstand|click or drag the projector into place – it stays within the image width and the lens zoom. Distance|クリックまたはドラッグで配置 – 画面幅とレンズのズーム範囲内に保たれます。距離
 Bredden er koblet til lærredet på plantegningen.|The width is linked to the screen on the floor plan.|幅は図面上のスクリーンと連動しています。
 lærred # m|screen # m|スクリーン # m
@@ -403,10 +410,10 @@ Brug standard|Use default|標準を使用
 bruger standard (alle flader). Vælg en model eller optik herunder for at give fladen sin egen.|uses the default (all surfaces). Choose a model or lens below to give this surface its own.|は標準（全ての面）を使用しています。下でモデルまたはレンズを選ぶと、この面専用になります。
 Fladen er slået fra under «Lokalet set bagfra».|The surface is switched off under “Room seen from the back”.|この面は「後方から見た部屋」でオフになっています。
 Standard for alle flader uden egen projektor. Vælg en flade for at give den en anden model eller optik.|Default for all surfaces without their own projector. Choose a surface to give it a different model or lens.|専用プロジェクターのない全ての面の標準です。面を選ぶと別のモデルやレンズを設定できます。
-Hver flade beregnes med sin projektor og optik fra 03 (standard eller fladens egen), uafhængigt af lærredet ovenfor.|Each surface is calculated with its projector and lens from 03 (default or the surface's own), independent of the screen above.|各面は03で選んだプロジェクターとレンズ（標準または面専用）で計算され、上のスクリーンとは独立しています。
+Hver flade beregnes med sin projektor og optik fra # (standard eller fladens egen), uafhængigt af lærredet ovenfor.|Each surface is calculated with its projector and lens from # (default or the surface's own), independent of the screen above.|各面は#で選んだプロジェクターとレンズ（標準または面専用）で計算され、上のスクリーンとは独立しています。
 Auto vælger det mindste antal projektorer og tilpasser billedet, så det præcis fylder fladen.|Auto picks the fewest projectors and fits the image so it exactly fills the surface.|自動は最少台数を選び、面をちょうど埋めるよう画面を合わせます。
 Auto: færrest mulige projektorer|Auto: fewest possible projectors|自動：最少台数
-drejet 90°|rotated 90°|90°回転
+drejet #°|rotated #°|#°回転
 Færre med|Fewer with|より少ない台数：
 Brug|Use|使用
 Med den bedste optik pr. flade:|With the best lens per surface:|面ごとに最適なレンズで：
@@ -508,17 +515,17 @@ Bedste løsning:|Best solution:|最適解：
 Bedste løsning pr. flade:|Best solution per surface:|面ごとの最適解：
 Brug bedste løsning|Use best solution|最適解を使用
 portræt|portrait|縦置き
-Kontrastområde, som «bedste løsning» i 05 skal holde sig inden for|Contrast range that the “best solution” in 05 must stay within|05の「最適解」が守るコントラスト範囲
+Kontrastområde, som «bedste løsning» i # skal holde sig inden for|Contrast range that the “best solution” in # must stay within|#の「最適解」が守るコントラスト範囲
 Mindste kontrast|Minimum contrast|最小コントラスト
 Største kontrast|Maximum contrast|最大コントラスト
 uden for kontrastområdet|outside the contrast range|コントラスト範囲外
-Ingen projektor/optik giver #-#:1 på denne flade|No projector/lens gives #–#:1 on this surface|この面で#–#:1を満たすプロジェクター／レンズはありません
+Ingen projektor/optik giver #–#:# på denne flade|No projector/lens gives #–#:# on this surface|この面で#–#:#を満たすプロジェクター／レンズはありません
 Træk|Drag|ドラッグ
 ↔ Vandret|↔ Horizontal|↔ 水平
 ↕ Op/ned|↕ Up/down|↕ 上下
 (eller hold Shift nede)|(or hold Shift)|（またはShiftを押したまま）
 Træk-funktion|Drag mode|ドラッグモード
-Med «Op/ned» (eller Shift) hæves og sænkes gulv-projektorerne – optikken skiftes automatisk, og «Auto» for gulvet i 05 slås fra, så opdelingen bevares.|With “Up/down” (or Shift) the floor projectors are raised and lowered – the lens is switched automatically, and “Auto” for the floor in 05 is turned off so the layout is kept.|「上下」（またはShift）で床用プロジェクターを上下できます – レンズは自動で切り替わり、05の床の「自動」はオフになり配置が保たれます。
+Med «Op/ned» (eller Shift) hæves og sænkes gulv-projektorerne – optikken skiftes automatisk, og «Auto» for gulvet i # slås fra, så opdelingen bevares.|With “Up/down” (or Shift) the floor projectors are raised and lowered – the lens is switched automatically, and “Auto” for the floor in # is turned off so the layout is kept.|「上下」（またはShift）で床用プロジェクターを上下できます – レンズは自動で切り替わり、#の床の「自動」はオフになり配置が保たれます。
 træk i en projektor for at flytte dens gruppe · Shift eller «Op/ned» = hæv/sænk · hold musen over for at se, hvor den skyder hen|drag a projector to move its group · Shift or “Up/down” = raise/lower · hover to see where it projects|プロジェクターをドラッグしてグループを移動 · Shiftまたは「上下」＝上げ下げ · ホバーで投写先を表示
 Træk vandret|Drag horizontally|水平にドラッグ
 Træk op/ned (eller hold Shift nede)|Drag up/down (or hold Shift)|上下にドラッグ（またはShift）
@@ -538,15 +545,15 @@ Klik to punkter på langs af rummet|Click two points along the room|部屋の縦
 Rummets bredde|Room width|部屋の幅
 Rummets længde|Room length|部屋の長さ
 Rummets højde (valgfri)|Room height (optional)|部屋の高さ（任意）
-1 · Målestok – bredde:|1 · Scale – width:|1 · 縮尺 – 幅：
+# · Målestok – bredde:|# · Scale – width:|# · 縮尺 – 幅：
 klik på rummets to sidevægge (på tværs af rummet) og skriv bredden i meter i feltet «Bredde».|click the room's two side walls (across the room) and enter the width in metres in the “Width” field.|部屋の両側の壁（横方向）をクリックし、「幅」欄に幅をメートルで入力します。
-1 · Målestok – længde:|1 · Scale – length:|1 · 縮尺 – 長さ：
-klik på forvæggen og bagvæggen (på langs af rummet) og skriv længden i feltet «Længde». Højden kan skrives i feltet «Højde» (valgfri). Rummets mål i 02, 09 og 10 opdateres med det samme.|click the front wall and the back wall (along the room) and enter the length in the “Length” field. The height can be entered in the “Height” field (optional). The room size in 02, 09 and 10 updates immediately.|前壁と後壁（縦方向）をクリックし、「長さ」欄に入力します。高さは「高さ」欄に入力できます（任意）。02・09・10の部屋の寸法はすぐに更新されます。
-1 · Målestok:|1 · Scale:|1 · 縮尺：
+# · Målestok – længde:|# · Scale – length:|# · 縮尺 – 長さ：
+klik på forvæggen og bagvæggen (på langs af rummet) og skriv længden i feltet «Længde». Højden kan skrives i feltet «Højde» (valgfri). Rummets mål i #, # og # opdateres med det samme.|click the front wall and the back wall (along the room) and enter the length in the “Length” field. The height can be entered in the “Height” field (optional). The room size in #, # and # updates immediately.|前壁と後壁（縦方向）をクリックし、「長さ」欄に入力します。高さは「高さ」欄に入力できます（任意）。#・#・#の部屋の寸法はすぐに更新されます。
+# · Målestok:|# · Scale:|# · 縮尺：
 bredde og længde er sat|width and length are set|幅と長さを設定済み
  – og højden| – and the height| – 高さも
  – skriv evt. højden i feltet «Højde»| – optionally enter the height in the “Height” field| – 必要なら「高さ」欄に入力
-Tryk derefter på «2 · Lærred».|Then press “2 · Screen”.|次に「2 · スクリーン」を押してください。
+Tryk derefter på «# · Lærred».|Then press “# · Screen”.|次に「# · スクリーン」を押してください。
 Længden måler # m på tegningen med breddens målestok – tjek tallene eller tegningen.|The length measures # m on the drawing using the width's scale – check the numbers or the drawing.|幅の縮尺で図面上の長さは # m です – 数値または図面を確認してください。
 Bredde|Width|幅
 Længde|Length|長さ
@@ -646,3 +653,25 @@ Træk for at flytte spilleren (tee)|Drag to move the player (tee)|ドラッグ�
 =Alle projektor/optik-kombinationer, der passer til dit lokale.|Every projector/lens combination that fits your room.|部屋に合うすべてのプロジェクター／レンズの組み合わせ。
 =Gem og del|Save and share|保存と共有
 =Gem projektet som fil, åbn det igen senere, eller gem hele siden som PDF.|Save the project as a file, open it again later, or save the whole page as PDF.|プロジェクトをファイルとして保存して後で開いたり、ページ全体を PDF として保存したりできます。
+Enkle beslutninger|Basic decision making|基本的な判断
+Analytisk|Analytical|分析的
+Ingen projektor/optik giver #–∞:# på denne flade|No projector/lens gives #–∞:# on this surface|この面で#–∞:#を満たすプロジェクター／レンズはありません
+fri # mm|clear # mm|間隔 # mm
+Den valgte kombination understøtter ikke #:#.|The selected combination does not support #:#.|選択した組み合わせは #:# に対応していません。
+Ingen linse rammer præcis denne kombination. Nærmeste bud:|No lens matches this combination exactly. Closest options:|この組み合わせに完全に合うレンズはありません。最も近い候補：
+Ingen modeller i filteret understøtter #:#.|No models in the filter support #:#.|フィルター内に #:# に対応するモデルはありません。
+(flere projektorer på samme billede)|(several projectors on the same image)|（同じ画面に複数台）
+Projektorer pr. billede|Projectors per image|1画面あたりの台数
+Lyset ganges med #, så billedet bliver # gange lysere.|The light is multiplied by #, so the image is # times brighter.|光量が # 倍になり、画面は # 倍明るくなります。
+Kontrasten i # regnes med det samlede lys.|Contrast in # is calculated with the combined light.|# のコントラストは合計光量で計算されます。
+projektorer.|projectors.|台。
+Stacking|Stacking|スタッキング
+stacking ×#|stacking ×#|スタッキング ×#
+stak # × # = # × # mm|stack # × # = # × # mm|スタック # × # = # × # mm
+stak # × # mm|stack # × # mm|スタック # × # mm
+Stacking: højst # i loft · # på gulv|Stacking: max # ceiling · # floor|スタッキング：天吊り最大 # · 床置き #
+kan højst stable # projektorer ved loftmontering (Panasonic).|can stack at most # projectors when ceiling mounted (Panasonic).|は天吊りで最大 # 台までスタック可能です（パナソニック）。
+kan højst stable # projektorer ved gulvmontering (Panasonic).|can stack at most # projectors when floor mounted (Panasonic).|は床置きで最大 # 台までスタック可能です（パナソニック）。
+# i loftet med|# on the ceiling with|天吊り # 台（
+kræver ET-LINK#/# eller ET-LINK#/#.|requires ET-LINK#/# or ET-LINK#/#.|）には ET-LINK#/# または ET-LINK#/# が必要です。
+højst # stablede projektorer|max # stacked projectors|スタック最大 # 台

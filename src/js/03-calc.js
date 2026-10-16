@@ -1,6 +1,12 @@
 /* ===== BEREGNING ===== */
 // lærredets vandrette placering (midte, m fra rummets midte) – kan trækkes i «Lokalet set bagfra»; plantegning/immersive: altid i midten
 const SX=()=>{try{return S.venue!=='immersive'&&!planActive()?(S.sx||0):0}catch(e){return 0}};
+// stacking (boks 05): flere projektorer på samme billede – ældre projekter uden stackOn er slået til, hvis stack > 1
+const stackOn=()=>S.stackOn??((S.stack||1)>1);
+// flyrammens grænse for stacking (loft/gulv) – null uden Panasonic-ramme
+const stackLim=()=>{if(!S.frame)return null;const f=FRAMES.find(f=>f.id===S.frameId);return f&&f.stk?{id:f.id,max:f.stk[S.ceil?0:1]}:null};
+const stackOver=n=>{const L=stackLim();return L&&n>L.max?L:null};
+const stackN=()=>stackOn()&&S.venue!=='immersive'?Math.max(2,Math.min(4,Math.round(S.stack||2))):1;
 /* Keystone-korrektion pr. model/optik ifølge Panasonics specifikationer (docs.connect.panasonic.com m.fl.).
    «Sikker» værdi: optikkens egen grænse hvis oplyst, ellers modellens basisværdi; ukendt → den mest forsigtige værdi
    fra en sammenlignelig optik/model. Lodret og vandret tilsammen højst 55° (anvendes på alle modeller for en sikkerheds skyld). */
@@ -60,7 +66,9 @@ function calc(){
       const pick=best||bestAny;if(pick){kv=pick.a;kh=pick.b;tv=needV-pick.y;thk=needC[0]-pick.x}ksBad=!best}}
   const th=thk+offH;
   const kr=(k,a)=>Math.cos(Math.abs(k*DEG)+a)/Math.cos(Math.abs(k*DEG)-a);
-  const sv=needV-tv, sh=inv*(-dX)/W-th, shC=needC.map(v=>v-thk), shOK=!ksBad&&shC.every(v=>shiftOK(v,sv,P)||(kon&&(()=>{const iv=svInt(v,P);return iv&&sv>=iv[0]-1e-6&&sv<=iv[1]+1e-6})()));
+  const sv=needV-tv, sh=inv*(-dX)/W-th, shC=needC.map(v=>v-thk);
+  const shAt=y=>shC.every(v=>shiftOK(v,y,P)||(kon&&(()=>{const iv=svInt(v,P);return iv&&y>=iv[0]-1e-6&&y<=iv[1]+1e-6})()));
+  let shOK=!ksBad&&shAt(sv);
   const ksUse=kon&&(kv||kh)?ksFrac(kv,kh,sv,sh,W,H,S.L,aw,ah):1;
   const vr=svRange(sh,P); let pyRange=null;
   if(vr){let e0=vr[0]+off+tv,e1=vr[1]+off+tv;if(kon){const room=Math.max(0,KL.cap-Math.abs(kh));e0=vr[0]+off+Math.tan(Math.max(KL.vmin,-room)*DEG)*S.L/H;e1=vr[1]+off+Math.tan(Math.min(KL.vmax,room)*DEG)*S.L/H}
@@ -80,11 +88,15 @@ function calc(){
   B=flip(B);F=flip(F);
   const body=[B.x1-B.x0,B.y1-B.y0,B.z1-B.z0], outer=[F.x1-F.x0,F.y1-F.y0,F.z1-F.z0];
   const bodyFront=S.L+B.z0, outFront=S.L+F.z0, outBack=S.L+F.z1;
-  const pjs=[];for(let r=0;r<R;r++)for(let c=0;c<N;c++){
+  // stacking: enhed 0 sidder ved ophænget (loft: øverst, bord: nederst), de næste stables væk fra det med kabinettets/rammens højde
+  // hver enhed rammer samme billede med lodret lens shift – alle skal kunne nå det
+  const stk=stackN(), stkDir=S.ceil?-1:1, stkPitch=outer[1];
+  for(let k=1;k<stk&&shOK;k++)shOK=shAt(sv+inv*(-stkDir*k*stkPitch)/H);
+  const pjs=[];for(let s=0;s<stk;s++)for(let r=0;r<R;r++)for(let c=0;c<N;c++){
     const tx=cx-CW/2+W/2+c*W*(1-o), ty=cy+CH/2-H/2-r*H*(1-o);
-    pjs.push({c,r,tx,ty,lx:tx+dX+BD(c),ly:ty+dY})}
+    pjs.push({c,r,s,tx,ty,lx:tx+dX+BD(c),ly:ty+dY+stkDir*s*stkPitch})}
   const pitchX=W*(1-o), pitchY=H*(1-o);
-  const clashX=N>1&&[...Array(N-1).keys()].some(c=>outer[0]>pitchX+BD(c+1)-BD(c)-1e-6), clashY=R>1&&outer[1]>pitchY;
+  const clashX=N>1&&[...Array(N-1).keys()].some(c=>outer[0]>pitchX+BD(c+1)-BD(c)-1e-6), clashY=R>1&&stk*outer[1]>pitchY;
   const ys=pjs.map(p=>p.ly);const topY=Math.max(...ys)+F.y1, botY=Math.min(...ys)+F.y0;
   const xs=pjs.map(p=>p.lx);const leftX=Math.min(...xs)+F.x0, rightX=Math.max(...xs)+F.x1;
   const roomIssues=[];
@@ -106,7 +118,7 @@ function calc(){
   // skygge: kroppen (±0,25 m) inden for strålen både på tværs og i højden ved talerens afstand
   const presHit=S.venue!=='immersive'&&S.venue!=='golf'&&!NOCROWD()&&!REAR()&&presZ<S.L&&pjs.some(p=>{const k=presZ/S.L,b=p.ty-H/2,t=p.ty+H/2,l=p.tx-W/2,rr=p.tx+W/2;
     const yb=b+(p.ly-b)*k,yt=t+(p.ly-t)*k,xl=l+(p.lx-l)*k,xr=rr+(p.lx-rr)*k;return yb<presTop&&yt>presBase&&xr>presX-0.25&&xl<presX+0.25});
-  const pcr=S.pcr||m.cr, stk=Math.max(1,Math.round(S.stack||1));
+  const pcr=S.pcr||m.cr;
   const amb=AMB();const lm=(m.lc||m.lm)*stk*ksUse, lux=lm/(W*H), nits=S.gain*lux/Math.PI, cr=(lux+amb)/(lux/pcr+amb);
   const blk=lux/pcr+amb, blk2=2*lux/pcr+amb, blk4=4*lux/pcr+amb, cr2=(lux+blk2)/blk2, cr4=(lux+blk4)/blk4;
   const [ew,eh]=effRes(PT?[m.res[1],m.res[0]]:m.res,aw,ah), pxW=Math.round(ew*kx), pxH=Math.round(eh*ky), ksLost=Math.round(ew*eh*(1-ksUse)), lm0=(m.lc||m.lm)*stk, bzPx=Math.round(ew*o);
