@@ -301,6 +301,12 @@ details.coll2[open]>summary .chev{transform:rotate(-135deg);margin-bottom:-2px}
 .gear a.spec figure{height:100%;transition:border-color .15s,box-shadow .15s}
 .gear a.spec:hover figure,.gear a.spec:focus-visible figure{border-color:var(--beam);box-shadow:0 0 0 2px var(--beam-soft)}
 .gear a.spec:focus-visible{outline:none}
+.gear .gcol{display:flex;flex-direction:column;gap:6px;min-width:0}
+.gear .gcol a.spec{flex:1}
+.manbtn{display:flex;align-items:center;justify-content:center;gap:6px;padding:5px 8px;border:1px solid var(--line);border-radius:8px;background:var(--bg2);color:var(--ink);font:600 11px var(--f-mono);letter-spacing:.04em;text-decoration:none;cursor:pointer;transition:border-color .15s}
+.manbtn::before{content:"";width:9px;height:11px;border:1.5px solid currentColor;border-radius:1.5px;opacity:.75}
+.manbtn:hover,.manbtn:focus-visible{border-color:var(--beam);outline:none}
+.manbtn[aria-disabled="true"]{opacity:.45;cursor:default;pointer-events:none}
 .gear figcaption{display:flex;gap:6px;align-items:center}
 .gear figcaption>span:first-child{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis}
 .gear .ext{color:var(--beam);font-family:var(--f-body);font-weight:700;opacity:.75}
