@@ -41,7 +41,7 @@ function drawSide(r){
   const rear=REAR(),XP=z=>X(RZ()+ZS()*z),MIR=rear?`<g transform="translate(${(2*pl+RZ()*sc).toFixed(1)},0) scale(-1,1)">`:'<g>';
   const NS=S.venue==='immersive',m1=s.length;
   // stråler
-  s+=MIR;const rowsP=[...new Set(r.pjs.map(p=>p.r))].map(k=>r.pjs.find(p=>p.r===k));
+  s+=MIR;const rowsP=[...new Set(r.pjs.map(p=>p.r+','+p.s))].map(k=>r.pjs.find(p=>p.r+','+p.s===k));
   rowsP.forEach(p=>{const t=p.ty+r.H/2,b=p.ty-r.H/2;const e1=beamExit(r,p.ly,S.L,t),e2=beamExit(r,p.ly,S.L,b);
     const gid='bg'+p.r;s+=`<linearGradient id="${gid}" gradientUnits="userSpaceOnUse" x1="${X((e1[0]+e2[0])/2)}" y1="${Y((e1[1]+e2[1])/2)}" x2="${X(0)}" y2="${Y(p.ty)}"><stop offset="0" style="stop-color:var(--beam);stop-opacity:.6"/><stop offset="1" style="stop-color:var(--beam);stop-opacity:.08"/></linearGradient>`;
     s+=`<polygon points="${X(e1[0])},${Y(e1[1])} ${X(0)},${Y(t)} ${X(0)},${Y(b)} ${X(e2[0])},${Y(e2[1])}" fill="url(#${gid})"/>`;
@@ -98,7 +98,7 @@ function drawSide(r){
   s+=dimV(X(-T)-50,Y(S.sb),Y(S.sb+r.CH),`${f2(r.CH)}`,X(-T),X(-T));}
   const dx=XP(Math.max(r.outBack,S.L))+dd*22;
   s+=dimV(dx,Y(0),Y(p0.ly),`${f2(p0.ly)}`,null,XP(r.outBack));
-  if(r.kind!=='u')s+=dimV(dx+dd*30,Y(r.botY),Y(r.topY),`${mm(r.outer[1])}`,XP(r.outBack),XP(r.outBack));
+  if(r.kind!=='u')s+=dimV(dx+dd*30,Y(r.botY),Y(r.topY),`${mm(r.topY-r.botY)}`,XP(r.outBack),XP(r.outBack));
   if(S.ceil&&r.topY<S.rh)s+=dimV(dx+dd*60,Y(r.topY),Y(S.rh),`${f2(S.rh-r.topY)}`,XP(r.outBack),null);
   if(NS)s=s.slice(0,m3);
   if(r.rows.length&&VN==='theater')s+=lbl(X(r.rows[0]+0.2),Y(0)+14,r.stand?`publikum fra ${f2(r.rows[0],1)} m`:`1. række ${f2(r.rows[0],1)} m`,'m');

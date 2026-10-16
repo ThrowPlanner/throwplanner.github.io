@@ -33,12 +33,16 @@ function render(){
    $('lockL').setAttribute('aria-pressed',ll);$('lockW').setAttribute('aria-pressed',lw);$('dist').closest('.bigf').classList.toggle('locked',ll);$('cw').closest('.bigf').classList.toggle('locked',lw);
    $('lockL').title=ll?'Afstanden er låst – klik for at låse op':'Lås afstanden – så kan du se, om projektor og optik passer';$('lockW').title=lw?'Billedbredden er låst – klik for at låse op':'Lås billedbredden – så kan du se, om projektor og optik passer'}
   $('frame').checked=S.frame;$('frameBox').hidden=!S.frame;$('blend').checked=S.blend;$('portrait').checked=!!S.portrait;$('bauto').checked=!!S.bauto;$('bthRow').hidden=!S.bauto;$('bc').disabled=$('br').disabled=!!S.bauto;if(document.activeElement!==$('bth')&&S.bth)$('bth').value=S.bth;$('blendBox').hidden=!S.blend;$('blendOff').hidden=S.blend;
+  {const on=stackOn();$('stackOn').checked=on;$('stackBox').hidden=!on;if(on){set('stack',r.stk);const n=(S.blend?r.N*r.R:1)*r.stk;
+   $('stackHint').innerHTML=`Lyset ganges med ${r.stk}, så billedet bliver ${r.stk} gange lysere. Kontrasten i 06 regnes med det samlede lys.${n>r.stk?` I alt <b>${n}</b> projektorer.`:''}`;
+   const L=stackLim();if(L)$('stackHint').innerHTML+=r.stk>L.max?`<span style="display:block;margin-top:4px;color:var(--bad);font-weight:600">${L.id} kan højst stable ${L.max} projektorer ved ${S.ceil?'loftmontering':'gulvmontering'} (Panasonic).</span>`:
+     (S.ceil&&r.stk===3?`<span style="display:block;margin-top:4px">3 i loftet med ${L.id} kræver ET-LINK200/201 eller ET-LINK210/211.</span>`:'')}}
   fillFrames();const fsel=FRAMES.find(f=>f.id===S.frameId);['fw','fh','fd'].forEach(id=>$(id).disabled=!!(fsel&&fsel.dim));
-  $('frameHint').innerHTML=fsel?(fsel.dim?`Officielle mål fra Panasonic · ${String(fsel.kg).replace('.',',')} kg uden projektor`:`Panasonic har ikke offentliggjort mål for ${fsel.id}. Skøn ud fra ET-RFD70 – ret til de rigtige mål.`):
-    (framesFor(r.m).length?'Egne mål.':`Panasonic har ingen ramme i ET-RFD-serien til ${r.m.m}. Skøn: projektor + ${FRAME_ADD.join('/')} mm.`);
+  $('frameHint').innerHTML=(fsel&&fsel.stk?`Stacking: højst ${fsel.stk[0]} i loft · ${fsel.stk[1]} på gulv<br>`:'')+(fsel?(fsel.dim?`Officielle mål fra Panasonic · ${String(fsel.kg).replace('.',',')} kg uden projektor`:`Panasonic har ikke offentliggjort mål for ${fsel.id}. Skøn ud fra ET-RFD70 – ret til de rigtige mål.`):
+    (framesFor(r.m).length?'Egne mål.':`Panasonic har ingen ramme i ET-RFD-serien til ${r.m.m}. Skøn: projektor + ${FRAME_ADD.join('/')} mm.`));
   $('sumMount').textContent=`${S.ceil?'Loft':'Bord'} · linse ${f2(S.py)} m${S.frame?' · '+(S.frameId==='custom'?'egen ramme':S.frameId):''}`;
   if(S.venue==='immersive')drawImmBlend(r);else{$('blendStd').hidden=false;$('blendImm').hidden=true;}drawCrBand();
-  if(S.venue!=='immersive')$('sumBlend').textContent=(S.portrait?'Portræt · ':'')+(S.blend?`${Math.round(S.bc)}×${Math.round(S.br)} · ${S.ov} % overlap`:(S.portrait?'':'Fra'));
+  if(S.venue!=='immersive')$('sumBlend').textContent=(S.portrait?'Portræt · ':'')+[S.blend?`${Math.round(S.bc)}×${Math.round(S.br)} · ${S.ov} % overlap`:'',r.stk>1?`stacking ×${r.stk}`:''].filter(Boolean).join(' · ')||(S.portrait?'':'Fra');
   $('dMount').open=!!S.openMount;$('dBlend').open=!!S.openBlend;
   $('mDesk').setAttribute('aria-pressed',!S.ceil);$('mCeil').setAttribute('aria-pressed',S.ceil);
   {const im=S.venue==='immersive';$('c01').hidden=im;$('solView').hidden=im;$('shiftBar').hidden=im}
@@ -75,16 +79,18 @@ function render(){
     const btn=f=>`<button type="button" class="lsug${f.li===S.li?' cur':''}" data-lsug="${f.li}">${f.l[0]} · ${f.fx?'fast':Math.round(f.z*100)+' %'}</button>`;
     return `<span class="lsugbox"><b class="notr">${m.m.split(' (')[0]}</b><br>${fits.length?`Passende optik ved ${f2(S.L)} m og ${f2(r.W)} m bredde:`:`Ingen passende optik ved ${f2(S.L)} m og ${f2(r.W)} m bredde.`}${fits.length?'<span class="lsugs">'+fits.map(btn).join('')+'</span>':''}</span>`})():'';
   $('sizeHint').innerHTML=LK+LS+(CLAMP?`<span style="color:var(--warn)">${CLAMP}</span>`:'')+(planActive()?'<b>Bredden er koblet til lærredet på plantegningen.</b> ':'')+(S.blend?`Samlet billede. Pr. projektor: <b>${f2(r.W)} × ${f2(r.H)} m</b> (${fi(r.D)}″).`:
-    (r.fixed?`Fast linse: ved ${f2(S.L)} m bliver billedet <b>${f2(wpr)} m</b> bredt.`:`Ved ${f2(S.L)} m kan linsen give <b>${f2(wpr)}–${f2(wpt)} m</b> bredde.`));
+    `${r.fixed?'Billedstørrelse':'Maksimal billedstørrelse'} ved ${f2(S.L)} m: <b>${f2(wpr)} × ${f2(wpr*r.H/r.W)} m</b> (${fi(Math.hypot(wpr,wpr*r.H/r.W)/0.0254)}″)`);
   $('pjinfo').innerHTML=`${fi(ri.m.lm)} lm · kontrast ${fi(ri.m.cr)}:1 · ${ri.m.res.join('×')} · ${ri.m.dim.join('×')} mm · ${((ri.ln[7]&&ri.ln[7][0])||'n')==='u'?'ultrakort kast (kabinet foran spejlet)':((ri.ln[7]&&ri.ln[7][0])||'n')==='l'?'L-formet linse (kabinet lodret)':'linse rager '+fi(ri.ln[5]||0)+' mm frem'}`+
     (r.aspOK?'':`<br><span style="color:var(--warn)">${S.ak} findes ikke på denne model – bruger ${r.m.asp[r.ai]}.</span>`);
   $('blendHint').innerHTML=(BAUTO?`<span style="display:block;margin-bottom:4px;font-weight:600;color:${BAUTO.ok?'var(--ok)':'var(--bad)'}">${BAUTO.ok?`Auto: ${BAUTO.n} × ${BAUTO.r} = ${BAUTO.n*BAUTO.r} projektorer giver ${f2(r.CW)} × ${f2(r.CH)} m ved ${f2(S.L)} m`:BAUTO.small?`Billedet pr. projektor bliver for lille til optikken ved ${f2(S.L)} m – brug færre projektorer, en anden optik eller en kortere afstand`:`Kan ikke dækkes med højst 8 × 4 projektorer ved ${f2(S.L)} m – vælg en anden optik eller afstand`}</span>`:'')+(S.blend?`Blend-zone <b>${f2(r.W*r.o)} m</b> (${fi(r.bzPx)} px) · samlet <b>${fi(r.pxW)} × ${fi(r.pxH)} px</b> · afstand mellem projektorer ${f2(r.pitchX)} m`:'');
 
   if(S.venue==='immersive'){const st=immStats(r),req=crMin();const ps=[...st.bad.map(q=>pill('bad',`${q.name} kan ikke dækkes`)),st.worst&&st.worst.cr<req&&pill('warn',`Kontrast under ${f2(req,req%1?1:0)}:1 (${st.worst.name})`)].filter(Boolean);
     $('topStatus').innerHTML=ps.length?ps.join(''):st.ok.length?pill('ok','Opstillingen virker'):''}else{
-  const allOK=Math.min(r.cr,blend0(r)?r.cr2:r.cr)>=crMin()&&r.zoomOK&&r.sizeOK&&r.shOK&&!r.roomIssues.length&&!r.clashX&&!r.clashY&&!r.hit.length&&!r.presHit;
-  $('topStatus').innerHTML=allOK?pill('ok','Opstillingen virker'):[!r.zoomOK&&pill('bad',r.fixed?'Afstand passer ikke':'Uden for zoom'),!r.sizeOK&&pill('warn','Størrelse uden for linsens område'),!r.shOK&&pill('bad','Uden for lens shift'),(r.clashX||r.clashY)&&pill('bad','Projektorer kolliderer'),(Math.min(r.cr,blend0(r)?r.cr2:r.cr)<crMin())&&pill('warn',`Kontrast under ${f2(crMin(),crMin()%1?1:0)}:1`),r.hit.length&&pill('warn',r.stand?'Publikum i lysstrålen':`Publikum i lysstrålen (${r.hit.length} ${r.hit.length===1?'række':'rækker'})`),r.roomIssues.length&&pill('warn','Rum: '+r.roomIssues.join(', '))].filter(Boolean).join('');
-  if(r.presHit)$('topStatus').innerHTML+=pill('warn','Taleren skygger på lærredet')}
+  const SOV=stackOver(r.stk);
+  const allOK=!SOV&&r.cr>=crMin()&&r.zoomOK&&r.sizeOK&&r.shOK&&!r.roomIssues.length&&!r.clashX&&!r.clashY&&!r.hit.length&&!r.presHit;
+  $('topStatus').innerHTML=allOK?pill('ok','Opstillingen virker'):[!r.zoomOK&&pill('bad',r.fixed?'Afstand passer ikke':'Uden for zoom'),!r.sizeOK&&pill('warn','Størrelse uden for linsens område'),!r.shOK&&pill('bad','Uden for lens shift'),(r.clashX||r.clashY)&&pill('bad','Projektorer kolliderer'),(r.cr<crMin())&&pill('warn',`Kontrast under ${f2(crMin(),crMin()%1?1:0)}:1`),r.hit.length&&pill('warn',r.stand?'Publikum i lysstrålen':`Publikum i lysstrålen (${r.hit.length} ${r.hit.length===1?'række':'rækker'})`),r.roomIssues.length&&pill('warn','Rum: '+r.roomIssues.join(', '))].filter(Boolean).join('');
+  if(r.presHit)$('topStatus').innerHTML+=pill('warn','Taleren skygger på lærredet');
+  if(SOV)$('topStatus').innerHTML+=pill('warn',`${SOV.id}: højst ${SOV.max} stablede projektorer`)}
   GCUR=S.venue==='golf'?golfCalc(r):null;
   if(GCUR){const bad=GCUR.ck.filter(c=>c.l!=='ok');if(bad.length){const st=$('topStatus');st.innerHTML=st.innerHTML.replace(/<span class="pill ok">[^<]*<\/span>/,'')+bad.map(c=>pill(c.l==='bad'?'bad':'warn',c.t)).join('')}}
 
@@ -92,7 +98,7 @@ function render(){
   const o=r.outer;
   const KH='<h3 class="kh"><span class="no">07</span>Nøgletal</h3>';
   if(S.venue==='immersive')$('kpis').innerHTML=KH+immKPI(r,K);else $('kpis').innerHTML=KH+
-    K(r.zoomOK?'ok':'bad','Zoom',r.fixed?'Fast':`${Math.round(r.z*100)}<small>%</small>`,r.fixed?`linse kaster ${f2(r.Lw)} m`:r.zoomOK?'inden for linsens zoom':(r.z<0?'projektor for tæt på':'projektor for langt væk'))+
+    K(r.zoomOK?'ok':'bad','Zoomfaktor',r.fixed?'Fast':`${f2(S.L/r.Lw,1)}<small>x</small>`,r.fixed?`linse kaster ${f2(r.Lw)} m`:r.zoomOK?`linsen kan 1,0–${f2(r.Lt/r.Lw,1)}x`:(r.z<0?'projektor for tæt på':'projektor for langt væk'))+
     K('','Afstand L',`${f2(S.L)}<small>m</small>`,r.fixed?`aktuel TR ${f2(r.Lw/r.W)}:1`:`linse ${f2(r.Lw)}–${f2(r.Lt)} m · aktuel TR ${f2(S.L/r.W)}:1`)+
     K(r.sizeOK?'':'warn',S.blend?'Billede pr. projektor':'Billede',`${f2(r.W)}<small>×</small>${f2(r.H)}<small>m</small>`,S.blend?`${fi(r.D)}″ · samlet ${fi(r.pxW)}×${fi(r.pxH)} px`:`${fi(r.D)}″ · ${fi(r.ew)}×${fi(r.eh)} px`)+
     K(r.shOK?'ok':'bad','Lens shift V / H',`${Math.round(r.sv*100)}<small>/</small>${Math.round(r.sh*100)}<small>%</small>`,(S.blend&&r.N>1&&r.shC.some(v=>Math.abs(v-r.sh)>.004)?`H pr. projektor ${r.shC.map(v=>Math.round(v*100)).join(' / ')} % · `:'')+(r.shOK?'inden for linsens shift':'uden for linsens shift'))+

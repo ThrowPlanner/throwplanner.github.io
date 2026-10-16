@@ -58,13 +58,15 @@ function drawPlan(r){
      const side=(BRX??(x1+hw))+0.25,ta=P(side,lo),tb=P(side,hi),off=TW('min 0,00 m')*3.5*k;
      s+=tag(ta[0]+g.u[0]*off,ta[1]+g.u[1]*off,`${r.fixed?'fast':'min'} ${f2(lo)} m`,'#0B6E9C');if(!r.fixed)s+=tag(tb[0]+g.u[0]*off,tb[1]+g.u[1]*off,`max ${f2(hi)} m`,'#0B6E9C');
      if(x1-x0>0.02){const tc=P((x0+x1)/2,z1+0.35);s+=tag(tc[0],tc[1],`shift ${f2(x0)}…${f2(x1)} m`,'#0B6E9C')}}
-    r.pjs.forEach((pj,i)=>{const lens=P(pj.lx,S.L),e1=P(pj.tx-r.W/2,0),e2=P(pj.tx+r.W/2,0);
+    // stablede enheder ligger oven på hinanden – set ovenfra tegnes kun den nederste i stakken, med et mærke
+    r.pjs.forEach((pj,i)=>{if(pj.s)return;const lens=P(pj.lx,S.L),e1=P(pj.tx-r.W/2,0),e2=P(pj.tx+r.W/2,0);
       s+=`<polygon points="${poly([lens,e1,e2])}" fill="#F2A81D" fill-opacity=".22" stroke="#D98300" stroke-width="${1.2*k}"/>`;
       const B=r.B,bw=B.x1-B.x0,z1=S.L+B.z0,z2=S.L+B.z1;
       s+=`<g class="pjgrab" data-pj="${i}"><polygon points="${poly([P(pj.lx+B.x0,z1),P(pj.lx+B.x1,z1),P(pj.lx+B.x1,z2),P(pj.lx+B.x0,z2)])}" fill="#2F4D6C" stroke="#0F1821" stroke-width="${k}"/>`;
       if(r.kind==='n'){const lw=Math.min(bw*.35,.18);s+=`<polygon points="${poly([P(pj.lx-lw/2,S.L),P(pj.lx+lw/2,S.L),P(pj.lx+lw/2,z1),P(pj.lx-lw/2,z1)])}" fill="#4C719A"/>`}
       if(S.frame){s+=`<polygon points="${poly([P(pj.lx+r.F.x0,r.outFront),P(pj.lx+r.F.x1,r.outFront),P(pj.lx+r.F.x1,r.outBack),P(pj.lx+r.F.x0,r.outBack)])}" fill="none" stroke="#3F4B57" stroke-width="${2.2*k}"/>`}
       s+=`<circle cx="${lens[0]}" cy="${lens[1]}" r="${4*k}" fill="#D98300"/><circle cx="${P(pj.lx,(r.outFront+r.outBack)/2)[0]}" cy="${P(pj.lx,(r.outFront+r.outBack)/2)[1]}" r="${Math.max(14*k,bw*sc*.6)}" fill="transparent"/></g>`});
+    if(r.stk>1)r.pjs.forEach(pj=>{if(pj.s)return;const q=P(pj.lx,r.outBack+0.3);s+=tag(q[0],q[1],`stak ${r.stk} × ${mm(r.outer[1])} mm`,'#3F4B57')});
     const m0=P(S.px,0),m1=P(S.px,S.L);const off=-(r.body[0]/2+.35)*sc;const d0=[m0[0]+g.u[0]*off,m0[1]+g.u[1]*off],d1=[m1[0]+g.u[0]*off,m1[1]+g.u[1]*off];
     s+=`<line x1="${d0[0]}" y1="${d0[1]}" x2="${d1[0]}" y2="${d1[1]}" stroke="#0B6E9C" stroke-width="${1.5*k}" marker-start="url(#par)" marker-end="url(#par)"/>`+tag((d0[0]+d1[0])/2,(d0[1]+d1[1])/2,`L ${f2(S.L)} m`);
     s+=tag(g.C[0]-g.n[0]*22*k,g.C[1]-g.n[1]*22*k,`lærred ${f2(g.wM)} m`,'#111');
