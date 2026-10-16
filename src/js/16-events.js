@@ -204,6 +204,7 @@ $('front').addEventListener('click',e=>{const t=e.target.closest&&e.target.close
 function pickRow(tr){if(!tr)return;S.pcr=null;S.mi=+tr.dataset.mi;S.li=+tr.dataset.li;fillLens();frameDefaults();fitLens();zeroShift();render()}
 $('solCur').addEventListener('click',e=>pickRow(e.target.closest('tr[data-mi]')));
 $('dSol').addEventListener('toggle',e=>{S.openSol=e.target.open;save()});
+$('solView').addEventListener('toggle',e=>{if(e.target.open!==(S.solOpen!==false)){S.solOpen=e.target.open;save()}});
 $('dCr').addEventListener('toggle',e=>{S.openCr=e.target.open;save()});
 $('sol').addEventListener('click',e=>pickRow(e.target.closest('tr[data-mi]')));
 $('sol').addEventListener('keydown',e=>{if(e.key==='Enter')pickRow(e.target.closest('tr[data-mi]'))});
