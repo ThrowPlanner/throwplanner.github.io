@@ -13,7 +13,7 @@ function solutions(r){
     return `<tr data-mi="${x.mi}" data-li="${x.li}" tabindex="0" class="${x.mi==S.mi&&x.li==S.li?'cur':''}"><td class="th"><span>${imgTag('p:'+x.m.img,'')}</span></td><td><b>${x.m.m}</b> <span class="hint">${fi(x.m.lm)} lm${x.m.c===7?' · udgået':''}</span></td><td>${x.l[0]}</td><td>${zp}</td><td class="n">${x.fixed?f2(x.a):f2(x.a)+'–'+f2(x.b)} m</td><td class="n">${lensTR(x.m,x.l).replace(/^TR /,'')}</td><td class="n">${fi(x.lux)} lux</td><td>${st}</td></tr>`};
   const cur=res.find(x=>x.mi==S.mi&&x.li==S.li);
   $('solCur').innerHTML=cur?tr(cur):`<tr><td colspan="8" class="empty">Den valgte kombination understøtter ikke ${S.ak}.</td></tr>`;
-  $('solSum').innerHTML=`Vis alle løsninger <span class="hint">· ${allFits.length} passer</span>`;$('dSol').open=!!S.openSol;
+  $('solSum').innerHTML=`Vis alle løsninger <span class="hint">· ${allFits.length} passer</span>`;$('dSol').open=!!S.openSol;$('solView').open=S.solOpen!==false;
   $('sol').innerHTML=(fits.map(tr).join('')||`<tr><td colspan="8" class="empty">${res.length?'Ingen linse rammer præcis denne kombination. Nærmeste bud:':'Ingen modeller i filteret understøtter '+S.ak+'.'}</td></tr>`)+
     (near.length&&fits.length?`<tr><td colspan="8" class="empty" style="padding:8px 14px;font-size:12px">Tæt på:</td></tr>`:'')+near.map(tr).join('');
 }
