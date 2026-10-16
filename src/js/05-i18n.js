@@ -64,7 +64,7 @@ function render(){
   $('pjImg').innerHTML=(imgTag(pk,ri.m.m)||`<span class="none">${Object.keys(IMGS).length?'Intet billede':'Henter billede…'}</span>`)+(is4K(ri.m)?'<span class="b4k" title="4K"><b>4K</b><i>ULTRA <u>HD</u></i></span>':'');
   $('pjCap').textContent=ri.m.m;$('pjLink').href=pjURL(ri.m);$('pjLink').setAttribute('aria-label',`${ri.m.m} – specifikationer hos Panasonic`);
   $('lnImg').innerHTML=(ri.ln[6]&&ri.ln[6]!=='NONE'&&imgTag(lk,ri.ln[0]))||`<span class="none">${/Supplied|Standard/i.test(ri.ln[0])?'Indbygget standardlinse':'Intet billede'}</span>`;
-  $('lnCap').textContent=ri.ln[0];$('lnLink').href=lnURL(ri.m,ri.ln);$('lnLink').setAttribute('aria-label',`${ri.ln[0]} – specifikationer hos Panasonic`);
+  setMan('pjMan',MAN_PJ[pjSlug(ri.m.m)],ri.m.m.split(' (')[0]);{const c=lnCode(ri.ln);setMan('lnMan',c?MAN_LN[c]:MAN_PJ[pjSlug(ri.m.m)],ri.ln[0])}$('lnCap').textContent=ri.ln[0];$('lnLink').href=lnURL(ri.m,ri.ln);$('lnLink').setAttribute('aria-label',`${ri.ln[0]} – specifikationer hos Panasonic`);
 
   const wpr=(r.Dzw*IN*r.aw/Math.hypot(r.aw,r.ah)*r.kx), wpt=(r.Dzt*IN*r.aw/Math.hypot(r.aw,r.ah)*r.kx);
   const LK=(S.lockL||S.lockW)?(()=>{const ok=r.zoomOK&&r.sizeOK,lo=Math.min(r.Lw,r.Lt),hi=Math.max(r.Lw,r.Lt),c=ok?'var(--ok)':'var(--bad)';

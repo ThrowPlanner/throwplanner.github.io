@@ -675,3 +675,7 @@ kan højst stable # projektorer ved gulvmontering (Panasonic).|can stack at most
 # i loftet med|# on the ceiling with|天吊り # 台（
 kræver ET-LINK#/# eller ET-LINK#/#.|requires ET-LINK#/# or ET-LINK#/#.|）には ET-LINK#/# または ET-LINK#/# が必要です。
 højst # stablede projektorer|max # stacked projectors|スタック最大 # 台
+Ingen manual|No manual|マニュアルなし
+Åbn manual for|Open manual for|マニュアルを開く：
+Panasonic har ingen manual for|Panasonic has no manual for|製品ページにマニュアルがありません：
+på produktsiden|on the product page|
