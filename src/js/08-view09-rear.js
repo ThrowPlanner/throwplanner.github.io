@@ -313,7 +313,7 @@ function ustInset(r){const p0=r.pjs[0],B=r.B,yb=p0.ty-r.H/2,near=Math.min(r.outF
   s+=`<circle cx="${X(S.L)}" cy="${Y(p0.ly)}" r="3.5" style="fill:var(--beam)"/><text class="m" x="${X(S.L)+6}" y="${Y(p0.ly)-6}" style="font-size:10px">spejl</text>`;
   s+=`</g>`;
   const dimY=Y(Math.min(yBot,yb))+18;
-  s+=dimH(X(0),X(S.L),Math.min(by+bh-10,dimY+16),`L ${f2(S.L,3)}`,null,Y(p0.ly));
-  s+=dimH(X(0),X(near),Math.min(by+bh-28,dimY),`${f2(near,3)}`,null,Y(yBot));
-  const yN=S.ceil?yT:yb;s+=dimV(X(0)-24,Y(yEdge),Y(yN),`H ${f2(Math.abs(yN-yEdge),3)}`,X(near),X(0));
+  s+=dimH(X(0),X(S.L),Math.min(by+bh-10,dimY+16),`L ${f2(S.L,3)} m`,null,Y(p0.ly));
+  s+=dimH(X(0),X(near),Math.min(by+bh-28,dimY),`${f2(near,3)} m`,null,Y(yBot));
+  const yN=S.ceil?yT:yb;s+=dimV(X(0)-24,Y(yEdge),Y(yN),`H ${f2(Math.abs(yN-yEdge),3)} m`,X(near),X(0));
   return s+'</g>'}

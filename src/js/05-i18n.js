@@ -110,7 +110,7 @@ function render(){
     K(r.sizeOK?'':'warn',S.blend?'Billede pr. projektor':'Billede',`${f2(r.W)}<small>×</small>${f2(r.H)}<small>m</small>`,S.blend?`${fi(r.D)}″ · samlet ${fi(r.pxW)}×${fi(r.pxH)} px`:`${fi(r.D)}″ · ${fi(r.ew)}×${fi(r.eh)} px`)+
     K(r.shOK?'ok':'bad','Lens shift V / H',`${Math.round(r.sv*100)}<small>/</small>${Math.round(r.sh*100)}<small>%</small>`,(S.blend&&r.N>1&&r.shC.some(v=>Math.abs(v-r.sh)>.004)?`H pr. projektor ${r.shC.map(v=>Math.round(v*100)).join(' / ')} % · `:'')+(r.shOK?'inden for linsens shift':'uden for linsens shift'))+
     K('','Lys pr. projektor',`${fi(r.lux)}<small>lux</small>`,`${fi(r.nits)} cd/m² · kontrast ${fi(r.cr)}:1`)+
-    K((r.roomIssues.length||r.clashX||r.clashY)?'warn':'',S.frame?`Flyramme ${S.frameId==='custom'?'(egen)':S.frameId}`:'Projektor (B×H×D)',`${mm(o[0])}<small>×</small>${mm(o[1])}<small>×</small>${mm(o[2])}`,(r.clashX||r.clashY)?'projektorer kolliderer':`bagkant ${f2(r.outBack)} m fra lærred`,'sm');
+    K((r.roomIssues.length||r.clashX||r.clashY)?'warn':'',S.frame?`Flyramme ${S.frameId==='custom'?'(egen)':S.frameId}`:'Projektor (B×H×D)',`${mm(o[0])}<small>×</small>${mm(o[1])}<small>×</small>${mm(o[2])}<small>mm</small>`,(r.clashX||r.clashY)?'projektorer kolliderer':`bagkant ${f2(r.outBack)} m fra lærred`,'sm');
 
   $('sideCap').textContent=S.venue==='immersive'?'flader og projektorer set fra siden':`træk projektoren · L ${f2(S.L)} m · linse ${f2(S.py)} m${Math.abs(r.sh)>.004?` · H-shift: projektor ${f2(Math.abs(S.px),2)} m til ${S.px>0?'højre':'venstre'}`:''}`;
   drawSunUI();drawGolfPanel(GCUR);drawFront(r);drawSide(r);drawShiftBar(r);drawContrast(S.venue==='immersive'?immCrR(r):r);drawPlan(r);solutions(r);formula(r);save();

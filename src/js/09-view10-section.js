@@ -91,15 +91,15 @@ function drawSide(r){
   const p0=r.pjs[0],dd=rear?-1:1,m3=s.length;
   s+=dimH(XP(0),XP(S.L),Y(0)+30,`L ${f2(S.L)} m`,null,Y(p0.ly)+6);
   s+=dimH(XP(0),XP(r.outBack),Y(0)+58,`bagkant ${f2(r.outBack)} m`,Y(0)+T*sc,Y(r.botY));
-  if(r.kind!=='u')s+=dimH(XP(r.outFront),XP(r.outBack),Y(r.topY)-16,`${mm(r.outer[2])} mm`,null,null);
-  if(rear){const xs=X(RZ())+.07*sc+4;s+=dimV(xs+20,Y(0),Y(S.sb),`${f2(S.sb)}`,xs,null);s+=dimV(xs+50,Y(S.sb),Y(S.sb+r.CH),`${f2(r.CH)}`,xs,xs);
+  if(rear){const xs=X(RZ())+.07*sc+4;s+=dimV(xs+20,Y(0),Y(S.sb),`${f2(S.sb)} m`,xs,null);s+=dimV(xs+50,Y(S.sb),Y(S.sb+r.CH),`${f2(r.CH)} m`,xs,xs);
     s+=dimH(X(0),X(RZ()),Y(S.rh)+18,`bagscene ${f2(RZ())} m`,null,null)}
-  else{s+=dimV(X(-T)-20,Y(0),Y(S.sb),`${f2(S.sb)}`,X(-T),null);
-  s+=dimV(X(-T)-50,Y(S.sb),Y(S.sb+r.CH),`${f2(r.CH)}`,X(-T),X(-T));}
+  else{s+=dimV(X(-T)-20,Y(0),Y(S.sb),`${f2(S.sb)} m`,X(-T),null);
+  s+=dimV(X(-T)-50,Y(S.sb),Y(S.sb+r.CH),`${f2(r.CH)} m`,X(-T),X(-T));}
   const dx=XP(Math.max(r.outBack,S.L))+dd*22;
-  s+=dimV(dx,Y(0),Y(p0.ly),`${f2(p0.ly)}`,null,XP(r.outBack));
-  if(r.kind!=='u')s+=dimV(dx+dd*30,Y(r.botY),Y(r.topY),`${mm(r.topY-r.botY)}`,XP(r.outBack),XP(r.outBack));
-  if(S.ceil&&r.topY<S.rh)s+=dimV(dx+dd*60,Y(r.topY),Y(S.rh),`${f2(S.rh-r.topY)}`,XP(r.outBack),null);
+  const fy=r.kind!=='u'?r.botY:p0.ly;// gulv → bund af projektor (kæden gulv/hus/loft)
+  s+=dimV(dx,Y(0),Y(fy),`${f2(fy)} m`,null,XP(r.outBack));
+  if(r.kind!=='u')s+=dimV(dx+dd*30,Y(r.botY),Y(r.topY),`${mm(r.topY-r.botY)} mm`,XP(r.outBack),XP(r.outBack),dx+dd*66);
+  if(S.ceil&&r.topY<S.rh)s+=dimV(dx+dd*60,Y(r.topY),Y(S.rh),`${f2(S.rh-r.topY)} m`,XP(r.outBack),null);
   if(NS)s=s.slice(0,m3);
   if(r.rows.length&&VN==='theater')s+=lbl(X(r.rows[0]+0.2),Y(0)+14,r.stand?`publikum fra ${f2(r.rows[0],1)} m`:`1. række ${f2(r.rows[0],1)} m`,'m');
   s+=`<text class="m" x="${X(S.rd)}" y="${Y(S.rh+T)-8}" text-anchor="end">snit ${f2(S.rd,1)} × ${f2(S.rh,1)} m</text>`;
