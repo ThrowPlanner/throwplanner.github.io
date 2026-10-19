@@ -25,7 +25,7 @@ $('aspect').addEventListener('change',e=>{const r0=calc(),dm=S.lockW?S.lockDim||
   zeroShift();render()});
 $('cat').addEventListener('change',e=>{const m0=S.mi;S.cat=+e.target.value;fillModels();if(!SLOT()&&S.mi!==m0){fitLens();zeroShift()}render()});
 $('minLm').addEventListener('change',e=>{const m0=S.mi;S.minLm=+e.target.value;fillCats();fillModels();if(!SLOT()&&S.mi!==m0){fitLens();zeroShift()}render()});
-$('model').addEventListener('change',e=>{const k=SLOT();if(k){S.immPj={...(S.immPj||{}),[k]:{mi:+e.target.value,li:0}};S.immAdj={...(S.immAdj||{}),[k]:{}};fillLens();render();return}S.pcr=null;S.mi=+e.target.value;S.li=0;fillLens();frameDefaults();fitLens();zeroShift();render()});
+$('model').addEventListener('change',e=>{const k=SLOT();if(k){S.immPj={...(S.immPj||{}),[k]:{mi:+e.target.value,li:0}};S.immAdj={...(S.immAdj||{}),[k]:{}};fillLens();render();return}const ln=S.lockLens&&M().L[S.li]?M().L[S.li][0]:null;S.pcr=null;S.mi=+e.target.value;S.li=ln?Math.max(0,M().L.findIndex(l=>l[0]===ln)):0;fillLens();frameDefaults();fitLens();zeroShift();render()});
 $('lens').addEventListener('change',e=>{const k=SLOT();if(k){S.immPj={...(S.immPj||{}),[k]:{mi:slotMI(),li:+e.target.value}};S.immAdj={...(S.immAdj||{}),[k]:{}};render();return}S.li=+e.target.value;fitLens();zeroShift();render()});
 $('frameSel').addEventListener('change',e=>{S.frameId=e.target.value;applyFrame();render()});
 
@@ -186,7 +186,7 @@ function autoLens(z,y){if(S.lockLens||S.lockL||SLOT()||S.venue==='immersive')ret
 $('side').addEventListener('pointermove',e=>{if(scrDrag){moveScreen(scrDrag.pt(e).y-scrDrag.dy);return}if(!sideDrag)return;const q=sidePt(e);autoLens(q.z-sideDrag.dz,q.y-sideDrag.dy);const lim=lensLimits();let nz=Math.max(lim.lo,Math.min(lim.hi,q.z-sideDrag.dz)),ny=q.y-sideDrag.dy;if(lim.py)ny=Math.max(lim.py[0],Math.min(lim.py[1],ny));if(nz>DEPTH()-.2)hit('depth');if(ny>S.rh-.05)hit('pyTop');if(ny<.05)hit('pyBot');S.L=Math.max(.2,Math.min(DEPTH()-.2,nz));S.L=Math.round(S.L*100)/100;if(S.L<lim.lo-1e-9)S.L=Math.ceil(lim.lo*100)/100;if(S.L>lim.hi+1e-9)S.L=Math.floor(lim.hi*100)/100;if(S.L<lim.lo||S.L>lim.hi)S.L=Math.max(lim.lo,Math.min(lim.hi,S.L));guardShift({py:S.py},{py:Math.round(Math.max(.05,Math.min(S.rh-.05,ny))*100)/100});if(!sideRaf)sideRaf=requestAnimationFrame(()=>{sideRaf=0;render()})});
 ['pointerup','pointercancel'].forEach(t=>$('side').addEventListener(t,()=>{if(sideDrag||scrDrag){sideDrag=null;scrDrag=null;save()}}));
 $('svR').addEventListener('input',e=>setShift(+e.target.value/100,null));
-$('lensLock').addEventListener('click',()=>{S.lockLens=!S.lockLens;render()});
+for(const id of ['lensLock','lensLock3'])$(id).addEventListener('click',()=>{S.lockLens=!S.lockLens;render()});
 $('ksBtn').addEventListener('click',()=>{if(S.ks&&S.ks.on){const r=calc();S.py=r.cy-r.inv*(r.sv+r.off)*r.H;S.px=r.cx-r.inv*(r.sh+r.offH)*r.W;S.ks={v:0,h:0,on:false}}else S.ks={v:0,h:0,on:true};render()});
 // keystone-bar: optikken lægges på kanten af sin lens shift, og projektoren flyttes (vippes) resten – 0° = projektoren inden for lens shift
 const ksSet=(k,val)=>{const r0=calc();if(!r0.KL)return;S.ks={...(S.ks||{}),on:true};const D=Math.PI/180,o={py:S.py,px:S.px},old=k==='v'?r0.kv:r0.kh;

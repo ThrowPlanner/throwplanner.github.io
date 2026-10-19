@@ -529,6 +529,8 @@ Vis/skjul i tegningen|Show/hide in the drawing|図面で表示／非表示
 Vis/skjul|Show/hide|表示／非表示
 Lås optik|Lock lens|レンズを固定
 Optik låst|Lens locked|レンズ固定中
+Lås optikken – så skifter appen den ikke automatisk|Lock the lens – so the app will not switch it automatically|レンズを固定 – アプリが自動で切り替えなくなります
+Optikken er låst – klik for at låse op|The lens is locked – click to unlock|レンズは固定されています – クリックで解除
 Når optikken er låst, skifter den ikke optik, når du trækker i projektoren|When the lens is locked, it will not switch lens when you drag the projector|レンズを固定すると、プロジェクターをドラッグしてもレンズは切り替わりません
 Projektortyper til bedste løsning|Projector types for the best solution|最適解に使うプロジェクター種類
 Projektortyper|Projector types|プロジェクター種類
