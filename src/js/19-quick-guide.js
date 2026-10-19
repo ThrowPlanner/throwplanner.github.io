@@ -45,5 +45,5 @@ async function go(i){if(!ui)return;if(i>=steps.length)return close();i=Math.max(
   const r=el.getBoundingClientRect();if(r.bottom<0||r.top>innerHeight-40)el.scrollIntoView({block:blk});
   relay();ui.tip.querySelector('.pri').focus({preventScroll:true})}
 // guiden vises altid i Auditorium – andre temaer skifter først dertil
-$('qgBtn').addEventListener('click',async()=>{if(ui)return close();if(S.venue!=='aud'){qa('[data-venue="aud"]').click();await sleep(150)}open()});
+$('qgBtn').addEventListener('click',async()=>{if(ui)return close();TRK('Quick Guide');if(S.venue!=='aud'){qa('[data-venue="aud"]').click();await sleep(150)}open()});
 })();

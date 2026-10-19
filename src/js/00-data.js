@@ -6,6 +6,8 @@ const MODELS=CAT.models.map(m=>({...m,lm:m.lm||m.lc||0,lc:m.lc||m.lm||0,cr:m.cr|
   L:m.L.filter(l=>l[2].length&&l[2].some(r=>r[0]>0))}));
 const CAT_ORDER=[1,2,4,8,3];
 let IMGS={};
+// besøgsstatistik (Umami, kun på throwplanner.com – scriptet findes ikke i artifactet)
+const TRK=(n,d)=>{try{window.umami&&window.umami.track(n,d)}catch(e){}};
 
 /* Panasonic flyrammer (ET-RFD-serien). Kilde: Panasonic "Overview Frames table FY25" + kompatibilitetstabel på eu.connect.panasonic.com
    stk:[loft,gulv] = maks. stablede projektorer (loft ×3 kræver ET-LINK200/201 eller ET-LINK210/211). ET-RFD80 står ikke i tabellen – produktsiden: «Stacking of up to 2 projectors» */
