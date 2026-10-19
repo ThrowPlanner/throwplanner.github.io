@@ -185,6 +185,11 @@
           <label class="inl hint" style="gap:6px"><input type="checkbox" id="planLock">Hold midt for lærredet</label>
           <label class="inl hint" style="gap:6px"><input type="checkbox" id="planUse">Brug plantegningens mål</label>
           <span class="sp"></span>
+          <span class="seg zseg" role="group" aria-label="Zoom" id="planZoom">
+            <button type="button" data-pz="-1" title="Zoom ud" aria-label="Zoom ud"><svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true"><circle cx="10.5" cy="10.5" r="6.5" fill="none" stroke="currentColor" stroke-width="2"/><path d="M15.5 15.5 21 21M7.5 10.5h6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></button>
+            <button type="button" data-pz="0" id="planZv" class="notr" title="Vis hele tegningen">100 %</button>
+            <button type="button" data-pz="1" title="Zoom ind" aria-label="Zoom ind"><svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true"><circle cx="10.5" cy="10.5" r="6.5" fill="none" stroke="currentColor" stroke-width="2"/><path d="M15.5 15.5 21 21M7.5 10.5h6M10.5 7.5v6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></button>
+          </span>
           <button class="btn" type="button" id="planDel">Fjern</button>
         </div>
         <div class="pinfo" id="planInfo"></div>

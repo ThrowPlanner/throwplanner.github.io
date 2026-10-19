@@ -30,7 +30,7 @@ $('sizeHint').addEventListener('click',e=>{const b=e.target.closest('[data-lsug]
 // nulstil: første klik beder om bekræftelse, andet klik (inden 4 s) sletter alle gemte indstillinger – mørk/lys tilstand beholdes, sproget sættes til engelsk
 {let tmo=0;$('resetBtn').addEventListener('click',()=>{const b=$('resetBtn');
   if(!b.classList.contains('arm')){b.classList.add('arm');$('resetTxt').textContent='Klik igen for at nulstille';clearTimeout(tmo);tmo=setTimeout(()=>{b.classList.remove('arm');$('resetTxt').textContent='Nulstil'},4000);return}
-  try{localStorage.setItem('kasteplan5',JSON.stringify({lang:'en',mode:S.mode}))}catch(e){}location.reload()})}
+  try{localStorage.setItem('kasteplan5',JSON.stringify({lang:'en',mode:S.mode}));localStorage.removeItem('kasteplan_planimg')}catch(e){}location.reload()})}
 $('modeBtn').addEventListener('click',()=>{const dark=document.documentElement.classList.contains('isdark');S.mode=dark?'light':'dark';save();applyMode();render()});
 if(MQ&&MQ.addEventListener)MQ.addEventListener('change',()=>{if(!S.mode){applyMode();render()}});
 applyMode();

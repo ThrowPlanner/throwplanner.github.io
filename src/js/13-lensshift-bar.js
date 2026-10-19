@@ -22,11 +22,13 @@ function drawShiftBar(r){const P=r.P,none=!P.length,blend=S.blend&&(r.N>1||r.R>1
      $('ksLoss').innerHTML=on?(r.kv||r.kh?`Tabte pixels: <b>${fi(r.ksLost*nP)}</b> (${pf(lostPct)} %)${nP>1?` · ${fi(r.ksLost)} pr. projektor`:''} · Lystab: <b>${pf(lostPct)} %</b> (≈ ${fi(Math.round(r.lm0*nP*(1-r.ksUse)))} lm)`:`Inden for lens shift – keystone 0° · ingen tab af pixels eller lys`)+(r.ksBad?` · <span class="bad">uden for keystone-grænsen</span>`:''):''}
    else{$('ksNote').textContent='Ingen keystone-data for denne model';$('ksLoss').innerHTML=''}}
   {const pts=P.map(([a,b])=>`${a},${-b}`).join(' ');const ok=r.shOK;
-   $('shMini').innerHTML=`<rect x="-1.5" y="-1.3" width="3" height="2.6" rx=".12" style="fill:var(--bg2);stroke:var(--line)" stroke-width=".03"/>`+
+   // loft/inverteret: drejes 180° så grafikken svarer til rummet (procenterne er stadig projektorens egne)
+   $('shMini').innerHTML=`<rect x="-1.5" y="-1.3" width="3" height="2.6" rx=".12" style="fill:var(--bg2);stroke:var(--line)" stroke-width=".03"/><g${r.inv<0?' transform="rotate(180)"':''}>`+
     (none?'':`<polygon points="${pts}" style="fill:var(--beam-soft);stroke:var(--beam)" stroke-width=".035" stroke-dasharray=".09 .06"/>`)+
     `<line x1="-.5" y1="0" x2=".5" y2="0" style="stroke:var(--muted)" stroke-width=".02"/><line x1="0" y1="-.5" x2="0" y2=".5" style="stroke:var(--muted)" stroke-width=".02"/>`+
-    `<rect x="${r.sh-.5}" y="${-r.sv-.5}" width="1" height="1" style="fill:var(--screen);stroke:${ok?'var(--ok)':'var(--bad)'}" stroke-width=".05" opacity=".9"/>`}
-  $('shiftNote').textContent=none?`${r.ln[0]} har ingen lens shift${r.off?` (fast offset ${f2(r.off*100,1)} %)`:''}`:(r.off?`fast offset ${f2(r.off*100,1)} % + shift`:'');
+    `<rect x="${r.sh-.5}" y="${-r.sv-.5}" width="1" height="1" style="fill:var(--screen);stroke:${ok?'var(--ok)':'var(--bad)'}" stroke-width=".05" opacity=".9"/></g>`}
+  {const nt=none?`${r.ln[0]} har ingen lens shift${r.off?` (fast offset ${f2(r.off*100,1)} %)`:''}`:(r.off?`fast offset ${f2(r.off*100,1)} % + shift`:'');
+   $('shiftNote').textContent=nt+(r.inv<0&&!none?(nt?' · ':'')+'figur drejet 180° (loft)':'');}
 }
 function setShift(sv,sh){const r=calc();let v=sv??r.sv,h=sh??r.sh;
   if(r.P.length&&!shiftOK(h,v,r.P)){if(sv!=null){const hr=shRange(v,r.P);if(hr)h=Math.max(hr[0],Math.min(hr[1],h))}else{const vr=svRange(h,r.P);if(vr)v=Math.max(vr[0],Math.min(vr[1],v))}}
