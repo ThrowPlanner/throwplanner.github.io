@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Byg Projection Throw Planner.
+"""Byg Throw Planner.
 
 Samler src/ (page.html + styles.css + js/*.js i navneorden), data/ og i18n/ til:
   dist/site/      – hjemmesiden (index.html, sw.js, manifest, ikoner, pdfexport.js) – det GitHub Pages viser

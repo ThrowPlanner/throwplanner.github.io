@@ -501,7 +501,7 @@ Luk|Close|閉じる
 På et claude.ai-link kan kun ejeren af appen gemme filer|On a claude.ai link only the owner of the app can save files|claude.aiのリンクではアプリの所有者だけがファイルを保存できます
 Prøv i stedet browserens udskrift og vælg «Gem som PDF».|Instead, try the browser's print dialog and choose “Save as PDF”.|代わりにブラウザの印刷で「PDFとして保存」を選んでください。
 Udskriv / gem som PDF|Print / save as PDF|印刷 / PDFとして保存
-Brug web-app-versionen af Projection Throw Planner for at gemme PDF.|Use the web app version of Projection Throw Planner to save the PDF.|PDFを保存するには Projection Throw Planner のウェブアプリ版を使ってください。
+Brug web-app-versionen af Throw Planner for at gemme PDF.|Use the web app version of Throw Planner to save the PDF.|PDFを保存するには Throw Planner のウェブアプリ版を使ってください。
 Edge Blend & Portrait Mode|Edge Blend & Portrait Mode|エッジブレンド & ポートレートモード
 Portrait mode|Portrait mode|ポートレートモード
 (projektor drejet #°)|(projector rotated #°)|（プロジェクターを#°回転）
@@ -523,7 +523,7 @@ Gem projekt|Save project|プロジェクトを保存
 Åbn projekt|Open project|プロジェクトを開く
 Gem projektet som en JSON-fil, der kan sendes til andre|Save the project as a JSON file that can be sent to others|他の人に送れるJSONファイルとしてプロジェクトを保存
 Åbn en projektfil (JSON) – du kan også trække filen ind på siden|Open a project file (JSON) – you can also drag the file onto the page|プロジェクトファイル（JSON）を開く – ファイルをページにドラッグすることもできます
-Brug web-app-versionen af Projection Throw Planner for at gemme projektet.|Use the web app version of Projection Throw Planner to save the project.|プロジェクトを保存するには Projection Throw Planner のウェブアプリ版を使ってください。
+Brug web-app-versionen af Throw Planner for at gemme projektet.|Use the web app version of Throw Planner to save the project.|プロジェクトを保存するには Throw Planner のウェブアプリ版を使ってください。
 Filen kunne ikke læses – den er ikke en gyldig projektfil.|The file could not be read – it is not a valid project file.|ファイルを読み込めませんでした – 有効なプロジェクトファイルではありません。
 Vis/skjul i tegningen|Show/hide in the drawing|図面で表示／非表示
 Vis/skjul|Show/hide|表示／非表示

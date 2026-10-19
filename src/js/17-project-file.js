@@ -2,7 +2,7 @@
 const PROJ_FMT='projection-throw-planner';
 function projData(){const st=JSON.parse(JSON.stringify(S));delete st.lang;delete st.mode;
   const nm=(mi,li)=>{const m=MODELS[mi];return m?{model:m.m,lens:(m.L[li]||[''])[0]}:null};const imm={};for(const k in (S.immPj||{})){const q=S.immPj[k];if(q)imm[k]=nm(q.mi,q.li)}
-  return {format:PROJ_FMT,version:1,app:'Projection Throw Planner',saved:new Date().toISOString(),names:{main:nm(S.mi,S.li),imm},state:st,planImage:PLANIMG||null}}
+  return {format:PROJ_FMT,version:1,app:'Throw Planner',saved:new Date().toISOString(),names:{main:nm(S.mi,S.li),imm},state:st,planImage:PLANIMG||null}}
 // «Gem projekt»: først en lille dialog, hvor filnavnet kan skrives (huskes i projektet som S.projName)
 function saveDialog(){const vn={aud:'Auditorium',museum:'Museum',theater:'Theatre',immersive:'Immersive',golf:'Golf-Sim'}[S.venue]||S.venue,dt=new Date().toISOString().slice(0,10);
   const def=S.projName||(typeof pdfMe==='function'&&pdfMe().proj)||`Projection-Throw-Planner_${vn}_${dt}`;let d=$('saveDlg');if(d)d.remove();
@@ -16,7 +16,7 @@ function saveDialog(){const vn={aud:'Auditorium',museum:'Museum',theater:'Theatr
   d.showModal();inp.select()}
 async function saveProject(name){const blob=new Blob([JSON.stringify(projData(),null,1)],{type:'application/json'});
   if(window.claude&&window.claude.use){try{const dl=await Promise.race([Promise.resolve(window.claude.use('downloads')),new Promise(r=>setTimeout(()=>r(null),4000))]);if(dl){await dl.save({filename:name,data:blob});return}}catch(e){if(e&&e.code==='declined')return}
-    pdfToast('<span>På et claude.ai-link kan kun ejeren af appen gemme filer. Brug web-app-versionen af Projection Throw Planner for at gemme projektet.</span>');return}
+    pdfToast('<span>På et claude.ai-link kan kun ejeren af appen gemme filer. Brug web-app-versionen af Throw Planner for at gemme projektet.</span>');return}
   const u=URL.createObjectURL(blob),a=document.createElement('a');a.href=u;a.download=name;document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(u),4000)}
 function loadProject(txt){let d;try{d=JSON.parse(txt)}catch(e){pdfToast('<span>Filen kunne ikke læses – den er ikke en gyldig projektfil.</span>');return}
   const st=d&&d.format===PROJ_FMT?d.state:(d&&d.venue&&d.mi!=null?d:null);if(!st||typeof st!=='object'){pdfToast('<span>Filen kunne ikke læses – den er ikke en gyldig projektfil.</span>');return}
