@@ -109,28 +109,34 @@ document.querySelectorAll('[data-tool]').forEach(b=>b.addEventListener('click',(
 $('calM').addEventListener('input',e=>{const v=parseFloat(e.target.value);if(v>0){S.plan.calM=v;applyPlanRoom();render()}});
 $('calL').addEventListener('input',e=>{const v=parseFloat(e.target.value);if(v>0){S.plan.calL=v;applyPlanRoom();render()}});
 $('calH').addEventListener('input',e=>{const v=parseFloat(e.target.value);S.plan.calH=v>0?v:null;applyPlanRoom();render()});
-document.querySelectorAll('[data-cal]').forEach(b=>b.addEventListener('click',()=>{const p=S.plan;p.tool='cal';p.calStep=b.dataset.cal;if(b.dataset.cal==='w')p.cal=null;else p.cal2=null;render()}));
+document.querySelectorAll('[data-cal]').forEach(b=>b.addEventListener('click',()=>{const p=S.plan;p.tool='cal';p.calStep=b.dataset.cal;render()}));  // beholder linjen – punkterne kan nu flyttes, eller man tegner en ny
 $('planLock').addEventListener('change',e=>{S.plan.lock=e.target.checked;if(S.plan.lock)S.px=0;render()});
 $('planUse').addEventListener('change',e=>{S.plan.use=e.target.checked;render()});
-$('planDel').addEventListener('click',()=>{PLANIMG=null;try{localStorage.removeItem('kasteplan_planimg')}catch(e){}S.plan={...S.plan,w:0,h:0,cal:null,cal2:null,calStep:'w',scr:null,tool:'cal'};render()});
+$('planDel').addEventListener('click',()=>{PLANIMG=null;try{localStorage.removeItem('kasteplan_planimg')}catch(e){}S.plan={...S.plan,w:0,h:0,cal:null,cal2:null,calStep:'w',scr:null,tool:'cal',pjSet:false};render()});
+// zoom i plantegningen – midten af det synlige udsnit bliver liggende
+document.querySelectorAll('[data-pz]').forEach(b=>b.addEventListener('click',()=>{const d=+b.dataset.pz,st=$('planStage');
+  const i=PLANZ.indexOf(S.plan.zoom)<0?PLANZ.indexOf(1):PLANZ.indexOf(S.plan.zoom);S.plan.zoom=d?PLANZ[Math.max(0,Math.min(PLANZ.length-1,i+d))]:1;
+  const fx=(st.scrollLeft+st.clientWidth/2)/st.scrollWidth,fy=(st.scrollTop+st.clientHeight/2)/st.scrollHeight;render();
+  st.scrollLeft=fx*st.scrollWidth-st.clientWidth/2;st.scrollTop=fy*st.scrollHeight-st.clientHeight/2;save()}));
 let scrDraw=null;
 function scrSet(which,q){const p=S.plan,sc=planScale();const o=which==='a'?p.scr.b:p.scr.a;let v=V(o,q),l=len(v);if(l<1)return;
   if(S.lockW&&sc>0&&p.use){const h=S.cw*sc;q=[o[0]+v[0]/l*h,o[1]+v[1]/l*h]}else if(sc>0&&p.use)S.cw=Math.max(.2,l/sc);
   p.scr[which]=q;if(!planRaf)planRaf=requestAnimationFrame(()=>{planRaf=0;render()})}
 let calDrag=null;
 $('planSvg').addEventListener('pointerdown',e=>{if(!PLANIMG)return;const q=svgPt(e),p=S.plan;
-  {const ch=e.target.closest('.calh'),cl=e.target.closest('.calline');
+  {const ch=e.target.closest('.calh'),cl=e.target.closest('.calline');if((ch&&!planEdit(ch.dataset.c))||(cl&&!planEdit(cl.dataset.c)))return;
    if(ch&&p[ch.dataset.c]&&p[ch.dataset.c].b){calDrag={c:ch.dataset.c,end:ch.dataset.end};$('planSvg').setPointerCapture(e.pointerId);e.preventDefault();return}
    if(cl&&p[cl.dataset.c]&&p[cl.dataset.c].b){const L=p[cl.dataset.c];calDrag={c:cl.dataset.c,q0:q,a0:L.a.slice(),b0:L.b.slice()};$('planSvg').setPointerCapture(e.pointerId);e.preventDefault();return}}
   // lærredets to punkter (flyt/rotér) og selve lærredet (flyt)
-  const h=e.target.closest('.scrh');if(h&&p.scr&&p.scr.b){scrDraw={mode:'end',which:h.dataset.end};$('planSvg').setPointerCapture(e.pointerId);e.preventDefault();return}
-  if(e.target.closest('.scrline')&&p.scr&&p.scr.b){scrDraw={mode:'move',q0:q,a0:p.scr.a.slice(),b0:p.scr.b.slice()};$('planSvg').setPointerCapture(e.pointerId);e.preventDefault();return}
+  const h=planEdit('scr')&&e.target.closest('.scrh');if(h&&p.scr&&p.scr.b){scrDraw={mode:'end',which:h.dataset.end};$('planSvg').setPointerCapture(e.pointerId);e.preventDefault();return}
+  if(planEdit('scr')&&e.target.closest('.scrline')&&p.scr&&p.scr.b){scrDraw={mode:'move',q0:q,a0:p.scr.a.slice(),b0:p.scr.b.slice()};$('planSvg').setPointerCapture(e.pointerId);e.preventDefault();return}
   if(p.tool==='scr'&&p.scr&&p.scr.a&&!p.scr.b){p.scr.b=p.scr.a.slice();scrSet('b',q);p.tool='pj';if(p.lock)S.px=0;cancelAnimationFrame(planRaf);planRaf=0;if(planActive()){syncPlan();fitLens();zeroShift()}save();render();e.preventDefault();return}  // klik-klik virker stadig
   if(p.tool==='scr'&&(!p.scr||!p.scr.b||!planGeo())){p.scr={a:q,b:q.slice()};scrDraw={mode:'new'};$('planSvg').setPointerCapture(e.pointerId);e.preventDefault();render();return}
   if(e.target.closest('.pjgrab')||p.tool==='pj'){const g=planGeo();if(!g)return;const gr=e.target.closest('.pjgrab');planDrag={i:gr?+gr.dataset.pj:null};if(gr){const r0=calc(),pj=r0.pjs[+gr.dataset.pj]||r0.pjs[0];const L0=g.at(S.blend?pj.lx:S.px,S.L);planOff=[q[0]-L0[0],q[1]-L0[1]]}else planOff=[0,0];p.tool='pj';$('planSvg').setPointerCapture(e.pointerId);planMove(q);e.preventDefault();return}
   if(p.tool==='cal'){const st=p.calStep||'w';
     if(st==='w'){if(!p.cal||p.cal.b)p.cal={a:q,b:null};else{p.cal.b=q;p.calStep='l';if(!(p.calM>=2))p.calM=S.rw;applyPlanRoom()}}
-    else if(st==='l'){if(!p.cal2||p.cal2.b)p.cal2={a:q,b:null};else{p.cal2.b=q;p.calStep='h';const sc=planScale();if(!(p.calL>0))p.calL=sc>0?Math.round(len(V(p.cal2.a,p.cal2.b))/sc*10)/10:S.rd;applyPlanRoom()}}
+    else if(st==='l'){if(!p.cal2||p.cal2.b)p.cal2={a:q,b:null};else{p.cal2.b=q;p.calStep='h';if(!(p.scr&&p.scr.b))p.tool='scr';  // målestok færdig – videre til 2 · Lærred
+const sc=planScale();if(!(p.calL>0))p.calL=sc>0?Math.round(len(V(p.cal2.a,p.cal2.b))/sc*10)/10:S.rd;applyPlanRoom()}}
     save();render()}
   else if(p.tool==='scr'){p.scr={a:q,b:q.slice()};scrDraw={mode:'new'};$('planSvg').setPointerCapture(e.pointerId);render()}});
 $('planSvg').addEventListener('pointermove',e=>{const q=svgPt(e);
@@ -228,7 +234,49 @@ let PDFURL=null;
 function printPage(){const closed=[...document.querySelectorAll('details')].filter(d=>!d.open&&!d.closest('[hidden]'));closed.forEach(d=>d.open=true);
   const done=()=>{closed.forEach(d=>d.open=false);window.removeEventListener('afterprint',done)};window.addEventListener('afterprint',done);
   setTimeout(()=>{try{window.print()}catch(e){done()}},150)}
-async function exportPDF(){const b=$('pdfBtn');if(b.getAttribute('aria-busy')==='true')return;b.setAttribute('aria-busy','true');pdfToast('<span>Laver PDF …</span>');
+// PDF-valg: bokse med nummer (01, 02 …) som kan til- og fravælges; fravalgte skjules, mens PDF'en laves
+// 11 (Løsninger) og 12 (Formler) tilbydes ikke – de kommer aldrig med i PDF'en
+const PDF_NEVER=['11','12'];
+function pdfSections(all){const out=[];document.querySelectorAll('.no').forEach(n=>{const el=n.closest('#kpis')||n.closest('.card,.view');if(!el||out.some(x=>x.el===el)||!el.getClientRects().length)return;
+  if(!all&&PDF_NEVER.includes(n.textContent.trim()))return;
+  const t=n.nextSibling&&n.nextSibling.nodeType===3?n.nextSibling.nodeValue.trim():'';out.push({no:n.textContent.trim(),t,el})});return out.sort((a,b)=>a.no.localeCompare(b.no))}
+// «Dine oplysninger» (firma, person, dato, projekt, logo) – huskes i browseren og vises øverst i PDF'en
+const PDFME_K='kasteplan_pdfme';
+function pdfMe(){try{return JSON.parse(localStorage.getItem(PDFME_K))||{}}catch(e){return {}}}
+const today=()=>{const d=new Date();return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`};
+function pdfHead(me){if(!me||!(me.co||me.person||me.proj||me.logo))return null;const h=document.createElement('div');h.className='pdfhead';
+  const dt=me.date?new Date(me.date+'T12:00').toLocaleDateString({da:'da-DK',en:'en-GB',ja:'ja-JP'}[S.lang]||'en-GB',{year:'numeric',month:'long',day:'numeric'}):'';
+  h.innerHTML=(me.logo?`<img src="${me.logo}" alt="">`:'')+`<div class="notr">${me.proj?`<div class="ph1">${esc(me.proj)}</div>`:''}<div class="ph2">${[me.co,me.person,dt].filter(Boolean).map(esc).join(' · ')}</div></div>`;return h}
+function pdfDialog(){const secs=pdfSections(),sel=S.pdfSel||{},me=pdfMe();let d=$('pdfDlg');if(d)d.remove();
+  d=document.createElement('dialog');d.id='pdfDlg';d.className='pdfdlg';const v=k=>esc(me[k]||'');
+  d.innerHTML=`<form method="dialog"><h3>Vælg hvad PDF'en skal vise</h3><label class="pdfall"><input type="checkbox" id="pdfAll"> <b>Alle</b></label><div class="pdflist">`+
+    secs.map(s=>`<label><input type="checkbox" data-no="${s.no}"${sel[s.no]===false?'':' checked'}> <span class="no">${s.no}</span> <span class="notr">${esc(s.t)}</span></label>`).join('')+
+    `</div><button type="button" class="btn pdfmebtn" aria-expanded="false">Dine oplysninger</button>
+    <div class="pdfme" hidden>
+      <label>Firmanavn<input type="text" data-me="co" value="${v('co')}" autocomplete="organization"></label>
+      <label>Person<input type="text" data-me="person" value="${v('person')}" autocomplete="name"></label>
+      <label>Dato<input type="date" data-me="date" value="${esc(me.date||today())}"></label>
+      <label>Projektnavn<input type="text" data-me="proj" value="${v('proj')}"></label>
+      <div class="pdflogo"><span>Firmalogo</span><img alt=""${me.logo?'':' hidden'}><button type="button" class="btn" data-lg="pick">Vælg logo…</button><button type="button" class="btn" data-lg="del"${me.logo?'':' hidden'}>Fjern logo</button><input type="file" accept="image/*" hidden></div>
+    </div>
+    <div class="pdfbtns"><button type="button" class="btn" value="no">Annuller</button><button type="submit" class="btn pdfgo" value="ok">Lav PDF</button></div></form>`;
+  document.body.appendChild(d);const boxes=[...d.querySelectorAll('[data-no]')],all=d.querySelector('#pdfAll');
+  {const mb=d.querySelector('.pdfmebtn'),pm=d.querySelector('.pdfme');mb.addEventListener('click',()=>{pm.hidden=!pm.hidden;mb.setAttribute('aria-expanded',!pm.hidden)});
+   const im=pm.querySelector('img'),fi=pm.querySelector('input[type=file]'),del=pm.querySelector('[data-lg="del"]');if(me.logo)im.src=me.logo;
+   pm.querySelector('[data-lg="pick"]').addEventListener('click',()=>fi.click());
+   del.addEventListener('click',()=>{me.logo='';im.hidden=true;del.hidden=true});
+   // logoet skaleres ned (maks. 600 px), så det kan gemmes i browseren
+   fi.addEventListener('change',()=>{const f=fi.files[0];if(!f)return;const rd=new FileReader();rd.onload=()=>{const g=new Image();g.onload=()=>{const k=Math.min(1,600/Math.max(g.width,g.height));const c=document.createElement('canvas');c.width=Math.max(1,Math.round(g.width*k));c.height=Math.max(1,Math.round(g.height*k));c.getContext('2d').drawImage(g,0,0,c.width,c.height);
+     me.logo=c.toDataURL('image/png');im.src=me.logo;im.hidden=false;del.hidden=false};g.src=rd.result};rd.readAsDataURL(f);fi.value=''})}
+  const sync=()=>{const n=boxes.filter(x=>x.checked).length;all.checked=n===boxes.length;all.indeterminate=n>0&&n<boxes.length;d.querySelector('.pdfgo').disabled=!n};sync();
+  all.addEventListener('change',()=>{boxes.forEach(x=>x.checked=all.checked);sync()});boxes.forEach(x=>x.addEventListener('change',sync));
+  d.querySelector('[value="no"]').addEventListener('click',()=>d.close());d.addEventListener('close',()=>d.remove());
+  d.querySelector('form').addEventListener('submit',e=>{e.preventDefault();S.pdfSel={...sel};boxes.forEach(x=>S.pdfSel[x.dataset.no]=x.checked);save();
+    d.querySelectorAll('[data-me]').forEach(x=>me[x.dataset.me]=x.value.trim());try{localStorage.setItem(PDFME_K,JSON.stringify(me))}catch(err){}d.close();
+    exportPDF(pdfSections(true).filter(s=>PDF_NEVER.includes(s.no)||!S.pdfSel[s.no]).map(s=>s.el),me)});
+  d.showModal()}
+async function exportPDF(hide=[],me=null){const b=$('pdfBtn');if(b.getAttribute('aria-busy')==='true')return;b.setAttribute('aria-busy','true');pdfToast('<span>Laver PDF …</span>');
+  hide.forEach(el=>el.classList.add('pdfhide'));const head=pdfHead(me);if(head)document.querySelector('.wrap').prepend(head);
   // download-adgangen hentes med det samme (mens klikket stadig er «frisk»), og der ventes højst 4 s på den
   const dlP=(window.claude&&window.claude.use)?Promise.race([Promise.resolve(window.claude.use('downloads')).catch(()=>null),new Promise(r=>setTimeout(()=>r(null),4000))]):Promise.resolve(null);
   const closed=[...document.querySelectorAll('details')].filter(d=>!d.open&&!d.closest('[hidden]'));let step='load';
@@ -245,7 +293,7 @@ async function exportPDF(){const b=$('pdfBtn');if(b.getAttribute('aria-busy')===
     // ingen automatisk gemning her – tilbyd selv at hente eller åbne filen (klik = brugerhandling)
     pdfToast(`<span>På et claude.ai-link kan kun ejeren af appen gemme filer${why?` (${why})`:''}. Brug web-app-versionen af Projection Throw Planner for at gemme PDF.</span>`)}
   catch(e){console.warn('pdf',e);closed.forEach(d=>d.open=false);pdfToast(`<span>${step==='load'?'PDF-modulet kunne ikke hentes – tjek internetforbindelsen og prøv igen.':'PDF\'en kunne ikke laves i denne browser.'}</span>`)}
-  finally{b.removeAttribute('aria-busy')}}
-$('pdfBtn').addEventListener('click',exportPDF);
+  finally{b.removeAttribute('aria-busy');hide.forEach(el=>el.classList.remove('pdfhide'));if(head)head.remove()}}
+$('pdfBtn').addEventListener('click',pdfDialog);
 // boks 09: klik på forklaringen for at vise/skjule lag i tegningen
 document.querySelectorAll('[data-l9]').forEach(b=>b.addEventListener('click',()=>{const k=b.dataset.l9;S.l9={...(S.l9||{}),[k]:!((S.l9||{})[k]!==false)};render()}));

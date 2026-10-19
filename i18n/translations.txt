@@ -109,6 +109,7 @@ Skøn: projektor +|Estimate: projector +|推定：プロジェクター +
 (egen)|(custom)|（カスタム）
 egen ramme|custom frame|カスタムフレーム
 har ingen lens shift|has no lens shift|はレンズシフトなし
+figur drejet #° (loft)|figure rotated #° (ceiling)|図は#°回転(天吊り)
 Edge blend|Edge blend|エッジブレンド
 Fra|Off|オフ
 Flere projektorer|Multiple projectors|複数プロジェクター
@@ -177,6 +178,20 @@ Afstand|Distance|距離
 Hold midt for lærredet|Keep centred on the screen|スクリーン中央に固定
 Brug plantegningens mål|Use floor plan dimensions|図面の寸法を使用
 Fjern|Remove|削除
+=Zoom ud|Zoom out|縮小
+=Zoom ind|Zoom in|拡大
+Vis hele tegningen|Fit the drawing|図面全体を表示
+Vælg hvad PDF'en skal vise|Choose what the PDF should show|PDFに含める項目を選択
+=Lav PDF|Create PDF|PDFを作成
+=Annuller|Cancel|キャンセル
+Dine oplysninger|Your details|お客様情報
+=Firmanavn|Company name|会社名
+=Person|Person|担当者
+=Dato|Date|日付
+=Projektnavn|Project name|プロジェクト名
+=Firmalogo|Company logo|会社ロゴ
+Vælg logo…|Choose logo…|ロゴを選択…
+=Fjern logo|Remove logo|ロゴを削除
 Ingen plantegning|No floor plan|図面なし
 Indsæt en PNG, JPG eller PDF. Sæt derefter målestok, markér lærredet og træk projektoren på plads.|Insert a PNG, JPG or PDF. Then set the scale, mark the screen and drag the projector into place.|PNG・JPG・PDFを挿入し、縮尺を設定、スクリーンを指定してプロジェクターを配置します。
 Læser PDF…|Reading PDF…|PDFを読み込み中…

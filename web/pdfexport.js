@@ -56,7 +56,9 @@ function color(s){if(!s||s==='transparent'||s==='none')return null;let r=parseCo
 /* ---------- skrifter ---------- */
 const FK={};for(const k in FONTS){const f=FONTS[k];FK[k]={...f,m:f.map}}
 function fontFor(cs){const fam=(cs.fontFamily||'').toLowerCase(),w=parseInt(cs.fontWeight)||400;const mono=/mono|consolas|monospace/.test(fam);return (mono?'mono':'sans')+(w>=590?'b':'')}
-function glyphs(str,fk){const f=FK[fk];const g=[];let w=0;for(const ch of str){const u=ch.codePointAt(0);let e=f.m[u];if(!e){if(u===0x2009||u===0x202f||u===0xa0)e=f.m[32];else if(u===0x2011)e=f.m[45];else continue}g.push([e[0],u]);w+=e[1]}return {g,w}}
+// symboler som skriften ikke har -> nærmeste tegn den har
+const ALT={0x2717:0xd7,0x2715:0xd7,0x279c:0x2192,0x25ad:0x25a1};
+function glyphs(str,fk){const f=FK[fk];const g=[];let w=0;for(const ch of str){let u=ch.codePointAt(0);let e=f.m[u];if(!e){if(u===0x2009||u===0x202f||u===0xa0)e=f.m[32];else if(u===0x2011)e=f.m[45];else if(ALT[u]&&f.m[ALT[u]]){u=ALT[u];e=f.m[u]}else continue}g.push([e[0],u]);w+=e[1]}return {g,w}}
 
 /* ---------- hjælpere til dom ---------- */
 const SX=()=>window.scrollX,SY=()=>window.scrollY;
@@ -121,8 +123,37 @@ async function drawSVG(d,svg){const r=svg.getBoundingClientRect();if(r.width<1||
     withClip(d,clipOf(svg.parentElement),()=>text(d,tt.trim(),a.x,a.y,size,fontFor(cs),fill.c,fill.a*opacityOf(t),{width:len,ang,stroke:strk&&sw>0&&/stroke/.test(cs.paintOrder||'')?{c:strk.c,w:sw}:null}))}}
 
 /* ---------- HTML ---------- */
+// box-shadow (blød 3D-stil: kasserne har ingen kant, kun lys/skygge) – sløring efterlignes med lag
+function shadowsOf(cs){const s=cs.boxShadow;if(!s||s==='none')return [];
+  return s.split(/,(?![^(]*\))/).map(p=>{const cm=p.match(/(?:rgba?|color|oklch|oklab|hsla?)\([^)]*\)|#[0-9a-f]{3,8}\b/i);const c=color(cm?cm[0]:cs.color);
+    const n=(cm?p.replace(cm[0],''):p).replace(/\binset\b/,'').trim().split(/\s+/).map(parseFloat);
+    return {inset:/\binset\b/.test(p),c,ox:n[0]||0,oy:n[1]||0,b:Math.max(0,n[2]||0),sp:n[3]||0}}).filter(s=>s.c)}
+function shadowLayers(s){const N=s.b>0?12:1;return {N,e:k=>s.sp+(N>1?s.b*(1-2*(k+.5)/N):0)}}
+function drawShadows(d,x,y,w,h,rad,list,op,inset){for(const s of list){if(s.inset!==inset)continue;const {N,e}=shadowLayers(s);const al=1-Math.pow(1-Math.min(1,s.c.a*op),1/N);
+  d.op('q');if(al<0.999)d.op(`/${d.alpha(al)} gs`);d.op(`${col(s.c.c)} rg`);
+  if(inset){rrPath(d,x,y,w,h,rad);d.op('W n')}
+  for(let k=0;k<N;k++){const v=e(k);
+    if(inset){const hw=w-2*v,hh=h-2*v;rrPath(d,x,y,w,h,rad);if(hw>0&&hh>0)rrPath(d,x+s.ox+v,y+s.oy+v,hw,hh,Math.max(0,rad-v));d.op('f*')}
+    else{const sw=w+2*v,sh=h+2*v;if(sw<=0||sh<=0)continue;rrPath(d,x+s.ox-v,y+s.oy-v,sw,sh,Math.max(0,rad+v));rrPath(d,x,y,w,h,rad);d.op('f*')}}
+  d.op('Q')}}
+// linear-gradient som baggrund (fx kontrastskalaen) – tegnes på canvas og lægges ind som billede
+const gradQ=[];
+function gradientOf(cs){const m=/^linear-gradient\((.*)\)$/.exec(cs.backgroundImage||'');if(!m)return null;const p=m[1].split(/,(?![^(]*\))/).map(s=>s.trim());let ang=180;
+  if(/^-?[\d.]+deg$/.test(p[0]))ang=parseFloat(p.shift());else if(/^to /.test(p[0]))ang={'to right':90,'to left':270,'to top':0,'to bottom':180}[p.shift()]??180;
+  const st=p.map(s=>{const cm=s.match(/(?:rgba?|color|oklch|oklab|hsla?)\([^)]*\)|#[0-9a-f]{3,8}\b|[a-z]+/i);const pc=s.match(/(-?[\d.]+)%\s*$/);return {c:color(cm&&cm[0]),pos:pc?parseFloat(pc[1])/100:null}}).filter(s=>s.c);
+  if(st.length<2)return null;if(st[0].pos==null)st[0].pos=0;if(st[st.length-1].pos==null)st[st.length-1].pos=1;
+  for(let i=1;i<st.length-1;i++)if(st[i].pos==null){let j=i;while(st[j].pos==null)j++;st[i].pos=st[i-1].pos+(st[j].pos-st[i-1].pos)/(j-i+1)}
+  return {ang,st}}
 function drawBox(d,el,cs,r){const x=r.left+SX(),y=r.top+SY(),w=r.width,h=r.height;if(w<0.5||h<0.5)return;const op=opacityOf(el);const rad=radius(cs,w,h);
+  const sh=shadowsOf(cs);if(sh.length)drawShadows(d,x,y,w,h,rad,sh,op,false);
   const bg=color(cs.backgroundColor);if(bg)fillRR(d,x,y,w,h,rad,bg.c,bg.a*op);
+  const gr=gradientOf(cs);if(gr){const sc=3,cv=document.createElement('canvas');cv.width=Math.max(1,Math.round(w*sc));cv.height=Math.max(1,Math.round(h*sc));const g=cv.getContext('2d');
+    const t=gr.ang*Math.PI/180,L=Math.abs(cv.width*Math.sin(t))+Math.abs(cv.height*Math.cos(t)),dx=Math.sin(t)*L/2,dy=-Math.cos(t)*L/2,cx=cv.width/2,cy=cv.height/2;
+    g.fillStyle=`rgb(${bgOf(el.parentElement).join(',')})`;g.fillRect(0,0,cv.width,cv.height);
+    const lg=g.createLinearGradient(cx-dx,cy-dy,cx+dx,cy+dy);for(const s of gr.st)lg.addColorStop(Math.max(0,Math.min(1,s.pos)),`rgba(${s.c.c.join(',')},${s.c.a})`);g.fillStyle=lg;g.fillRect(0,0,cv.width,cv.height);
+    // billedet laves asynkront; pladsen i tegnefølgen reserveres her og fyldes ud før filen samles
+    const at=d.c.length;d.op('');gradQ.push(canvasJPEG(cv).then(bytes=>{const keep=d.c;d.c=[];d.op('q');rrPath(d,x,y,w,h,rad);d.op('W n');image(d,bytes,cv.width,cv.height,x,y,w,h,op);d.op('Q');keep[at]=d.c.join('\n');d.c=keep}))}
+  if(sh.length)drawShadows(d,x,y,w,h,rad,sh,op,true);
   const bw=['Top','Right','Bottom','Left'].map(s=>cs['border'+s+'Style']!=='none'&&cs['border'+s+'Style']!=='hidden'?parseFloat(cs['border'+s+'Width'])||0:0);
   const bc=['Top','Right','Bottom','Left'].map(s=>color(cs['border'+s+'Color']));
   if(bw.every(v=>v>0&&Math.abs(v-bw[0])<.01)&&bc.every(c=>c&&bc[0]&&c.c.join()===bc[0].c.join())){strokeRR(d,x,y,w,h,rad,bc[0].c,bc[0].a*op,bw[0]);return}
@@ -254,6 +285,6 @@ window.PTP_PDF=async function(opts={}){
   const d=new Doc(W,H);d.title=opts.title||document.title;d.enc=opts.encrypt!==false;
   const bg=color(getComputedStyle(document.body).backgroundColor)||color(getComputedStyle(root).backgroundColor)||{c:[255,255,255],a:1};
   fillRR(d,0,0,W,H,0,bg.c,1);
-  await walk(d,document.body);
+  gradQ.length=0;await walk(d,document.body);await Promise.all(gradQ);gradQ.length=0;
   return build(d)};
 })();

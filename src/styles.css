@@ -52,6 +52,29 @@ body::before{content:"";position:fixed;inset:0;z-index:-1;pointer-events:none;op
 @media (max-width:600px){.topmid{flex-wrap:wrap;max-width:100%}.lang{flex:1 1 100%}.lang button{flex:1}}
 @media print{#pdfToast,.pdfbtn,.resetbtn{display:none!important}*{-webkit-print-color-adjust:exact;print-color-adjust:exact}}
 #pdfToast{position:fixed;right:16px;bottom:16px;z-index:50;max-width:min(420px,calc(100vw - 32px));display:flex;flex-wrap:wrap;align-items:center;gap:8px 10px;padding:12px 40px 12px 14px;border-radius:10px;border:1px solid var(--line);background:var(--surface);color:var(--ink);font-size:13px;box-shadow:0 8px 28px rgba(0,0,0,.35)}
+.pdfhide{display:none!important}
+.pdfdlg{border:0;border-radius:16px;padding:20px 22px;background:var(--surface);color:var(--ink);box-shadow:0 12px 40px rgba(0,0,0,.45);width:min(400px,calc(100vw - 32px));font:inherit}
+.pdfdlg::backdrop{background:rgba(10,12,16,.55)}
+.pdfdlg h3{margin:0 0 12px;font-size:16px}
+.pdfdlg label{display:flex;align-items:center;gap:8px;padding:5px 2px;cursor:pointer;font-size:14px}
+.pdfdlg input[type=checkbox]{accent-color:var(--beam);width:16px;height:16px;margin:0}
+.pdfdlg .pdfall{border-bottom:1px solid var(--line);padding-bottom:8px;margin-bottom:6px}
+.pdfdlg .pdflist{max-height:55vh;overflow:auto}
+.pdfdlg .no{font-family:var(--f-mono);font-size:11px;color:var(--beam);min-width:20px}
+.pdfdlg .pdfbtns{display:flex;justify-content:flex-end;gap:10px;margin-top:16px}
+.pdfdlg .pdfmebtn{margin-top:12px;width:100%}
+.pdfdlg .pdfmebtn[aria-expanded=true]{color:var(--beam)}
+.pdfme{display:grid;gap:8px;margin-top:10px}
+.pdfme label{display:grid;grid-template-columns:100px 1fr;gap:10px;padding:0;cursor:default;font-size:13px;color:var(--muted)}
+.pdfme input[type=text],.pdfme input[type=date]{font:inherit;font-size:14px;color:var(--ink);background:var(--bg);border:1px solid var(--line);border-radius:8px;padding:6px 9px;min-width:0;color-scheme:inherit}
+.pdflogo{display:flex;flex-wrap:wrap;align-items:center;gap:8px;font-size:13px;color:var(--muted)}.pdflogo>span{width:100px}
+.pdflogo img{max-height:40px;max-width:120px;background:#fff;border-radius:6px;padding:3px}
+.pdflogo .btn{padding:5px 10px;font-size:12px}
+.pdfhead{display:flex;align-items:center;gap:18px;padding:6px 0 18px;margin-bottom:16px;border-bottom:2px solid var(--beam)}
+.pdfhead img{max-height:64px;max-width:220px;object-fit:contain}
+.pdfhead .ph1{font-size:24px;font-weight:800;color:var(--ink);letter-spacing:-.01em}
+.pdfhead .ph2{font-size:14px;color:var(--muted);margin-top:4px}
+.pdfdlg .pdfgo{color:var(--beam);font-weight:700}.pdfdlg .pdfgo:disabled{opacity:.5;cursor:not-allowed}
 #pdfToast[hidden]{display:none}#pdfToast span{flex-basis:100%}#pdfToast .pb{font:inherit;cursor:pointer;font-weight:600;padding:5px 12px;border-radius:7px;border:1px solid var(--beam);color:var(--ink);text-decoration:none;background:var(--beam-soft)}#pdfToast .px{position:absolute;right:8px;top:6px;border:0;background:none;color:var(--muted);font-size:18px;cursor:pointer}
 .pdfbtn{display:inline-flex;align-items:center;gap:6px;height:38px;padding:0 12px;border-radius:8px;border:1px solid var(--line);background:var(--bg2);color:var(--ink);font:inherit;font-size:13px;font-weight:600;cursor:pointer;white-space:nowrap}
 .pdfbtn:hover{border-color:var(--faint)}.pdfbtn:focus-visible{outline:2px solid var(--beam);outline-offset:2px}.pdfbtn[aria-busy=true]{opacity:.6;cursor:progress}
@@ -258,8 +281,10 @@ details.coll2[open]>summary .chev{transform:rotate(-135deg);margin-bottom:-2px}
 .ptool input[type=checkbox]{accent-color:var(--beam);width:15px;height:15px;margin:0}
 .pinfo{padding:8px 16px;font-size:13px;color:var(--muted);border-bottom:1px solid var(--line)}
 .pinfo b{color:var(--ink);font-weight:600}
-.pstage{position:relative;background:#fff;min-height:260px;touch-action:none}
-.pstage svg{display:block;width:100%;height:auto;cursor:crosshair;user-select:none}
+.pstage{position:relative;background:#fff;min-height:260px;touch-action:none;overflow:auto}
+.pstage svg{display:block;width:100%;height:auto;cursor:crosshair;user-select:none;max-width:none}
+.zseg{display:inline-flex;align-items:center}.zseg button{display:inline-flex;align-items:center;justify-content:center;padding:5px 9px;min-width:34px}
+#planZv{font-family:var(--f-mono);font-size:12px;min-width:58px}
 .pstage svg .pjgrab{cursor:grab}
 .pstage svg .scrh,.pstage svg .calh{cursor:grab}.pstage svg .scrline,.pstage svg .calline{cursor:move}
 #side .sgrab{cursor:grab}
@@ -375,6 +400,12 @@ th{font-family:var(--f-mono);font-weight:500;font-size:10.5px;letter-spacing:.12
 .warnc{color:var(--bad)}
 .immbar{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:8px 16px}
 .calbox{display:inline-flex;flex-wrap:wrap;align-items:center;gap:6px 10px}.calseg button{padding:5px 10px}
+/* plantegningens trin: flueben = færdigt, blinkende pil = næste trin */
+.stepdone::before{content:"✓";color:var(--ok);font-weight:700;margin-right:5px}
+.stepnext::before{content:"▶";color:var(--beam);font-size:.8em;margin-right:5px;display:inline-block;animation:stepblink 1s ease-in-out infinite}
+@keyframes stepblink{0%,100%{opacity:1;transform:translateX(0)}50%{opacity:.25;transform:translateX(-3px)}}
+@media (prefers-reduced-motion:reduce){.stepnext::before{animation:none}}
+@media print{.stepnext::before{animation:none}}
 .ityp{display:flex;flex-direction:column;gap:6px;margin-bottom:8px}.ityp>span{font-size:13px}.ityp .chips{display:flex;flex-wrap:wrap;gap:6px}
 .chip[aria-pressed=true]{background:var(--beam-soft);border-color:var(--beam);color:var(--ink)}
 .chip:disabled{cursor:default;opacity:.9}
