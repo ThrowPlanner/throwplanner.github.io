@@ -298,5 +298,11 @@ async function exportPDF(hide=[],me=null){const b=$('pdfBtn');if(b.getAttribute(
   catch(e){console.warn('pdf',e);closed.forEach(d=>d.open=false);pdfToast(`<span>${step==='load'?'PDF-modulet kunne ikke hentes – tjek internetforbindelsen og prøv igen.':'PDF\'en kunne ikke laves i denne browser.'}</span>`)}
   finally{b.removeAttribute('aria-busy');hide.forEach(el=>el.classList.remove('pdfhide'));if(head)head.remove()}}
 $('pdfBtn').addEventListener('click',pdfDialog);
+// boks 03: terminalsiden (input/output) i stort format
+$('pjTerm').addEventListener('click',()=>{const nm=MODELS[slotMI()].m.split(' (')[0],k=pjSlug(nm),src=termImg(k),url=termRes(k);if(!src)return;
+  const d=document.createElement('dialog');d.className='pdfdlg termdlg';
+  d.innerHTML=`<h3>${esc(nm)} – input/output-terminaler</h3><img src="${src}" alt="Terminalsiden på ${esc(nm)}"><div class="pdfbtns">${url?`<a class="manbtn termhi" href="${url}" target="_blank" rel="noopener noreferrer">Større billeder hos Panasonic ↗</a>`:''}<button type="button" class="btn" value="no">Luk</button></div>`;
+  d.querySelector('[value="no"]').addEventListener('click',()=>d.close());d.addEventListener('click',e=>{if(e.target===d)d.close()});d.addEventListener('close',()=>d.remove());
+  document.body.appendChild(d);d.showModal()});
 // boks 09: klik på forklaringen for at vise/skjule lag i tegningen
 document.querySelectorAll('[data-l9]').forEach(b=>b.addEventListener('click',()=>{const k=b.dataset.l9;S.l9={...(S.l9||{}),[k]:!((S.l9||{})[k]!==false)};render()}));

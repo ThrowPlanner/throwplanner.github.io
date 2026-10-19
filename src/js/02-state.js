@@ -118,6 +118,12 @@ const PAN_SERIES={'pt-rq35k2':'pt-rq35-series','pt-rz34k2':'pt-rq35-series','pt-
   'pt-mz20kl':'pt-mz20-series','pt-mz17kl':'pt-mz20-series','pt-mz14kl':'pt-mz20-series','pt-mz11kl':'pt-mz20-series','pt-vmz51s':'pt-vmz71-series','pt-lmz460':'pt-lmz460-series','pt-lmz420':'pt-lmz460-series','pt-tmz400':'pt-tmz400-series'};
 const pjSlug=name=>name.split(' (')[0].split('/')[0].trim().toLowerCase();
 const pjURL=m=>{const k=pjSlug(m.m);return PAN+'projectors/'+(PAN_SERIES[k]?PAN_SERIES[k]+'/':'')+k};
+/* terminalsiden (input/output) – billeder fra Panasonics ressourcesider, indlejret som 't:<slug>' i images.json ('=' foran = samme billede som en anden model) */
+const TERM_RES={cmz50:'cmz50',frq60:'frq60 frq50',frz60:'frz60 frz50',htq20:'htq20',lmz460:'lmz460 lmz420',mz20k:'mz20kl mz17kl mz14kl mz11kl',mz882:'mz882 mz782 mz682',
+  req15:'req15 rez15',req12:'req12 req10 req80',rez12:'rez12 rez10 rez80',rq25k:'rq25k rq18k rz24k rz17k',rq35k:'rq35k2 rz34k2',rq45k:'rq45k rz44k',rq50k:'rq50k',
+  rq7:'rq7l rq6l rz7l rz6l',tmz400:'tmz400',vmq85:'vmq85 vmq75 vmq65',vmz71:'vmz51s',vmz7st:'vmz7st vmz6st',vmz82:'vmz82 vmz72 vmz62'};
+const termRes=k=>{const s=k.replace(/^pt-/,'');const p=Object.keys(TERM_RES).find(p=>TERM_RES[p].split(' ').includes(s));return p?'https://docs.connect.panasonic.com/projector/products/'+p+'/resources/':null};
+const termImg=k=>{let v=IMGS['t:'+k];if(v&&v[0]==='=')v=IMGS[v.slice(1)];return v||null};
 const lnURL=(m,ln)=>{const n=ln[0];const parts=n.split('/').map(x=>x.trim());const et=parts.find(x=>/^ET-/i.test(x));
   if(!et)return pjURL(m);                                   // indbygget/standardlinse: projektorens side
   const k=et.toLowerCase().replace(/^et-dle020g$/,'et-dle020');
