@@ -1,4 +1,4 @@
-# Projection Throw Planner – noter til Claude
+# Throw Planner – noter til Claude
 
 Simons projektor-planlægningsapp (Panasonic-data). Live: https://throwplanner.github.io/ (GitHub: ThrowPlanner/throwplanner.github.io).
 Claude-artifact (én-fils-udgaven): https://claude.ai/artifact/VCjkMS7no1dYqKRxV1qPH5 – opdateres med `dist/artifact.html`

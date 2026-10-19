@@ -1,5 +1,5 @@
 {
-  "name": "Projection Throw Planner",
+  "name": "Throw Planner",
   "short_name": "Throw Planner",
   "description": "Projector throw distance, lens shift, edge blend and contrast planner based on Panasonic data.",
   "start_url": "./",

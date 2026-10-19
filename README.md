@@ -1,4 +1,4 @@
-# Projection Throw Planner
+# Throw Planner
 
 Web app for planning projector installations with current Panasonic projectors and lenses (EU range).
 

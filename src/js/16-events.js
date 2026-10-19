@@ -285,7 +285,7 @@ async function exportPDF(hide=[],me=null){const b=$('pdfBtn');if(b.getAttribute(
   const closed=[...document.querySelectorAll('details')].filter(d=>!d.open&&!d.closest('[hidden]'));let step='load';
   try{if(!window.PTP_PDF)await new Promise((ok,no)=>{const sc=document.createElement('script');sc.src='pdfexport.js';sc.onload=ok;sc.onerror=()=>no(new Error('load'));document.head.appendChild(sc)});
     step='make';closed.forEach(d=>d.open=true);await new Promise(r=>requestAnimationFrame(()=>requestAnimationFrame(()=>setTimeout(r,120))));
-    const blob=await window.PTP_PDF({title:'Projection Throw Planner'});closed.forEach(d=>d.open=false);
+    const blob=await window.PTP_PDF({title:'Throw Planner'});closed.forEach(d=>d.open=false);
     const vn={aud:'Auditorium',museum:'Museum',theater:'Theatre',immersive:'Immersive'}[S.venue]||S.venue,dt=new Date().toISOString().slice(0,10);
     const name=`Projection-Throw-Planner_${vn}_${dt}.pdf`;step='save';
     if(PDFURL)URL.revokeObjectURL(PDFURL);PDFURL=URL.createObjectURL(blob);
@@ -294,7 +294,7 @@ async function exportPDF(hide=[],me=null){const b=$('pdfBtn');if(b.getAttribute(
     else if(!window.claude){const a=document.createElement('a');a.href=PDFURL;a.download=name;document.body.appendChild(a);a.click();a.remove();pdfToast('');return}
     else why='unavailable';
     // ingen automatisk gemning her – tilbyd selv at hente eller åbne filen (klik = brugerhandling)
-    pdfToast(`<span>På et claude.ai-link kan kun ejeren af appen gemme filer${why?` (${why})`:''}. Brug web-app-versionen af Projection Throw Planner for at gemme PDF.</span>`)}
+    pdfToast(`<span>På et claude.ai-link kan kun ejeren af appen gemme filer${why?` (${why})`:''}. Brug web-app-versionen af Throw Planner for at gemme PDF.</span>`)}
   catch(e){console.warn('pdf',e);closed.forEach(d=>d.open=false);pdfToast(`<span>${step==='load'?'PDF-modulet kunne ikke hentes – tjek internetforbindelsen og prøv igen.':'PDF\'en kunne ikke laves i denne browser.'}</span>`)}
   finally{b.removeAttribute('aria-busy');hide.forEach(el=>el.classList.remove('pdfhide'));if(head)head.remove()}}
 $('pdfBtn').addEventListener('click',pdfDialog);
