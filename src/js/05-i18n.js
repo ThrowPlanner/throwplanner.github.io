@@ -24,7 +24,8 @@ function render(){
    ['dist','cw','ch','cd','sb','bsd'].forEach(id=>{const el=$('ha_'+id);el.hidden=!A[id];el.textContent=A[id]||'';el.title=A[id]?'Grænsen for rummet er nået':''})}
   const r=calc();
   const set=(id,v)=>{const el=$(id);if(document.activeElement!==el)el.value=v};
-  if(fillLens.mi!==slotMI())fillLens();$('model').value=slotMI();$('lens').value=slotLI();{const o=$('lens').selectedOptions[0];if(o)$('lens').title=o.textContent}$('aspect').value=S.ak;$('cat').value=S.cat;$('minLm').value=S.minLm;
+  if(fillLens.mi!==slotMI())fillLens();$('model').value=slotMI();$('lens').value=slotLI();{const o=$('lens').selectedOptions[0];if(o)$('lens').title=o.textContent}
+  {const lk=!!S.lockLens;$('lens').disabled=lk;$('lensLock3').setAttribute('aria-pressed',lk);$('lensLock3').title=lk?'Optikken er låst – klik for at låse op':'Lås optikken – så skifter appen den ikke automatisk'}$('aspect').value=S.ak;$('cat').value=S.cat;$('minLm').value=S.minLm;
   set('dist',S.L.toFixed(2));set('cw',S.cw.toFixed(2));set('ch',r.CH.toFixed(2));set('cd',Math.round(Math.hypot(r.CW,r.CH)/IN));
   set('sb',S.sb.toFixed(2));if(CLAMP){$('dist').value=S.L.toFixed(2);$('cw').value=S.cw.toFixed(2);$('ch').value=r.CH.toFixed(2);$('cd').value=Math.round(Math.hypot(r.CW,r.CH)/IN);$('sb').value=S.sb.toFixed(2)}
   set('rd',S.rd);set('rw',S.rw);set('rh',S.rh);set('r1',S.r1.toFixed(1));set('rp',S.rp.toFixed(2));set('gain',S.gain.toFixed(2));set('amb',S.amb);
