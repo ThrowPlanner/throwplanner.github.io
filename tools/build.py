@@ -49,6 +49,7 @@ HEAD = '''<!doctype html>
 <link rel="manifest" href="manifest.webmanifest">
 <link rel="icon" type="image/png" href="icon-192.png">
 <link rel="apple-touch-icon" href="icon-180.png">
+<script defer src="https://cloud.umami.is/script.js" data-website-id="beefa004-7993-4963-ba1f-2f1bdbdb1a51" data-domains="throwplanner.com"></script>
 '''
 BOOT = "fetch('img.json').then(r=>r.json()).then(j=>{IMGS=j;render()}).catch(()=>{IMGS={};render()});"
 

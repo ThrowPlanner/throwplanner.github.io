@@ -25,7 +25,7 @@ $('aspect').addEventListener('change',e=>{const r0=calc(),dm=S.lockW?S.lockDim||
   zeroShift();render()});
 $('cat').addEventListener('change',e=>{const m0=S.mi;S.cat=+e.target.value;fillModels();if(!SLOT()&&S.mi!==m0){fitLens();zeroShift()}render()});
 $('minLm').addEventListener('change',e=>{const m0=S.mi;S.minLm=+e.target.value;fillCats();fillModels();if(!SLOT()&&S.mi!==m0){fitLens();zeroShift()}render()});
-$('model').addEventListener('change',e=>{const k=SLOT();if(k){S.immPj={...(S.immPj||{}),[k]:{mi:+e.target.value,li:0}};S.immAdj={...(S.immAdj||{}),[k]:{}};fillLens();render();return}const ln=S.lockLens&&M().L[S.li]?M().L[S.li][0]:null;S.pcr=null;S.mi=+e.target.value;S.li=ln?Math.max(0,M().L.findIndex(l=>l[0]===ln)):0;fillLens();frameDefaults();fitLens();zeroShift();render()});
+$('model').addEventListener('change',e=>{const k=SLOT();if(k){S.immPj={...(S.immPj||{}),[k]:{mi:+e.target.value,li:0}};S.immAdj={...(S.immAdj||{}),[k]:{}};fillLens();render();return}const ln=S.lockLens&&M().L[S.li]?M().L[S.li][0]:null;S.pcr=null;S.mi=+e.target.value;S.li=ln?Math.max(0,M().L.findIndex(l=>l[0]===ln)):0;fillLens();frameDefaults();fitLens();zeroShift();render();TRK('Projektor',{model:M().m})});
 $('lens').addEventListener('change',e=>{const k=SLOT();if(k){S.immPj={...(S.immPj||{}),[k]:{mi:slotMI(),li:+e.target.value}};S.immAdj={...(S.immAdj||{}),[k]:{}};render();return}S.li=+e.target.value;fitLens();zeroShift();render()});
 $('frameSel').addEventListener('change',e=>{S.frameId=e.target.value;applyFrame();render()});
 
@@ -85,7 +85,7 @@ $('iblBest').addEventListener('click',e=>{if(e.target.closest('[data-best]'))use
 document.querySelectorAll('[data-slot]').forEach(b=>b.addEventListener('click',()=>{S.immSel=b.dataset.slot;fillLens();render()}));
 $('pjSlotInfo').addEventListener('click',e=>{const b=e.target.closest('[data-reset]');if(!b)return;const k=b.dataset.reset;const p={...(S.immPj||{})};delete p[k];S.immPj=p;S.immAdj={...(S.immAdj||{}),[k]:{}};fillLens();render()});
 document.querySelectorAll('[data-imm]').forEach(b=>b.addEventListener('click',()=>{S.imm={...S.imm,[b.dataset.imm]:!S.imm[b.dataset.imm]};render()}));
-document.querySelectorAll('button[data-venue]').forEach(b=>b.addEventListener('click',()=>{const prev=S.venue,nv=b.dataset.venue;S.venue=nv;if(nv==='golf'&&prev!=='golf')golfEnter();else if(prev==='golf'&&nv!=='golf'){golfLeave();fillCats();fillModels();fillLens()}render()}));
+document.querySelectorAll('button[data-venue]').forEach(b=>b.addEventListener('click',()=>{const prev=S.venue,nv=b.dataset.venue;S.venue=nv;if(nv!==prev)TRK('Tema',{tema:nv});if(nv==='golf'&&prev!=='golf')golfEnter();else if(prev==='golf'&&nv!=='golf'){golfLeave();fillCats();fillModels();fillLens()}render()}));
 {const gset=(id,f)=>$(id).addEventListener('change',e=>{const v=parseFloat(String(e.target.value).replace(',','.'));if(!Number.isFinite(v))return;S.golf={...GS(),...f(v)};render()});
  gset('gH',v=>{const h=Math.max(1.4,Math.min(2.1,v)),g=GS();return {h,R:Math.round(g.R*h/g.h*100)/100}});gset('gR',v=>({R:Math.max(1,Math.min(2.4,v))}));gset('gTh',v=>({th:Math.max(30,Math.min(80,v))}));
  gset('gTee',v=>({tee:Math.max(1,Math.min(S.rd-.5,v))}));gset('gMW',v=>({matW:Math.max(.5,Math.min(S.rw,v))}));gset('gMD',v=>({matD:Math.max(.5,Math.min(S.rd,v))}));
@@ -287,7 +287,7 @@ async function exportPDF(hide=[],me=null){const b=$('pdfBtn');if(b.getAttribute(
     step='make';closed.forEach(d=>d.open=true);await new Promise(r=>requestAnimationFrame(()=>requestAnimationFrame(()=>setTimeout(r,120))));
     const blob=await window.PTP_PDF({title:'Throw Planner'});closed.forEach(d=>d.open=false);
     const vn={aud:'Auditorium',museum:'Museum',theater:'Theatre',immersive:'Immersive'}[S.venue]||S.venue,dt=new Date().toISOString().slice(0,10);
-    const name=`Projection-Throw-Planner_${vn}_${dt}.pdf`;step='save';
+    const name=`Throw-Planner_${vn}_${dt}.pdf`;step='save';TRK('PDF',{tema:S.venue});
     if(PDFURL)URL.revokeObjectURL(PDFURL);PDFURL=URL.createObjectURL(blob);
     const dl=await dlP;let why='';
     if(dl){try{await dl.save({filename:name,data:blob});pdfToast('');return}catch(e){const c=(e&&e.code)||'unavailable';if(c==='declined'){pdfToast('');return}why=c}}

@@ -14,7 +14,7 @@ function saveDialog(){const vn={aud:'Auditorium',museum:'Museum',theater:'Theatr
   d.querySelector('[value="no"]').addEventListener('click',()=>d.close());d.addEventListener('close',()=>d.remove());
   d.querySelector('form').addEventListener('submit',e=>{e.preventDefault();const n=clean();if(!n)return;S.projName=n;save();d.close();saveProject(n+'.json')});
   d.showModal();inp.select()}
-async function saveProject(name){const blob=new Blob([JSON.stringify(projData(),null,1)],{type:'application/json'});
+async function saveProject(name){TRK('Gem projekt',{tema:S.venue});const blob=new Blob([JSON.stringify(projData(),null,1)],{type:'application/json'});
   if(window.claude&&window.claude.use){try{const dl=await Promise.race([Promise.resolve(window.claude.use('downloads')),new Promise(r=>setTimeout(()=>r(null),4000))]);if(dl){await dl.save({filename:name,data:blob});return}}catch(e){if(e&&e.code==='declined')return}
     pdfToast('<span>På et claude.ai-link kan kun ejeren af appen gemme filer. Brug web-app-versionen af Throw Planner for at gemme projektet.</span>');return}
   const u=URL.createObjectURL(blob),a=document.createElement('a');a.href=u;a.download=name;document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(u),4000)}
@@ -23,7 +23,7 @@ function loadProject(txt){let d;try{d=JSON.parse(txt)}catch(e){pdfToast('<span>F
   const find=(n,mi,li)=>{if(!n||!n.model)return [mi,li];let m=MODELS[mi];if(!m||m.m!==n.model){const j=MODELS.findIndex(x=>x.m===n.model);if(j<0)return [mi,li];mi=j;m=MODELS[j]}
     if(!m.L[li]||m.L[li][0]!==n.lens){const k=m.L.findIndex(l=>l[0]===n.lens);li=k<0?0:k}return [mi,li]};
   const N=d.names||{};[st.mi,st.li]=find(N.main,st.mi,st.li);if(st.immPj&&N.imm)for(const k in st.immPj){const q=st.immPj[k];if(q)[q.mi,q.li]=find(N.imm[k],q.mi,q.li)}
-  const keep={lang:S.lang,mode:S.mode},nx={...JSON.parse(JSON.stringify(S0)),...st,...keep,defREQ:true};
+  TRK('Åbn projekt',{tema:st.venue||''});const keep={lang:S.lang,mode:S.mode},nx={...JSON.parse(JSON.stringify(S0)),...st,...keep,defREQ:true};
   try{localStorage.setItem('kasteplan5',JSON.stringify(nx));if(d.planImage)localStorage.setItem('kasteplan_planimg',d.planImage);else localStorage.removeItem('kasteplan_planimg');
     if(localStorage.getItem('kasteplan5'))return location.reload()}catch(e){}
   // ingen lokal lagring (fx privat vindue): indlæs direkte
@@ -44,6 +44,6 @@ $('sizeHint').addEventListener('click',e=>{const b=e.target.closest('[data-lsug]
 $('modeBtn').addEventListener('click',()=>{const dark=document.documentElement.classList.contains('isdark');S.mode=dark?'light':'dark';save();applyMode();render()});
 if(MQ&&MQ.addEventListener)MQ.addEventListener('change',()=>{if(!S.mode){applyMode();render()}});
 applyMode();
-document.querySelectorAll('[data-lang]').forEach(b=>b.addEventListener('click',()=>{S.lang=b.dataset.lang;save();document.querySelectorAll('[data-lang]').forEach(x=>x.setAttribute('aria-pressed',x.dataset.lang===S.lang));render();I18.all()}));
+document.querySelectorAll('[data-lang]').forEach(b=>b.addEventListener('click',()=>{S.lang=b.dataset.lang;TRK('Sprog',{sprog:S.lang});save();document.querySelectorAll('[data-lang]').forEach(x=>x.setAttribute('aria-pressed',x.dataset.lang===S.lang));render();I18.all()}));
 if(!['da','en','ja'].includes(S.lang))S.lang='en';document.querySelectorAll('[data-lang]').forEach(x=>x.setAttribute('aria-pressed',x.dataset.lang===S.lang));
 I18.all();I18.start();
