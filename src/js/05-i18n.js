@@ -31,7 +31,11 @@ function render(){
   set('fw',Math.round(S.fw));set('fh',Math.round(S.fh));set('fd',Math.round(S.fd));set('bc',S.bc);set('br',S.br);set('ov',S.ov);
   {const pa=planActive(),lw=!!S.lockW,ll=!!S.lockL;$('cw').disabled=lw;$('ch').disabled=lw;$('cd').disabled=lw;$('dist').disabled=ll;
    $('lockL').setAttribute('aria-pressed',ll);$('lockW').setAttribute('aria-pressed',lw);$('dist').closest('.bigf').classList.toggle('locked',ll);$('cw').closest('.bigf').classList.toggle('locked',lw);
-   $('lockL').title=ll?'Afstanden er låst – klik for at låse op':'Lås afstanden – så kan du se, om projektor og optik passer';$('lockW').title=lw?'Billedbredden er låst – klik for at låse op':'Lås billedbredden – så kan du se, om projektor og optik passer'}
+   $('lockL').title=ll?'Afstanden er låst – klik for at låse op':'Lås afstanden – så kan du se, om projektor og optik passer';$('lockW').title=lw?'Billedbredden er låst – klik for at låse op':'Lås billedbredden – så kan du se, om projektor og optik passer';
+   // billedstørrelsen kan låses fra bredde, højde eller diagonal – det valgte mål holdes, hvis formatet skiftes
+   const dim=S.lockDim||'w';$('lockW').setAttribute('aria-pressed',lw&&dim==='w');$('lockH').setAttribute('aria-pressed',lw&&dim==='h');$('lockD').setAttribute('aria-pressed',lw&&dim==='d');
+   $('ch').closest('.row').classList.toggle('locked',lw&&dim==='h');$('cd').closest('.row').classList.toggle('locked',lw&&dim==='d');$('cw').closest('.bigf').classList.toggle('locked',lw&&dim==='w');
+   $('lockH').title=lw&&dim==='h'?'Billedhøjden er låst – klik for at låse op':'Lås billedhøjden';$('lockD').title=lw&&dim==='d'?'Diagonalen er låst – klik for at låse op':'Lås diagonalen'}
   $('frame').checked=S.frame;$('frameBox').hidden=!S.frame;$('blend').checked=S.blend;$('portrait').checked=!!S.portrait;$('bauto').checked=!!S.bauto;$('bthRow').hidden=!S.bauto;$('bc').disabled=$('br').disabled=!!S.bauto;if(document.activeElement!==$('bth')&&S.bth)$('bth').value=S.bth;$('blendBox').hidden=!S.blend;$('blendOff').hidden=S.blend;
   {const on=stackOn();$('stackOn').checked=on;$('stackBox').hidden=!on;if(on){set('stack',r.stk);const n=(S.blend?r.N*r.R:1)*r.stk;
    $('stackHint').innerHTML=`Lyset ganges med ${r.stk}, så billedet bliver ${r.stk} gange lysere. Kontrasten i 06 regnes med det samlede lys.${n>r.stk?` I alt <b>${n}</b> projektorer.`:''}`;

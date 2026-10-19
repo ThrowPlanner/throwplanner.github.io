@@ -74,6 +74,9 @@ body::before{content:"";position:fixed;inset:0;z-index:-1;pointer-events:none;op
 .pdfhead img{max-height:64px;max-width:220px;object-fit:contain}
 .pdfhead .ph1{font-size:24px;font-weight:800;color:var(--ink);letter-spacing:-.01em}
 .pdfhead .ph2{font-size:14px;color:var(--muted);margin-top:4px}
+.pdfdlg .savename{display:grid;gap:6px;color:var(--muted);font-size:13px;cursor:default}
+.pdfdlg .savename .inl{display:flex;align-items:center;gap:6px}
+.pdfdlg .savename input{flex:1;min-width:0;font:inherit;font-size:14px;color:var(--ink);background:var(--bg);border:1px solid var(--line);border-radius:8px;padding:7px 10px}
 .pdfdlg .pdfgo{color:var(--beam);font-weight:700}.pdfdlg .pdfgo:disabled{opacity:.5;cursor:not-allowed}
 #pdfToast[hidden]{display:none}#pdfToast span{flex-basis:100%}#pdfToast .pb{font:inherit;cursor:pointer;font-weight:600;padding:5px 12px;border-radius:7px;border:1px solid var(--beam);color:var(--ink);text-decoration:none;background:var(--beam-soft)}#pdfToast .px{position:absolute;right:8px;top:6px;border:0;background:none;color:var(--muted);font-size:18px;cursor:pointer}
 .pdfbtn{display:inline-flex;align-items:center;gap:6px;height:38px;padding:0 12px;border-radius:8px;border:1px solid var(--line);background:var(--bg2);color:var(--ink);font:inherit;font-size:13px;font-weight:600;cursor:pointer;white-space:nowrap}
@@ -179,6 +182,8 @@ input[type=range]{width:100%;accent-color:var(--beam);margin:4px 0}
 .lockb .shk-c,.lockb[aria-pressed=true] .shk-o{display:none}.lockb[aria-pressed=true] .shk-c{display:inline}
 .bigf.locked{border-color:var(--beam)}
 .bigf.locked input{color:var(--beam)}
+.lockb.lockm{width:26px;height:24px;margin:0 6px 0 0;flex:none}
+.row.locked input{color:var(--beam)}
 .bigf label{font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);font-family:var(--f-mono)}
 .bigf .inl input{width:100%;border:0;background:transparent;padding:0;font-size:22px;font-weight:600;text-align:left}
 .bigf .inl input:focus-visible{outline:none}
