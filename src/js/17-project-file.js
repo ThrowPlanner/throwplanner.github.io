@@ -3,8 +3,18 @@ const PROJ_FMT='projection-throw-planner';
 function projData(){const st=JSON.parse(JSON.stringify(S));delete st.lang;delete st.mode;
   const nm=(mi,li)=>{const m=MODELS[mi];return m?{model:m.m,lens:(m.L[li]||[''])[0]}:null};const imm={};for(const k in (S.immPj||{})){const q=S.immPj[k];if(q)imm[k]=nm(q.mi,q.li)}
   return {format:PROJ_FMT,version:1,app:'Projection Throw Planner',saved:new Date().toISOString(),names:{main:nm(S.mi,S.li),imm},state:st,planImage:PLANIMG||null}}
-async function saveProject(){const vn={aud:'Auditorium',museum:'Museum',theater:'Theatre',immersive:'Immersive'}[S.venue]||S.venue,dt=new Date().toISOString().slice(0,10);
-  const name=`Projection-Throw-Planner_${vn}_${dt}.json`,blob=new Blob([JSON.stringify(projData(),null,1)],{type:'application/json'});
+// «Gem projekt»: først en lille dialog, hvor filnavnet kan skrives (huskes i projektet som S.projName)
+function saveDialog(){const vn={aud:'Auditorium',museum:'Museum',theater:'Theatre',immersive:'Immersive',golf:'Golf-Sim'}[S.venue]||S.venue,dt=new Date().toISOString().slice(0,10);
+  const def=S.projName||(typeof pdfMe==='function'&&pdfMe().proj)||`Projection-Throw-Planner_${vn}_${dt}`;let d=$('saveDlg');if(d)d.remove();
+  d=document.createElement('dialog');d.id='saveDlg';d.className='pdfdlg';
+  d.innerHTML=`<form method="dialog"><h3>Gem projekt</h3><label class="savename">Filnavn<span class="inl"><input type="text" id="saveName" value="${esc(def)}" spellcheck="false"><span class="unit notr">.json</span></span></label>
+    <div class="pdfbtns"><button type="button" class="btn" value="no">Annuller</button><button type="submit" class="btn pdfgo" value="ok">Gem</button></div></form>`;
+  document.body.appendChild(d);const inp=d.querySelector('#saveName'),go=d.querySelector('.pdfgo');
+  const clean=()=>inp.value.replace(/\.json$/i,'').replace(/[\\/:*?"<>|\u0000-\u001f]+/g,'-').trim();const sync=()=>{go.disabled=!clean()};sync();inp.addEventListener('input',sync);
+  d.querySelector('[value="no"]').addEventListener('click',()=>d.close());d.addEventListener('close',()=>d.remove());
+  d.querySelector('form').addEventListener('submit',e=>{e.preventDefault();const n=clean();if(!n)return;S.projName=n;save();d.close();saveProject(n+'.json')});
+  d.showModal();inp.select()}
+async function saveProject(name){const blob=new Blob([JSON.stringify(projData(),null,1)],{type:'application/json'});
   if(window.claude&&window.claude.use){try{const dl=await Promise.race([Promise.resolve(window.claude.use('downloads')),new Promise(r=>setTimeout(()=>r(null),4000))]);if(dl){await dl.save({filename:name,data:blob});return}}catch(e){if(e&&e.code==='declined')return}
     pdfToast('<span>På et claude.ai-link kan kun ejeren af appen gemme filer. Brug web-app-versionen af Projection Throw Planner for at gemme projektet.</span>');return}
   const u=URL.createObjectURL(blob),a=document.createElement('a');a.href=u;a.download=name;document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(u),4000)}
@@ -20,7 +30,7 @@ function loadProject(txt){let d;try{d=JSON.parse(txt)}catch(e){pdfToast('<span>F
   for(const k of Object.keys(S))delete S[k];Object.assign(S,nx);PLANIMG=d.planImage||null;
   try{fillCats();fillModels();fillLens();fillFrames()}catch(e){}render();I18.all()}
 const readProj=f=>{if(!f)return;const r=new FileReader();r.onload=()=>loadProject(String(r.result));r.readAsText(f)};
-$('projSave').addEventListener('click',saveProject);
+$('projSave').addEventListener('click',saveDialog);
 $('projOpen').addEventListener('click',()=>{$('projFile').value='';$('projFile').click()});
 $('projFile').addEventListener('change',e=>readProj(e.target.files[0]));
 // træk en projektfil ind på siden

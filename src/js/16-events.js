@@ -4,7 +4,7 @@ num('dist',v=>{if(!S.lockL)S.L=Math.max(.1,v)});
 $('iov').addEventListener('input',e=>{const v=parseFloat(e.target.value);if(Number.isFinite(v)){S.immOv=Math.max(0,Math.min(50,v));render()}});
 $('iblRows').addEventListener('input',e=>{const t=e.target.closest('[data-g]');if(!t)return;const v=parseInt(t.value,10);if(!(v>=1))return;const k=t.dataset.g;S.immGrid={...(S.immGrid||{}),[k]:{...((S.immGrid||{})[k]||{}),[t.dataset.ax]:Math.min(20,v)}};render()});
 $('iblRows').addEventListener('click',e=>{const b=e.target.closest('[data-auto]');if(!b)return;const k=b.dataset.auto;S.immGrid={...(S.immGrid||{}),[k]:{}};S.immAdj={...(S.immAdj||{}),[k]:{}};render()});
-$('lockL').addEventListener('click',()=>{S.lockL=!S.lockL;render()});$('lockW').addEventListener('click',()=>{S.lockW=!S.lockW;render()});
+$('lockL').addEventListener('click',()=>{S.lockL=!S.lockL;render()});for(const [id,dm] of [['lockW','w'],['lockH','h'],['lockD','d']])$(id).addEventListener('click',()=>{const on=S.lockW&&(S.lockDim||'w')===dm;S.lockW=!on;S.lockDim=dm;render()});
 num('cw',v=>{if(v>0&&!S.lockW)S.cw=v});
 num('ch',v=>{const r=calc();if(v>0&&!S.lockW)S.cw=v*r.CW/r.CH});
 num('cd',v=>{const r=calc();if(v>0&&!S.lockW)S.cw=v*IN*r.CW/Math.hypot(r.CW,r.CH)});
@@ -19,7 +19,10 @@ $('portrait').addEventListener('change',e=>{S.portrait=e.target.checked;S.bdx={}
 $('bauto').addEventListener('change',e=>{S.bauto=e.target.checked;if(S.bauto){S.bth=Math.round(calc().CH*100)/100}render()});
 num('bth',v=>S.bth=Math.max(0.2,v));
 num('bc',v=>S.bc=Math.max(1,Math.min(8,Math.round(v))));num('br',v=>S.br=Math.max(1,Math.min(4,Math.round(v))));num('ov',v=>S.ov=Math.max(0,Math.min(50,v)));
-$('aspect').addEventListener('change',e=>{S.ak=e.target.value;zeroShift();render()});
+$('aspect').addEventListener('change',e=>{const r0=calc(),dm=S.lockW?S.lockDim||'w':'w';S.ak=e.target.value;
+  // låst højde eller diagonal: bredden regnes om, så det låste mål bliver det samme i det nye format
+  if(dm!=='w'){const r1=calc();if(dm==='h'&&r1.CH>0)S.cw*=r0.CH/r1.CH;else if(dm==='d'){const d0=Math.hypot(r0.CW,r0.CH),d1=Math.hypot(r1.CW,r1.CH);if(d1>0)S.cw*=d0/d1}}
+  zeroShift();render()});
 $('cat').addEventListener('change',e=>{const m0=S.mi;S.cat=+e.target.value;fillModels();if(!SLOT()&&S.mi!==m0){fitLens();zeroShift()}render()});
 $('minLm').addEventListener('change',e=>{const m0=S.mi;S.minLm=+e.target.value;fillCats();fillModels();if(!SLOT()&&S.mi!==m0){fitLens();zeroShift()}render()});
 $('model').addEventListener('change',e=>{const k=SLOT();if(k){S.immPj={...(S.immPj||{}),[k]:{mi:+e.target.value,li:0}};S.immAdj={...(S.immAdj||{}),[k]:{}};fillLens();render();return}S.pcr=null;S.mi=+e.target.value;S.li=0;fillLens();frameDefaults();fitLens();zeroShift();render()});

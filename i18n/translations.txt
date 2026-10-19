@@ -184,6 +184,12 @@ Vis hele tegningen|Fit the drawing|図面全体を表示
 Vælg hvad PDF'en skal vise|Choose what the PDF should show|PDFに含める項目を選択
 =Lav PDF|Create PDF|PDFを作成
 =Annuller|Cancel|キャンセル
+=Filnavn|File name|ファイル名
+=Gem|Save|保存
+=Lås billedhøjden|Lock the image height|画面高さをロック
+=Lås diagonalen|Lock the diagonal|対角をロック
+Billedhøjden er låst – klik for at låse op|The image height is locked – click to unlock|画面高さはロック中 – クリックで解除
+Diagonalen er låst – klik for at låse op|The diagonal is locked – click to unlock|対角はロック中 – クリックで解除
 Dine oplysninger|Your details|お客様情報
 =Firmanavn|Company name|会社名
 =Person|Person|担当者
