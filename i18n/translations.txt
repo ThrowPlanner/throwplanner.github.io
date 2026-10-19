@@ -702,3 +702,10 @@ Ingen manual|No manual|マニュアルなし
 Åbn manual for|Open manual for|マニュアルを開く：
 Panasonic har ingen manual for|Panasonic has no manual for|製品ページにマニュアルがありません：
 på produktsiden|on the product page|
+Input/output-terminaler|Input/output terminals|入出力端子
+input/output-terminaler|input/output terminals|入出力端子
+Intet terminalbillede|No terminal image|端子画像なし
+=Panasonic har intet terminalbillede for denne model|Panasonic has no terminal image for this model|このモデルの端子画像はPanasonicにありません
+Vis terminalsiden på|Show the terminal side of|端子面を表示：
+Terminalsiden på|Terminal side of|端子面：
+Større billeder hos Panasonic|Larger images at Panasonic|Panasonicで大きな画像を見る
