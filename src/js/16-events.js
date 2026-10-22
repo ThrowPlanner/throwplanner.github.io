@@ -110,6 +110,12 @@ $('dPlan').addEventListener('toggle',e=>{if(S.plan.open!==e.target.open){S.plan.
 $('planFile').addEventListener('change',e=>{planLoad(e.target.files[0]);e.target.value=''});
 document.querySelectorAll('[data-tool]').forEach(b=>b.addEventListener('click',()=>{const p=S.plan;p.tool=b.dataset.tool;if(p.tool==='cal')p.calStep=!p.cal||!p.cal.b?'w':!p.cal2||!p.cal2.b?'l':'h';render()}));
 $('calM').addEventListener('input',e=>{const v=parseFloat(e.target.value);if(v>0){S.plan.calM=v;applyPlanRoom();render()}});
+$('planCw').addEventListener('input',e=>{const v=parseFloat(e.target.value),p=S.plan;if(!(v>=.2)||!p.scr||!p.scr.b)return;
+  if(planActive()){if(S.lockW)return;S.cw=v}
+  else{const sc=planScale();if(!(sc>0))return;const a=p.scr.a,b=p.scr.b,l=len(V(a,b)),c=[(a[0]+b[0])/2,(a[1]+b[1])/2],h=v*sc/2;p.scr.a=[c[0]-(b[0]-a[0])/l*h,c[1]-(b[1]-a[1])/l*h];p.scr.b=[c[0]+(b[0]-a[0])/l*h,c[1]+(b[1]-a[1])/l*h]}
+  render()});
+$('planL').addEventListener('input',e=>{const v=parseFloat(e.target.value);if(v>0&&!S.lockL){S.L=v;render()}});
+$('planPx').addEventListener('input',e=>{const v=parseFloat(e.target.value);if(Number.isFinite(v)&&!S.plan.lock){guardShift({px:S.px},{px:v});render()}});
 $('calL').addEventListener('input',e=>{const v=parseFloat(e.target.value);if(v>0){S.plan.calL=v;applyPlanRoom();render()}});
 $('calH').addEventListener('input',e=>{const v=parseFloat(e.target.value);S.plan.calH=v>0?v:null;applyPlanRoom();render()});
 document.querySelectorAll('[data-cal]').forEach(b=>b.addEventListener('click',()=>{const p=S.plan;p.tool='cal';p.calStep=b.dataset.cal;render()}));  // beholder linjen – punkterne kan nu flyttes, eller man tegner en ny
