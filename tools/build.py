@@ -34,6 +34,7 @@ def page():
     assert s.count('/*@styles*/\n') == 1 and s.count('/*@scripts*/\n') == 1
     s = s.replace('/*@styles*/\n', read('src', 'styles.css')).replace('/*@scripts*/\n', js)
     s = s.replace('/*__CATALOG__*/', read('data', 'catalog.json')).replace('/*__I18N__*/', translations())
+    s = s.replace('/*__MENUS__*/', read('data', 'menus.json'))
     return s
 
 HEAD = '''<!doctype html>
