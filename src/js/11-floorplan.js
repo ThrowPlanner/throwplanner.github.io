@@ -31,7 +31,13 @@ function drawPlan(r){
    const nx=!has?'up':['w','l','scr','pj'].find(k=>!dn[k]);
    $('planUp').classList.toggle('stepdone',has);['planUp','planUp2'].forEach(id=>$(id).classList.toggle('stepnext',!has));
    document.querySelectorAll('#planTools [data-tool],#calBox [data-cal]').forEach(b=>{const k=b.dataset.tool||b.dataset.cal;b.classList.toggle('stepdone',has&&!!dn[k]);b.classList.toggle('stepnext',k===nx||(k==='cal'&&(nx==='w'||nx==='l')))})}
-  $('calBox').hidden=!PLANIMG;$('planZoom').hidden=!has;if(document.activeElement!==$('calM'))$('calM').value=p.calM;if(document.activeElement!==$('calL'))$('calL').value=p.calL??'';if(document.activeElement!==$('calH'))$('calH').value=p.calH??'';
+  // målefelter pr. fane: 1 rummets mål · 2 lærredets bredde · 3 projektorens afstand og sideforskydning
+  $('calBox').hidden=!PLANIMG||p.tool!=='cal';$('scrBox').hidden=!PLANIMG||p.tool!=='scr'||!(p.scr&&p.scr.b);$('pjBox').hidden=!PLANIMG||p.tool!=='pj'||!planActive();
+  {const sc=planScale(),wNow=planActive()?S.cw:p.scr&&p.scr.b&&sc>0?len(V(p.scr.a,p.scr.b))/sc:null;
+   if(document.activeElement!==$('planCw'))$('planCw').value=wNow!=null?wNow.toFixed(2):'';$('planCw').disabled=!!S.lockW&&planActive();
+   if(document.activeElement!==$('planL'))$('planL').value=S.L.toFixed(2);$('planL').disabled=!!S.lockL;
+   if(document.activeElement!==$('planPx'))$('planPx').value=S.px.toFixed(2);$('planPx').disabled=!!p.lock||!!(S.blend&&r.N>1)}
+$('planZoom').hidden=!has;if(document.activeElement!==$('calM'))$('calM').value=p.calM;if(document.activeElement!==$('calL'))$('calL').value=p.calL??'';if(document.activeElement!==$('calH'))$('calH').value=p.calH??'';
   const cst=p.calStep||'w';document.querySelectorAll('[data-cal]').forEach(b=>b.setAttribute('aria-pressed',p.tool==='cal'&&b.dataset.cal===cst));
   $('planLock').checked=!!p.lock;$('planUse').checked=!!p.use;
   const g=planGeo();

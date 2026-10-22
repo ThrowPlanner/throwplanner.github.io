@@ -176,6 +176,11 @@ træk projektoren på plads. Afstand|drag the projector into place. Distance|プ
 sideforskydning # m · lærred # m bredt (målestok # px/m)|side offset # m · screen # m wide (scale # px/m)|横オフセット # m · スクリーン幅 # m（縮尺 # px/m）
 Plantegningen er ikke i brug. Slå «Brug plantegningens mål» til.|The floor plan is not in use. Turn on “Use floor plan dimensions”.|図面は未使用です。「図面の寸法を使用」をオンにしてください。
 Afstand|Distance|距離
+Lærredsbredde|Screen width|スクリーン幅
+Sideforskydning|Side offset|横方向オフセット
+Lærredets bredde|Width of the screen|スクリーンの幅
+Projektorens afstand til lærredet|Projector distance to the screen|プロジェクターとスクリーンの距離
+Projektorens sideforskydning|Projector side offset|プロジェクターの横方向オフセット
 Hold midt for lærredet|Keep centred on the screen|スクリーン中央に固定
 Brug plantegningens mål|Use floor plan dimensions|図面の寸法を使用
 Fjern|Remove|削除
