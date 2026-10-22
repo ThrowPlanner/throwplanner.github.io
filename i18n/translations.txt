@@ -257,6 +257,8 @@ Gulv|Floor|床
 Front (lærred)|Front (screen)|正面（スクリーン）
 Lysstråle / blend-zone|Light beam / blend zone|光線 / ブレンド領域
 Lens shift-område|Lens shift area|レンズシフト範囲
+Spildlys (sort)|Spill light (black)|漏れ光（黒）
+Vis/skjul – panelet lyser altid hele sit eget format, også uden for billedet|Show/hide – the panel always lights its full native format, also outside the image|表示/非表示 – パネルは画像の外側も含めて常にネイティブ全体を照射します
 Projektor / flyramme|Projector / flying frame|プロジェクター / フレーム
 Mål|Dimensions|寸法
 Snit gennem lokalet|Section through the room|部屋の断面

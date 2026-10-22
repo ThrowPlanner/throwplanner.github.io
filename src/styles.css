@@ -388,7 +388,7 @@ svg.draw text.d{fill:var(--dim);font-weight:600}
 .lgtog button{font:inherit;font-size:12px;color:var(--muted);background:transparent;border:1px solid var(--line);border-radius:999px;padding:4px 10px 4px 8px;cursor:pointer;display:inline-flex;align-items:center}
 .lgtog button:hover{border-color:var(--faint);color:var(--ink)}.lgtog button:focus-visible{outline:2px solid var(--beam);outline-offset:2px}
 .lgtog button[aria-pressed=false]{opacity:.45;text-decoration:line-through;border-style:dashed}
-#front.h-beam .Lbeam,#front.h-shift .Lshift,#front.h-pj .Lpj,#front.h-dim .Ldim{display:none}
+#front.h-beam .Lbeam,#front.h-shift .Lshift,#front.h-spill .Lspill,#front.h-pj .Lpj,#front.h-dim .Ldim{display:none}
 @media print{.lgtog button[aria-pressed=false]{display:none}}
 
 .tbl{overflow-x:auto}
