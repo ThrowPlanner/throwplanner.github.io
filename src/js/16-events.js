@@ -122,8 +122,9 @@ document.querySelectorAll('[data-pz]').forEach(b=>b.addEventListener('click',()=
   const fx=(st.scrollLeft+st.clientWidth/2)/st.scrollWidth,fy=(st.scrollTop+st.clientHeight/2)/st.scrollHeight;render();
   st.scrollLeft=fx*st.scrollWidth-st.clientWidth/2;st.scrollTop=fy*st.scrollHeight-st.clientHeight/2;save()}));
 let scrDraw=null;
-function scrSet(which,q){const p=S.plan,sc=planScale();const o=which==='a'?p.scr.b:p.scr.a;let v=V(o,q),l=len(v);if(l<1)return;
-  if(S.lockW&&sc>0&&p.use){const h=S.cw*sc;q=[o[0]+v[0]/l*h,o[1]+v[1]/l*h]}else if(sc>0&&p.use)S.cw=Math.max(.2,l/sc);
+function scrSet(which,q,keep){const p=S.plan,sc=planScale();const o=which==='a'?p.scr.b:p.scr.a;let v=V(o,q),l=len(v);if(l<1)return;
+  if(keep){const h=len(V(p.scr.a,p.scr.b));q=[o[0]+v[0]/l*h,o[1]+v[1]/l*h]}   // trin 3: kun rotation om det andet punkt
+  else if(S.lockW&&sc>0&&p.use){const h=S.cw*sc;q=[o[0]+v[0]/l*h,o[1]+v[1]/l*h]}else if(sc>0&&p.use)S.cw=Math.max(.2,l/sc);
   p.scr[which]=q;if(!planRaf)planRaf=requestAnimationFrame(()=>{planRaf=0;render()})}
 let calDrag=null;
 $('planSvg').addEventListener('pointerdown',e=>{if(!PLANIMG)return;const q=svgPt(e),p=S.plan;
@@ -131,8 +132,8 @@ $('planSvg').addEventListener('pointerdown',e=>{if(!PLANIMG)return;const q=svgPt
    if(ch&&p[ch.dataset.c]&&p[ch.dataset.c].b){calDrag={c:ch.dataset.c,end:ch.dataset.end};$('planSvg').setPointerCapture(e.pointerId);e.preventDefault();return}
    if(cl&&p[cl.dataset.c]&&p[cl.dataset.c].b){const L=p[cl.dataset.c];calDrag={c:cl.dataset.c,q0:q,a0:L.a.slice(),b0:L.b.slice()};$('planSvg').setPointerCapture(e.pointerId);e.preventDefault();return}}
   // lærredets to punkter (flyt/rotér) og selve lærredet (flyt)
-  const h=planEdit('scr')&&e.target.closest('.scrh');if(h&&p.scr&&p.scr.b){scrDraw={mode:'end',which:h.dataset.end};$('planSvg').setPointerCapture(e.pointerId);e.preventDefault();return}
-  if(planEdit('scr')&&e.target.closest('.scrline')&&p.scr&&p.scr.b){scrDraw={mode:'move',q0:q,a0:p.scr.a.slice(),b0:p.scr.b.slice()};$('planSvg').setPointerCapture(e.pointerId);e.preventDefault();return}
+  const h=planEdit('scr')&&e.target.closest('.scrh');if(h&&p.scr&&p.scr.b){scrDraw={mode:'end',which:h.dataset.end,keep:p.tool==='pj'};$('planSvg').setPointerCapture(e.pointerId);e.preventDefault();return}
+  if(planEdit('scr')&&e.target.closest('.scrline')&&p.scr&&p.scr.b){scrDraw={mode:'move',q0:q,a0:p.scr.a.slice(),b0:p.scr.b.slice(),keep:p.tool==='pj'};$('planSvg').setPointerCapture(e.pointerId);e.preventDefault();return}
   if(p.tool==='scr'&&p.scr&&p.scr.a&&!p.scr.b){p.scr.b=p.scr.a.slice();scrSet('b',q);p.tool='pj';if(p.lock)S.px=0;cancelAnimationFrame(planRaf);planRaf=0;if(planActive()){syncPlan();fitLens();zeroShift()}save();render();e.preventDefault();return}  // klik-klik virker stadig
   if(p.tool==='scr'&&(!p.scr||!p.scr.b||!planGeo())){p.scr={a:q,b:q.slice()};scrDraw={mode:'new'};$('planSvg').setPointerCapture(e.pointerId);e.preventDefault();render();return}
   if(e.target.closest('.pjgrab')||p.tool==='pj'){const g=planGeo();if(!g)return;const gr=e.target.closest('.pjgrab');planDrag={i:gr?+gr.dataset.pj:null};if(gr){const r0=calc(),pj=r0.pjs[+gr.dataset.pj]||r0.pjs[0];const L0=g.at(S.blend?pj.lx:S.px,S.L);planOff=[q[0]-L0[0],q[1]-L0[1]]}else planOff=[0,0];p.tool='pj';$('planSvg').setPointerCapture(e.pointerId);planMove(q);e.preventDefault();return}
@@ -146,11 +147,11 @@ $('planSvg').addEventListener('pointermove',e=>{const q=svgPt(e);
   if(calDrag){const L=S.plan[calDrag.c];if(calDrag.end)L[calDrag.end]=q;else{const d=V(calDrag.q0,q);L.a=[calDrag.a0[0]+d[0],calDrag.a0[1]+d[1]];L.b=[calDrag.b0[0]+d[0],calDrag.b0[1]+d[1]]}
     if(!planRaf)planRaf=requestAnimationFrame(()=>{planRaf=0;render()});return}
   if(scrDraw){const p=S.plan;if(scrDraw.mode==='move'){const d=V(scrDraw.q0,q);p.scr.a=[scrDraw.a0[0]+d[0],scrDraw.a0[1]+d[1]];p.scr.b=[scrDraw.b0[0]+d[0],scrDraw.b0[1]+d[1]];if(!planRaf)planRaf=requestAnimationFrame(()=>{planRaf=0;render()})}
-    else scrSet(scrDraw.mode==='new'?'b':scrDraw.which,q);return}
+    else scrSet(scrDraw.mode==='new'?'b':scrDraw.which,q,scrDraw.keep);return}
   if(planDrag)planMove(q)});
 ['pointerup','pointercancel'].forEach(t=>$('planSvg').addEventListener(t,()=>{
   if(calDrag){calDrag=null;applyPlanRoom();save();render();return}
-  if(scrDraw){const p=S.plan,m=scrDraw.mode;scrDraw=null;if(m==='new'){if(len(V(p.scr.a,p.scr.b))<6){p.scr={a:p.scr.a,b:null}}else{p.tool='pj';if(p.lock)S.px=0}}else if(p.tool==='scr'&&planGeo())p.tool='pj';if(planActive()){fitLens();zeroShift()}save();render();return}
+  if(scrDraw){const p=S.plan,m=scrDraw.mode,keep=scrDraw.keep;scrDraw=null;if(m==='new'){if(len(V(p.scr.a,p.scr.b))<6){p.scr={a:p.scr.a,b:null}}else{p.tool='pj';if(p.lock)S.px=0}}else if(p.tool==='scr'&&planGeo())p.tool='pj';if(planActive()&&!keep){fitLens();zeroShift()}save();render();return}
   if(planDrag){planDrag=null;save()}}));
 let presDrag=null;
 $('side').addEventListener('pointerdown',e=>{if(S.venue==='immersive'||!SIDE||!e.target.closest('.presgrab'))return;presDrag={v:'side'};$('side').setPointerCapture(e.pointerId);e.preventDefault();e.stopImmediatePropagation()},true);

@@ -16,7 +16,8 @@ function applyPlanRoom(){const p=S.plan;if(S.venue==='immersive'||S.venue==='gol
   return ch}
 const PLANZ=[0.25,0.33,0.5,0.67,0.8,1,1.25,1.5,2,3,4];   // zoomtrin for plantegningen
 // må punkterne for 'cal' (bredde), 'cal2' (længde) eller 'scr' (lærred) flyttes i det aktuelle trin?
-const planEdit=c=>{const p=S.plan;return c==='scr'?p.tool==='scr':p.tool==='cal'&&p.calStep===(c==='cal'?'w':'l')};
+// lærredet kan også flyttes/roteres i trin 3 (projektoren følger med, bredden bevares)
+const planEdit=c=>{const p=S.plan;return c==='scr'?p.tool==='scr'||p.tool==='pj':p.tool==='cal'&&p.calStep===(c==='cal'?'w':'l')};
 const planScale=()=>{const p=S.plan;return p.cal&&p.cal.b?len(V(p.cal.a,p.cal.b))/Math.max(.01,p.calM):0};
 function svgPt(e){const svg=$('planSvg'),pt=svg.createSVGPoint();pt.x=e.clientX;pt.y=e.clientY;const q=pt.matrixTransform(svg.getScreenCTM().inverse());return [q.x,q.y]}
 function drawPlan(r){
@@ -40,7 +41,7 @@ function drawPlan(r){
     p.tool==='cal'&&cst==='l'?'<b>1 · Målestok – længde:</b> klik på forvæggen og bagvæggen (på langs af rummet) og skriv længden i feltet «Længde». Højden kan skrives i feltet «Højde» (valgfri). Rummets mål i 02, 09 og 10 opdateres med det samme.'+chkTxt:
     p.tool==='cal'?'<b>1 · Målestok:</b> bredde og længde er sat'+(p.calH?' – og højden':' – skriv evt. højden i feltet «Højde»')+'. Tryk derefter på «2 · Lærred».'+chkTxt:
     !p.scr||!p.scr.b||p.tool==='scr'?'<b>2 · Lærred:</b> tryk på lærredets venstre kant (set fra publikum) og træk hen til højre kant – længden vises i meter. Træk bagefter i de to punkter for at flytte eller rotere lærredet. Bredden kan også rettes under 01 «Billedbredde».':
-    p.use?`<b>3 · Projektor:</b> klik eller træk projektoren på plads – den holder sig inden for billedets bredde og optikkens zoom. Afstand <b>${f2(S.L)} m</b> · sideforskydning ${S.blend&&r.N>1?r.pjs.filter(q=>q.r===0).map(q=>f2(q.lx-q.tx)).join(' / ')+' m (træk hver projektor ud til siden inden for dens lens shift)':f2(S.px)+' m'} · lærred ${f2(g.wM)} m bredt (målestok ${f2(g.sc,1)} px/m)`:'Plantegningen er ikke i brug. Slå «Brug plantegningens mål» til.';
+    p.use?`<b>3 · Projektor:</b> klik eller træk projektoren på plads – den holder sig inden for billedets bredde og optikkens zoom. Træk i lærredet for at flytte det, eller i dets punkter for at rotere det. Afstand <b>${f2(S.L)} m</b> · sideforskydning ${S.blend&&r.N>1?r.pjs.filter(q=>q.r===0).map(q=>f2(q.lx-q.tx)).join(' / ')+' m (træk hver projektor ud til siden inden for dens lens shift)':f2(S.px)+' m'} · lærred ${f2(g.wM)} m bredt (målestok ${f2(g.sc,1)} px/m)`:'Plantegningen er ikke i brug. Slå «Brug plantegningens mål» til.';
   $('planInfo').innerHTML=step;$('planInfo').hidden=!has;
   if(!has){$('planSvg').innerHTML='';return}
   // zoom: under 100 % vises luft omkring tegningen (større viewBox), over 100 % bliver tegningen bredere og kan rulles
