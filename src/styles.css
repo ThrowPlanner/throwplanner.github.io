@@ -70,8 +70,10 @@ body::before{content:"";position:fixed;inset:0;z-index:-1;pointer-events:none;op
 .pdflogo{display:flex;flex-wrap:wrap;align-items:center;gap:8px;font-size:13px;color:var(--muted)}.pdflogo>span{width:100px}
 .pdflogo img{max-height:40px;max-width:120px;background:#fff;border-radius:6px;padding:3px}
 .pdflogo .btn{padding:5px 10px;font-size:12px}
-.pdfhead{display:flex;align-items:center;gap:18px;padding:6px 0 18px;margin-bottom:16px;border-bottom:2px solid var(--beam)}
-.pdfhead img{max-height:64px;max-width:220px;object-fit:contain}
+/* «Dine oplysninger» i PDF'en: egen boks til højre for siden, i bunden (placeres i exportPDF) */
+.pdfhold{position:absolute;padding-right:20px}
+.pdfhead{width:300px;box-sizing:border-box;display:flex;flex-direction:column;align-items:flex-start;gap:12px;padding:18px 20px 20px;border-top:3px solid var(--beam)}
+.pdfhead.card{border-top:3px solid var(--beam)}.pdfhead img{max-height:64px;max-width:220px;object-fit:contain}
 .pdfhead .ph1{font-size:24px;font-weight:800;color:var(--ink);letter-spacing:-.01em}
 .pdfhead .ph2{font-size:14px;color:var(--muted);margin-top:4px}
 .pdfdlg .savename{display:grid;gap:6px;color:var(--muted);font-size:13px;cursor:default}

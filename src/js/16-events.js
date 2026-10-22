@@ -250,11 +250,11 @@ const PDF_NEVER=['11','12'];
 function pdfSections(all){const out=[];document.querySelectorAll('.no').forEach(n=>{const el=n.closest('#kpis')||n.closest('.card,.view');if(!el||out.some(x=>x.el===el)||!el.getClientRects().length)return;
   if(!all&&PDF_NEVER.includes(n.textContent.trim()))return;
   const t=n.nextSibling&&n.nextSibling.nodeType===3?n.nextSibling.nodeValue.trim():'';out.push({no:n.textContent.trim(),t,el})});return out.sort((a,b)=>a.no.localeCompare(b.no))}
-// «Dine oplysninger» (firma, person, dato, projekt, logo) – huskes i browseren og vises øverst i PDF'en
+// «Dine oplysninger» (firma, person, dato, projekt, logo) – huskes i browseren og vises nederst til venstre i PDF'en
 const PDFME_K='kasteplan_pdfme';
 function pdfMe(){try{return JSON.parse(localStorage.getItem(PDFME_K))||{}}catch(e){return {}}}
 const today=()=>{const d=new Date();return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`};
-function pdfHead(me){if(!me||!(me.co||me.person||me.proj||me.logo))return null;const h=document.createElement('div');h.className='pdfhead';
+function pdfHead(me){if(!me||!(me.co||me.person||me.proj||me.logo))return null;const h=document.createElement('div');h.className='pdfhead card';
   const dt=me.date?new Date(me.date+'T12:00').toLocaleDateString({da:'da-DK',en:'en-GB',ja:'ja-JP'}[S.lang]||'en-GB',{year:'numeric',month:'long',day:'numeric'}):'';
   h.innerHTML=(me.logo?`<img src="${me.logo}" alt="">`:'')+`<div class="notr">${me.proj?`<div class="ph1">${esc(me.proj)}</div>`:''}<div class="ph2">${[me.co,me.person,dt].filter(Boolean).map(esc).join(' · ')}</div></div>`;return h}
 function pdfDialog(){const secs=pdfSections(),sel=S.pdfSel||{},me=pdfMe();let d=$('pdfDlg');if(d)d.remove();
@@ -266,8 +266,7 @@ function pdfDialog(){const secs=pdfSections(),sel=S.pdfSel||{},me=pdfMe();let d=
       <label>Firmanavn<input type="text" data-me="co" value="${v('co')}" autocomplete="organization"></label>
       <label>Person<input type="text" data-me="person" value="${v('person')}" autocomplete="name"></label>
       <label>Dato<input type="date" data-me="date" value="${esc(me.date||today())}"></label>
-      <label>Projektnavn<input type="text" data-me="proj" value="${v('proj')}"></label>
-      <div class="pdflogo"><span>Firmalogo</span><img alt=""${me.logo?'':' hidden'}><button type="button" class="btn" data-lg="pick">Vælg logo…</button><button type="button" class="btn" data-lg="del"${me.logo?'':' hidden'}>Fjern logo</button><input type="file" accept="image/*" hidden></div>
+      <label>Projektnavn<input type="text" data-me="proj" value="${v('proj')}"></label>      <div class="pdflogo"><span>Firmalogo</span><img alt=""${me.logo?'':' hidden'}><button type="button" class="btn" data-lg="pick">Vælg logo…</button><button type="button" class="btn" data-lg="del"${me.logo?'':' hidden'}>Fjern logo</button><input type="file" accept="image/*" hidden></div>
     </div>
     <div class="pdfbtns"><button type="button" class="btn" value="no">Annuller</button><button type="submit" class="btn pdfgo" value="ok">Lav PDF</button></div></form>`;
   document.body.appendChild(d);const boxes=[...d.querySelectorAll('[data-no]')],all=d.querySelector('#pdfAll');
@@ -286,15 +285,22 @@ function pdfDialog(){const secs=pdfSections(),sel=S.pdfSel||{},me=pdfMe();let d=
     exportPDF(pdfSections(true).filter(s=>PDF_NEVER.includes(s.no)||!S.pdfSel[s.no]).map(s=>s.el),me)});
   d.showModal()}
 async function exportPDF(hide=[],me=null){const b=$('pdfBtn');if(b.getAttribute('aria-busy')==='true')return;b.setAttribute('aria-busy','true');pdfToast('<span>Laver PDF …</span>');
-  hide.forEach(el=>el.classList.add('pdfhide'));const head=pdfHead(me);if(head)document.querySelector('.wrap').prepend(head);
+  hide.forEach(el=>el.classList.add('pdfhide'));const head=pdfHead(me);
+  // oplysningsboksen lægges til højre for indholdet, med bunden ud for den nederste boks (siden bliver bredere, hvis der mangler plads)
+  const hold=head&&document.createElement('div');if(hold){hold.className='pdfhold';hold.append(head)}
+  const placeHead=()=>{if(!hold)return;const w=document.querySelector('.wrap').getBoundingClientRect(),g=document.querySelector('.wrap > .grid').getBoundingClientRect();
+    hold.style.left=Math.round(w.right+scrollX)+'px';hold.style.top=Math.round(g.bottom+scrollY-head.offsetHeight)+'px'};
+  if(hold){document.body.append(hold);placeHead()}
   // download-adgangen hentes med det samme (mens klikket stadig er «frisk»), og der ventes højst 4 s på den
   const dlP=(window.claude&&window.claude.use)?Promise.race([Promise.resolve(window.claude.use('downloads')).catch(()=>null),new Promise(r=>setTimeout(()=>r(null),4000))]):Promise.resolve(null);
   const closed=[...document.querySelectorAll('details')].filter(d=>!d.open&&!d.closest('[hidden]'));let step='load';
   try{if(!window.PTP_PDF)await new Promise((ok,no)=>{const sc=document.createElement('script');sc.src='pdfexport.js';sc.onload=ok;sc.onerror=()=>no(new Error('load'));document.head.appendChild(sc)});
-    step='make';closed.forEach(d=>d.open=true);await new Promise(r=>requestAnimationFrame(()=>requestAnimationFrame(()=>setTimeout(r,120))));
+    step='make';closed.forEach(d=>d.open=true);await new Promise(r=>requestAnimationFrame(()=>requestAnimationFrame(()=>setTimeout(r,120))));placeHead();
     const blob=await window.PTP_PDF({title:'Throw Planner'});closed.forEach(d=>d.open=false);
     const vn={aud:'Auditorium',museum:'Museum',theater:'Theatre',immersive:'Immersive'}[S.venue]||S.venue,dt=new Date().toISOString().slice(0,10);
-    const name=`Throw-Planner_${vn}_${dt}.pdf`;step='save';TRK('PDF',{tema:S.venue});
+    // filnavn: projektnavn og firma fra «Dine oplysninger», ellers Throw-Planner_tema
+    const fn=t=>String(t||'').replace(/[\\/:*?"<>|\u0000-\u001f]+/g,' ').replace(/\s+/g,' ').trim().slice(0,60),own=me?[me.proj,me.co].map(fn).filter(Boolean):[];
+    const name=own.length?`${own.join('_')}_${me.date||dt}.pdf`:`Throw-Planner_${vn}_${dt}.pdf`;step='save';TRK('PDF',{tema:S.venue});
     if(PDFURL)URL.revokeObjectURL(PDFURL);PDFURL=URL.createObjectURL(blob);
     const dl=await dlP;let why='';
     if(dl){try{await dl.save({filename:name,data:blob});pdfToast('');return}catch(e){const c=(e&&e.code)||'unavailable';if(c==='declined'){pdfToast('');return}why=c}}
@@ -303,7 +309,7 @@ async function exportPDF(hide=[],me=null){const b=$('pdfBtn');if(b.getAttribute(
     // ingen automatisk gemning her – tilbyd selv at hente eller åbne filen (klik = brugerhandling)
     pdfToast(`<span>På et claude.ai-link kan kun ejeren af appen gemme filer${why?` (${why})`:''}. Brug web-app-versionen af Throw Planner for at gemme PDF.</span>`)}
   catch(e){console.warn('pdf',e);closed.forEach(d=>d.open=false);pdfToast(`<span>${step==='load'?'PDF-modulet kunne ikke hentes – tjek internetforbindelsen og prøv igen.':'PDF\'en kunne ikke laves i denne browser.'}</span>`)}
-  finally{b.removeAttribute('aria-busy');hide.forEach(el=>el.classList.remove('pdfhide'));if(head)head.remove()}}
+  finally{b.removeAttribute('aria-busy');hide.forEach(el=>el.classList.remove('pdfhide'));if(hold)hold.remove()}}
 $('pdfBtn').addEventListener('click',pdfDialog);
 // boks 03: terminalsiden (input/output) i stort format
 $('pjTerm').addEventListener('click',()=>{const nm=MODELS[slotMI()].m.split(' (')[0],k=pjSlug(nm),src=termImg(k),url=termRes(k);if(!src)return;
