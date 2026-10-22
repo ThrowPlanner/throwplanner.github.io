@@ -97,6 +97,13 @@ function drawFront(r){IMMPJ=null;if(S.venue==='golf')GCUR=golfCalc(r);
     for(let c=1;c<r.N;c++){const x0=r.cx-r.CW/2+c*r.W*(1-r.o);s+=`<rect x="${X(x0)}" y="${ctp}" width="${r.W*r.o*s0}" height="${chp}" fill="url(#bzf)" opacity=".8"/>`}
     for(let k=1;k<r.R;k++){const y0=r.cy+r.CH/2-k*r.H*(1-r.o);s+=`<rect x="${cl}" y="${Y(y0)}" width="${cwp}" height="${r.H*r.o*s0}" fill="url(#bzf)" opacity=".8"/>`}s+='</g>';
   }
+  // spildlys: projektoren lyser altid hele sit panel (fx 16:10) – vælges et andet format (fx 4:3), lyser resten «sort» uden for billedet
+  {const [pw,ph]=M().res,nA=r.PT?ph/pw:pw/ph,rA=r.W/r.H;let spill=Math.abs(nA-rA)/nA>.01&&!NS;
+   if(spill){const NW=rA<nA?r.H*nA:r.W,NH=rA<nA?r.H:r.W/nA;s+='<g class="Lspill">';
+     r.pjs.forEach(p=>{const ox=X(p.tx-NW/2),oy=Y(p.ty+NH/2),ix=X(p.tx-r.W/2),iy=Y(p.ty+r.H/2);
+       s+=`<path d="M${ox},${oy}h${NW*s0}v${NH*s0}h${-NW*s0}Z M${ix},${iy}v${r.H*s0}h${r.W*s0}v${-r.H*s0}Z" fill-rule="evenodd" style="fill:var(--muted);stroke:var(--muted)" fill-opacity=".22" stroke-width="1" stroke-dasharray="3 3" pointer-events="none"/>`});
+     s+='</g>'}
+   const sb=document.querySelector('[data-l9="spill"]');if(sb)sb.hidden=!spill}
   // lens shift-område for hver projektor (ved edge blend har hver sin linse)
   if(r.P.length)r.pjs.forEach(p=>{const zx=p.lx,zy=p.ly+r.inv*r.off*r.H;
     s+=`<polygon class="Lshift" points="${r.P.map(([a,b])=>`${X(zx+r.inv*(a+r.th)*r.W)},${Y(zy+r.inv*(b+r.tv)*r.H)}`).join(' ')}" style="fill:none;stroke:var(--beam)" stroke-width="1.2" stroke-dasharray="5 4" opacity=".85"/>`});
@@ -219,7 +226,7 @@ function drawFront(r){IMMPJ=null;if(S.venue==='golf')GCUR=golfCalc(r);
   // klikflader for vinduer (custom) – øverst, så de kan rammes over alt andet
   HIT.forEach(([id,poly,t])=>{s+=`<polygon class="winhit" data-win="${id}" points="${pts(poly)}" fill="transparent"><title>${t} – klik for at ${OFF.has(id)?'tilføje':'fjerne'}</title></polygon>`});
   if(SUN&&CUST)s+=lbl(14,vh-18,`klik på et vindue for at fjerne/tilføje · ${HIT.length-OFF.size} af ${HIT.length} aktive`,'m','start');
-  $('front').innerHTML=s;{const L=S.l9||{};const fr=$('front');['gsw','gsh'].forEach(k=>$('side').classList.toggle('h-'+k,L[k]===false));['beam','shift','pj','dim','gsw','gsh'].forEach(k=>{const on=L[k]!==false;fr.classList.toggle('h-'+k,!on);const b=document.querySelector(`[data-l9="${k}"]`);if(b)b.setAttribute('aria-pressed',on)})}
+  $('front').innerHTML=s;{const L=S.l9||{};const fr=$('front');['gsw','gsh'].forEach(k=>$('side').classList.toggle('h-'+k,L[k]===false));['beam','shift','spill','pj','dim','gsw','gsh'].forEach(k=>{const on=L[k]!==false;fr.classList.toggle('h-'+k,!on);const b=document.querySelector(`[data-l9="${k}"]`);if(b)b.setAttribute('aria-pressed',on)})}
   drawImm(r);
 }
 function drawCrBand(){const b=$('crBand');b.hidden=S.venue!=='immersive';if(b.hidden)return;const lo=S.immCrMin??1,hi=S.immCrMax??100,a=cbC2V(lo),z=cbC2V(hi);
