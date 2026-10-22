@@ -420,7 +420,7 @@ Mørk tilstand til/fra|Dark mode on/off|ダークモード オン/オフ
 # · Lærred:|# · Screen:|# · スクリーン：
 tryk på lærredets venstre kant (set fra publikum) og træk hen til højre kant – længden vises i meter. Træk bagefter i de to punkter for at flytte eller rotere lærredet. Bredden kan også rettes under # «Billedbredde».|press on the left edge of the screen (seen from the audience) and drag to the right edge – the length is shown in metres. Afterwards drag the two points to move or rotate the screen. The width can also be edited under # “Image width”.|スクリーンの左端（観客側から見て）を押して右端までドラッグ – 長さがメートルで表示されます。その後、2つの点をドラッグしてスクリーンを移動・回転できます。幅は # 「画面幅」でも変更できます。
 # · Projektor:|# · Projector:|# · プロジェクター：
-klik eller træk projektoren på plads – den holder sig inden for billedets bredde og optikkens zoom. Afstand|click or drag the projector into place – it stays within the image width and the lens zoom. Distance|クリックまたはドラッグで配置 – 画面幅とレンズのズーム範囲内に保たれます。距離
+klik eller træk projektoren på plads – den holder sig inden for billedets bredde og optikkens zoom. Træk i lærredet for at flytte det, eller i dets punkter for at rotere det. Afstand|click or drag the projector into place – it stays within the image width and the lens zoom. Drag the screen to move it, or its end points to rotate it. Distance|クリックまたはドラッグで配置 – 画面幅とレンズのズーム範囲内に保たれます。スクリーンをドラッグで移動、端点で回転できます。距離
 Bredden er koblet til lærredet på plantegningen.|The width is linked to the screen on the floor plan.|幅は図面上のスクリーンと連動しています。
 lærred # m|screen # m|スクリーン # m
 Scenedybde|Stage depth|ステージ奥行
