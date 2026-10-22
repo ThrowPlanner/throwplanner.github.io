@@ -22,7 +22,7 @@ function drawContrast(r){
   sc+=`<span class="mk" style="left:${pos(r.cr)}%;color:var(--ink)">${fi(r.cr)}:1<i></i></span>`;
   $('crScale').innerHTML=sc;
   const L=e=>S.gain*e/Math.PI;
-  $('crNums').innerHTML=`<div><span>Hvid</span><b>${fi(L(r.lux+r.blk))} cd/m²</b></div><div><span>Sort</span><b>${f2(L(r.blk),1)} cd/m²</b></div>`+
+  $('crNums').innerHTML=`<div><span>Belysning (center)</span><b>${fi(r.lux)} lux</b></div><div><span>Hvid</span><b>${fi(L(r.lux+r.blk))} cd/m²</b></div><div><span>Sort</span><b>${f2(L(r.blk),1)} cd/m²</b></div>`+
     `<div><span>Kontrast</span><b style="color:${r.cr>=15?'var(--ok)':r.cr>=7?'var(--warn)':'var(--bad)'}">${fi(r.cr)}:1</b></div>`;
   const ambShare=r.amb/r.blk*100;const sl=sunLux();
   $('crHint').innerHTML=`Omgivelseslyset${sl.lux?` (${fi(S.amb)} lux kunstlys + ${fi(sl.lux)} lux sollys)`:''} står for <b>${f2(ambShare,1)} %</b> af sortniveauet. Databladets kontrast er full on/off – ret til ANSI-kontrast for et mere realistisk tal. Krav efter ANSI/INFOCOMM 3M-2011 (nu AVIXA V201.01): målt i lokalet med ANSI-skakbræt, så brug projektorens ANSI-kontrast.`;
