@@ -58,6 +58,18 @@ def main():
             diff = [k for k in new[n] if new[n].get(k) != eol[n].get(k)]
             rep['Udgåede modeller (data/catalog-eol.json)'].append(f'**{n}** ændret: {", ".join(diff)}')
     # helt nye modeller i TDC, som hverken er aktuelle eller udgåede, fanges af build_eol (kommer som «ny udgået/ikke-EU»)
+    # flyrammer og loftbeslag (Panasonics «Optional Accessories»)
+    fm = os.path.join(ROOT, 'data', 'mounts.json')
+    if os.path.exists(fm):
+        from fetch_mounts import fetch as fetch_mounts
+        ours = {x['id']: x for x in json.load(open(fm, encoding='utf-8'))}; theirs = {x['id']: x for x in fetch_mounts()}
+        mt = rep.setdefault('Flyrammer og loftbeslag (data/mounts.json)', [])
+        for n in theirs.keys() - ours.keys(): mt.append(f'Nyt beslag hos Panasonic: **{n}** ({theirs[n]["type"]})')
+        for n in ours.keys() - theirs.keys(): mt.append(f'Beslag er væk fra Panasonics liste: **{n}**')
+        for n in ours.keys() & theirs.keys():
+            a, b = set(ours[n]['models']), set(theirs[n]['models'])
+            if a != b: mt.append(f'**{n}** projektorer: +{", ".join(sorted(b - a)) or "–"} / −{", ".join(sorted(a - b)) or "–"}')
+            elif ours[n] != theirs[n]: mt.append(f'**{n}** type/note/status ændret')
     n = sum(len(v) for v in rep.values())
     if not n:
         if os.path.exists(OUT): os.remove(OUT)
@@ -65,7 +77,7 @@ def main():
     md = [f'Ugentligt tjek fandt **{n} ændring(er)** i forhold til [Panasonics Throw Distance Calculator](https://docs.connect.panasonic.com/projector/calculator/tdc/).', '']
     for h, rows in rep.items():
         if rows: md += [f'### {h}', *[f'- {r}' for r in rows[:150]], *(['- …'] if len(rows) > 150 else []), '']
-    md += ['Rettes med `python tools/fetch_eol.py` (udgåede). Aktuelle modeller rettes i `data/catalog.json` efter tjek hos Panasonic.']
+    md += ['Rettes med `python tools/fetch_eol.py` (udgåede) og `python tools/fetch_mounts.py` (beslag). Aktuelle modeller rettes i `data/catalog.json` efter tjek hos Panasonic.']
     open(OUT, 'w', encoding='utf-8', newline='\n').write('\n'.join(md) + '\n')
     print(f'ÆNDRINGER: {n} – se {OUT}')
 
