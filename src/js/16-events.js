@@ -284,7 +284,7 @@ function pdfDialog(){const secs=pdfSections(),sel=S.pdfSel||{},me=pdfMe();let d=
     d.querySelectorAll('[data-me]').forEach(x=>me[x.dataset.me]=x.value.trim());try{localStorage.setItem(PDFME_K,JSON.stringify(me))}catch(err){}d.close();
     exportPDF(pdfSections(true).filter(s=>PDF_NEVER.includes(s.no)||!S.pdfSel[s.no]).map(s=>s.el),me)});
   d.showModal()}
-async function exportPDF(hide=[],me=null){const b=$('pdfBtn');if(b.getAttribute('aria-busy')==='true')return;b.setAttribute('aria-busy','true');pdfToast('<span>Laver PDF …</span>');
+async function exportPDF(hide=[],me=null){const b=$('pdfBtn');if(b.getAttribute('aria-busy')==='true')return;b.setAttribute('aria-busy','true');pdfToast('');
   hide.forEach(el=>el.classList.add('pdfhide'));const head=pdfHead(me);
   // oplysningsboksen lægges til højre for indholdet, med bunden ud for den nederste boks (siden bliver bredere, hvis der mangler plads)
   const hold=head&&document.createElement('div');if(hold){hold.className='pdfhold';hold.append(head)}
