@@ -731,3 +731,6 @@ passer også på:|also fits:|次の機種にも対応:
 Kun udgåede projektorer – kan ikke genbruges til en aktuel model.|Discontinued projectors only – cannot be reused with a current model.|販売終了機種のみ – 現行機種には再利用できません。
 Panasonic angiver ingen flyramme for denne model.|Panasonic lists no flying frame for this model.|このモデル用のフライングフレームは記載されていません。
 Flyramme fra den udgåede projektor|Flying frame from the discontinued projector|販売終了プロジェクターのフライングフレーム
+Søg projektor, fx RZ# eller DZ#K|Search projector, e.g. RZ# or DZ#K|プロジェクターを検索 例: RZ#、DZ#K
+=Søg projektor|Search projector|プロジェクターを検索
+Ingen projektor fundet|No projector found|プロジェクターが見つかりません
