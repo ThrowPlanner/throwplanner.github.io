@@ -727,3 +727,7 @@ Standardoptikken sidder fast i projektoren og kan ikke flyttes til en anden mode
 Skift til|Switch to|切り替え:
 med samme optik|with the same lens|（同じレンズ）
 Ikke i Panasonics aktuelle EU-sortiment.|Not in Panasonic's current EU range.|パナソニックの現行EUラインアップにはありません。
+passer også på:|also fits:|次の機種にも対応:
+Kun udgåede projektorer – kan ikke genbruges til en aktuel model.|Discontinued projectors only – cannot be reused with a current model.|販売終了機種のみ – 現行機種には再利用できません。
+Panasonic angiver ingen flyramme for denne model.|Panasonic lists no flying frame for this model.|このモデル用のフライングフレームは記載されていません。
+Flyramme fra den udgåede projektor|Flying frame from the discontinued projector|販売終了プロジェクターのフライングフレーム
