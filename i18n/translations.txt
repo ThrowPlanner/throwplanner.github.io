@@ -499,7 +499,6 @@ ca. # % af panelet bruges|approx. # % of the panel used|パネルの約 # % を�
 Ingen keystone-data for denne model|No keystone data for this model|この機種のキーストーンデータはありません
 Lodret keystone|Vertical keystone|垂直キーストーン
 Vandret keystone|Horizontal keystone|水平キーストーン
-Laver PDF …|Making PDF …|PDFを作成中…
 PDF'en er klar, men kunne ikke gemmes automatisk i denne visning|The PDF is ready but could not be saved automatically in this view|PDFは作成されましたが、この表示では自動保存できませんでした
 Hent PDF|Download PDF|PDFをダウンロード
 Åbn PDF|Open PDF|PDFを開く
