@@ -1,0 +1,39 @@
+# Hver tirsdag morgen: tjek at throw-data, lumen og lens shift stadig stemmer med Panasonics Throw Distance Calculator.
+# Ingen ændringer → intet sker. Ændringer (eller fejl i tjekket) → et GitHub-issue med mærket «tdc-change».
+# Kører uden AI og koster ingen tokens. Kan også startes i hånden: Actions → «TDC check» → Run workflow.
+name: TDC check
+
+on:
+  schedule:
+    - cron: '0 5 * * 2'   # tirsdag 05:00 UTC = 07:00 dansk sommertid / 06:00 vintertid
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  issues: write
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    env:
+      GH_TOKEN: ${{ github.token }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Sammenlign med Panasonic TDC
+        run: python tools/check_tdc.py tdc-report.md
+      - name: Opret eller opdater issue ved ændringer
+        if: hashFiles('tdc-report.md') != ''
+        run: |
+          gh label create tdc-change --color D9822B --description "Panasonic TDC har ændret data" --force
+          n=$(gh issue list --label tdc-change --state open --json number --jq '.[0].number')
+          if [ -n "$n" ]; then gh issue comment "$n" --body-file tdc-report.md
+          else gh issue create --title "Panasonic TDC: ændringer fundet $(date +%Y-%m-%d)" --label tdc-change --body-file tdc-report.md; fi
+      - name: Meld fejl i tjekket
+        if: failure()
+        run: |
+          gh label create tdc-change --color D9822B --description "Panasonic TDC har ændret data" --force
+          gh issue create --title "Panasonic TDC: tjekket fejlede $(date +%Y-%m-%d)" --label tdc-change \
+            --body "Det ugentlige tjek kunne ikke gennemføres – måske er Panasonics beregner nede eller ændret. Se kørslen: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"

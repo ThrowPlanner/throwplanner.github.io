@@ -225,7 +225,7 @@ $('dCr').addEventListener('toggle',e=>{S.openCr=e.target.open;save()});
 $('sol').addEventListener('click',e=>pickRow(e.target.closest('tr[data-mi]')));
 $('sol').addEventListener('keydown',e=>{if(e.key==='Enter')pickRow(e.target.closest('tr[data-mi]'))});
 
-$('nModels').textContent=MODELS.length;fillCats();fillAspect();if(S.mi>=MODELS.length)S.mi=0;fillLens();fillModels();
+$('nModels').textContent=NCUR;fillCats();fillAspect();if(S.mi>=MODELS.length)S.mi=0;fillLens();fillModels();
 if(FRESH||MIG){S.li=DEFL;fillLens();frameDefaults();fitLens();zeroShift()}if(S.content==='img')S.content='none';if(S.py==null)zeroShift();render();
 
 

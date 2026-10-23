@@ -1,10 +1,17 @@
 /* ===== DATA: hele Panasonics katalog (ModelData.js) =====
    model: {m, c, t, lm, lc, cr, asp[], dim[B,H,D mm], res[px], img, L:[navn,'Z'|'F',[[Aw,Bw,At,Bt,min",max"] pr. format],shift-polygon,offsetV,fremspring mm,billede]} */
 const CAT=/*__CATALOG__*/;
+// udgåede modeller (data/catalog-eol.json, kategori 7) lægges efter de aktuelle, så gemte indeks (S.mi) ikke flytter sig
+const EOLCAT=/*__EOL__*/;
 const CATS=Object.fromEntries(CAT.cats);
-const MODELS=CAT.models.map(m=>({...m,lm:m.lm||m.lc||0,lc:m.lc||m.lm||0,cr:m.cr||2000,dim:m.dim.length===3?m.dim:[400,150,350],res:m.res.length===2?m.res:[1920,1200],
+const MODELS=[...CAT.models,...EOLCAT.models].map(m=>({...m,lm:m.lm||m.lc||0,lc:m.lc||m.lm||0,cr:m.cr||2000,dim:m.dim.length===3?m.dim:[400,150,350],res:m.res.length===2?m.res:[1920,1200],
   L:m.L.filter(l=>l[2].length&&l[2].some(r=>r[0]>0))}));
-const CAT_ORDER=[1,2,4,8,3];
+const NCUR=CAT.models.length,CAT_ORDER=[1,2,4,8,3,7];
+const isEOL=m=>m.c===7;
+// optikkens ET-numre; en optik er udgået, når ingen aktuel model kan bruge den
+const etCodes=n=>(String(n).match(/ET-[A-Z0-9]+/gi)||[]).map(x=>x.toUpperCase());
+const CUR_ET=new Set(CAT.models.flatMap(m=>m.L.flatMap(l=>etCodes(l[0]))));
+const lnEOL=l=>{const c=etCodes(l[0]);return c.length>0&&!c.some(x=>CUR_ET.has(x))};
 let IMGS={};
 // besøgsstatistik (Umami, kun på throwplanner.com – scriptet findes ikke i artifactet)
 const TRK=(n,d)=>{try{window.umami&&window.umami.track(n,d)}catch(e){}};
