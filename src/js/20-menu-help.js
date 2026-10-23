@@ -142,8 +142,9 @@ function menuHelp(){
     <input type="search" class="mhq" placeholder="What do you want to set? e.g. keystone, edge blend, IP address" aria-label="Search the menu">
     <div class="mhchips">${MH_CHIPS.map(c=>`<button type="button" class="chip" data-q="${esc(c[1])}">${esc(c[0])}</button>`).join('')}</div>
     <div class="mhres" aria-live="polite"></div>
+    <div class="mhguide" hidden></div>
     <p class="mhnote">Menu names and page numbers from Panasonic's operating instructions. Names may vary with the firmware version.</p>
-    <div class="pdfbtns"><a class="manbtn mhman" target="_blank" rel="noopener noreferrer">Manual</a><button type="button" class="btn" value="no">Close</button></div>`;
+    <div class="pdfbtns"><a class="manbtn mhman" target="_blank" rel="noopener noreferrer">Manual</a><button type="button" class="btn mhgo" aria-pressed="false">Make a guided help</button><button type="button" class="btn" value="no">Close</button></div>`;
   const q=d.querySelector('.mhq'),sel=d.querySelector('.mhmod'),out=d.querySelector('.mhres'),mb=d.querySelector('.mhman');
   const url=()=>{const p=MAN_PJ[MENUS[sel.value].mo[0]];return /^https?:/.test(p)?p:MAN_B+p};
   const pg=n=>`<a class="mhpg" href="${url()}#page=${n}" target="_blank" rel="noopener noreferrer" title="Open the manual at page ${n}">p. ${n}</a>`;
@@ -167,8 +168,105 @@ function menuHelp(){
         if(s1){const own=mhNorm(it[0]+' '+(MH[it[0]]||''));hits.push([s1,[m[0]],it,t.some(w=>!own.includes(w))])}}}
     hits.sort((a,b)=>b[0]-a[0]);
     out.innerHTML=hits.length?`<ul>${hits.slice(0,40).map(h=>item(h[2],h[1],h[3])).join('')}</ul>`:`<p class="mhnone">Nothing found – try another word, or clear the search to see the whole menu.</p>`};
+  const gd=d.querySelector('.mhguide'),gb=d.querySelector('.mhgo');let G=null;
+  const guideMode=on=>{gb.setAttribute('aria-pressed',on);gb.textContent=on?'Back to search':'Make a guided help';gd.hidden=!on;
+    for(const el of [q,d.querySelector('.mhchips'),out])el.hidden=on;
+    if(on){G=mhGuide(gd,MENUS[sel.value],url);TRK('Guided help',{model:MENUS[sel.value].mo[0]})}else{gd.innerHTML='';G=null}};
+  gb.addEventListener('click',()=>guideMode(!G));
+  sel.addEventListener('change',()=>{if(G)guideMode(true)});
   q.addEventListener('input',draw);sel.addEventListener('change',draw);
   d.querySelectorAll('[data-q]').forEach(b=>b.addEventListener('click',()=>{q.value=b.dataset.q;draw();q.focus()}));
   d.querySelector('[value="no"]').addEventListener('click',()=>d.close());d.addEventListener('click',e=>{if(e.target===d)d.close()});d.addEventListener('close',()=>d.remove());
   document.body.appendChild(d);draw();d.showModal();q.focus();TRK('Menu-hjælp',{model:cur})}
 $('mhBtn').addEventListener('click',menuHelp);
+
+// «Make a guided help»: klik dig gennem menu › punkt › undermenu › valg – laver et step-by-step-billede til en mail
+function mhGuide(box,man,url){
+  const model=man.mo.map(k=>k.toUpperCase()).join(' / ');
+  let path=[];// [{k:'menu'|'item'|'sub'|'opt', n:navn, p:side, pw:[koder], ref:node}]
+  box.innerHTML=`<p class="mhsub">Click through the menu as you would on the projector. Every click adds a step.</p>
+    <div class="mhgpath"></div><div class="mhgpick"></div>
+    <label class="mhgl">Title<input type="text" class="mhgt" maxlength="90"></label>
+    <label class="mhgl">Note for the customer (optional)<textarea class="mhgn" rows="2" maxlength="400" placeholder="e.g. Use this after moving the projector."></textarea></label>
+    <div class="mhgprev"></div>
+    <div class="mhgact"><button type="button" class="btn mhgimg">Copy image</button><button type="button" class="btn mhgtxt">Copy text</button><button type="button" class="btn mhgpng">Save PNG</button></div>
+    <p class="mhgmsg" aria-live="polite"></p>`;
+  const $$=s=>box.querySelector(s),ti=$$('.mhgt'),no=$$('.mhgn'),msg=$$('.mhgmsg');let auto='',dirty=false;
+  ti.addEventListener('input',()=>{dirty=true;prev()});no.addEventListener('input',prev);
+  const last=()=>path[path.length-1];
+  // valgmuligheder på det næste niveau
+  const choices=()=>{const L=last();if(!L)return man.me.map(m=>({k:'menu',n:m[0],p:m[1],pw:m[3],ref:m}));
+    if(L.k==='menu')return L.ref[2].map(i=>({k:'item',n:i[0],p:i[1],pw:i[4],ref:i}));
+    if(L.k==='item')return [...(L.ref[3]||[]).map(s=>({k:'sub',n:s[0],p:s[1],ref:s})),...(L.ref[2]||[]).map(o=>({k:'opt',n:o,p:L.p}))];
+    if(L.k==='sub')return (L.ref[2]||[]).map(o=>({k:'opt',n:o,p:L.p}));return []};
+  const steps=()=>{const s=['Press the <MENU> button on the remote control (or on the projector) to open the on-screen menu.'],shown=[];
+    path.forEach((x,i)=>{const nx=path[i+1];
+      if(x.k==='opt')s.push(`Use ◀ ▶ to choose [${x.n}].`);
+      else{// ENTER åbner næste niveau; et valg skiftes direkte med ◀ ▶
+        const enter=nx?nx.k!=='opt':x.k==='menu'||(x.ref[3]||[]).length>0;
+        s.push(`Use ▲ ▼ to select [${x.n}]${enter?' and press <ENTER>':''}.`)}
+      const p=(x.pw||[]).filter(v=>!shown.includes(v));shown.push(...p);// samme kode vises kun én gang
+      if(p.length)s.push(`If the projector asks for a password, enter it (factory default: ${p.join(' / ')}).`)});
+    if(path.length)s.push('Press <MENU> to go back one level – press it repeatedly to close the menu.');return s};
+  const title=()=>{if(!dirty){const L=path.filter(x=>x.k!=='opt').pop(),o=last()&&last().k==='opt'?last():null;
+      auto=L?(o?`How to set ${L.n} to ${o.n}`:`How to find ${L.n}`):'';ti.value=auto}return ti.value.trim()||'Projector menu guide'};
+  function draw(){const ch=choices(),L=last();
+    $$('.mhgpath').innerHTML=`<span class="mhgcr">MENU</span>${path.map(x=>`<span class="mhgsep">›</span><span class="mhgcr${x.k==='opt'?' opt':''}">${esc(x.n)}</span>`).join('')}${path.length?'<button type="button" class="chip mhgback">↶ Undo</button><button type="button" class="chip mhgclr">Start over</button>':''}`;
+    $$('.mhgpick').innerHTML=ch.length?`<div class="mhgh">${L?(L.k==='item'&&(L.ref[3]||[]).length&&(L.ref[2]||[]).length?'Choose a sub-menu or a setting':L.k==='item'&&!(L.ref[3]||[]).length||L.k==='sub'?'Choose the setting (optional)':'Choose the next step'):'Choose a menu'}</div>${ch.map((c,i)=>`<button type="button" class="mhgc${c.k==='opt'?' opt':''}" data-i="${i}">${esc(c.n)}${c.pw&&c.pw.length?' <small>🔒</small>':''}</button>`).join('')}`:`<div class="mhgh">Guide complete – copy it below.</div>`;
+    $$('.mhgpick').querySelectorAll('[data-i]').forEach(b=>b.addEventListener('click',()=>{path.push(ch[+b.dataset.i]);draw()}));
+    const bk=$$('.mhgback');if(bk)bk.addEventListener('click',()=>{path.pop();draw()});
+    const cl=$$('.mhgclr');if(cl)cl.addEventListener('click',()=>{path=[];dirty=false;draw()});
+    title();prev()}
+  let cv=null;
+  function prev(){cv=mhCanvas({title:title(),model,path:path.map(x=>x.n),steps:steps(),note:no.value.trim(),page:(path.filter(x=>x.k!=='opt').pop()||{}).p});
+    $$('.mhgprev').innerHTML='';const im=new Image();im.src=cv.toDataURL('image/png');im.alt='Preview of the guide';$$('.mhgprev').appendChild(im)}
+  const say=t=>{msg.textContent=t;clearTimeout(say.t);say.t=setTimeout(()=>msg.textContent='',5000)};
+  const plain=()=>[title(),`Projector: ${model}`,`Menu path: MENU › ${path.map(x=>x.n).join(' › ')}`,'',...steps().map((s,i)=>`${i+1}. ${s}`),...(no.value.trim()?['',no.value.trim()]:[]),'',`Reference: Panasonic operating instructions${(path.filter(x=>x.k!=='opt').pop()||{}).p?', page '+path.filter(x=>x.k!=='opt').pop().p:''}`].join('\n');
+  const html=()=>`<div style="font-family:Arial,sans-serif;font-size:14px"><b style="font-size:16px">${esc(title())}</b><br>Projector: ${esc(model)}<br>Menu path: <b>MENU › ${path.map(x=>esc(x.n)).join(' › ')}</b><ol>${steps().map(s=>`<li>${esc(s).replace(/\[([^\]]+)\]/g,'<b>[$1]</b>')}</li>`).join('')}</ol>${no.value.trim()?`<p>${esc(no.value.trim())}</p>`:''}</div>`;
+  const blob=()=>new Promise(r=>cv.toBlob(r,'image/png'));
+  $$('.mhgimg').addEventListener('click',async()=>{if(!path.length)return say('Choose at least one menu first.');
+    try{await navigator.clipboard.write([new ClipboardItem({'image/png':blob()})]);say('Image copied – paste it into your e-mail (Ctrl+V / ⌘V).');TRK('Guided help kopi',{type:'billede'})}
+    catch(e){say('This browser does not allow copying images here – use «Copy text» or «Save PNG».')}});
+  $$('.mhgtxt').addEventListener('click',async()=>{if(!path.length)return say('Choose at least one menu first.');
+    try{await navigator.clipboard.write([new ClipboardItem({'text/html':new Blob([html()],{type:'text/html'}),'text/plain':new Blob([plain()],{type:'text/plain'})})]);say('Text copied – paste it into your e-mail.')}
+    catch(e){try{await navigator.clipboard.writeText(plain());say('Text copied – paste it into your e-mail.')}catch(e2){say('Copying is blocked in this browser.')}}
+    TRK('Guided help kopi',{type:'tekst'})});
+  $$('.mhgpng').addEventListener('click',async()=>{if(!path.length)return say('Choose at least one menu first.');
+    const a=document.createElement('a');a.href=URL.createObjectURL(await blob());a.download=title().replace(/[^\w\- ]+/g,'').trim().replace(/\s+/g,'-')+'.png';document.body.appendChild(a);a.click();a.remove()});
+  draw();return {draw}}
+
+// selve billedet: lys baggrund (passer i en mail), nummererede trin, [MENUNAVNE] fremhævet
+function mhCanvas(o){
+  const W=900,P=40,K=2,F='Manrope,Segoe UI,Arial,sans-serif',FM='JetBrains Mono,Consolas,monospace',AC='#0E8FB0',INK='#1C2229',MU='#5B6672';
+  const c=document.createElement('canvas'),x=c.getContext('2d');
+  // tekst med [FREMHÆVNINGER] og ombrydning – returnerer linjer af tokens
+  const toks=s=>s.split(/(\[[^\]]+\]|<[A-Z]+>)/).filter(Boolean).flatMap(p=>/^[\[<]/.test(p)?[{t:p,b:1}]:p.split(/(\s+)/).filter(Boolean).map(t=>({t,b:0})));
+  const fnt=(b,sz)=>b?`700 ${sz-1}px ${FM}`:`500 ${sz}px ${F}`;
+  const wrap=(s,w,sz)=>{const L=[[]];let cx=0;for(const k of toks(s)){x.font=fnt(k.b,sz);const tw=x.measureText(k.t).width;
+      if(cx+tw>w&&cx>0&&!/^\s+$/.test(k.t)){L.push([]);cx=0}if(!L[L.length-1].length&&/^\s+$/.test(k.t))continue;L[L.length-1].push({...k,w:tw});cx+=tw}return L};
+  const plainWrap=(s,w,font)=>{x.font=font;const out=[];let l='';for(const wd of s.split(/\s+/)){const t=l?l+' '+wd:wd;if(x.measureText(t).width>w&&l){out.push(l);l=wd}else l=t}if(l)out.push(l);return out};
+  // mål højden først
+  const SZ=17,LH=26,tw=W-2*P-50;
+  const st=o.steps.map(s=>wrap(s,tw,SZ));
+  const tl=plainWrap(o.title,W-2*P,`800 26px ${F}`),nl=o.note?plainWrap(o.note,W-2*P-24,`500 15px ${F}`):[];
+  const pathTxt='MENU › '+o.path.join(' › '),pl=plainWrap(pathTxt,W-2*P-24,`700 14px ${FM}`);
+  let H=P+8+tl.length*34+30+pl.length*22+30;H+=st.reduce((a,l)=>a+Math.max(l.length*LH,34)+14,0);if(nl.length)H+=nl.length*22+34;H+=60;
+  c.width=W*K;c.height=H*K;x.scale(K,K);
+  x.fillStyle='#FFFFFF';x.fillRect(0,0,W,H);x.fillStyle=AC;x.fillRect(0,0,W,6);
+  let y=P+8;x.textBaseline='top';
+  x.fillStyle=INK;x.font=`800 26px ${F}`;for(const l of tl){x.fillText(l,P,y);y+=34}
+  x.fillStyle=MU;x.font=`600 14px ${F}`;x.fillText('Projector: '+o.model,P,y+2);y+=30;
+  // menustien i en boks
+  x.fillStyle='#EEF6F9';const ph=pl.length*22+14;x.beginPath();x.roundRect(P,y,W-2*P,ph,8);x.fill();
+  x.fillStyle=AC;x.font=`700 14px ${FM}`;pl.forEach((l,i)=>x.fillText(l,P+12,y+8+i*22));y+=ph+20;
+  st.forEach((L,i)=>{const h=Math.max(L.length*LH,34);
+    x.fillStyle=AC;x.beginPath();x.arc(P+16,y+15,15,0,7);x.fill();x.fillStyle='#fff';x.font=`800 15px ${F}`;x.textAlign='center';x.fillText(String(i+1),P+16,y+6);x.textAlign='left';
+    L.forEach((ln,j)=>{let cx=P+50;for(const k of ln){x.font=fnt(k.b,SZ);x.fillStyle=k.b?INK:'#2E3742';
+        if(k.b){x.fillStyle='#E6EDF1';x.beginPath();x.roundRect(cx-2,y+4+j*LH-3,k.w+4,LH-2,4);x.fill();x.fillStyle=INK}
+        x.fillText(k.t,cx,y+5+j*LH);cx+=k.w}});
+    y+=h+14});
+  if(nl.length){y+=6;x.fillStyle='#FFF7E6';x.beginPath();x.roundRect(P,y,W-2*P,nl.length*22+16,8);x.fill();x.fillStyle=INK;x.font=`500 15px ${F}`;nl.forEach((l,i)=>x.fillText(l,P+12,y+9+i*22));y+=nl.length*22+28}
+  x.strokeStyle='#E1E6EA';x.beginPath();x.moveTo(P,H-44);x.lineTo(W-P,H-44);x.stroke();
+  x.fillStyle=MU;x.font=`500 12px ${F}`;x.fillText(`Reference: Panasonic operating instructions${o.page?', page '+o.page:''} · Menu names may vary with firmware.`,P,H-32);
+  x.textAlign='right';x.fillText('Made with Throw Planner · throwplanner.com',W-P,H-32);x.textAlign='left';
+  return c}

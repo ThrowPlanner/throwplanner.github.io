@@ -366,7 +366,21 @@ details.coll2[open]>summary .chev{transform:rotate(-135deg);margin-bottom:-2px}
 .mhdlg .mhd{display:block;color:var(--muted);font-size:12.5px;margin-top:2px}.mhdlg summary .mhd{margin:0}
 .mhdlg .mhpg{flex:0 0 auto;font:600 11px var(--f-mono);color:var(--beam);text-decoration:none;white-space:nowrap}.mhdlg .mhpg:hover{text-decoration:underline}
 .mhdlg .mhnone{color:var(--muted);font-size:13px;padding:10px 2px}
-.mhdlg .pdfbtns{align-items:center}.mhdlg .mhman{margin-right:auto}
+.mhdlg .pdfbtns{align-items:center;flex-wrap:wrap}.mhdlg .mhman{margin-right:auto}
+.mhdlg .mhgo{color:var(--beam);font-weight:700}
+.mhguide{border-top:1px solid var(--line);padding-top:10px;max-height:62vh;overflow:auto}
+.mhgpath{display:flex;flex-wrap:wrap;align-items:center;gap:4px;margin-bottom:8px}
+.mhgcr{font:600 11.5px var(--f-mono);padding:3px 7px;border-radius:6px;background:var(--beam-soft);color:var(--beam)}.mhgcr.opt{background:var(--bg2);color:var(--ink);border:1px solid var(--line)}
+.mhgsep{color:var(--muted)}.mhgpath .chip{margin-left:6px}
+.mhgh{width:100%;font-size:12px;color:var(--muted);margin:2px 0 6px}
+.mhgpick{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:12px}
+.mhgc{font:600 11.5px var(--f-mono);padding:6px 9px;border:1px solid var(--line);border-radius:8px;background:var(--bg2);color:var(--ink);cursor:pointer;text-align:left}
+.mhgc:hover,.mhgc:focus-visible{border-color:var(--beam);outline:none}.mhgc.opt{border-style:dashed}.mhgc small{font-size:10px}
+.mhgl{display:grid!important;gap:4px;font-size:12px!important;color:var(--muted);padding:0!important;margin-bottom:8px;cursor:default!important}
+.mhgl input,.mhgl textarea{font:inherit;font-size:14px;color:var(--ink);background:var(--bg);border:1px solid var(--line);border-radius:8px;padding:7px 10px;resize:vertical}
+.mhgprev img{display:block;width:100%;height:auto;border-radius:8px;border:1px solid var(--line);margin:4px 0 10px}
+.mhgact{display:flex;flex-wrap:wrap;gap:8px}.mhgact .mhgimg{color:var(--beam);font-weight:700}
+.mhgmsg{min-height:18px;margin:8px 0 0;font-size:12.5px;color:var(--beam)}
 .termdlg{width:min(860px,calc(100vw - 32px))}
 .termdlg img{display:block;width:100%;height:auto;border-radius:10px;background:#fff}
 .termdlg .pdfbtns{align-items:center}.termdlg .termhi{margin-right:auto}

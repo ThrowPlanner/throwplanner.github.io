@@ -55,8 +55,8 @@ def sections(r, menus):
             if m:
                 x = m.group(1); tgt = cur[2] if cur else opts
                 if x != it[0] and x not in names and x not in SKIP and len(x) < 40 and x not in tgt and len(tgt) < 24: tgt.append(x)
-        sn = {s[0] for s in subs}  # et undermenunavn er ikke også en valgmulighed
-        it += [[o for o in opts if o not in sn], [[s[0], s[1], [o for o in s[2] if o not in sn]] for s in subs], passwords(' '.join(body))]
+        # en undermenu er ikke sin egen valgmulighed (men fx [CROSSHAIR MARKER] kan både være et valg og en undermenu)
+        it += [opts, [[s[0], s[1], [o for o in s[2] if o != s[0]]] for s in subs], passwords(' '.join(body))]
     # menuens indledning (før første punkt) – fx adgangskoden til hele [SECURITY]-menuen
     for m in menus:
         first = m[2][0] if m[2] else None
