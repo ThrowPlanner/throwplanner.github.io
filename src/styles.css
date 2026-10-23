@@ -343,6 +343,12 @@ details.coll2[open]>summary .chev{transform:rotate(-135deg);margin-bottom:-2px}
 .termbtn .ext{color:var(--beam);font-size:14px;opacity:.75}
 .termbtn:hover,.termbtn:focus-visible{border-color:var(--beam);box-shadow:0 0 0 2px var(--beam-soft);outline:none}.termbtn:hover .ext{opacity:1}
 .termbtn:disabled{opacity:.45;cursor:default;box-shadow:none;border-color:var(--line)}.termbtn:disabled .ext{display:none}
+.ph.eolimg{position:relative}.ph.eolimg::after{content:"";position:absolute;inset:0;background:rgba(220,38,38,.38);border-radius:inherit;pointer-events:none}
+.eolbox{margin-top:10px;padding:10px 12px;border:1px solid #D9822B;border-left-width:4px;border-radius:10px;background:rgba(217,130,43,.08);font-size:12.5px;color:var(--ink)}
+.eolbox p{margin:4px 0 0;color:var(--muted)}.eolbox p.eolq{color:var(--ink);margin-top:8px}
+.eolhead{display:flex;align-items:center;gap:8px;font-size:13px}
+.eoltag{display:inline-block;font:700 10.5px var(--f-mono);letter-spacing:.06em;padding:2px 6px;border-radius:5px;background:#D9822B;color:#fff;vertical-align:1px}
+.eolfit{display:flex;flex-wrap:wrap;gap:6px;margin-top:6px}.eolfit .chip{font:600 11.5px var(--f-mono)}
 .mhbtn{width:100%;margin-top:10px;padding:8px 10px}.mhbtn .mhico{display:grid;place-items:center;color:var(--beam)}
 .mhdlg{width:min(640px,calc(100vw - 32px))}
 .mhdlg .mhsub,.mhdlg .mhnote{margin:-6px 0 10px;color:var(--muted);font-size:13px}.mhdlg .mhnote{margin:10px 0 0;font-size:11.5px}

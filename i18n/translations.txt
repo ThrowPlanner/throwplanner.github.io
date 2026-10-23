@@ -716,3 +716,14 @@ Intet terminalbillede|No terminal image|端子画像なし
 Vis terminalsiden på|Show the terminal side of|端子面を表示：
 Terminalsiden på|Terminal side of|端子面：
 Større billeder hos Panasonic|Larger images at Panasonic|Panasonicで大きな画像を見る
+Udgåede (EOL)|Discontinued (EOL)|販売終了 (EOL)
+Udgået projektormodel|Discontinued Projector Model|販売終了プロジェクターモデル
+Sælges kun fra restlager.|Available from remaining stock only.|在庫限りの販売です。
+Ikke længere i Panasonics sortiment.|No longer in Panasonic's range.|パナソニックの現行ラインアップにはありません。
+Data fra Panasonics Throw Distance Calculator.|Data from Panasonic's Throw Distance Calculator.|データ: パナソニック投写距離計算ツール
+passer på disse aktuelle projektorer:|fits these current projectors:|は次の現行プロジェクターで使用できます:
+er udgået – ingen aktuelle projektorer kan bruge den.|is discontinued – no current projector can use it.|は販売終了です – 使用できる現行プロジェクターはありません。
+Standardoptikken sidder fast i projektoren og kan ikke flyttes til en anden model.|The standard lens is built in and cannot be moved to another model.|標準レンズは本体に固定されており、他のモデルでは使用できません。
+Skift til|Switch to|切り替え:
+med samme optik|with the same lens|（同じレンズ）
+Ikke i Panasonics aktuelle EU-sortiment.|Not in Panasonic's current EU range.|パナソニックの現行EUラインアップにはありません。

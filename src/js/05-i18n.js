@@ -71,6 +71,7 @@ function render(){
   $('lnImg').innerHTML=(ri.ln[6]&&ri.ln[6]!=='NONE'&&imgTag(lk,ri.ln[0]))||`<span class="none">${/Supplied|Standard/i.test(ri.ln[0])?'Indbygget standardlinse':'Intet billede'}</span>`;
   {const k=pjSlug(ri.m.m),src=termImg(k),b=$('pjTerm');if(b.dataset.k!==k+!!src){b.dataset.k=k+!!src;b.disabled=!src;$('pjTermImg').innerHTML=src?`<img src="${src}" alt="">`:'';
     $('pjTermTxt').textContent=src?'Input/output-terminaler':'Intet terminalbillede';b.title=src?`Vis terminalsiden på ${ri.m.m.split(' (')[0]}`:'Panasonic har intet terminalbillede for denne model'}}
+  eolUI(ri);
   setMan('pjMan',MAN_PJ[pjSlug(ri.m.m)],ri.m.m.split(' (')[0]);{const c=lnCode(ri.ln);setMan('lnMan',c?MAN_LN[c]:MAN_PJ[pjSlug(ri.m.m)],ri.ln[0])}$('lnCap').textContent=ri.ln[0];$('lnLink').href=lnURL(ri.m,ri.ln);$('lnLink').setAttribute('aria-label',`${ri.ln[0]} – specifikationer hos Panasonic`);
 
   const wpr=(r.Dzw*IN*r.aw/Math.hypot(r.aw,r.ah)*r.kx), wpt=(r.Dzt*IN*r.aw/Math.hypot(r.aw,r.ah)*r.kx);

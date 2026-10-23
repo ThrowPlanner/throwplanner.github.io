@@ -1,6 +1,6 @@
 /* ===== LØSNINGER ===== */
 function solutions(r){
-  const res=[];MODELS.forEach((m,mi)=>{if(S.cat&&m.c!==S.cat)return;if(S.venue==='golf'&&m.c!==3)return;if(m.lm<S.minLm)return;const ai=aiFor(m);if(ai<0)return;
+  const res=[];MODELS.forEach((m,mi)=>{if(S.cat?m.c!==S.cat:isEOL(m))return;if(S.venue==='golf'&&m.c!==3)return;if(m.lm<S.minLm)return;const ai=aiFor(m);if(ai<0)return;
     m.L.forEach((l,li)=>{const row=l[2][ai];if(!row||!(row[0]>0))return;const fixed=l[1]==='F';const D=r.D;
       const a=distAt(row,D,0),b=distAt(row,D,1),z=fixed?0:zoomFor(row,D,S.L);
       const sizeOK=D>=row[4]-.5&&D<=row[5]+.5;const zOK=fixed?Math.abs(S.L-a)<=.015*a:(z>=-0.002&&z<=1.002);
