@@ -140,6 +140,7 @@ function immR(k,r){const o=S.venue==='immersive'&&ownPj(k);if(!o)return r;const 
   const [aw,ah]=ratioOf(m.asp[ai]);return {m,ln,row:ln[2][ai],aw,ah,fixed:ln[1]==='F',pcr:o.mi===S.mi&&S.pcr?S.pcr:m.cr}}
 const aiFor=m=>m.asp.findIndex(a=>keyOf(a)===S.ak);
 const f2=(x,n=2)=>Number.isFinite(x)?x.toFixed(n).replace('.',','):'–';
+const f3=(x,n=3)=>f2(x,n);  // mål i boks 08–10: 3 decimaler (mm) som Panasonics TDC
 const fi=x=>Number.isFinite(x)?Math.round(x).toLocaleString('da-DK'):'–';
 const mm=x=>fi(x*1000);
 

@@ -34,20 +34,20 @@ function drawPlan(r){
   // målefelter pr. fane: 1 rummets mål · 2 lærredets bredde · 3 projektorens afstand og sideforskydning
   $('calBox').hidden=!PLANIMG||p.tool!=='cal';$('scrBox').hidden=!PLANIMG||p.tool!=='scr'||!(p.scr&&p.scr.b);$('pjBox').hidden=!PLANIMG||p.tool!=='pj'||!planActive();
   {const sc=planScale(),wNow=planActive()?S.cw:p.scr&&p.scr.b&&sc>0?len(V(p.scr.a,p.scr.b))/sc:null;
-   if(document.activeElement!==$('planCw'))$('planCw').value=wNow!=null?wNow.toFixed(2):'';$('planCw').disabled=!!S.lockW&&planActive();
-   if(document.activeElement!==$('planL'))$('planL').value=S.L.toFixed(2);$('planL').disabled=!!S.lockL;
-   if(document.activeElement!==$('planPx'))$('planPx').value=S.px.toFixed(2);$('planPx').disabled=!!p.lock||!!(S.blend&&r.N>1)}
+   if(document.activeElement!==$('planCw'))$('planCw').value=wNow!=null?wNow.toFixed(3):'';$('planCw').disabled=!!S.lockW&&planActive();
+   if(document.activeElement!==$('planL'))$('planL').value=S.L.toFixed(3);$('planL').disabled=!!S.lockL;
+   if(document.activeElement!==$('planPx'))$('planPx').value=S.px.toFixed(3);$('planPx').disabled=!!p.lock||!!(S.blend&&r.N>1)}
 $('planZoom').hidden=!has;if(document.activeElement!==$('calM'))$('calM').value=p.calM;if(document.activeElement!==$('calL'))$('calL').value=p.calL??'';if(document.activeElement!==$('calH'))$('calH').value=p.calH??'';
   const cst=p.calStep||'w';document.querySelectorAll('[data-cal]').forEach(b=>b.setAttribute('aria-pressed',p.tool==='cal'&&b.dataset.cal===cst));
   $('planLock').checked=!!p.lock;$('planUse').checked=!!p.use;
   const g=planGeo();
-  $('planCap').textContent=!has?'valgfri – indsæt en tegning og placér projektoren på den':planActive()?`styrer afstand ${f2(S.L)} m og bredde ${f2(S.cw)} m`:'indsat – ikke i brug';
-  const sc1=planScale(),chk=p.cal2&&p.cal2.b&&sc1>0&&p.calL>0?len(V(p.cal2.a,p.cal2.b))/sc1:null,chkTxt=chk&&Math.abs(chk-p.calL)/p.calL>.05?` <span style="color:var(--bad)">Længden måler ${f2(chk)} m på tegningen med breddens målestok – tjek tallene eller tegningen.</span>`:'';
+  $('planCap').textContent=!has?'valgfri – indsæt en tegning og placér projektoren på den':planActive()?`styrer afstand ${f3(S.L)} m og bredde ${f3(S.cw)} m`:'indsat – ikke i brug';
+  const sc1=planScale(),chk=p.cal2&&p.cal2.b&&sc1>0&&p.calL>0?len(V(p.cal2.a,p.cal2.b))/sc1:null,chkTxt=chk&&Math.abs(chk-p.calL)/p.calL>.05?` <span style="color:var(--bad)">Længden måler ${f3(chk)} m på tegningen med breddens målestok – tjek tallene eller tegningen.</span>`:'';
   const step=!has?'':!p.cal||!p.cal.b||(p.tool==='cal'&&cst==='w')?'<b>1 · Målestok – bredde:</b> klik på rummets to sidevægge (på tværs af rummet) og skriv bredden i meter i feltet «Bredde».':
     p.tool==='cal'&&cst==='l'?'<b>1 · Målestok – længde:</b> klik på forvæggen og bagvæggen (på langs af rummet) og skriv længden i feltet «Længde». Højden kan skrives i feltet «Højde» (valgfri). Rummets mål i 02, 09 og 10 opdateres med det samme.'+chkTxt:
     p.tool==='cal'?'<b>1 · Målestok:</b> bredde og længde er sat'+(p.calH?' – og højden':' – skriv evt. højden i feltet «Højde»')+'. Tryk derefter på «2 · Lærred».'+chkTxt:
     !p.scr||!p.scr.b||p.tool==='scr'?'<b>2 · Lærred:</b> tryk på lærredets venstre kant (set fra publikum) og træk hen til højre kant – længden vises i meter. Træk bagefter i de to punkter for at flytte eller rotere lærredet. Bredden kan også rettes under 01 «Billedbredde».':
-    p.use?`<b>3 · Projektor:</b> klik eller træk projektoren på plads – den holder sig inden for billedets bredde og optikkens zoom. Træk i lærredet for at flytte det, eller i dets punkter for at rotere det. Afstand <b>${f2(S.L)} m</b> · sideforskydning ${S.blend&&r.N>1?r.pjs.filter(q=>q.r===0).map(q=>f2(q.lx-q.tx)).join(' / ')+' m (træk hver projektor ud til siden inden for dens lens shift)':f2(S.px)+' m'} · lærred ${f2(g.wM)} m bredt (målestok ${f2(g.sc,1)} px/m)`:'Plantegningen er ikke i brug. Slå «Brug plantegningens mål» til.';
+    p.use?`<b>3 · Projektor:</b> klik eller træk projektoren på plads – den holder sig inden for billedets bredde og optikkens zoom. Træk i lærredet for at flytte det, eller i dets punkter for at rotere det. Afstand <b>${f3(S.L)} m</b> · sideforskydning ${S.blend&&r.N>1?r.pjs.filter(q=>q.r===0).map(q=>f3(q.lx-q.tx)).join(' / ')+' m (træk hver projektor ud til siden inden for dens lens shift)':f3(S.px)+' m'} · lærred ${f3(g.wM)} m bredt (målestok ${f3(g.sc,1)} px/m)`:'Plantegningen er ikke i brug. Slå «Brug plantegningens mål» til.';
   $('planInfo').innerHTML=step;$('planInfo').hidden=!has;
   if(!has){$('planSvg').innerHTML='';return}
   // zoom: under 100 % vises luft omkring tegningen (større viewBox), over 100 % bliver tegningen bredere og kan rulles
@@ -62,11 +62,11 @@ $('planZoom').hidden=!has;if(document.activeElement!==$('calM'))$('calM').value=
   let s=`<defs><marker id="par" viewBox="0 0 10 10" refX="5" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M0,1 L9,5 L0,9 z" fill="#0B6E9C"/></marker></defs>${z<1?`<rect x="${vx}" y="${vy}" width="${vw}" height="${vh}" fill="#E9ECF0"/>`:''}<image href="${PLANIMG}" x="0" y="0" width="${W}" height="${H}"/>`;
   const dot2=(q,c)=>`<circle cx="${q[0]}" cy="${q[1]}" r="${5*k}" fill="${c}" stroke="#fff" stroke-width="${1.5*k}"/>`;
   const tag=(x,y,t,c='#0B6E9C')=>{const w=TW(t)*7*k+10*k;return `<g transform="translate(${x},${y})"><rect x="${-w/2}" y="${-10*k}" width="${w}" height="${20*k}" rx="${4*k}" fill="#fff" stroke="${c}" stroke-width="${k}"/><text x="0" y="${4.5*k}" text-anchor="middle" style="font-size:${12*k}px;fill:${c};font-family:var(--f-mono);font-weight:600">${esc(t)}</text></g>`};
-  if(p.cal2){s+=dot2(p.cal2.a,'#7A3FB0');if(p.cal2.b){s+=`<line x1="${p.cal2.a[0]}" y1="${p.cal2.a[1]}" x2="${p.cal2.b[0]}" y2="${p.cal2.b[1]}" stroke="#7A3FB0" stroke-width="${2*k}" stroke-dasharray="${6*k} ${4*k}"/>`+dot2(p.cal2.b,'#7A3FB0')+tag(p.cal2.a[0]+(p.cal2.b[0]-p.cal2.a[0])*.22+30*k,p.cal2.a[1]+(p.cal2.b[1]-p.cal2.a[1])*.22,`${f2(p.calL||0)} m`,'#7A3FB0')}}
-  if(p.cal){s+=dot2(p.cal.a,'#0B6E9C');if(p.cal.b){s+=`<line x1="${p.cal.a[0]}" y1="${p.cal.a[1]}" x2="${p.cal.b[0]}" y2="${p.cal.b[1]}" stroke="#0B6E9C" stroke-width="${2*k}" stroke-dasharray="${6*k} ${4*k}"/>`+dot2(p.cal.b,'#0B6E9C')+tag(p.cal.a[0]+(p.cal.b[0]-p.cal.a[0])*.22,p.cal.a[1]+(p.cal.b[1]-p.cal.a[1])*.22-14*k,`${f2(p.calM)} m`)}}
+  if(p.cal2){s+=dot2(p.cal2.a,'#7A3FB0');if(p.cal2.b){s+=`<line x1="${p.cal2.a[0]}" y1="${p.cal2.a[1]}" x2="${p.cal2.b[0]}" y2="${p.cal2.b[1]}" stroke="#7A3FB0" stroke-width="${2*k}" stroke-dasharray="${6*k} ${4*k}"/>`+dot2(p.cal2.b,'#7A3FB0')+tag(p.cal2.a[0]+(p.cal2.b[0]-p.cal2.a[0])*.22+30*k,p.cal2.a[1]+(p.cal2.b[1]-p.cal2.a[1])*.22,`${f3(p.calL||0)} m`,'#7A3FB0')}}
+  if(p.cal){s+=dot2(p.cal.a,'#0B6E9C');if(p.cal.b){s+=`<line x1="${p.cal.a[0]}" y1="${p.cal.a[1]}" x2="${p.cal.b[0]}" y2="${p.cal.b[1]}" stroke="#0B6E9C" stroke-width="${2*k}" stroke-dasharray="${6*k} ${4*k}"/>`+dot2(p.cal.b,'#0B6E9C')+tag(p.cal.a[0]+(p.cal.b[0]-p.cal.a[0])*.22,p.cal.a[1]+(p.cal.b[1]-p.cal.a[1])*.22-14*k,`${f3(p.calM)} m`)}}
   if(p.scr){const a=p.scr.a,b=p.scr.b;
     if(b){s+=`<line class="scrline" x1="${a[0]}" y1="${a[1]}" x2="${b[0]}" y2="${b[1]}" stroke="#111" stroke-width="${6*k}" stroke-linecap="round"/>`;
-      const sc0=planScale(),lp=len(V(a,b));if(sc0>0&&lp>2&&!(g&&p.use)){const nx=-(b[1]-a[1])/lp,ny=(b[0]-a[0])/lp;s+=tag((a[0]+b[0])/2-nx*22*k,(a[1]+b[1])/2-ny*22*k,`lærred ${f2(lp/sc0)} m`,'#111')}}
+      const sc0=planScale(),lp=len(V(a,b));if(sc0>0&&lp>2&&!(g&&p.use)){const nx=-(b[1]-a[1])/lp,ny=(b[0]-a[0])/lp;s+=tag((a[0]+b[0])/2-nx*22*k,(a[1]+b[1])/2-ny*22*k,`lærred ${f3(lp/sc0)} m`,'#111')}}
   }
   if(g&&p.use){
     const sc=g.sc,P=g.at,poly=a=>a.map(q=>q[0].toFixed(1)+','+q[1].toFixed(1)).join(' ');
@@ -81,8 +81,8 @@ $('planZoom').hidden=!has;if(document.activeElement!==$('calM'))$('calM').value=
      if(!(S.blend&&r.N>1))s+=`<polygon points="${poly(box)}" fill="#62C9EC" fill-opacity=".22" stroke="#0B6E9C" stroke-width="${1.4*k}" stroke-dasharray="${6*k} ${4*k}"/>`;
      const cl=P((x0+x1)/2,lo),cr=P((x0+x1)/2,hi);s+=`<line x1="${cl[0]}" y1="${cl[1]}" x2="${cr[0]}" y2="${cr[1]}" stroke="#0B6E9C" stroke-width="${1.2*k}" stroke-opacity=".7"/>`;
      const side=(BRX??(x1+hw))+0.25,ta=P(side,lo),tb=P(side,hi),off=TW('min 0,00 m')*3.5*k;
-     s+=tag(ta[0]+g.u[0]*off,ta[1]+g.u[1]*off,`${r.fixed?'fast':'min'} ${f2(lo)} m`,'#0B6E9C');if(!r.fixed)s+=tag(tb[0]+g.u[0]*off,tb[1]+g.u[1]*off,`max ${f2(hi)} m`,'#0B6E9C');
-     if(x1-x0>0.02){const tc=P((x0+x1)/2,z1+0.35);s+=tag(tc[0],tc[1],`shift ${f2(x0)}…${f2(x1)} m`,'#0B6E9C')}}
+     s+=tag(ta[0]+g.u[0]*off,ta[1]+g.u[1]*off,`${r.fixed?'fast':'min'} ${f3(lo)} m`,'#0B6E9C');if(!r.fixed)s+=tag(tb[0]+g.u[0]*off,tb[1]+g.u[1]*off,`max ${f3(hi)} m`,'#0B6E9C');
+     if(x1-x0>0.02){const tc=P((x0+x1)/2,z1+0.35);s+=tag(tc[0],tc[1],`shift ${f3(x0)}…${f3(x1)} m`,'#0B6E9C')}}
     // stablede enheder ligger oven på hinanden – set ovenfra tegnes kun den nederste i stakken, med et mærke
     r.pjs.forEach((pj,i)=>{if(pj.s)return;const lens=P(pj.lx,S.L),e1=P(pj.tx-r.W/2,0),e2=P(pj.tx+r.W/2,0);
       s+=`<polygon points="${poly([lens,e1,e2])}" fill="#F2A81D" fill-opacity=".22" stroke="#D98300" stroke-width="${1.2*k}"/>`;
@@ -93,8 +93,8 @@ $('planZoom').hidden=!has;if(document.activeElement!==$('calM'))$('calM').value=
       s+=`<circle cx="${lens[0]}" cy="${lens[1]}" r="${4*k}" fill="#D98300"/><circle cx="${P(pj.lx,(r.outFront+r.outBack)/2)[0]}" cy="${P(pj.lx,(r.outFront+r.outBack)/2)[1]}" r="${Math.max(14*k,bw*sc*.6)}" fill="transparent"/></g>`});
     if(r.stk>1)r.pjs.forEach(pj=>{if(pj.s)return;const q=P(pj.lx,r.outBack+0.3);s+=tag(q[0],q[1],`stak ${r.stk} × ${mm(r.outer[1])} mm`,'#3F4B57')});
     const m0=P(S.px,0),m1=P(S.px,S.L);const off=-(r.body[0]/2+.35)*sc;const d0=[m0[0]+g.u[0]*off,m0[1]+g.u[1]*off],d1=[m1[0]+g.u[0]*off,m1[1]+g.u[1]*off];
-    s+=`<line x1="${d0[0]}" y1="${d0[1]}" x2="${d1[0]}" y2="${d1[1]}" stroke="#0B6E9C" stroke-width="${1.5*k}" marker-start="url(#par)" marker-end="url(#par)"/>`+tag((d0[0]+d1[0])/2,(d0[1]+d1[1])/2,`L ${f2(S.L)} m`);
-    s+=tag(g.C[0]-g.n[0]*22*k,g.C[1]-g.n[1]*22*k,`lærred ${f2(g.wM)} m`,'#111');
+    s+=`<line x1="${d0[0]}" y1="${d0[1]}" x2="${d1[0]}" y2="${d1[1]}" stroke="#0B6E9C" stroke-width="${1.5*k}" marker-start="url(#par)" marker-end="url(#par)"/>`+tag((d0[0]+d1[0])/2,(d0[1]+d1[1])/2,`L ${f3(S.L)} m`);
+    s+=tag(g.C[0]-g.n[0]*22*k,g.C[1]-g.n[1]*22*k,`lærred ${f3(g.wM)} m`,'#111');
     const ok=r.zoomOK&&r.shOK&&r.sizeOK;{const q=P(r.pjs[0].lx-r.body[0]/2,(r.outFront+r.outBack)/2);const t0=ok?'✓ placering virker':(!r.zoomOK?'✗ uden for zoom':'✗ tjek shift/størrelse');const ww=(t0.length*7+10)*k/2+12*k;s+=tag(q[0]-g.u[0]*ww,q[1]-g.u[1]*ww,t0,ok?'#17834F':'#C23A22')}
   }
   // lærredets greb øverst, så de altid kan rammes (flyt hele lærredet / træk i punkterne for at rotere)
@@ -119,7 +119,7 @@ function planLoad(file){if(!file)return;
   }else{const fr=new FileReader();fr.onload=()=>done(fr.result);fr.readAsDataURL(file)}}
 let planDrag=null,planRaf=0,planOff=[0,0];
 function planMove(q){const g=planGeo();if(!g)return;S.plan.pjSet=true;q=[q[0]-planOff[0],q[1]-planOff[1]];const d=V(g.C,q);{const z=dot(d,g.n)/g.sc;autoLens(z,S.py);   // som i 10: træk ud over zoomen skifter optik
-    const lim=lensLimits();if(z>DEPTH()-.2)hit('depth');S.L=Math.round(Math.max(lim.lo,Math.min(lim.hi,Math.max(.2,Math.min(DEPTH()-.2,z))))*100)/100;if(S.L<lim.lo||S.L>lim.hi)S.L=Math.max(lim.lo,Math.min(lim.hi,S.L))};
+    const lim=lensLimits();if(z>DEPTH()-.2)hit('depth');S.L=Math.round(Math.max(lim.lo,Math.min(lim.hi,Math.max(.2,Math.min(DEPTH()-.2,z))))*1000)/1000;if(S.L<lim.lo||S.L>lim.hi)S.L=Math.max(lim.lo,Math.min(lim.hi,S.L))};
   if(S.blend&&planDrag&&planDrag.i!=null&&!S.plan.lock){const r=calc(),pj=r.pjs[planDrag.i];const lim=bdxRange(r);if(pj&&lim){const [a,b]=lim(pj.c);const want=dot(d,g.u)/g.sc-pj.tx-(S.px-r.cx);S.bdx={...(S.bdx||{}),[pj.c]:Math.round(Math.max(a,Math.min(b,want))*1000)/1000};if(want<a-1e-3||want>b+1e-3)hit('shift')}}
   else if(!S.plan.lock&&!S.blend)guardShift({px:S.px},{px:dot(d,g.u)/g.sc});else if(S.plan.lock){S.px=0;S.bdx={}}
   if(!planRaf)planRaf=requestAnimationFrame(()=>{planRaf=0;render()})}

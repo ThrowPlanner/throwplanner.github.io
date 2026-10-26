@@ -17,9 +17,9 @@ function fillAspect(){$('aspect').innerHTML=ASPECTS.map(a=>`<option value="${a}"
 function fillFrames(){const fr=framesFor(M());$('frameSel').innerHTML=fr.map(f=>`<option value="${f.id}">Panasonic ${f.id}${f.dim?'':' (mål ikke offentliggjort)'}</option>`).join('')+'<option value="custom">Egen ramme – indtast mål</option>';$('frameSel').value=S.frameId}
 /* ny projektor/optik: flyt projektoren ind i den nye optiks zoomområde (eller tilpas bredden, hvis afstanden er låst) */
 function fitLens(){if(S.lockL&&S.lockW)return;const r=calc();
-  if(!S.lockL){const lo=Math.min(r.Lw,r.Lt),hi=Math.max(r.Lw,r.Lt);let L=r.fixed?r.Lw:Math.max(lo,Math.min(hi,S.L));L=Math.min(L,Math.max(.2,DEPTH()-(r.outBack-S.L)));L=Math.max(.2,L);let q=Math.round(L*100)/100;if(q>hi&&q-.01>=lo)q=Math.floor(hi*100)/100;if(q<lo&&q+.01<=hi)q=Math.ceil(lo*100)/100;S.L=q}
+  if(!S.lockL){const lo=Math.min(r.Lw,r.Lt),hi=Math.max(r.Lw,r.Lt);let L=r.fixed?r.Lw:Math.max(lo,Math.min(hi,S.L));L=Math.min(L,Math.max(.2,DEPTH()-(r.outBack-S.L)));L=Math.max(.2,L);let q=Math.round(L*1000)/1000;if(q>hi)q=hi;if(q<lo)q=lo;S.L=q}  // ved grænsen: præcis TDC-værdi (vises afrundet til mm som i TDC)
   else{const dA=diagFor(r.row,S.L,0),dB=r.fixed?dA:diagFor(r.row,S.L,1);let D=Math.max(Math.min(dA,dB),Math.min(Math.max(dA,dB),r.D));D=Math.max(r.row[4],Math.min(r.row[5],D));
-    S.cw=Math.round(D*IN*r.aw/Math.hypot(r.aw,r.ah)*r.kx*100)/100}}
+    S.cw=Math.round(D*IN*r.aw/Math.hypot(r.aw,r.ah)*r.kx*1000)/1000}}
 // edge blend auto: færrest projektorer der dækker bredden (01) og målhøjden ved den valgte afstand
 let BAUTO=null;
 function blendAuto(){BAUTO=null;if(!S.blend||!S.bauto||S.venue==='immersive')return;const m=M(),ln=LN();let ai=aiFor(m);if(ai<0)ai=0;const row=ln[2][ai];if(!row)return;
@@ -54,4 +54,14 @@ function constrain(){CLAMP='';
   if(S.blend&&S.bdx){const rb=calc();const lim=bdxRange(rb);if(lim)for(const c in S.bdx){if(+c>=rb.N){delete S.bdx[c];continue}const [a,b]=lim(+c);S.bdx[c]=Math.max(a,Math.min(b,S.bdx[c]))}}
   if(S.sb+r2.CH>S.rh+1e-6){S.sb=Math.max(0,S.rh-r2.CH);hit('top');CLAMP+='Lærredets underkant er sænket, så lærredet er under loftet. '}
   if(S.venue==='theater'&&S.sb<STH()-1e-6){S.sb=Math.round(STH()*100)/100;const r5=calc();if(!r5.P.length&&!S.blend)S.py=S.sb+r5.CH/2-r5.inv*r5.off*r5.H}  // lærredet står på scenen
-  if(S.sb<0){S.sb=0;const r4=calc();if(!r4.P.length&&!S.blend)S.py=S.sb+r4.CH/2-r4.inv*r4.off*r4.H}{const r3=calc();if(REAR()){const mx=Math.max(1,STAGE()-1.1);if(S.bsd>mx){S.bsd=mx;hit('bsd')}}const over=Math.max(r3.outBack,S.L)-DEPTH();if(over>1e-6&&!S.lockL){S.L=Math.max(.2,S.L-over);hit('depth');CLAMP+=REAR()?'Afstanden er begrænset, så projektoren er inden for bagscenen. ':'Afstanden er begrænset, så projektoren er inden for bagvæggen. '}}if(S.py>S.rh){S.py=S.rh;hit('pyTop')}if(S.py<0){S.py=0;hit('pyBot')}}
+  if(S.sb<0){S.sb=0;const r4=calc();if(!r4.P.length&&!S.blend)S.py=S.sb+r4.CH/2-r4.inv*r4.off*r4.H}{const r3=calc();if(REAR()){const mx=Math.max(1,STAGE()-1.1);if(S.bsd>mx){S.bsd=mx;hit('bsd')}}const over=Math.max(r3.outBack,S.L)-DEPTH();if(over>1e-6&&!S.lockL){S.L=Math.max(.2,S.L-over);hit('depth');CLAMP+=REAR()?'Afstanden er begrænset, så projektoren er inden for bagscenen. ':'Afstanden er begrænset, så projektoren er inden for bagvæggen. '}}if(S.py>S.rh){S.py=S.rh;hit('pyTop')}if(S.py<0){S.py=0;hit('pyBot')}
+  keepShift()}
+/* billedet skal altid være inden for optikkens lens shift (fx når billedstørrelsen ændres): flyt projektoren lodret ind i området,
+   ellers til nærmeste punkt i optikkens shift-område (nogle optikker, fx ET-D3LEU100, kan ikke stå uden shift) */
+function keepShift(){const r=calc();if(!r.P.length||r.shOK)return;
+  const old={py:S.py,px:S.px};if(r.pyRange)S.py=Math.max(r.pyRange[0],Math.min(r.pyRange[1],S.py));
+  if(!calc().shOK){let b=null;for(let sh=-2.5;sh<=2.5001;sh+=.005){const iv=svInt(sh,r.P);if(!iv)continue;const sv=Math.max(iv[0],Math.min(iv[1],r.sv)),d=((sh-r.sh)*r.W)**2+((sv-r.sv)*r.H)**2;if(!b||d<b.d)b={sh,sv,d}}
+    const t0=b?{py:r.cy-r.inv*(b.sv+r.off)*r.H,px:r.cx-r.inv*(b.sh+r.offH)*r.W}:null;
+    if(t0){S.py=t0.py;S.px=t0.px}if(!t0||!calc().shOK){S.py=old.py;S.px=old.px;return}
+    const set=t=>{S.py=t0.py+(old.py-t0.py)*t;S.px=t0.px+(old.px-t0.px)*t};let lo=0,hi=1;for(let i=0;i<20;i++){const m=(lo+hi)/2;set(m);if(calc().shOK)lo=m;else hi=m}set(lo)}
+  hit('shift');CLAMP+='Projektoren er flyttet, så billedet er inden for optikkens lens shift. '}
