@@ -318,6 +318,12 @@ details.coll2[open]>summary .chev{transform:rotate(-135deg);margin-bottom:-2px}
 .fm select{font-family:var(--f-body);font-size:13.5px;letter-spacing:0;text-transform:none}
 .trio{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:6px}
 .trio input{width:100%}
+/* Immersive: rummets højde styrer billederne på væggene – pil og markering, så den sættes først */
+.rhpil{display:none;color:var(--beam);font-weight:700;letter-spacing:.02em;white-space:nowrap}
+:root[data-venue="immersive"] .rhpil{display:inline;animation:rhpulse 1.2s ease-in-out 4}
+:root[data-venue="immersive"] #rh{border-color:var(--beam);box-shadow:0 0 0 2px var(--beam-soft)}
+@keyframes rhpulse{50%{opacity:.35}}
+@media (prefers-reduced-motion:reduce){.rhpil{animation:none!important}}
 .trio label{display:flex;flex-direction:column;gap:3px;font-size:11px;color:var(--muted);font-family:var(--f-mono);letter-spacing:.06em;text-transform:uppercase;min-width:0}
 
 /* produktbilleder */

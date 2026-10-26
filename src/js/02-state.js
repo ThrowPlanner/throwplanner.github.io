@@ -34,11 +34,18 @@ const IMPX=q=>{const pu=Math.round(q.U/q.su*(q.rot?q.eh:q.ew)),pv=Math.round(q.V
 const IMC={v:'#16B6D9',l:'#8B5CF6',r:'#EC4899',f:'#F59E0B'},IMT={v:'F',l:'V',r:'H',f:'G'};
 /* færrest mulige projektorer på en flade (vægge: altid liggende montering; gulv: projektoren kan drejes 90°), tæl ved optikkens største billede (kast ≤ Lmax),
    og tilpas derefter billedet, så det præcis fylder fladen med det valgte overlap (mindre billede = mere lys) */
-function immLay(U,V,Lmax,row,aw,ah,fixed,o,gr,canRot){const kW=IN*aw/Math.hypot(aw,ah),cnt=(len,sz)=>len<=sz+1e-6?1:Math.ceil((len-sz*o)/(sz*(1-o))-1e-6);
+function immLay(U,V,Lmax,row,aw,ah,fixed,o,gr,canRot,fitV){const kW=IN*aw/Math.hypot(aw,ah),cnt=(len,sz)=>len<=sz+1e-6?1:Math.ceil((len-sz*o)/(sz*(1-o))-1e-6);
   const Dmax=Math.min(row[5],diagFor(row,Lmax,0));if(!(Dmax>=row[4]-1e-6))return null;const Wm=Dmax*kW,Hm=Wm*ah/aw;let best=null;
+  // vægge (auto): prøv først at lade billedet gå præcis fra gulv til loft – bredden fyldes præcist med lidt mere vandret overlap (ou).
+  // Kan optikken ikke det, eller vælger man selv et fast antal i 05, må billedet gå over i højden (beregningen nedenfor)
+  if(fitV){for(const rot of canRot==='only'?[true]:canRot===false?[false]:[false,true]){const nv=gr?Math.max(1,Math.round(gr)):cnt(V,rot?Wm:Hm),sv=V/(nv-(nv-1)*o);
+      const W=rot?sv:sv*aw/ah,H=W*ah/aw,su=rot?H:W;if(W>Wm+1e-6||W<row[4]*kW-1e-6)continue;
+      const nu=cnt(U,su),ou=nu>1?Math.max(o,(nu*su-U)/((nu-1)*su)):o,c={rot,nu,nv,n:nu*nv,W,H,D:W/kW,su,sv,ou,big:W>=Wm-1e-6};
+      if(!best||c.n<best.n||(c.n===best.n&&c.W*c.H<best.W*best.H-1e-9))best=c}
+    if(best)return best}
   for(const rot of canRot==='only'?[true]:canRot===false?[false]:[false,true]){const su0=rot?Hm:Wm,sv0=rot?Wm:Hm,nu=cnt(U,su0),nv=gr?Math.max(1,Math.round(gr)):cnt(V,sv0);
     const nU=U/(nu-(nu-1)*o),nV=V/(nv-(nv-1)*o);let W=rot?Math.max(nV,nU*aw/ah):Math.max(nU,nV*aw/ah);W=Math.max(row[4]*kW,Math.min(Wm,W));
-    const H=W*ah/aw,c={rot,nu,nv,n:nu*nv,W,H,D:W/kW,su:rot?H:W,sv:rot?W:H,big:W>=Wm-1e-6};
+    const H=W*ah/aw,c={rot,nu,nv,n:nu*nv,W,H,D:W/kW,su:rot?H:W,sv:rot?W:H,ou:o,big:W>=Wm-1e-6};
     if(!best||c.n<best.n||(c.n===best.n&&c.W*c.H<best.W*best.H-1e-9))best=c}
   return best}
 // projektortype ud fra Panasonics kategori: 1-chip DLP, 3-chip DLP eller LCD (Panasonics LCD-projektorer er 3LCD)
@@ -53,7 +60,7 @@ function immCalc(r0){const o=Math.min(.5,Math.max(0,(S.immOv??10)/100)),amb=AMB(
   // Auto: største billede pr. projektor ved kastet. Fast antal (05 Edge blend): billedet fylder fladen præcist, kastet holdes inden for optikkens zoom.
   const one=(key,name,U,V,Lmax,canRot0)=>{if(!S.imm||!S.imm[key])return {key,name,on:false};const RT=(S.immRot||{})[key],canRot=RT===true?'only':RT===false?false:canRot0;
     const r=immR(key,r0),row=r.row,lm=(r.m.lc||r.m.lm),kW=IN*r.aw/Math.hypot(r.aw,r.ah);
-    const a=A[key]||{},g=G[key]||{},Lmin=Math.min(Lmax,Math.max(0.3,distAt(row,row[4],0)));let ok=true,note='',L,D,W,H,su,sv,rot=false,nu,nv,fixedN=!!g.c,sug=null,bandMiss=false;
+    const a=A[key]||{},g=G[key]||{},Lmin=Math.min(Lmax,Math.max(0.3,distAt(row,row[4],0)));let ok=true,note='',L,D,W,H,su,sv,rot=false,nu,nv,ou=o,fixedN=!!g.c,sug=null,bandMiss=false;
     if(fixedN){nu=Math.max(1,Math.round(g.c));su=U/(nu-(nu-1)*o);if(canRot==='only'){rot=true;H=su;W=H*r.aw/r.ah;sv=W}else{W=su;H=W*r.ah/r.aw;sv=H}D=W/kW;
       if(g.r){const nvF=Math.max(1,Math.round(g.r)),vNeed=V/(nvF-(nvF-1)*o);if(rot){H=Math.max(H,vNeed*r.ah/r.aw);W=H*r.aw/r.ah;su=H;sv=W}else{W=Math.max(W,vNeed*r.aw/r.ah);H=W*r.ah/r.aw;su=W;sv=H}D=W/kW}
       const lw=distAt(row,D,0),lt=r.fixed?lw:distAt(row,D,1),lo=Math.min(lw,lt),hi=Math.max(lw,lt);
@@ -61,9 +68,9 @@ function immCalc(r0){const o=Math.min(.5,Math.max(0,(S.immOv??10)/100)),amb=AMB(
       else if(lo>Lmax+1e-6){ok=false;note=`kræver mindst ${f2(lo)} m kast – der er kun ${f2(Lmax)} m`;L=Lmax}
       else{L=Math.max(lo,Math.min(Math.min(hi,Lmax),Lmax+(a.dL||0)))}
       nv=g.r?Math.max(1,Math.round(g.r)):cnt(V,sv)}
-    else{const lay=immLay(U,V,Lmax,row,r.aw,r.ah,r.fixed,o,g.r,canRot);
+    else{const lay=immLay(U,V,Lmax,row,r.aw,r.ah,r.fixed,o,g.r,canRot,key!=='f');
       if(!lay){ok=false;L=Lmax;D=row[4];note=`optikken kan ikke give et billede på ${f2(L)} m afstand`;W=D*kW;H=W*r.ah/r.aw;su=W;sv=H;nu=1;nv=1}
-      else{({D,W,H,su,sv,rot,nu,nv}=lay);
+      else{({D,W,H,su,sv,rot,nu,nv,ou}=lay);
         // kast: så langt væk som zoomen tillader for det tilpassede billede (træk på tværs flytter inden for zoomområdet)
         const lo=distAt(row,D,0),hi=r.fixed?lo:distAt(row,D,1),Lhi=Math.min(Math.max(lo,hi),Lmax),Llo=Math.min(lo,hi);
         L=Math.max(Llo,Math.min(Lhi,Lmax+(a.dL||0)));if(lay.big)note=`optikkens største billede (${fi(D)}″)`}
@@ -72,20 +79,20 @@ function immCalc(r0){const o=Math.min(.5,Math.max(0,(S.immOv??10)/100)),amb=AMB(
       // færrest projektorer; ved lige antal: kontrasten tættest på midten af området (eller mest lys, når intet område er valgt)
       if(ok&&r.m){const CB=crBandOf(),mid=Math.sqrt(CB.lo*(CB.hi===Infinity?100:CB.hi)),dist=c=>Math.abs(Math.log(c/mid));let bs=null;
         for(const m2 of MODELS){if(!typeOK(m2))continue;const ai2=aiFor(m2);if(ai2<0)continue;const [aw2,ah2]=ratioOf(m2.asp[ai2]);const lm2=m2.lc||m2.lm,pc2=m2.cr||2000;
-          m2.L.forEach((ln2,li2)=>{const rw2=ln2[2]&&ln2[2][ai2];if(!rw2||!(rw2[0]>0))return;for(const rr of [false,true]){const l2=immLay(U,V,Lmax,rw2,aw2,ah2,ln2[1]==='F',o,g.r,rr?'only':false);if(!l2)continue;
+          m2.L.forEach((ln2,li2)=>{const rw2=ln2[2]&&ln2[2][ai2];if(!rw2||!(rw2[0]>0))return;for(const rr of [false,true]){const l2=immLay(U,V,Lmax,rw2,aw2,ah2,ln2[1]==='F',o,g.r,rr?'only':false,key!=='f');if(!l2)continue;
             const lux2=lm2/(l2.W*l2.H),cr2=(lux2+amb)/(lux2/pc2+amb);if(cr2<CB.lo-1e-9||cr2>CB.hi+1e-9)continue;
             const better=!bs||l2.n<bs.n||(l2.n===bs.n&&(CB.on?dist(cr2)<dist(bs.cr)-1e-6:lux2>bs.lux*1.001));
             if(better)bs={...l2,mi:MODELS.indexOf(m2),li:li2,name:ln2[0],model:m2.m.split(' (')[0],lux:lux2,cr:cr2,rot:rr}}})}
         const same=bs&&bs.mi===MODELS.indexOf(r.m)&&r.m.L[bs.li]===r.ln&&bs.rot===rot;
         const crNow=(lm/(W*H)+amb)/(lm/(W*H)/r.pcr+amb),outNow=crNow<CB.lo-1e-9||crNow>CB.hi+1e-9;bandMiss=CB.on&&!bs;
         if(bs&&!same&&(!typeOK(r.m)||outNow||bs.n<nu*nv||(bs.n===nu*nv&&(CB.on?dist(bs.cr)<dist(crNow)-.05:bs.lux>lm/(W*H)*1.05))))sug=bs}}
-    const dL=L-Lmax,covV=nv*sv-(nv-1)*sv*o,covU=nu*su-(nu-1)*su*o;
+    const dL=L-Lmax,covV=nv*sv-(nv-1)*sv*o,covU=nu*su-(nu-1)*su*ou;
     if(ok&&covV<V-1e-3)note=`dækker kun ${f2(covV)} af ${f2(V)} m – flere projektorer på tværs`;
     const lux=lm/(W*H),cr=(lux+amb)/(lux/r.pcr+amb);
     const mu=Math.max(0,(covU-U)/2),mv=Math.max(0,(covV-V)/2);
     const du=Math.max(-mu,Math.min(mu,a.du||0)),dv=Math.max(-mv,Math.min(mv,a.dv||0));
     const [ew,eh]=effRes(r.m.res,r.aw,r.ah);
-    return {key,name,on:true,pm:r.m,pl:r.ln,own:r!==r0,ew,eh,sug,bandMiss,ok,note,U,V,L,Lmax,Lmin,dL,du,dv,W,H,su,sv,nu,nv,rot,o,lux,cr,fixedN,fixedR:!!g.r,bz:su*o,bzv:sv*o,n:ok?nu*nv:0}};
+    return {key,name,on:true,pm:r.m,pl:r.ln,own:r!==r0,ew,eh,sug,bandMiss,ok,note,U,V,L,Lmax,Lmin,dL,du,dv,W,H,su,sv,nu,nv,rot,o,ou,lux,cr,fixedN,fixedR:!!g.r,bz:su*ou,bzv:sv*o,n:ok?nu*nv:0}};
   return [one('v','Front-væg',S.rw,S.rh,S.rd-0.6,false),one('l','Venstre væg',S.rd,S.rh,S.rw-0.6,false),one('r','Højre væg',S.rd,S.rh,S.rw-0.6,false),one('f','Gulv',S.rd,S.rw,S.rh-0.6,true)]}
 // fliser (billeder) langs en flade: [start, slut, midte] – centreret (+ forskydning), overlap fordeles jævnt
 const tiles=(len,sz,n,o,off=0)=>{const tot=n*sz-(n-1)*sz*o,a0=(len-tot)/2+off,out=[];for(let i=0;i<n;i++){const a=a0+i*sz*(1-o);out.push([Math.max(0,a),Math.min(len,a+sz),a+sz/2])}return out};
@@ -100,7 +107,7 @@ function warpImg(id,pt,ts,alongV,T=''){let s='';const n=ts.length-1;for(let i=0;
     s+=`<clipPath id="${id}${i}"><polygon points="${pts(Q)}"/></clipPath><g clip-path="url(#${id}${i})"><use href="#immimg" transform="matrix(${m.map(v=>v.toFixed(4)).join(' ')}) ${T}"/></g>`}
   return s}
 function immPos(q){const w=S.rw/2,h=S.rh,out=[];if(!q.on||!q.ok)return out;let k=0;
-  const tU=tiles(q.U,q.su,q.nu,q.o,q.du),tV=tiles(q.V,q.sv,q.nv,q.o,q.dv);
+  const tU=tiles(q.U,q.su,q.nu,q.ou??q.o,q.du),tV=tiles(q.V,q.sv,q.nv,q.o,q.dv);
   tU.forEach(([u0,u1,uc])=>tV.forEach(([v0,v1,vc],j)=>{k++;const id=IMT[q.key]+k;let pj,c4;
     if(q.key==='v'){pj=[uc-w,h-.35-j*.3,q.L];c4=[[u0-w,v0,0],[u1-w,v0,0],[u1-w,v1,0],[u0-w,v1,0]]}
     else if(q.key==='f'){pj=[vc-w,q.L,uc];c4=[[v0-w,0,u0],[v1-w,0,u0],[v1-w,0,u1],[v0-w,0,u1]]}
