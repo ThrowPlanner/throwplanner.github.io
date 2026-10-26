@@ -115,6 +115,6 @@ function render(){
     K((r.roomIssues.length||r.clashX||r.clashY)?'warn':'',S.frame?`Flyramme ${S.frameId==='custom'?'(egen)':S.frameId}`:'Projektor (B×H×D)',`${mm(o[0])}<small>×</small>${mm(o[1])}<small>×</small>${mm(o[2])}<small>mm</small>`,(r.clashX||r.clashY)?'projektorer kolliderer':`bagkant ${f3(r.outBack)} m fra lærred`,'sm');
 
   $('sideCap').textContent=S.venue==='immersive'?'flader og projektorer set fra siden':`træk projektoren · L ${f3(S.L)} m · linse ${f3(S.py)} m${Math.abs(r.sh)>.004?` · H-shift: projektor ${f3(Math.abs(S.px))} m til ${S.px>0?'højre':'venstre'}`:''}`;
-  drawSunUI();drawGolfPanel(GCUR);drawFront(r);drawSide(r);drawShiftBar(r);drawContrast(S.venue==='immersive'?immCrR(r):r);drawPlan(r);solutions(r);formula(r);save();
+  drawSunUI();drawGolfPanel(GCUR);drawFront(r);drawSide(r);drawTop(r);drawShiftBar(r);drawContrast(S.venue==='immersive'?immCrR(r):r);drawPlan(r);solutions(r);formula(r);save();
 }
 
