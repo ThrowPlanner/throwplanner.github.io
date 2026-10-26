@@ -25,6 +25,7 @@ Bredden kommer fra plantegningen.|The width comes from the floor plan.|幅は図
 Billedet er gjort så bredt som rummet.|The image has been made as wide as the room.|画面を部屋の幅に合わせました。
 Billedet er gjort så højt som rummet.|The image has been made as tall as the room.|画面を部屋の高さに合わせました。
 Lærredets underkant er sænket, så lærredet er under loftet.|The screen bottom edge has been lowered so the screen is below the ceiling.|スクリーンが天井より下になるよう下端を下げました。
+Projektoren er flyttet, så billedet er inden for optikkens lens shift.|The projector has been moved so the image is within the lens shift range.|画面がレンズシフト範囲内に収まるようプロジェクターを移動しました。
 Afstanden er begrænset, så projektoren er inden for bagvæggen.|The distance has been limited so the projector is inside the back wall.|プロジェクターが後壁の内側に収まるよう距離を制限しました。
 Afstanden er begrænset, så projektoren er inden for bagscenen.|The distance has been limited so the projector is inside the backstage.|プロジェクターがバックステージ内に収まるよう距離を制限しました。
 Passer ikke: # m og # m bredde – med denne optik skal afstanden være #–# m for # m bredde|Does not fit: # m and # m width – with this lens the distance must be #–# m for # m width|不適合：# m・幅 # m – このレンズでは幅 # m に #–# m の距離が必要

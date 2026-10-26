@@ -26,8 +26,9 @@ function render(){
   const set=(id,v)=>{const el=$(id);if(document.activeElement!==el)el.value=v};
   if(fillLens.mi!==slotMI())fillLens();$('model').value=slotMI();$('lens').value=slotLI();{const o=$('lens').selectedOptions[0];if(o)$('lens').title=o.textContent}
   {const lk=!!S.lockLens;$('lens').disabled=lk;$('lensLock3').setAttribute('aria-pressed',lk);$('lensLock3').title=lk?'Optikken er låst – klik for at låse op':'Lås optikken – så skifter appen den ikke automatisk'}$('aspect').value=S.ak;$('cat').value=S.cat;$('minLm').value=S.minLm;
-  set('dist',S.L.toFixed(2));set('cw',S.cw.toFixed(2));set('ch',r.CH.toFixed(2));set('cd',Math.round(Math.hypot(r.CW,r.CH)/IN));
-  set('sb',S.sb.toFixed(2));if(CLAMP){$('dist').value=S.L.toFixed(2);$('cw').value=S.cw.toFixed(2);$('ch').value=r.CH.toFixed(2);$('cd').value=Math.round(Math.hypot(r.CW,r.CH)/IN);$('sb').value=S.sb.toFixed(2)}
+  // 3 decimaler (mm) som Panasonics Throw Distance Calculator
+  set('dist',S.L.toFixed(3));set('cw',S.cw.toFixed(3));set('ch',r.CH.toFixed(3));set('cd',Math.round(Math.hypot(r.CW,r.CH)/IN));
+  set('sb',S.sb.toFixed(3));if(CLAMP){$('dist').value=S.L.toFixed(3);$('cw').value=S.cw.toFixed(3);$('ch').value=r.CH.toFixed(3);$('cd').value=Math.round(Math.hypot(r.CW,r.CH)/IN);$('sb').value=S.sb.toFixed(3)}
   set('rd',S.rd);set('rw',S.rw);set('rh',S.rh);set('r1',S.r1.toFixed(1));set('rp',S.rp.toFixed(2));set('gain',S.gain.toFixed(2));set('amb',S.amb);
   set('fw',Math.round(S.fw));set('fh',Math.round(S.fh));set('fd',Math.round(S.fd));set('bc',S.bc);set('br',S.br);set('ov',S.ov);
   {const pa=planActive(),lw=!!S.lockW,ll=!!S.lockL;$('cw').disabled=lw;$('ch').disabled=lw;$('cd').disabled=lw;$('dist').disabled=ll;
@@ -76,18 +77,18 @@ function render(){
 
   const wpr=(r.Dzw*IN*r.aw/Math.hypot(r.aw,r.ah)*r.kx), wpt=(r.Dzt*IN*r.aw/Math.hypot(r.aw,r.ah)*r.kx);
   const LK=(S.lockL||S.lockW)?(()=>{const ok=r.zoomOK&&r.sizeOK,lo=Math.min(r.Lw,r.Lt),hi=Math.max(r.Lw,r.Lt),c=ok?'var(--ok)':'var(--bad)';
-     const need=r.fixed?`${f2(r.Lw)} m`:`${f2(lo)}–${f2(hi)} m`;
-     const what=S.lockL&&S.lockW?`${f2(S.L)} m og ${f2(S.cw)} m bredde`:S.lockL?`afstand ${f2(S.L)} m`:`bredde ${f2(S.cw)} m`;
-     return `<span style="display:block;margin-bottom:4px;color:${c};font-weight:600">${ok?'Passer':'Passer ikke'}: ${what}${ok?'':` – med denne optik skal afstanden være ${need} for ${f2(S.cw)} m bredde`}</span>`})():'';
+     const need=r.fixed?`${f3(r.Lw)} m`:`${f3(lo)}–${f3(hi)} m`;
+     const what=S.lockL&&S.lockW?`${f3(S.L)} m og ${f3(S.cw)} m bredde`:S.lockL?`afstand ${f3(S.L)} m`:`bredde ${f3(S.cw)} m`;
+     return `<span style="display:block;margin-bottom:4px;color:${c};font-weight:600">${ok?'Passer':'Passer ikke'}: ${what}${ok?'':` – med denne optik skal afstanden være ${need} for ${f3(S.cw)} m bredde`}</span>`})():'';
   // låst afstand: optikker til den valgte projektor, der giver billedet ved den låste afstand
   const LS=S.lockL&&S.venue!=='immersive'?(()=>{const m=r.m;let ai=aiFor(m);if(ai<0)ai=0;const D=r.D,fits=[];
     m.L.forEach((l,li)=>{const row=l[2][ai];if(!row||!(row[0]>0))return;const fx=l[1]==='F',a=distAt(row,D,0),b=distAt(row,D,1);
       const sizeOK=D>=row[4]-.5&&D<=row[5]+.5,z=fx?0:zoomFor(row,D,S.L);const ok=sizeOK&&(fx?Math.abs(S.L-a)<=.015*a:(z>=-0.002&&z<=1.002));
       if(ok)fits.push({li,l,z,fx})});
     const btn=f=>`<button type="button" class="lsug${f.li===S.li?' cur':''}" data-lsug="${f.li}">${f.l[0]} · ${f.fx?'fast':Math.round(f.z*100)+' %'}</button>`;
-    return `<span class="lsugbox"><b class="notr">${m.m.split(' (')[0]}</b><br>${fits.length?`Passende optik ved ${f2(S.L)} m og ${f2(r.W)} m bredde:`:`Ingen passende optik ved ${f2(S.L)} m og ${f2(r.W)} m bredde.`}${fits.length?'<span class="lsugs">'+fits.map(btn).join('')+'</span>':''}</span>`})():'';
-  $('sizeHint').innerHTML=LK+LS+(CLAMP?`<span style="color:var(--warn)">${CLAMP}</span>`:'')+(planActive()?'<b>Bredden er koblet til lærredet på plantegningen.</b> ':'')+(S.blend?`Samlet billede. Pr. projektor: <b>${f2(r.W)} × ${f2(r.H)} m</b> (${fi(r.D)}″).`:
-    `${r.fixed?'Billedstørrelse':'Maksimal billedstørrelse'} ved ${f2(S.L)} m: <b>${f2(wpr)} × ${f2(wpr*r.H/r.W)} m</b> (${fi(Math.hypot(wpr,wpr*r.H/r.W)/0.0254)}″)`);
+    return `<span class="lsugbox"><b class="notr">${m.m.split(' (')[0]}</b><br>${fits.length?`Passende optik ved ${f3(S.L)} m og ${f3(r.W)} m bredde:`:`Ingen passende optik ved ${f3(S.L)} m og ${f3(r.W)} m bredde.`}${fits.length?'<span class="lsugs">'+fits.map(btn).join('')+'</span>':''}</span>`})():'';
+  $('sizeHint').innerHTML=LK+LS+(CLAMP?`<span style="color:var(--warn)">${CLAMP}</span>`:'')+(planActive()?'<b>Bredden er koblet til lærredet på plantegningen.</b> ':'')+(S.blend?`Samlet billede. Pr. projektor: <b>${f3(r.W)} × ${f3(r.H)} m</b> (${fi(r.D)}″).`:
+    `${r.fixed?'Billedstørrelse':'Maksimal billedstørrelse'} ved ${f3(S.L)} m: <b>${f3(wpr)} × ${f3(wpr*r.H/r.W)} m</b> (${fi(Math.hypot(wpr,wpr*r.H/r.W)/0.0254)}″)`);
   $('pjinfo').innerHTML=`${fi(ri.m.lm)} lm · kontrast ${fi(ri.m.cr)}:1 · ${ri.m.res.join('×')} · ${ri.m.dim.join('×')} mm · ${((ri.ln[7]&&ri.ln[7][0])||'n')==='u'?'ultrakort kast (kabinet foran spejlet)':((ri.ln[7]&&ri.ln[7][0])||'n')==='l'?'L-formet linse (kabinet lodret)':'linse rager '+fi(ri.ln[5]||0)+' mm frem'}`+
     (r.aspOK?'':`<br><span style="color:var(--warn)">${S.ak} findes ikke på denne model – bruger ${r.m.asp[r.ai]}.</span>`);
   $('blendHint').innerHTML=(BAUTO?`<span style="display:block;margin-bottom:4px;font-weight:600;color:${BAUTO.ok?'var(--ok)':'var(--bad)'}">${BAUTO.ok?`Auto: ${BAUTO.n} × ${BAUTO.r} = ${BAUTO.n*BAUTO.r} projektorer giver ${f2(r.CW)} × ${f2(r.CH)} m ved ${f2(S.L)} m`:BAUTO.small?`Billedet pr. projektor bliver for lille til optikken ved ${f2(S.L)} m – brug færre projektorer, en anden optik eller en kortere afstand`:`Kan ikke dækkes med højst 8 × 4 projektorer ved ${f2(S.L)} m – vælg en anden optik eller afstand`}</span>`:'')+(S.blend?`Blend-zone <b>${f2(r.W*r.o)} m</b> (${fi(r.bzPx)} px) · samlet <b>${fi(r.pxW)} × ${fi(r.pxH)} px</b> · afstand mellem projektorer ${f2(r.pitchX)} m`:'');
@@ -106,14 +107,14 @@ function render(){
   const o=r.outer;
   const KH='<h3 class="kh"><span class="no">07</span>Nøgletal</h3>';
   if(S.venue==='immersive')$('kpis').innerHTML=KH+immKPI(r,K);else $('kpis').innerHTML=KH+
-    K(r.zoomOK?'ok':'bad','Zoomfaktor',r.fixed?'Fast':`${f2(S.L/r.Lw,1)}<small>x</small>`,r.fixed?`linse kaster ${f2(r.Lw)} m`:r.zoomOK?`linsen kan 1,0–${f2(r.Lt/r.Lw,1)}x`:(r.z<0?'projektor for tæt på':'projektor for langt væk'))+
-    K('','Afstand L',`${f2(S.L)}<small>m</small>`,r.fixed?`aktuel TR ${f2(r.Lw/r.W)}:1`:`linse ${f2(r.Lw)}–${f2(r.Lt)} m · aktuel TR ${f2(S.L/r.W)}:1`)+
-    K(r.sizeOK?'':'warn',S.blend?'Billede pr. projektor':'Billede',`${f2(r.W)}<small>×</small>${f2(r.H)}<small>m</small>`,S.blend?`${fi(r.D)}″ · samlet ${fi(r.pxW)}×${fi(r.pxH)} px`:`${fi(r.D)}″ · ${fi(r.ew)}×${fi(r.eh)} px`)+
+    K(r.zoomOK?'ok':'bad','Zoomfaktor',r.fixed?'Fast':`${f2(S.L/r.Lw,1)}<small>x</small>`,r.fixed?`linse kaster ${f3(r.Lw)} m`:r.zoomOK?`linsen kan 1,0–${f2(r.Lt/r.Lw,1)}x`:(r.z<0?'projektor for tæt på':'projektor for langt væk'))+
+    K('','Afstand L',`${f3(S.L)}<small>m</small>`,r.fixed?`aktuel TR ${f2(r.Lw/r.W)}:1`:`linse ${f3(r.Lw)}–${f3(r.Lt)} m · aktuel TR ${f2(S.L/r.W)}:1`)+
+    K(r.sizeOK?'':'warn',S.blend?'Billede pr. projektor':'Billede',`${f3(r.W)}<small>×</small>${f3(r.H)}<small>m</small>`,S.blend?`${fi(r.D)}″ · samlet ${fi(r.pxW)}×${fi(r.pxH)} px`:`${fi(r.D)}″ · ${fi(r.ew)}×${fi(r.eh)} px`,'sm')+
     K(r.shOK?'ok':'bad','Lens shift V / H',`${Math.round(r.sv*100)}<small>/</small>${Math.round(r.sh*100)}<small>%</small>`,(S.blend&&r.N>1&&r.shC.some(v=>Math.abs(v-r.sh)>.004)?`H pr. projektor ${r.shC.map(v=>Math.round(v*100)).join(' / ')} % · `:'')+(r.shOK?'inden for linsens shift':'uden for linsens shift'))+
     K('','Lys pr. projektor',`${fi(r.lux)}<small>lux</small>`,`${fi(r.nits)} cd/m² · kontrast ${fi(r.cr)}:1`)+
-    K((r.roomIssues.length||r.clashX||r.clashY)?'warn':'',S.frame?`Flyramme ${S.frameId==='custom'?'(egen)':S.frameId}`:'Projektor (B×H×D)',`${mm(o[0])}<small>×</small>${mm(o[1])}<small>×</small>${mm(o[2])}<small>mm</small>`,(r.clashX||r.clashY)?'projektorer kolliderer':`bagkant ${f2(r.outBack)} m fra lærred`,'sm');
+    K((r.roomIssues.length||r.clashX||r.clashY)?'warn':'',S.frame?`Flyramme ${S.frameId==='custom'?'(egen)':S.frameId}`:'Projektor (B×H×D)',`${mm(o[0])}<small>×</small>${mm(o[1])}<small>×</small>${mm(o[2])}<small>mm</small>`,(r.clashX||r.clashY)?'projektorer kolliderer':`bagkant ${f3(r.outBack)} m fra lærred`,'sm');
 
-  $('sideCap').textContent=S.venue==='immersive'?'flader og projektorer set fra siden':`træk projektoren · L ${f2(S.L)} m · linse ${f2(S.py)} m${Math.abs(r.sh)>.004?` · H-shift: projektor ${f2(Math.abs(S.px),2)} m til ${S.px>0?'højre':'venstre'}`:''}`;
+  $('sideCap').textContent=S.venue==='immersive'?'flader og projektorer set fra siden':`træk projektoren · L ${f3(S.L)} m · linse ${f3(S.py)} m${Math.abs(r.sh)>.004?` · H-shift: projektor ${f3(Math.abs(S.px))} m til ${S.px>0?'højre':'venstre'}`:''}`;
   drawSunUI();drawGolfPanel(GCUR);drawFront(r);drawSide(r);drawShiftBar(r);drawContrast(S.venue==='immersive'?immCrR(r):r);drawPlan(r);solutions(r);formula(r);save();
 }
 

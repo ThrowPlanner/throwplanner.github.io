@@ -156,9 +156,9 @@ function drawFront(r){IMMPJ=null;if(S.venue==='golf')GCUR=golfCalc(r);
   const PRS=g=>NOCROWD()?'':`<g class="presgrab"><title>Træk for at flytte taleren</title>${r.presHit?g.replace('fill:var(--r-person)','fill:var(--bad)'):g}</g>`;
   const tx=r.presX;if(VN==='theater'){const zS=STAGE(),zp=r.presZ;s+=`<g transform="translate(0,${(P(tx,STH(),zp)[1]-P(tx,0,zp)[1]).toFixed(1)})">`+PRS(person(P,tx,zp,'stand'))+'</g>'}else if(VN!=='immersive'&&VN!=='golf')s+=PRS(person(P,tx,r.presZ,'stand'));
   // mål på væggen
-  if(!NS){s+='<g class="Ldim">'+dimH(cl,cl+cwp,ctp-20,`${f2(r.CW)} m`,ctp-4,ctp-4);
-  s+=dimV(cl+cwp+bm+22,ctp,ctp+chp,`${f2(r.CH)} m`,cl+cwp+bm+3,cl+cwp+bm+3);
-  if(S.blend&&r.N>1)s+=dimH(X(r.cx-r.CW/2+r.W*(1-r.o)),X(r.cx-r.CW/2+r.W),ctp-46,`blend ${f2(r.W*r.o)} m`,ctp-24,ctp-24);s+='</g>'}
+  if(!NS){s+='<g class="Ldim">'+dimH(cl,cl+cwp,ctp-20,`${f3(r.CW)} m`,ctp-4,ctp-4);
+  s+=dimV(cl+cwp+bm+22,ctp,ctp+chp,`${f3(r.CH)} m`,cl+cwp+bm+3,cl+cwp+bm+3);
+  if(S.blend&&r.N>1)s+=dimH(X(r.cx-r.CW/2+r.W*(1-r.o)),X(r.cx-r.CW/2+r.W),ctp-46,`blend ${f3(r.W*r.o)} m`,ctp-24,ctp-24);s+='</g>'}
   // stole + projektorer (malerens algoritme: fjernest først)
   const seatX=[];for(let x=-w+0.8;x<=w-0.8;x+=0.56)if(Math.abs(x)>0.6)seatX.push(x);
   const items=[];
@@ -179,9 +179,9 @@ function drawFront(r){IMMPJ=null;if(S.venue==='golf')GCUR=golfCalc(r);
   if(!rear&&!NS)s+=beams();
   items.forEach(it=>s+=it.draw());
   // lærredets underkant: målt midt i lokalet (i midtergangen), tegnet oven på stolene så tallet kan læses
-  s+='<g class="Ldim">';if(NS);else if(S.sb>0.05){const x=X(r.cx),a=Y(0),b=Y(S.sb);s+=`<line x1="${x}" y1="${a}" x2="${x}" y2="${b}" style="stroke:var(--dim)" stroke-width="1.6" marker-start="url(#ar)" marker-end="url(#ar)"/>`+lbl(x,(a+b)/2,`underkant ${f2(S.sb)} m`)}
-  else s+=lbl(X(r.cx),Y(0)-12,'underkant 0,00 m');
-  if(!NS&&Math.abs(r.cx)>.005)s+=lbl(X(r.cx),ctp-42,`lærred forskudt ${f2(Math.abs(r.cx))} m til ${r.cx>0?'højre':'venstre'}`,'m');s+='</g>';
+  s+='<g class="Ldim">';if(NS);else if(S.sb>0.05){const x=X(r.cx),a=Y(0),b=Y(S.sb);s+=`<line x1="${x}" y1="${a}" x2="${x}" y2="${b}" style="stroke:var(--dim)" stroke-width="1.6" marker-start="url(#ar)" marker-end="url(#ar)"/>`+lbl(x,(a+b)/2,`underkant ${f3(S.sb)} m`)}
+  else s+=lbl(X(r.cx),Y(0)-12,'underkant 0,000 m');
+  if(!NS&&Math.abs(r.cx)>.005)s+=lbl(X(r.cx),ctp-42,`lærred forskudt ${f3(Math.abs(r.cx))} m til ${r.cx>0?'højre':'venstre'}`,'m');s+='</g>';
   // loftstruss ved loftmontering
   function truss(){let s='';if(S.ceil){const zt=(r.outFront+r.outBack)/2,a=PJ(-w,h-0.12,zt),b=PJ(w,h-0.42,zt);s+=`<rect x="${a[0]}" y="${a[1]}" width="${b[0]-a[0]}" height="${b[1]-a[1]}" fill="none" style="stroke:var(--r-truss)" stroke-width="2"/>`;
     const n=Math.round(S.rw/0.5);for(let i=0;i<n;i++){const x0=a[0]+(b[0]-a[0])*i/n,x1=a[0]+(b[0]-a[0])*(i+1)/n;s+=`<line x1="${x0}" y1="${a[1]}" x2="${x1}" y2="${b[1]}" style="stroke:var(--r-truss)" stroke-width="1"/>`}
@@ -191,10 +191,10 @@ function drawFront(r){IMMPJ=null;if(S.venue==='golf')GCUR=golfCalc(r);
   if(!NS&&S.blend&&(r.N>1||r.R>1)){s+='<g class="Ldim">';const zb=r.outBack,oh=r.outer[1],ow=r.outer[0];
     const sLow=S.ceil?r.stk-1:0,row0=r.pjs.filter(p=>p.r===r.R-1&&p.s===sLow).sort((a,b)=>a.c-b.c);
     for(let i=0;i<row0.length-1;i++){const a=row0[i],b=row0[i+1];const yy=a.ly+r.F.y0-0.25;const A=PJ(a.lx,yy,zb),B=PJ(b.lx,yy,zb);
-      const gap=r.pitchX-ow;s+=dimH(A[0],B[0],A[1],`c/c ${f2(r.pitchX)} m`,PJ(a.lx,a.ly+r.F.y0,zb)[1],PJ(b.lx,b.ly+r.F.y0,zb)[1]);
+      const gap=r.pitchX-ow;s+=dimH(A[0],B[0],A[1],`c/c ${f3(r.pitchX)} m`,PJ(a.lx,a.ly+r.F.y0,zb)[1],PJ(b.lx,b.ly+r.F.y0,zb)[1]);
       const G1=PJ(a.lx+r.F.x1,yy-0.32,zb),G2=PJ(b.lx+r.F.x0,yy-0.32,zb);if(gap>0)s+=lbl((G1[0]+G2[0])/2,A[1]+22,`fri ${mm(gap)} mm`,'m');else s+=lbl((A[0]+B[0])/2,A[1]+22,`overlap ${mm(-gap)} mm`,'d')}
     if(r.R>1){const col=r.pjs.filter(p=>p.c===r.N-1&&!p.s).sort((a,b)=>b.r-a.r);for(let i=0;i<col.length-1;i++){const a=col[i],b=col[i+1];const xx=a.lx+r.F.x1+0.3;const A=PJ(xx,a.ly,zb),B=PJ(xx,b.ly,zb);
-      s+=dimV(A[0],A[1],B[1],`c/c ${f2(r.pitchY)} m`,PJ(a.lx+r.F.x1,a.ly,zb)[0],PJ(b.lx+r.F.x1,b.ly,zb)[0])}}
+      s+=dimV(A[0],A[1],B[1],`c/c ${f3(r.pitchY)} m`,PJ(a.lx+r.F.x1,a.ly,zb)[0],PJ(b.lx+r.F.x1,b.ly,zb)[0])}}
   s+='</g>'}
   // immersive: projektorer til sidevægge (i loftet ved modsatte væg) og gulv (i loftet, pegende ned)
   if(VN==='immersive'&&IMMPJ){
@@ -205,7 +205,7 @@ function drawFront(r){IMMPJ=null;if(S.venue==='golf')GCUR=golfCalc(r);
           `<rect x="${o[0]-bw/2}" y="${o[1]-bh/2}" width="${bw}" height="${bh}" rx="2" style="fill:var(--pj-hi);stroke:${c}" stroke-width="1.6"/>`+
           `<rect x="${o[0]-bw/2-6}" y="${o[1]-bh/2-6}" width="${bw+12}" height="${bh+12}" fill="transparent"/>`+
           (many?'':`<text x="${o[0]}" y="${o[1]-bh/2-4}" text-anchor="middle" style="font:700 11px var(--f-mono);fill:${c};paint-order:stroke;stroke:#05060A;stroke-width:3px">${t.id}</text>`)+'</g>'}}
-    const ML=(vis,full)=>full-vis>.1?`${f2(vis)} m (billede ${f2(full)} m)`:`${f2(full)} m`;
+    const ML=(vis,full)=>full-vis>.1?`${f3(vis)} m (billede ${f3(full)} m)`:`${f3(full)} m`;
     // målestok på billedet fra den projektor, musen holdes over (vises via pointerover – ellers for meget oven i hinanden)
     let DIMS='';
     for(const q of IMMPJ){if(!q.on||!q.ok)continue;
@@ -221,7 +221,7 @@ function drawFront(r){IMMPJ=null;if(S.venue==='golf')GCUR=golfCalc(r);
   // mål på projektor
   const p0=r.pjs.filter(p=>!p.s).pop(),lp=PJ(p0.lx+r.F.x0,p0.ly+(r.stk>1?(S.ceil?-1:1)*(r.stk-1)*r.outer[1]/2:0),r.outBack);
   if(!NS&&!REAR())s+='<g class="Ldim">'+lbl(lp[0]-8,lp[1],r.stk>1?`stak ${r.stk} × ${mm(r.outer[1])} = ${mm(r.outer[0])} × ${mm(r.stk*r.outer[1])} mm`:`${mm(r.outer[0])} × ${mm(r.outer[1])} mm`,'d','end')+'</g>';
-  {const t=`lokale ${f2(S.rw,1)} × ${f2(S.rd,1)} × ${f2(S.rh,1)} m${r.stand||VN==='golf'?'':` · ${fi(r.rows.length*r.seatsRow)} pladser`}`;s+=lbl(vw-14,vh-18,t,'m','end')}
+  {const t=`lokale ${f3(S.rw,1)} × ${f3(S.rd,1)} × ${f3(S.rh,1)} m${r.stand||VN==='golf'?'':` · ${fi(r.rows.length*r.seatsRow)} pladser`}`;s+=lbl(vw-14,vh-18,t,'m','end')}
   if(!NS&&S.content==='img'&&!IMG)s+=lbl(cl+cwp/2,ctp+chp/2,'Klik «Eget billede» for at vælge et billede','m');
   // klikflader for vinduer (custom) – øverst, så de kan rammes over alt andet
   HIT.forEach(([id,poly,t])=>{s+=`<polygon class="winhit" data-win="${id}" points="${pts(poly)}" fill="transparent"><title>${t} – klik for at ${OFF.has(id)?'tilføje':'fjerne'}</title></polygon>`});
@@ -231,7 +231,7 @@ function drawFront(r){IMMPJ=null;if(S.venue==='golf')GCUR=golfCalc(r);
 }
 function drawCrBand(){const b=$('crBand');b.hidden=S.venue!=='immersive';if(b.hidden)return;const lo=S.immCrMin??1,hi=S.immCrMax??100,a=cbC2V(lo),z=cbC2V(hi);
   if(document.activeElement!==$('cbMin'))$('cbMin').value=a;if(document.activeElement!==$('cbMax'))$('cbMax').value=z;$('cbFill').style.left=a+'%';$('cbFill').style.width=Math.max(0,z-a)+'%';
-  $('cbLo').textContent=f2(lo,lo<10?1:0)+':1';$('cbHi').textContent=hi>=99.5?'∞':f2(hi,hi<10?1:0)+':1'}
+  $('cbLo').textContent=f3(lo,lo<10?1:0)+':1';$('cbHi').textContent=hi>=99.5?'∞':f3(hi,hi<10?1:0)+':1'}
 function drawImmBlend(r){$('blendStd').hidden=true;$('blendImm').hidden=false;document.querySelectorAll('[data-ity]').forEach(b=>b.setAttribute('aria-pressed',(S.immTypes||{})[b.dataset.ity]!==false));
   const IM=immCalc(r),on=IM.filter(q=>q.on),tot=on.reduce((a,q)=>a+(q.ok?q.n:0),0),el=document.activeElement;
   $('sumBlend').textContent=`${tot} stk · ${S.immOv??10} %`;
@@ -243,7 +243,7 @@ function drawImmBlend(r){$('blendStd').hidden=true;$('blendImm').hidden=false;do
   for(const q of on){const d=box.querySelector(`[data-k="${q.key}"]`);if(!d)continue;
     const ic=d.querySelector('[data-ax="c"]'),ir=d.querySelector('[data-ax="r"]');if(el!==ic)ic.value=q.nu;if(el!==ir)ir.value=q.nv;
     d.querySelector('[data-auto]').setAttribute('aria-pressed',!q.fixedN&&!q.fixedR);
-    d.querySelector('.res').innerHTML=q.ok?`billede <b>${f2(q.W)} × ${f2(q.H)} m</b> · blend <b>${f2(q.bz)} m</b>${q.nv>1?` / ${f2(q.bzv)} m`:''} · kast <b>${f2(q.L)} m</b>${q.rot?' · drejet 90°':''} · <b>${q.n}</b> stk${q.note?`<br><span class="warn">${q.note}</span>`:''}${(()=>{const CB=crBandOf();if(!CB.on)return '';const out=q.cr<CB.lo||q.cr>CB.hi;return `<br>kontrast <b class="${out?'warnc':''}">${f2(q.cr,1)}:1</b>${out?' – uden for kontrastområdet':''}`})()}${q.bandMiss?`<br><span class="warn">Ingen projektor/optik giver ${f2(crBandOf().lo,0)}–${crBandOf().hi===Infinity?'∞':f2(crBandOf().hi,0)}:1 på denne flade</span>`:''}${q.sug?`<br><span class="sug">Bedste løsning: <span class="notr">${q.sug.model}</span> · ${q.sug.name}${q.sug.rot?' · portræt':''}${crBandOf().on?` · ${f2(q.sug.cr,1)}:1`:''}: <b>${q.sug.n}</b> stk<button type="button" data-use="${q.key}">Brug</button></span>`:''}`:`<span class="warn">${q.note||'kan ikke dækkes'}</span>`}
+    d.querySelector('.res').innerHTML=q.ok?`billede <b>${f3(q.W)} × ${f3(q.H)} m</b> · blend <b>${f3(q.bz)} m</b>${q.nv>1?` / ${f3(q.bzv)} m`:''} · kast <b>${f3(q.L)} m</b>${q.rot?' · drejet 90°':''} · <b>${q.n}</b> stk${q.note?`<br><span class="warn">${q.note}</span>`:''}${(()=>{const CB=crBandOf();if(!CB.on)return '';const out=q.cr<CB.lo||q.cr>CB.hi;return `<br>kontrast <b class="${out?'warnc':''}">${f3(q.cr,1)}:1</b>${out?' – uden for kontrastområdet':''}`})()}${q.bandMiss?`<br><span class="warn">Ingen projektor/optik giver ${f3(crBandOf().lo,0)}–${crBandOf().hi===Infinity?'∞':f3(crBandOf().hi,0)}:1 på denne flade</span>`:''}${q.sug?`<br><span class="sug">Bedste løsning: <span class="notr">${q.sug.model}</span> · ${q.sug.name}${q.sug.rot?' · portræt':''}${crBandOf().on?` · ${f3(q.sug.cr,1)}:1`:''}: <b>${q.sug.n}</b> stk<button type="button" data-use="${q.key}">Brug</button></span>`:''}`:`<span class="warn">${q.note||'kan ikke dækkes'}</span>`}
   {const sv=on.filter(q=>q.ok&&q.sug),save=sv.reduce((a,q)=>a+q.n-q.sug.n,0);$('iblBest').hidden=!sv.length;
    if(sv.length)$('iblBest').innerHTML=`<span>Bedste løsning pr. flade: <b>${tot-save}</b> i stedet for ${tot} projektorer</span><span class="sp"></span><button type="button" data-best="1">Brug bedste løsning</button>`}
   $('iblHint').innerHTML=`Auto vælger det mindste antal projektorer og tilpasser billedet, så det præcis fylder fladen. Skriv et fast antal projektorer for at låse opdelingen – billedet tilpasses, så det fylder fladen med ${S.immOv??10} % overlap, og kastet holdes inden for optikkens zoom (træk i projektorerne i «Lokalet set bagfra»). `}
@@ -255,10 +255,10 @@ function immKPI(r,K){const st=immStats(r),req=crMin();const c={};st.ok.forEach(q
   const nm=q=>q?q.name:'–';
   return K(st.bad.length?'bad':st.ok.length?'ok':'','Projektorer i alt',`${st.tot}<small>stk</small>`,Object.entries(c).map(([t,n])=>`${n} × ${t}`).join(' · ')||'ingen flader valgt')+
     K('','Flader',`${st.on.length}<small>af 4</small>`,st.on.map(q=>q.name).join(' · ')||'vælg flader under «Lokalet set bagfra»')+
-    K('','Pixels i alt',`${f2(st.px/1e6,1)}<small>MP</small>`,'alle flader, overlap talt én gang')+
-    K('','Kast',st.ok.length?`${f2(st.Lmin,1)}–${f2(st.Lmax,1)}<small>m</small>`:'–',st.ok.length?'korteste og længste kast':'')+
+    K('','Pixels i alt',`${f3(st.px/1e6,1)}<small>MP</small>`,'alle flader, overlap talt én gang')+
+    K('','Kast',st.ok.length?`${f3(st.Lmin,1)}–${f3(st.Lmax,1)}<small>m</small>`:'–',st.ok.length?'korteste og længste kast':'')+
     K('','Mindste lys',st.dim?`${fi(st.dim.lux)}<small>lux</small>`:'–',st.dim?nm(st.dim):'')+
-    K(st.worst?(st.worst.cr>=req?'ok':'warn'):'','Laveste kontrast',st.worst?`${fi(st.worst.cr)}<small>:1</small>`:'–',st.worst?`${nm(st.worst)} · krav ${f2(req,req%1?1:0)}:1`:'')}
+    K(st.worst?(st.worst.cr>=req?'ok':'warn'):'','Laveste kontrast',st.worst?`${fi(st.worst.cr)}<small>:1</small>`:'–',st.worst?`${nm(st.worst)} · krav ${f3(req,req%1?1:0)}:1`:'')}
 function immCrR(r){const st=immStats(r),q=st.worst;if(!q)return r;const pcr=q.pm===r.m&&S.pcr?S.pcr:q.pm.cr,amb=r.amb,lux=q.lux;
   const blk=lux/pcr+amb,blk2=2*lux/pcr+amb,blk4=4*lux/pcr+amb;return {...r,lux,pcr,cr:(lux+amb)/blk,blk,blk2,blk4,cr2:(lux+blk2)/blk2,cr4:(lux+blk4)/blk4,N:1,R:1,kx:1,ky:1,o:0,immQ:q}}
 function drawImm(r){const on=S.venue==='immersive';$('immPanel').hidden=!on;if(!on)return;
@@ -266,8 +266,8 @@ function drawImm(r){const on=S.venue==='immersive';$('immPanel').hidden=!on;if(!
   const IM=immCalc(r),q0={name:'Front (lærred)',U:r.CW,V:r.CH,L:S.L,W:r.W,H:r.H,nu:r.N,nv:r.R,lux:r.lux,cr:r.cr,ok:r.zoomOK&&r.sizeOK,n:r.N*r.R,on:true,note:r.zoomOK?'':'uden for zoom'};
   const rows=IM.filter(q=>q.on);const tot=rows.reduce((a,q)=>a+(q.ok?q.n:0),0);
   $('immTbl').innerHTML=`<tr><th>Flade</th><th class="n">Flade</th><th class="n">Afstand</th><th class="n">Billede pr. stk</th><th class="n">Projektorer</th><th class="n">Pixels (samlet)</th><th class="n">Lys</th><th class="n">Kontrast</th></tr>`+
-    rows.map(q=>q.ok?`<tr><td><i style="display:inline-block;width:10px;height:10px;border-radius:2px;background:${IMC[q.key]};margin-right:6px"></i>${q.name}${q.note?` <span class="hint">· ${q.note}</span>`:''}<br><span class="hint" style="margin-left:16px">${q.pm.m.split(' (')[0]} · ${q.pl[0]}</span></td><td class="n">${f2(q.U,1)} × ${f2(q.V,1)} m</td><td class="n">${f2(q.L)} m</td><td class="n">${f2(q.W)} × ${f2(q.H)} m${q.rot?' (drejet 90°)':''}</td><td class="n"><b>${q.n}</b> <span class="hint">(${q.nu}×${q.nv})</span></td><td class="n">${IMPX(q)} px</td><td class="n">${fi(q.lux)} lux</td><td class="n" style="color:${q.cr>=15?'var(--ok)':q.cr>=7?'var(--warn)':'var(--bad)'}">${fi(q.cr)}:1</td></tr>`
-      :`<tr><td>${q.name}<br><span class="hint">${q.pm.m.split(' (')[0]} · ${q.pl[0]}</span></td><td class="n">${f2(q.U,1)} × ${f2(q.V,1)} m</td><td colspan="6" style="color:var(--bad)">${q.note||'kan ikke dækkes'} – vælg en anden optik</td></tr>`).join('')+
+    rows.map(q=>q.ok?`<tr><td><i style="display:inline-block;width:10px;height:10px;border-radius:2px;background:${IMC[q.key]};margin-right:6px"></i>${q.name}${q.note?` <span class="hint">· ${q.note}</span>`:''}<br><span class="hint" style="margin-left:16px">${q.pm.m.split(' (')[0]} · ${q.pl[0]}</span></td><td class="n">${f3(q.U,1)} × ${f3(q.V,1)} m</td><td class="n">${f3(q.L)} m</td><td class="n">${f3(q.W)} × ${f3(q.H)} m${q.rot?' (drejet 90°)':''}</td><td class="n"><b>${q.n}</b> <span class="hint">(${q.nu}×${q.nv})</span></td><td class="n">${IMPX(q)} px</td><td class="n">${fi(q.lux)} lux</td><td class="n" style="color:${q.cr>=15?'var(--ok)':q.cr>=7?'var(--warn)':'var(--bad)'}">${fi(q.cr)}:1</td></tr>`
+      :`<tr><td>${q.name}<br><span class="hint">${q.pm.m.split(' (')[0]} · ${q.pl[0]}</span></td><td class="n">${f3(q.U,1)} × ${f3(q.V,1)} m</td><td colspan="6" style="color:var(--bad)">${q.note||'kan ikke dækkes'} – vælg en anden optik</td></tr>`).join('')+
     (rows.length?'':`<tr><td colspan="8" class="hint">Vælg en eller flere flader ovenfor.</td></tr>`)+`<tr><td><b>I alt</b></td><td></td><td></td><td></td><td class="n"><b>${tot}</b></td><td></td><td></td><td></td></tr>`+(()=>{const c={};rows.forEach(q=>{if(q.ok&&q.n){const t=q.pm.m.split(' (')[0]+' · '+q.pl[0];c[t]=(c[t]||0)+q.n}});return Object.entries(c).map(([t,n])=>`<tr><td colspan="4" class="hint">${t}</td><td class="n">${n} stk</td><td></td><td></td><td></td></tr>`).join('')})();
   document.querySelectorAll('[data-imode]').forEach(x=>x.setAttribute('aria-pressed',x.dataset.imode===(S.imMode||'h')));$('immLensLock').setAttribute('aria-pressed',!!S.lockLens);$('immLensLockTxt').textContent=S.lockLens?'🔒 Optik låst':'Lås optik';
   $('immHint').innerHTML=`Træk i en projektor i «Lokalet set bagfra» for at flytte hele gruppen: på tværs ændrer kastafstanden, langs fladen forskyder billederne – overlappet (edge blend) bliver det samme. Med «Op/ned» (eller Shift) hæves og sænkes gulv-projektorerne – optikken skiftes automatisk, og «Auto» for gulvet i 05 slås fra, så opdelingen bevares. Hver flade beregnes med sin egen projektor og optik, uafhængigt af lærredet. Front-væggen projiceres fra bagvæggen, side-projektorerne hænger i loftet ved den modsatte væg, og gulv-projektorerne i loftet over gulvet – det faktiske kast pr. flade står i tabellen. Auto vælger færrest mulige projektorer og tilpasser billedet, så det præcis fylder fladen med ${fi(S.immOv??10)} % overlap (indstilles under 05 Edge blend). Projektion på vægge fra loftet kræver lens shift og/eller geometrisk korrektion (warp). Lys og kontrast er pr. projektor uden refleksioner – i et immersive rum lyser fladerne hinanden op, så den reelle kontrast bliver lavere.`}
@@ -320,7 +320,7 @@ function ustInset(r){const p0=r.pjs[0],B=r.B,yb=p0.ty-r.H/2,near=Math.min(r.outF
   s+=`<circle cx="${X(S.L)}" cy="${Y(p0.ly)}" r="3.5" style="fill:var(--beam)"/><text class="m" x="${X(S.L)+6}" y="${Y(p0.ly)-6}" style="font-size:10px">spejl</text>`;
   s+=`</g>`;
   const dimY=Y(Math.min(yBot,yb))+18;
-  s+=dimH(X(0),X(S.L),Math.min(by+bh-10,dimY+16),`L ${f2(S.L,3)} m`,null,Y(p0.ly));
-  s+=dimH(X(0),X(near),Math.min(by+bh-28,dimY),`${f2(near,3)} m`,null,Y(yBot));
-  const yN=S.ceil?yT:yb;s+=dimV(X(0)-24,Y(yEdge),Y(yN),`H ${f2(Math.abs(yN-yEdge),3)} m`,X(near),X(0));
+  s+=dimH(X(0),X(S.L),Math.min(by+bh-10,dimY+16),`L ${f3(S.L,3)} m`,null,Y(p0.ly));
+  s+=dimH(X(0),X(near),Math.min(by+bh-28,dimY),`${f3(near,3)} m`,null,Y(yBot));
+  const yN=S.ceil?yT:yb;s+=dimV(X(0)-24,Y(yEdge),Y(yN),`H ${f3(Math.abs(yN-yEdge),3)} m`,X(near),X(0));
   return s+'</g>'}

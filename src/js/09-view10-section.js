@@ -13,15 +13,15 @@ function drawSide(r){
     if(q){const c=IMC[q.key];s+=`<rect x="${X(0)}" y="${Y(S.rh)}" width="${S.rd*sc}" height="${S.rh*sc}" fill="url(#imms)" opacity=".3"/>`;
       for(const t of immPos(q))s+=`<rect x="${X(t.u0)}" y="${Y(t.v1)}" width="${(t.u1-t.u0)*sc}" height="${(t.v1-t.v0)*sc}" style="fill:${c};stroke:${c}" fill-opacity=".08" stroke-dasharray="6 3"/>`;
       for(const qq of [l,rr])if(qq.on&&qq.ok){const c2=IMC[qq.key];for(const t of immPos(qq))s+=`<circle cx="${X(t.pj[2])}" cy="${Y(t.pj[1])}" r="${.45*sc}" style="fill:${c2}" opacity=".14"/>`+pb(t.pj[2],t.pj[1],c2);
-        LB.push([c2,`${qq.name.toLowerCase()}: ${qq.n} projektorer i loftet, ${f2(qq.L)} m fra væggen (skyder vinkelret på snittet)`])}}
+        LB.push([c2,`${qq.name.toLowerCase()}: ${qq.n} projektorer i loftet, ${f3(qq.L)} m fra væggen (skyder vinkelret på snittet)`])}}
     // front-væg: projektorerne skyder mod lærredsvæggen
     if(v.on&&v.ok){const c=IMC.v;const seen=new Set();for(const t of immPos(v)){if(seen.has(t.j))continue;seen.add(t.j);const [x,y,z]=t.pj;
         s+=`<polygon points="${X(z)},${Y(y)} ${X(0)},${Y(t.v1)} ${X(0)},${Y(t.v0)}" style="fill:${c}" opacity=".12"/><line x1="${X(z)}" y1="${Y(y)}" x2="${X(0)}" y2="${Y(t.v1)}" style="stroke:${c}" stroke-width=".9" opacity=".7"/><line x1="${X(z)}" y1="${Y(y)}" x2="${X(0)}" y2="${Y(t.v0)}" style="stroke:${c}" stroke-width=".9" opacity=".7"/>`+pb(z,y,c)+`<rect x="${X(0)}" y="${Y(t.v1)}" width="4" height="${(t.v1-t.v0)*sc}" style="fill:${c}" opacity=".85"/>`}
-      LB.push([c,`front-væg: ${v.n} projektorer, ${f2(v.L)} m fra væggen`])}
+      LB.push([c,`front-væg: ${v.n} projektorer, ${f3(v.L)} m fra væggen`])}
     // gulv: projektorerne i loftet skyder ned
     if(f.on&&f.ok){const c=IMC.f;const seen=new Set();for(const t of immPos(f)){const key=t.u0.toFixed(2);if(seen.has(key))continue;seen.add(key);const [x,y,z]=t.pj;
         s+=`<polygon points="${X(z)},${Y(y)} ${X(t.u1)},${Y(0)} ${X(t.u0)},${Y(0)}" style="fill:${c}" opacity=".15"/>`+pb(z,y,c)+`<rect x="${X(t.u0)}" y="${Y(0)-3}" width="${(t.u1-t.u0)*sc}" height="3" style="fill:${c}" opacity=".8"/>`}
-      LB.push([c,`gulv: ${f.n} projektorer, ${f2(f.L)} m over gulvet`])}
+      LB.push([c,`gulv: ${f.n} projektorer, ${f3(f.L)} m over gulvet`])}
     LB.forEach(([c,t],i)=>{const y=Y(0)+T*sc+20+i*16;s+=`<rect x="${X(0)}" y="${y-9}" width="10" height="10" rx="2" style="fill:${c}"/><text class="m" x="${X(0)+16}" y="${y}" style="font-size:11px;fill:var(--ink)">${t}</text>`})}
   else if(VN==='golf'){}
   else for(let z=0.6;z<S.rd-0.6;z+=1.25){if(z>0.8&&z<1.95)continue;s+=`<rect x="${X(z)}" y="${Y(S.rh-0.55)}" width="${1.05*sc}" height="${(S.rh-1)*sc}" style="fill:var(--r-panel)"/>`}
@@ -89,20 +89,20 @@ function drawSide(r){
   s+='</g>';if(NS)s=s.slice(0,m2);
   // mål
   const p0=r.pjs[0],dd=rear?-1:1,m3=s.length;
-  s+=dimH(XP(0),XP(S.L),Y(0)+30,`L ${f2(S.L)} m`,null,Y(p0.ly)+6);
-  s+=dimH(XP(0),XP(r.outBack),Y(0)+58,`bagkant ${f2(r.outBack)} m`,Y(0)+T*sc,Y(r.botY));
-  if(rear){const xs=X(RZ())+.07*sc+4;s+=dimV(xs+20,Y(0),Y(S.sb),`${f2(S.sb)} m`,xs,null);s+=dimV(xs+50,Y(S.sb),Y(S.sb+r.CH),`${f2(r.CH)} m`,xs,xs);
-    s+=dimH(X(0),X(RZ()),Y(S.rh)+18,`bagscene ${f2(RZ())} m`,null,null)}
-  else{s+=dimV(X(-T)-20,Y(0),Y(S.sb),`${f2(S.sb)} m`,X(-T),null);
-  s+=dimV(X(-T)-50,Y(S.sb),Y(S.sb+r.CH),`${f2(r.CH)} m`,X(-T),X(-T));}
+  s+=dimH(XP(0),XP(S.L),Y(0)+30,`L ${f3(S.L)} m`,null,Y(p0.ly)+6);
+  s+=dimH(XP(0),XP(r.outBack),Y(0)+58,`bagkant ${f3(r.outBack)} m`,Y(0)+T*sc,Y(r.botY));
+  if(rear){const xs=X(RZ())+.07*sc+4;s+=dimV(xs+20,Y(0),Y(S.sb),`${f3(S.sb)} m`,xs,null);s+=dimV(xs+50,Y(S.sb),Y(S.sb+r.CH),`${f3(r.CH)} m`,xs,xs);
+    s+=dimH(X(0),X(RZ()),Y(S.rh)+18,`bagscene ${f3(RZ())} m`,null,null)}
+  else{s+=dimV(X(-T)-20,Y(0),Y(S.sb),`${f3(S.sb)} m`,X(-T),null);
+  s+=dimV(X(-T)-50,Y(S.sb),Y(S.sb+r.CH),`${f3(r.CH)} m`,X(-T),X(-T));}
   const dx=XP(Math.max(r.outBack,S.L))+dd*22;
   const fy=r.kind!=='u'?r.botY:p0.ly;// gulv → bund af projektor (kæden gulv/hus/loft)
-  s+=dimV(dx,Y(0),Y(fy),`${f2(fy)} m`,null,XP(r.outBack));
+  s+=dimV(dx,Y(0),Y(fy),`${f3(fy)} m`,null,XP(r.outBack));
   if(r.kind!=='u')s+=dimV(dx+dd*30,Y(r.botY),Y(r.topY),`${mm(r.topY-r.botY)} mm`,XP(r.outBack),XP(r.outBack),dx+dd*66);
-  if(S.ceil&&r.topY<S.rh)s+=dimV(dx+dd*60,Y(r.topY),Y(S.rh),`${f2(S.rh-r.topY)} m`,XP(r.outBack),null);
+  if(S.ceil&&r.topY<S.rh)s+=dimV(dx+dd*60,Y(r.topY),Y(S.rh),`${f3(S.rh-r.topY)} m`,XP(r.outBack),null);
   if(NS)s=s.slice(0,m3);
-  if(r.rows.length&&VN==='theater')s+=lbl(X(r.rows[0]+0.2),Y(0)+14,r.stand?`publikum fra ${f2(r.rows[0],1)} m`:`1. række ${f2(r.rows[0],1)} m`,'m');
-  s+=`<text class="m" x="${X(S.rd)}" y="${Y(S.rh+T)-8}" text-anchor="end">snit ${f2(S.rd,1)} × ${f2(S.rh,1)} m</text>`;
+  if(r.rows.length&&VN==='theater')s+=lbl(X(r.rows[0]+0.2),Y(0)+14,r.stand?`publikum fra ${f3(r.rows[0],1)} m`:`1. række ${f3(r.rows[0],1)} m`,'m');
+  s+=`<text class="m" x="${X(S.rd)}" y="${Y(S.rh+T)-8}" text-anchor="end">snit ${f3(S.rd,1)} × ${f3(S.rh,1)} m</text>`;
   $('side').innerHTML=s;
 }
 function chairSide(X,Y,sc,z){const u=sc;return `<path d="M${X(z)},${Y(.45)} h${.48*u} l${.06*u},-${.53*u} h${.05*u} l-${.05*u},${.6*u} v${.38*u} h-${.04*u} v-${.36*u} h-${.4*u} v${.36*u} h-${.04*u} z" style="fill:var(--r-seat)"/>`}
