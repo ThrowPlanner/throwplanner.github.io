@@ -158,21 +158,6 @@
     </aside>
 
     <main class="out">
-      <section class="view">
-        <div class="vhead"><h2><span class="no">10</span>Snit gennem lokalet</h2><span class="cap" id="sideCap" style="flex:1;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-variant-numeric:tabular-nums"></span></div>
-        <div class="shiftbar" id="shiftBar">
-          <span class="sbl">Lens shift</span>
-          <label class="sbr"><span class="notr">V</span><span class="sbmin" id="svMin"></span><input type="range" id="svR" step="0.5" aria-label="Lodret lens shift"><span class="sbmax" id="svMax"></span><b id="svVal"></b><button class="btn z0" type="button" id="sv0" title="Lodret lens shift 0 %">0 %</button></label>
-          <label class="sbr"><span class="notr">H</span><span class="sbmin" id="shMin"></span><input type="range" id="shR" step="0.5" aria-label="Vandret lens shift"><span class="sbmax" id="shMax"></span><b id="shVal"></b><button class="btn z0" type="button" id="sh0" title="Vandret lens shift 0 %">0 %</button></label>
-          <svg id="shMini" viewBox="-1.5 -1.3 3 2.6" width="110" height="96" role="img" aria-label="Lens shift-område med billedets position"></svg>
-          <span class="hint" id="shiftNote"></span>
-          <div class="ksrow"><button class="btn" type="button" id="ksBtn" aria-pressed="false">Keystone</button><button class="btn" type="button" id="lensLock" aria-pressed="false" title="Når optikken er låst, skifter den ikke optik, når du trækker i projektoren"><span id="lensLockTxt">Lås optik</span></button>
-          <label class="sbr ksc"><span class="notr">V</span><span class="sbmin" id="kvMin"></span><input type="range" id="kvR" step="0.5" aria-label="Lodret keystone"><span class="sbmax" id="kvMax"></span><b id="kvVal"></b><button class="btn z0" type="button" id="kv0" title="Lodret keystone 0°">0°</button></label>
-          <label class="sbr ksc"><span class="notr">H</span><span class="sbmin" id="khMin"></span><input type="range" id="khR" step="0.5" aria-label="Vandret keystone"><span class="sbmax" id="khMax"></span><b id="khVal"></b><button class="btn z0" type="button" id="kh0" title="Vandret keystone 0°">0°</button></label>
-          <span class="hint" id="ksNote"></span><span class="ksloss" id="ksLoss"></span></div></div>
-        <div class="canvas"><svg class="draw" id="side" viewBox="0 0 1000 430" role="img" aria-label="Snit gennem lokalet set fra siden"></svg></div>
-      </section>
-
       <details class="view coll2" id="dPlan">
         <summary class="vhead"><h2><span class="no">08</span>Plantegning</h2><span class="cap" id="planCap">valgfri – indsæt en tegning og placér projektoren på den</span><span class="sp"></span><span class="chev" aria-hidden="true"></span></summary>
         <div class="ptool">
@@ -254,6 +239,26 @@
           <button type="button" data-l9="gsw" aria-pressed="true" title="Vis/skjul" hidden><i style="border:1.5px dashed #F5A524"></i>Sving</button>
           <button type="button" data-l9="gsh" aria-pressed="true" title="Vis/skjul" hidden><i style="background:#000;border:1px solid var(--bad)"></i>Skygge</button>
         </div>
+      </section>
+
+      <section class="view">
+        <div class="vhead"><h2><span class="no">10</span>Snit gennem lokalet</h2><span class="cap" id="sideCap" style="flex:1;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-variant-numeric:tabular-nums"></span></div>
+        <div class="shiftbar" id="shiftBar">
+          <span class="sbl">Lens shift</span>
+          <label class="sbr"><span class="notr">V</span><span class="sbmin" id="svMin"></span><input type="range" id="svR" step="0.5" aria-label="Lodret lens shift"><span class="sbmax" id="svMax"></span><b id="svVal"></b><button class="btn z0" type="button" id="sv0" title="Lodret lens shift 0 %">0 %</button></label>
+          <label class="sbr"><span class="notr">H</span><span class="sbmin" id="shMin"></span><input type="range" id="shR" step="0.5" aria-label="Vandret lens shift"><span class="sbmax" id="shMax"></span><b id="shVal"></b><button class="btn z0" type="button" id="sh0" title="Vandret lens shift 0 %">0 %</button></label>
+          <svg id="shMini" viewBox="-1.5 -1.3 3 2.6" width="110" height="96" role="img" aria-label="Lens shift-område med billedets position"></svg>
+          <span class="hint" id="shiftNote"></span>
+          <div class="ksrow"><button class="btn" type="button" id="ksBtn" aria-pressed="false">Keystone</button><button class="btn" type="button" id="lensLock" aria-pressed="false" title="Når optikken er låst, skifter den ikke optik, når du trækker i projektoren"><span id="lensLockTxt">Lås optik</span></button>
+          <label class="sbr ksc"><span class="notr">V</span><span class="sbmin" id="kvMin"></span><input type="range" id="kvR" step="0.5" aria-label="Lodret keystone"><span class="sbmax" id="kvMax"></span><b id="kvVal"></b><button class="btn z0" type="button" id="kv0" title="Lodret keystone 0°">0°</button></label>
+          <label class="sbr ksc"><span class="notr">H</span><span class="sbmin" id="khMin"></span><input type="range" id="khR" step="0.5" aria-label="Vandret keystone"><span class="sbmax" id="khMax"></span><b id="khVal"></b><button class="btn z0" type="button" id="kh0" title="Vandret keystone 0°">0°</button></label>
+          <span class="hint" id="ksNote"></span><span class="ksloss" id="ksLoss"></span></div></div>
+        <div class="canvas"><svg class="draw" id="side" viewBox="0 0 1000 430" role="img" aria-label="Snit gennem lokalet set fra siden"></svg></div>
+      </section>
+
+      <section class="view" id="topView" hidden>
+        <div class="vhead"><h2><span class="no">10b</span>Lokalet set ovenfra</h2><span class="cap">flader, projektorer og kast set fra loftet</span></div>
+        <div class="canvas"><svg class="draw" id="top" viewBox="0 0 1000 600" role="img" aria-label="Lokalet set ovenfra med flader og projektorer"></svg></div>
       </section>
 
       <details class="view coll2" id="solView" open>

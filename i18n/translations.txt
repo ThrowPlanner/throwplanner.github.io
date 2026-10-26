@@ -380,6 +380,13 @@ venstre væg: # projektorer i loftet, # m fra væggen (skyder vinkelret på snit
 højre væg: # projektorer i loftet, # m fra væggen (skyder vinkelret på snittet)|right wall: # projectors in the ceiling, # m from the wall (projecting perpendicular to the section)|右壁：天井に # 台、壁から # m（断面に垂直に投写）
 front-væg: # projektorer, # m fra væggen|front wall: # projectors, # m from the wall|正面壁：# 台、壁から # m
 gulv: # projektorer, # m over gulvet|floor: # projectors, # m above the floor|床：# 台、床から # m
+venstre væg: # projektorer i loftet, # m fra væggen|left wall: # projectors in the ceiling, # m from the wall|左壁：天井に # 台、壁から # m
+højre væg: # projektorer i loftet, # m fra væggen|right wall: # projectors in the ceiling, # m from the wall|右壁：天井に # 台、壁から # m
+Lokalet set ovenfra|Room seen from above|上から見た部屋
+flader, projektorer og kast set fra loftet|surfaces, projectors and throws seen from the ceiling|天井から見た投写面・プロジェクター・投写距離
+Lokalet set ovenfra med flader og projektorer|Room seen from above with surfaces and projectors|投写面とプロジェクターを上から見た部屋
+bredde # m|width # m|幅 # m
+dybde # m|depth # m|奥行 # m
 Markér på siden (tegn og skriv), og tag så et skærmklip|Mark up the page (draw and write), then take a screenshot|ページに書き込み（描画・文字）してスクリーンショット
 Markeringsværktøj|Markup tool|マークアップツール
 ✎ Markér|✎ Mark up|✎ マーク
