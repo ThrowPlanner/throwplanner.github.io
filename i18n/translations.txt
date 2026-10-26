@@ -383,7 +383,6 @@ gulv: # projektorer, # m over gulvet|floor: # projectors, # m above the floor|�
 venstre væg: # projektorer i loftet, # m fra væggen|left wall: # projectors in the ceiling, # m from the wall|左壁：天井に # 台、壁から # m
 højre væg: # projektorer i loftet, # m fra væggen|right wall: # projectors in the ceiling, # m from the wall|右壁：天井に # 台、壁から # m
 Lokalet set ovenfra|Room seen from above|上から見た部屋
-↓ sæt først|↓ set first|↓ 最初に設定
 Billederne på væggene går præcis fra gulv til loft – indtast rummets højde først|The images on the walls run exactly from floor to ceiling – enter the room height first|壁の映像は床から天井までぴったり投写されます – 最初に部屋の高さを入力してください
 flader, projektorer og kast set fra loftet|surfaces, projectors and throws seen from the ceiling|天井から見た投写面・プロジェクター・投写距離
 Lokalet set ovenfra med flader og projektorer|Room seen from above with surfaces and projectors|投写面とプロジェクターを上から見た部屋
@@ -469,7 +468,7 @@ Nulstil|Reset|リセット
 Klik igen for at nulstille|Click again to reset|もう一度クリックでリセット
 Nulstil alle indstillinger til standard|Reset all settings to default|全ての設定を初期値に戻す
 Hver flade beregnes med sin egen projektor og optik, uafhængigt af lærredet.|Each surface is calculated with its own projector and lens, independent of the screen.|各面はそれぞれのプロジェクターとレンズで、スクリーンとは独立して計算されます。
-Front-væggen projiceres fra bagvæggen, side-projektorerne hænger i loftet ved den modsatte væg, og gulv-projektorerne i loftet over gulvet – det faktiske kast pr. flade står i tabellen.|The front wall is projected from the back wall, the side projectors hang from the ceiling at the opposite wall, and the floor projectors from the ceiling above the floor – the actual throw per surface is shown in the table.|正面壁は後壁から投写、側面用は反対側の壁際の天井、床用は床上の天井に設置 – 面ごとの実際の投写距離は表に記載されています。
+Projektorerne starter uden zoom (vidvinkel, zoomfaktor 1,0) – træk dem væk fra fladen for at bruge zoomen. Side-projektorerne hænger i loftet, gulv-projektorerne i loftet over gulvet – det faktiske kast pr. flade står i tabellen.|The projectors start without zoom (wide end, zoom factor 1.0) – drag them away from the surface to use the zoom. The side projectors hang from the ceiling, the floor projectors from the ceiling above the floor – the actual throw per surface is shown in the table.|プロジェクターはズームなし（ワイド端、ズーム倍率 1.0）で開始します – ズームを使うには投写面から離すようにドラッグしてください。側面用は天井、床用は床上の天井に設置 – 面ごとの実際の投写距離は表に記載されています。
 Auto vælger færrest mulige projektorer og tilpasser billedet, så det præcis fylder fladen med # % overlap (indstilles under # Edge blend).|Auto picks the fewest possible projectors and fits the image so it exactly fills the surface with # % overlap (set under # Edge blend).|自動は最少台数を選び、# % のオーバーラップで面をちょうど埋めるよう画面を合わせます（# エッジブレンドで設定）。
 Nøgletal|Key figures|主要数値
 Projektorer i alt|Projectors in total|プロジェクター合計

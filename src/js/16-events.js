@@ -15,7 +15,7 @@ $('stackOn').addEventListener('change',e=>{S.stackOn=e.target.checked;if(S.stack
 $('crReq').addEventListener('change',e=>{S.crReq=e.target.value;render()});num('crCust',v=>S.crCust=Math.max(1,v));
 $('ambR').addEventListener('input',e=>{S.amb=+e.target.value;render()});
 num('fw',v=>S.fw=v);num('fh',v=>S.fh=v);num('fd',v=>S.fd=v);
-$('portrait').addEventListener('change',e=>{S.portrait=e.target.checked;S.bdx={};render();if(!S.bauto&&!S.lockL)fitLens();zeroShift();render()});
+$('portrait').addEventListener('change',e=>{S.portrait=e.target.checked;S.bdx={};render();if(!S.bauto&&!S.lockL)fitLens(true);zeroShift();render()});
 $('bauto').addEventListener('change',e=>{S.bauto=e.target.checked;if(S.bauto){S.bth=Math.round(calc().CH*100)/100}render()});
 num('bth',v=>S.bth=Math.max(0.2,v));
 num('bc',v=>S.bc=Math.max(1,Math.min(8,Math.round(v))));num('br',v=>S.br=Math.max(1,Math.min(4,Math.round(v))));num('ov',v=>S.ov=Math.max(0,Math.min(50,v)));
@@ -140,7 +140,7 @@ $('planSvg').addEventListener('pointerdown',e=>{if(!PLANIMG)return;const q=svgPt
   // lærredets to punkter (flyt/rotér) og selve lærredet (flyt)
   const h=planEdit('scr')&&e.target.closest('.scrh');if(h&&p.scr&&p.scr.b){scrDraw={mode:'end',which:h.dataset.end,keep:p.tool==='pj'};$('planSvg').setPointerCapture(e.pointerId);e.preventDefault();return}
   if(planEdit('scr')&&e.target.closest('.scrline')&&p.scr&&p.scr.b){scrDraw={mode:'move',q0:q,a0:p.scr.a.slice(),b0:p.scr.b.slice(),keep:p.tool==='pj'};$('planSvg').setPointerCapture(e.pointerId);e.preventDefault();return}
-  if(p.tool==='scr'&&p.scr&&p.scr.a&&!p.scr.b){p.scr.b=p.scr.a.slice();scrSet('b',q);p.tool='pj';if(p.lock)S.px=0;cancelAnimationFrame(planRaf);planRaf=0;if(planActive()){syncPlan();fitLens();zeroShift()}save();render();e.preventDefault();return}  // klik-klik virker stadig
+  if(p.tool==='scr'&&p.scr&&p.scr.a&&!p.scr.b){p.scr.b=p.scr.a.slice();scrSet('b',q);p.tool='pj';if(p.lock)S.px=0;cancelAnimationFrame(planRaf);planRaf=0;if(planActive()){syncPlan();fitLens(true);zeroShift()}save();render();e.preventDefault();return}  // klik-klik virker stadig
   if(p.tool==='scr'&&(!p.scr||!p.scr.b||!planGeo())){p.scr={a:q,b:q.slice()};scrDraw={mode:'new'};$('planSvg').setPointerCapture(e.pointerId);e.preventDefault();render();return}
   if(e.target.closest('.pjgrab')||p.tool==='pj'){const g=planGeo();if(!g)return;const gr=e.target.closest('.pjgrab');planDrag={i:gr?+gr.dataset.pj:null};if(gr){const r0=calc(),pj=r0.pjs[+gr.dataset.pj]||r0.pjs[0];const L0=g.at(S.blend?pj.lx:S.px,S.L);planOff=[q[0]-L0[0],q[1]-L0[1]]}else planOff=[0,0];p.tool='pj';$('planSvg').setPointerCapture(e.pointerId);planMove(q);e.preventDefault();return}
   if(p.tool==='cal'){const st=p.calStep||'w';
@@ -157,7 +157,7 @@ $('planSvg').addEventListener('pointermove',e=>{const q=svgPt(e);
   if(planDrag)planMove(q)});
 ['pointerup','pointercancel'].forEach(t=>$('planSvg').addEventListener(t,()=>{
   if(calDrag){calDrag=null;applyPlanRoom();save();render();return}
-  if(scrDraw){const p=S.plan,m=scrDraw.mode,keep=scrDraw.keep;scrDraw=null;if(m==='new'){if(len(V(p.scr.a,p.scr.b))<6){p.scr={a:p.scr.a,b:null}}else{p.tool='pj';if(p.lock)S.px=0}}else if(p.tool==='scr'&&planGeo())p.tool='pj';if(planActive()&&!keep){fitLens();zeroShift()}save();render();return}
+  if(scrDraw){const p=S.plan,m=scrDraw.mode,keep=scrDraw.keep;scrDraw=null;if(m==='new'){if(len(V(p.scr.a,p.scr.b))<6){p.scr={a:p.scr.a,b:null}}else{p.tool='pj';if(p.lock)S.px=0}}else if(p.tool==='scr'&&planGeo())p.tool='pj';if(planActive()&&!keep){fitLens(true);zeroShift()}save();render();return}
   if(planDrag){planDrag=null;save()}}));
 let presDrag=null;
 $('side').addEventListener('pointerdown',e=>{if(S.venue==='immersive'||!SIDE||!e.target.closest('.presgrab'))return;presDrag={v:'side'};$('side').setPointerCapture(e.pointerId);e.preventDefault();e.stopImmediatePropagation()},true);

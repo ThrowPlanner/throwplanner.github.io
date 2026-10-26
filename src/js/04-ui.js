@@ -15,10 +15,12 @@ function lensTR(m,l){const o=(PANTR[m.m.split(' (')[0].split('/')[0]]||m.tr||{})
 function fillLens(){fillLens.mi=slotMI();const m=MODELS[fillLens.mi];if(!SLOT()&&S.li>=m.L.length)S.li=0;$('lens').innerHTML=m.L.map((l,i)=>{const tr=lensTR(m,l);return `<option value="${i}">${l[0]}${lnEOL(l)?' · EOL':''} · ${l[1]==='Z'?'zoom':'fast'}${tr?' · '+tr:''}</option>`}).join('')}
 function fillAspect(){$('aspect').innerHTML=ASPECTS.map(a=>`<option value="${a}">${a}</option>`).join('')}
 function fillFrames(){const fr=framesFor(M());$('frameSel').innerHTML=fr.map(f=>`<option value="${f.id}">Panasonic ${f.id}${f.dim?'':' (mål ikke offentliggjort)'}</option>`).join('')+'<option value="custom">Egen ramme – indtast mål</option>';$('frameSel').value=S.frameId}
-/* ny projektor/optik: flyt projektoren ind i den nye optiks zoomområde (eller tilpas bredden, hvis afstanden er låst) */
-function fitLens(){if(S.lockL&&S.lockW)return;const r=calc();
-  if(!S.lockL){const lo=Math.min(r.Lw,r.Lt),hi=Math.max(r.Lw,r.Lt);let L=r.fixed?r.Lw:Math.max(lo,Math.min(hi,S.L));L=Math.min(L,Math.max(.2,DEPTH()-(r.outBack-S.L)));L=Math.max(.2,L);let q=Math.round(L*1000)/1000;if(q>hi)q=hi;if(q<lo)q=lo;S.L=q}  // ved grænsen: præcis TDC-værdi (vises afrundet til mm som i TDC)
-  else{const dA=diagFor(r.row,S.L,0),dB=r.fixed?dA:diagFor(r.row,S.L,1);let D=Math.max(Math.min(dA,dB),Math.min(Math.max(dA,dB),r.D));D=Math.max(r.row[4],Math.min(r.row[5],D));
+/* ny projektor/optik: start altid uden zoom (zoomfaktor 1,0 – optikkens vidvinkelende): afstanden sættes til vidvinkel-kastet,
+   eller – er afstanden låst – billedet til det største ved afstanden. keep=true (portræt, plantegning): flyt kun ind i zoomområdet */
+function fitLens(keep){if(S.venue==='immersive'&&!keep&&S.immAdj){const A={};for(const k in S.immAdj){const{dL,...a}=S.immAdj[k]||{};A[k]=a}S.immAdj=A}
+  if(S.lockL&&S.lockW)return;const r=calc();
+  if(!S.lockL){const lo=Math.min(r.Lw,r.Lt),hi=Math.max(r.Lw,r.Lt);let L=r.fixed||!keep?r.Lw:Math.max(lo,Math.min(hi,S.L));L=Math.min(L,Math.max(.2,DEPTH()-(r.outBack-S.L)));L=Math.max(.2,L);let q=Math.round(L*1000)/1000;if(q>hi)q=hi;if(q<lo)q=lo;S.L=q}  // ved grænsen: præcis TDC-værdi (vises afrundet til mm som i TDC)
+  else{const dA=diagFor(r.row,S.L,0),dB=r.fixed?dA:diagFor(r.row,S.L,1);let D=keep?Math.max(Math.min(dA,dB),Math.min(Math.max(dA,dB),r.D)):dA;D=Math.max(r.row[4],Math.min(r.row[5],D));
     S.cw=Math.round(D*IN*r.aw/Math.hypot(r.aw,r.ah)*r.kx*1000)/1000}}
 // edge blend auto: færrest projektorer der dækker bredden (01) og målhøjden ved den valgte afstand
 let BAUTO=null;
