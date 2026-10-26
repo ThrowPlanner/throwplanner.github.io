@@ -1,5 +1,14 @@
 // boks 03: Menu-hjælp – søg i projektorens egen skærmmenu (menutræ og sidetal fra Panasonics manualer, data/menus.json)
 const MENUS=/*__MENUS__*/;
+/* oprydning i menutræet (udtrukket automatisk fra manualernes tekst):
+   – er alle et punkts «valg» i virkeligheden undermenuer (fx [LENS] › [LENS TYPE]), er valglisten forkert og fjernes
+   – et valg med egne indstillinger (fx [COLOR MATCHING] › [3COLORS], [GEOMETRY] › [KEYSTONE]) står kun som valg; undermenuen gemmes i it.osub
+   – en undermenus valg må ikke være en nabo-undermenu eller et nabovalg på flere ord (fx [LENS TYPE] › [LENS HOME POSITION], [KEYSTONE] › [CURVED CORRECTION])
+   – [ON]/[OFF] er en indstilling, ikke en undermenu */
+for(const man of MENUS)for(const m of man.me)for(const it of m[2]){let subs=(it[3]||[]).filter(s=>!/^(ON|OFF)$/.test(s[0])||(it[2]||[]).includes(s[0]));const sn=new Set(subs.map(s=>s[0]));
+  if((it[2]||[]).length&&it[2].every(o=>sn.has(o)))it[2]=[];
+  const os=new Set(it[2]||[]);it.osub={};it[3]=subs.filter(s=>os.has(s[0])?(it.osub[s[0]]=s,false):true);
+  for(const s of subs)s[2]=[...new Set((s[2]||[]).filter(o=>!sn.has(o)&&o!==it[0]&&!(os.has(o)&&/\S\s\S/.test(o))))]}
 // egne korte forklaringer: 'MENUPUNKT':'dansk|english|ekstra søgeord' (vises på engelsk; danske ord kan stadig søges)
 const MH={
 'PICTURE':'Billedindstillinger|Picture settings|billede farve',
@@ -154,7 +163,7 @@ function menuHelp(){
   const path=p=>p.length?`<span class="mhpath">${p.map(esc).join(' › ')} › </span>`:'';
   // et menupunkt: [navn, side, valg, undermenuer[[navn, side, valg]], adgangskoder] – med undermenuer kan det foldes ud
   const item=(it,p,open)=>{const head=`<div>${path(p)}<b>${esc(it[0])}</b>${desc(it[0])?`<span class="mhd">${esc(desc(it[0]))}</span>`:''}${ops(it[2])}${pw(it[4])}</div>${pg(it[1])}`;
-    const subs=it[3]||[];
+    const subs=[...(it[3]||[]),...Object.values(it.osub||{})].sort((a,b)=>a[1]-b[1]);
     return subs.length?`<li class="mhsubs"><details${open?' open':''}><summary>${head}</summary><ul>${subs.map(s=>`<li><div><b>${esc(s[0])}</b>${ops(s[2])}</div>${pg(s[1])}</li>`).join('')}</ul></details></li>`:`<li>${head}</li>`};
   const draw=()=>{const M=MENUS[sel.value].me,t=mhNorm(q.value).split(/\s+/).filter(Boolean);mb.href=url();
     if(!t.length){out.innerHTML=M.map(m=>`<details class="mhtop"><summary><div><b>${esc(m[0])}</b><span class="mhd">${esc(desc(m[0]))}</span>${pw(m[3])}</div>${pg(m[1])}</summary><ul>${m[2].map(i=>item(i,[])).join('')}</ul></details>`).join('');return}
@@ -197,22 +206,26 @@ function mhGuide(box,man,url){
   // valgmuligheder på det næste niveau
   const choices=()=>{const L=last();if(!L)return man.me.map(m=>({k:'menu',n:m[0],p:m[1],pw:m[3],ref:m}));
     if(L.k==='menu')return L.ref[2].map(i=>({k:'item',n:i[0],p:i[1],pw:i[4],ref:i}));
-    if(L.k==='item')return [...(L.ref[3]||[]).map(s=>({k:'sub',n:s[0],p:s[1],ref:s})),...(L.ref[2]||[]).map(o=>({k:'opt',n:o,p:L.p}))];
-    if(L.k==='sub')return (L.ref[2]||[]).map(o=>({k:'opt',n:o,p:L.p}));return []};
+    // osub: et valg med egne indstillinger – vælges med ◀ ▶, ENTER åbner indstillingerne
+    if(L.k==='item'){const os=L.ref.osub||{};return [...(L.ref[3]||[]).map(s=>({k:'sub',n:s[0],p:s[1],ref:s})),...(L.ref[2]||[]).map(o=>os[o]?{k:'osub',n:o,p:os[o][1],ref:os[o]}:{k:'opt',n:o,p:L.p})]}
+    if(L.k==='sub')return (L.ref[2]||[]).map(o=>({k:'opt',n:o,p:L.p}));if(L.k==='osub')return (L.ref[2]||[]).map(o=>({k:'row',n:o,p:L.p}));return []};
+  const isOpt=x=>x&&(x.k==='opt'||x.k==='osub'||x.k==='row');  // row: en række i et valgs eget undervindue
   const steps=()=>{const s=['Press the <MENU> button on the remote control (or on the projector) to open the on-screen menu.'],shown=[];
     path.forEach((x,i)=>{const nx=path[i+1];
       if(x.k==='opt')s.push(`Use ◀ ▶ to choose [${x.n}].`);
+      else if(x.k==='row')s.push(`Use ▲ ▼ to select [${x.n}] and adjust it with ◀ ▶.`);
+      else if(x.k==='osub')s.push(`Use ◀ ▶ to choose [${x.n}]${nx?' and press <ENTER>':''}.`);
       else{// ENTER åbner næste niveau; et valg skiftes direkte med ◀ ▶
-        const enter=nx?nx.k!=='opt':x.k==='menu'||(x.ref[3]||[]).length>0;
+        const enter=nx?!isOpt(nx):x.k==='menu'||(x.ref[3]||[]).length>0;
         s.push(`Use ▲ ▼ to select [${x.n}]${enter?' and press <ENTER>':''}.`)}
       const p=(x.pw||[]).filter(v=>!shown.includes(v));shown.push(...p);// samme kode vises kun én gang
       if(p.length)s.push(`If the projector asks for a password, enter it (factory default: ${p.join(' / ')}).`)});
     if(path.length)s.push('Press <MENU> to go back one level – press it repeatedly to close the menu.');return s};
-  const title=()=>{if(!dirty){const L=path.filter(x=>x.k!=='opt').pop(),o=last()&&last().k==='opt'?last():null;
-      auto=L?(o?`How to set ${L.n} to ${o.n}`:`How to find ${L.n}`):'';ti.value=auto}return ti.value.trim()||'Projector menu guide'};
+  const title=()=>{if(!dirty){const L=path.filter(x=>!isOpt(x)).pop(),o=L?path.slice(path.indexOf(L)+1).map(x=>x.n).join(' › '):'';
+      auto=L?(o?`How to set ${L.n} to ${o}`:`How to find ${L.n}`):'';ti.value=auto}return ti.value.trim()||'Projector menu guide'};
   function draw(){const ch=choices(),L=last();
-    $$('.mhgpath').innerHTML=`<span class="mhgcr">MENU</span>${path.map(x=>`<span class="mhgsep">›</span><span class="mhgcr${x.k==='opt'?' opt':''}">${esc(x.n)}</span>`).join('')}${path.length?'<button type="button" class="chip mhgback">↶ Undo</button><button type="button" class="chip mhgclr">Start over</button>':''}`;
-    $$('.mhgpick').innerHTML=ch.length?`<div class="mhgh">${L?(L.k==='item'&&(L.ref[3]||[]).length&&(L.ref[2]||[]).length?'Choose a sub-menu or a setting':L.k==='item'&&!(L.ref[3]||[]).length||L.k==='sub'?'Choose the setting (optional)':'Choose the next step'):'Choose a menu'}</div>${ch.map((c,i)=>`<button type="button" class="mhgc${c.k==='opt'?' opt':''}" data-i="${i}">${esc(c.n)}${c.pw&&c.pw.length?' <small>🔒</small>':''}</button>`).join('')}`:`<div class="mhgh">Guide complete – copy it below.</div>`;
+    $$('.mhgpath').innerHTML=`<span class="mhgcr">MENU</span>${path.map(x=>`<span class="mhgsep">›</span><span class="mhgcr${isOpt(x)?' opt':''}">${esc(x.n)}</span>`).join('')}${path.length?'<button type="button" class="chip mhgback">↶ Undo</button><button type="button" class="chip mhgclr">Start over</button>':''}`;
+    $$('.mhgpick').innerHTML=ch.length?`<div class="mhgh">${L?(L.k==='item'&&(L.ref[3]||[]).length&&(L.ref[2]||[]).length?'Choose a sub-menu or a setting':L.k==='item'&&!(L.ref[3]||[]).length||L.k==='sub'||L.k==='osub'?'Choose the setting (optional)':'Choose the next step'):'Choose a menu'}</div>${ch.map((c,i)=>`<button type="button" class="mhgc${isOpt(c)?' opt':''}" data-i="${i}"${c.k==='osub'&&(c.ref[2]||[]).length?' title="This setting has its own settings – press ENTER to open them"':''}>${esc(c.n)}${c.k==='osub'&&(c.ref[2]||[]).length?' ›':''}${c.pw&&c.pw.length?' <small>🔒</small>':''}</button>`).join('')}`:`<div class="mhgh">Guide complete – copy it below.</div>`;
     $$('.mhgpick').querySelectorAll('[data-i]').forEach(b=>b.addEventListener('click',()=>{path.push(ch[+b.dataset.i]);draw()}));
     const bk=$$('.mhgback');if(bk)bk.addEventListener('click',()=>{path.pop();draw()});
     const cl=$$('.mhgclr');if(cl)cl.addEventListener('click',()=>{path=[];dirty=false;draw()});

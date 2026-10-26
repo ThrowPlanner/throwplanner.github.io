@@ -66,14 +66,14 @@ function immCalc(r0){const o=Math.min(.5,Math.max(0,(S.immOv??10)/100)),amb=AMB(
       const lw=distAt(row,D,0),lt=r.fixed?lw:distAt(row,D,1),lo=Math.min(lw,lt),hi=Math.max(lw,lt);
       if(D<row[4]-.5||D>row[5]+.5){ok=false;note=`${fi(D)}″ pr. projektor ligger uden for optikkens område`;L=Lmax}
       else if(lo>Lmax+1e-6){ok=false;note=`kræver mindst ${f2(lo)} m kast – der er kun ${f2(Lmax)} m`;L=Lmax}
-      else{L=Math.max(lo,Math.min(Math.min(hi,Lmax),Lmax+(a.dL||0)))}
+      else{L=a.dL==null?Math.min(lw,Lmax):Math.max(lo,Math.min(Math.min(hi,Lmax),Lmax+a.dL))}
       nv=g.r?Math.max(1,Math.round(g.r)):cnt(V,sv)}
     else{const lay=immLay(U,V,Lmax,row,r.aw,r.ah,r.fixed,o,g.r,canRot,key!=='f');
       if(!lay){ok=false;L=Lmax;D=row[4];note=`optikken kan ikke give et billede på ${f2(L)} m afstand`;W=D*kW;H=W*r.ah/r.aw;su=W;sv=H;nu=1;nv=1}
       else{({D,W,H,su,sv,rot,nu,nv,ou}=lay);
-        // kast: så langt væk som zoomen tillader for det tilpassede billede (træk på tværs flytter inden for zoomområdet)
+        // kast: uden zoom (vidvinkel, zoomfaktor 1,0) for det tilpassede billede – træk på tværs flytter inden for zoomområdet
         const lo=distAt(row,D,0),hi=r.fixed?lo:distAt(row,D,1),Lhi=Math.min(Math.max(lo,hi),Lmax),Llo=Math.min(lo,hi);
-        L=Math.max(Llo,Math.min(Lhi,Lmax+(a.dL||0)));if(lay.big)note=`optikkens største billede (${fi(D)}″)`}
+        L=a.dL==null?Math.min(lo,Lhi):Math.max(Llo,Math.min(Lhi,Lmax+a.dL));if(lay.big)note=`optikkens største billede (${fi(D)}″)`}
       // bedste løsning: alle modeller og optikker af de valgte projektortyper, både liggende og portræt – færrest projektorer, derefter mest lys
       // bedste løsning: alle modeller og optikker af de valgte projektortyper (05), både liggende og portræt, inden for kontrastområdet (06)
       // færrest projektorer; ved lige antal: kontrasten tættest på midten af området (eller mest lys, når intet område er valgt)
