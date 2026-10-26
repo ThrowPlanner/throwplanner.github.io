@@ -143,8 +143,8 @@ function drawFront(r){IMMPJ=null;if(S.venue==='golf')GCUR=golfCalc(r);
       if(q.key==='f'&&!src)s+=`<polygon points="${pts([P(-w,0.01,0),P(w,0.01,0),P(w,0.01,zN),P(-w,0.01,zN)])}" fill="url(#immff)"/>`;
       // blend-zoner (overlap mellem nabobilleder) – samme mønster som på lærredet
       {const W3=(u,v)=>q.key==='v'?P(u-w,v,0):q.key==='f'?P(v-w,0.02,u):P(q.key==='l'?-w:w,v,u);
-       const span=(len,sz,n,off)=>{const tot=n*sz-(n-1)*sz*q.o,a0=(len-tot)/2+off;return {lo:Math.max(0,a0),hi:Math.min(len,a0+tot),z:[...Array(Math.max(0,n-1)).keys()].map(i=>[Math.max(0,a0+(i+1)*sz*(1-q.o)),Math.min(len,a0+i*sz*(1-q.o)+sz)]).filter(([a,b])=>b>a)}};
-       const SU=span(q.U,q.su,q.nu,q.du),SV=span(q.V,q.sv,q.nv,q.dv);
+       const span=(len,sz,n,off,ov=q.o)=>{const tot=n*sz-(n-1)*sz*ov,a0=(len-tot)/2+off;return {lo:Math.max(0,a0),hi:Math.min(len,a0+tot),z:[...Array(Math.max(0,n-1)).keys()].map(i=>[Math.max(0,a0+(i+1)*sz*(1-ov)),Math.min(len,a0+i*sz*(1-ov)+sz)]).filter(([a,b])=>b>a)}};
+       const SU=span(q.U,q.su,q.nu,q.du,q.ou??q.o),SV=span(q.V,q.sv,q.nv,q.dv);
        for(const [a,b] of SU.z)s+=`<polygon points="${pts([W3(a,SV.lo),W3(b,SV.lo),W3(b,SV.hi),W3(a,SV.hi)])}" fill="url(#bzf)" opacity=".6"/>`;
        for(const [a,b] of SV.z)s+=`<polygon points="${pts([W3(SU.lo,a),W3(SU.hi,a),W3(SU.hi,b),W3(SU.lo,b)])}" fill="url(#bzf)" opacity=".6"/>`}
       for(const t of immPos(q)){const poly=t.c4.map(([x,y,z])=>P(x,y,z));
