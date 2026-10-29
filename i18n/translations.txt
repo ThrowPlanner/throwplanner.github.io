@@ -53,6 +53,7 @@ Front- eller bagprojektion|Front or rear projection|フロントまたはリア�
 Forfra|Front|フロント
 Bagfra|Rear|リア
 Bagscene (lærred → bagvæg)|Backstage (screen → back wall)|バックステージ（スクリーン→後壁）
+bagprojektion: ca. #–# % lystab|rear projection: approx. #–# % light loss|リアプロジェクション：約#–#%の光損失
 Lærred gain|Screen gain|スクリーンゲイン
 Omgivelseslys|Ambient light|環境光
 stk|pcs|台
@@ -518,7 +519,7 @@ På et claude.ai-link kan kun ejeren af appen gemme filer|On a claude.ai link on
 Prøv i stedet browserens udskrift og vælg «Gem som PDF».|Instead, try the browser's print dialog and choose “Save as PDF”.|代わりにブラウザの印刷で「PDFとして保存」を選んでください。
 Udskriv / gem som PDF|Print / save as PDF|印刷 / PDFとして保存
 Brug web-app-versionen af Throw Planner for at gemme PDF.|Use the web app version of Throw Planner to save the PDF.|PDFを保存するには Throw Planner のウェブアプリ版を使ってください。
-Edge Blend & Portrait Mode|Edge Blend & Portrait Mode|エッジブレンド & ポートレートモード
+Edge Blend, Stacking & Portrait Mode|Edge Blend, Stacking & Portrait Mode|エッジブレンド・スタッキング & ポートレートモード
 Portrait mode|Portrait mode|ポートレートモード
 (projektor drejet #°)|(projector rotated #°)|（プロジェクターを#°回転）
 Portræt|Portrait|縦置き

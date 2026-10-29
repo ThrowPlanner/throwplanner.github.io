@@ -222,6 +222,7 @@ function drawFront(r){IMMPJ=null;if(S.venue==='golf')GCUR=golfCalc(r);
   const p0=r.pjs.filter(p=>!p.s).pop(),lp=PJ(p0.lx+r.F.x0,p0.ly+(r.stk>1?(S.ceil?-1:1)*(r.stk-1)*r.outer[1]/2:0),r.outBack);
   if(!NS&&!REAR())s+='<g class="Ldim">'+lbl(lp[0]-8,lp[1],r.stk>1?`stak ${r.stk} × ${mm(r.outer[1])} = ${mm(r.outer[0])} × ${mm(r.stk*r.outer[1])} mm`:`${mm(r.outer[0])} × ${mm(r.outer[1])} mm`,'d','end')+'</g>';
   {const t=`lokale ${f3(S.rw,1)} × ${f3(S.rd,1)} × ${f3(S.rh,1)} m${r.stand||VN==='golf'?'':` · ${fi(r.rows.length*r.seatsRow)} pladser`}`;s+=lbl(vw-14,vh-18,t,'m','end')}
+  if(REAR()&&!(SUN&&CUST))s+=`<text class="blink notr" x="16" y="${vh-12}">!</text>`+lbl(28,vh-18,'bagprojektion: ca. 30–50 % lystab','m bad','start');
   if(!NS&&S.content==='img'&&!IMG)s+=lbl(cl+cwp/2,ctp+chp/2,'Klik «Eget billede» for at vælge et billede','m');
   // klikflader for vinduer (custom) – øverst, så de kan rammes over alt andet
   HIT.forEach(([id,poly,t])=>{s+=`<polygon class="winhit" data-win="${id}" points="${pts(poly)}" fill="transparent"><title>${t} – klik for at ${OFF.has(id)?'tilføje':'fjerne'}</title></polygon>`});
