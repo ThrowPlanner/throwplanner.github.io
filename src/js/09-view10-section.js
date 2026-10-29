@@ -103,6 +103,7 @@ function drawSide(r){
   if(NS)s=s.slice(0,m3);
   if(r.rows.length&&VN==='theater')s+=lbl(X(r.rows[0]+0.2),Y(0)+14,r.stand?`publikum fra ${f3(r.rows[0],1)} m`:`1. række ${f3(r.rows[0],1)} m`,'m');
   s+=`<text class="m" x="${X(S.rd)}" y="${Y(S.rh+T)-8}" text-anchor="end">snit ${f3(S.rd,1)} × ${f3(S.rh,1)} m</text>`;
+  if(rear)s+=`<text class="blink notr" x="${X(0)}" y="${Y(S.rh+T)-7}">!</text><text class="m bad" x="${X(0)+12}" y="${Y(S.rh+T)-8}">bagprojektion: ca. 30–50 % lystab</text>`;
   $('side').innerHTML=s;
 }
 function chairSide(X,Y,sc,z){const u=sc;return `<path d="M${X(z)},${Y(.45)} h${.48*u} l${.06*u},-${.53*u} h${.05*u} l-${.05*u},${.6*u} v${.38*u} h-${.04*u} v-${.36*u} h-${.4*u} v${.36*u} h-${.04*u} z" style="fill:var(--r-seat)"/>`}
