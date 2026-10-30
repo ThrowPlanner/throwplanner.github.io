@@ -544,7 +544,12 @@ th{background:transparent}
 .lgtog .z9{margin-left:auto;padding:2px;gap:2px}
 .lgtog .z9 button{border:0;border-radius:6px;padding:4px 8px;min-width:30px;box-shadow:none;background:transparent;justify-content:center}
 .lgtog .z9 button:disabled{opacity:.35;cursor:default}
-.imgsave{margin-left:6px;padding:6px 10px}.imgsave[hidden]{display:none}
+.imgsave{padding:6px 10px}.imgsave .car{margin-left:4px;font-size:10px;opacity:.7}
+/* gem som BMP-dropdown (åbner mod venstre, da knappen sidder yderst til højre) */
+.bmpdd{position:relative;display:inline-flex;margin-left:6px}.bmpdd .tpmenu{left:auto;right:0;min-width:180px}
+.bmpdd .tpmenu button{font:inherit;font-size:12.5px;border:0;cursor:pointer;text-align:left;padding:7px 10px;border-radius:6px;color:var(--ink);background:transparent;display:flex;justify-content:space-between;align-items:baseline;gap:12px}
+.bmpdd .tpmenu button:hover,.bmpdd .tpmenu button:focus-visible{background:var(--surface2)}
+.bmpdd .tpmenu small{color:var(--muted);font-size:11px}
 /* testbillede-dropdown (boks 09) */
 .tpdd{position:relative;flex:1;display:flex}
 .tpdd>button{flex:1}.tpdd .car{margin-left:4px;font-size:10px;opacity:.7}
