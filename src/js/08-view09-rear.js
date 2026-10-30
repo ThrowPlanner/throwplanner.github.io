@@ -87,9 +87,12 @@ function drawFront(r){IMMPJ=null;if(S.venue==='golf')GCUR=golfCalc(r);
   const cl=X(r.cx-r.CW/2),ctp=Y(r.cy+r.CH/2),cwp=r.CW*s0,chp=r.CH*s0,bm=Math.max(3,.06*s0);
   FRONT={Yh,s0,E,X0};if(rear)s+='<g opacity=".84">';s+=`<rect class="fscr" x="${cl-bm}" y="${ctp-bm}" width="${cwp+2*bm}" height="${chp+2*bm}" rx="1.5" fill="#05080b"/>`;
   s+=`<clipPath id="cclip"><rect x="${cl}" y="${ctp}" width="${cwp}" height="${chp}"/></clipPath>`;
+  // indhold på lærredet vises med samme kontrast som i boks 06 (crFilter: sort løftes af omgivelses- og sollys)
+  const SHOW=(S.content==='img'&&IMG)||S.content==='test'||(S.content==='golf'&&VN==='golf');if(SHOW)s+=crFilter('cf9',r)+'<g filter="url(#cf9)">';
   if(S.content==='img'&&IMG) s+=`<image href="${IMG}" x="${cl}" y="${ctp}" width="${cwp}" height="${chp}" preserveAspectRatio="xMidYMid slice" clip-path="url(#cclip)"/>`+(tpImgOv()?`<g clip-path="url(#cclip)">${tpBlend(cl,ctp,cwp,chp,TPI,cwp/TPI.W,true)}</g>`:'');
   else if(S.content==='test') s+=`<g clip-path="url(#cclip)">${tpSVG(cl,ctp,cwp,chp)}</g>`;
   else if(S.content==='golf'&&VN==='golf') s+=`<g clip-path="url(#cclip)">${golfScene(cl,ctp,cwp,chp,'f')}</g>`;
+  if(SHOW)s+='</g>';
   else s+=`<rect class="fscr" x="${cl}" y="${ctp}" width="${cwp}" height="${chp}" fill="url(#scrf)"/>`;
   if(rear)s+='</g>';
   if(S.blend&&(r.N>1||r.R>1)){
@@ -108,7 +111,8 @@ function drawFront(r){IMMPJ=null;if(S.venue==='golf')GCUR=golfCalc(r);
   if(r.P.length)r.pjs.forEach(p=>{const zx=p.lx,zy=p.ly+r.inv*r.off*r.H;
     s+=`<polygon class="Lshift" points="${r.P.map(([a,b])=>`${X(zx+r.inv*(a+r.th)*r.W)},${Y(zy+r.inv*(b+r.tv)*r.H)}`).join(' ')}" style="fill:none;stroke:var(--beam)" stroke-width="1.2" stroke-dasharray="5 4" opacity=".85"/>`});
   const ok=r.zoomOK&&r.shOK&&r.sizeOK;
-  if(SUN){const sl=sunLux();if(sl.lux>0){const a=Math.min(.8,sl.lux/(sl.lux+r.lux)*0.9);s+=`<rect x="${cl}" y="${ctp}" width="${cwp}" height="${chp}" style="fill:${sunColor(sl.el)}" opacity="${a.toFixed(2)}" pointer-events="none"/>`}}
+  // sollys på tomt lærred (med indhold er sollyset allerede med i kontrastfilteret)
+  if(SUN&&!SHOW){const sl=sunLux();if(sl.lux>0){const a=Math.min(.8,sl.lux/(sl.lux+r.lux)*0.9);s+=`<rect x="${cl}" y="${ctp}" width="${cwp}" height="${chp}" style="fill:${sunColor(sl.el)}" opacity="${a.toFixed(2)}" pointer-events="none"/>`}}
   s+=`<rect x="${cl}" y="${ctp}" width="${cwp}" height="${chp}" fill="none" style="stroke:${ok?'var(--ok)':'var(--bad)'}" stroke-width="2"/>`;
   if(VN==='golf'&&GCUR)s+=golfShadowFront(GCUR,X,Y);
   // museum: talerens skygge – silhuetten projiceret fra hver linse ind på lærredsvæggen (z = 0), klippet til billedet
@@ -133,11 +137,13 @@ function drawFront(r){IMMPJ=null;if(S.venue==='golf')GCUR=golfCalc(r);
       const NET={l:[0,0,zN,h],v:[zN,0,S.rw,h],r:[zN+S.rw,0,zN,h],f:[zN,h,S.rw,zN]},act=IM.filter(q=>q.on).map(q=>q.key);
       const x0=Math.min(...act.map(k=>NET[k][0])),x1=Math.max(...act.map(k=>NET[k][0]+NET[k][2])),y0=Math.min(...act.map(k=>NET[k][1])),y1=Math.max(...act.map(k=>NET[k][1]+NET[k][3]));
       const T=k=>{const [nx,ny,nw,nh]=NET[k],au=(nx-x0)/(x1-x0),su=nw/(x1-x0),av=(ny-y0)/(y1-y0),sv=nh/(y1-y0);return `matrix(${(1/su).toFixed(5)} 0 0 ${(1/sv).toFixed(5)} ${(-au/su).toFixed(5)} ${(-av/sv).toFixed(5)})`};
-      for(const q of IM){if(!q.on)continue;
+      // hver flade vises med sin egen kontrast (fladens lys og sort niveau – samme beregning som boks 06 og tabellen)
+      for(const q of IM){if(!q.on)continue;const fq=q.ok&&q.lux>0,fid='cfi'+q.key;if(fq)s+=crFilter(fid,{lux:q.lux,blk:immBlk(q,r)})+`<g filter="url(#${fid})">`;
         if(q.key==='v')s+=warpImg('civ',(u,v)=>P(-w+S.rw*u,h*(1-v),0),[0,1],false,T('v'));
         else if(q.key==='l')s+=warpImg('cil',(u,v)=>P(-w,h*(1-v),zN*(1-u)),ZT.map(z=>1-z/zN).reverse(),false,T('l'));   // set fra rummet: venstre kant ved bagvæggen
         else if(q.key==='r')s+=warpImg('cir',(u,v)=>P(w,h*(1-v),zN*u),ZT.map(z=>z/zN),false,T('r'));
-        else if(q.key==='f')s+=warpImg('cif',(u,v)=>P(-w+S.rw*u,0.01,zN*v),ZT.map(z=>z/zN),true,T('f'))}}
+        else if(q.key==='f')s+=warpImg('cif',(u,v)=>P(-w+S.rw*u,0.01,zN*v),ZT.map(z=>z/zN),true,T('f'));
+        if(fq)s+='</g>'}}
     for(const q of IM){if(!q.on||!q.ok)continue;const c=IMC[q.key],many=q.n>16;
       if(q.key==='v'&&!src)s+=`<rect x="${X(-w)}" y="${Y(h)}" width="${S.rw*s0}" height="${h*s0}" fill="url(#immf)" opacity=".35"/>`;
       if(q.key==='f'&&!src)s+=`<polygon points="${pts([P(-w,0.01,0),P(w,0.01,0),P(w,0.01,zN),P(-w,0.01,zN)])}" fill="url(#immff)"/>`;
@@ -265,8 +271,10 @@ function immKPI(r,K){const st=immStats(r),req=crMin();const c={};st.ok.forEach(q
     K('','Kast',st.ok.length?`${f3(st.Lmin,1)}–${f3(st.Lmax,1)}<small>m</small>`:'–',st.ok.length?'korteste og længste kast':'')+
     K('','Mindste lys',st.dim?`${fi(st.dim.lux)}<small>lux</small>`:'–',st.dim?nm(st.dim):'')+
     K(st.worst?(st.worst.cr>=req?'ok':'warn'):'','Laveste kontrast',st.worst?`${fi(st.worst.cr)}<small>:1</small>`:'–',st.worst?`${nm(st.worst)} · krav ${f3(req,req%1?1:0)}:1`:'')}
+// sort niveau på en immersive-flade: fladens projektors sort + omgivelseslys (samme model som lærredet)
+const immBlk=(q,r)=>q.lux/(q.pm===r.m&&S.pcr?S.pcr:q.pm.cr)+r.amb;
 function immCrR(r){const st=immStats(r),q=st.worst;if(!q)return r;const pcr=q.pm===r.m&&S.pcr?S.pcr:q.pm.cr,amb=r.amb,lux=q.lux;
-  const blk=lux/pcr+amb,blk2=2*lux/pcr+amb,blk4=4*lux/pcr+amb;return {...r,lux,pcr,cr:(lux+amb)/blk,blk,blk2,blk4,cr2:(lux+blk2)/blk2,cr4:(lux+blk4)/blk4,N:1,R:1,kx:1,ky:1,o:0,immQ:q}}
+  const blk=immBlk(q,r),blk2=2*lux/pcr+amb,blk4=4*lux/pcr+amb;return {...r,lux,pcr,cr:(lux+amb)/blk,blk,blk2,blk4,cr2:(lux+blk2)/blk2,cr4:(lux+blk4)/blk4,N:1,R:1,kx:1,ky:1,o:0,immQ:q}}
 function drawImm(r){const on=S.venue==='immersive';$('immPanel').hidden=!on;if(!on)return;
   document.querySelectorAll('[data-imm]').forEach(b=>b.setAttribute('aria-pressed',!!S.imm[b.dataset.imm]));
   const IM=immCalc(r),q0={name:'Front (lærred)',U:r.CW,V:r.CH,L:S.L,W:r.W,H:r.H,nu:r.N,nv:r.R,lux:r.lux,cr:r.cr,ok:r.zoomOK&&r.sizeOK,n:r.N*r.R,on:true,note:r.zoomOK?'':'uden for zoom'};

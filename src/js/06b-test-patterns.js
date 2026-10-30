@@ -9,7 +9,12 @@ const tpKind=()=>{const k=S.tp||'std';return k==='blend'&&!tpBlendOK()?'std':k};
 // med edge blend får alle mønstre blend-zonerne ovenpå, så den hentede PNG kan bruges direkte til at justere projektorerne
 function tpSVG(x,y,w,h,kind=tpKind(),I=TPI){const u=w/I.W;
   if(kind==='blend')return tpBlend(x,y,w,h,I,u);
-  return (kind==='focus'?tpFocus(x,y,w,h,u):kind==='bars'?tpBars(x,y,w,h):testPattern(x,y,w,h))+(I.bx||I.by?tpZones(x,y,w,h,I,u,true):'')}
+  return (kind==='focus'?tpFocus(x,y,w,h,u):kind==='bars'?tpBars(x,y,w,h):tpAnsi(x,y,w,h))+(I.bx||I.by?tpZones(x,y,w,h,I,u,true):'')}
+// standard («ANSI og farver», nøgle 'std'): ANSI-skakbræt 4×4 (det billede kontrastkravene er defineret ud fra) + farvebjælker og 11 gråtrin nederst – samme billede som i boks 06
+function tpAnsi(x,y,w,h){const hc=h*.7,hb=h*.2,C=['#fff','#ff0','#0ff','#0f0','#f0f','#f00','#00f'];let t='';
+  for(let i=0;i<4;i++)for(let j=0;j<4;j++)t+=`<rect x="${x+i*w/4}" y="${y+j*hc/4}" width="${w/4+.3}" height="${hc/4+.3}" fill="${(i+j)%2?'#000':'#fff'}"/>`;
+  C.forEach((c,i)=>t+=`<rect x="${x+i*w/7}" y="${y+hc}" width="${w/7+.3}" height="${hb+.3}" fill="${c}"/>`);
+  for(let i=0;i<11;i++){const g=Math.round(i*255/10);t+=`<rect x="${x+i*w/11}" y="${y+hc+hb}" width="${w/11+.3}" height="${h-hc-hb}" fill="rgb(${g},${g},${g})"/>`}return t}
 // skrift sættes i style, så appens svg.draw text-regel (mono 12px) ikke overtager den i visningen
 const tpTxt=(x,y,fs,t,c='#fff',a='middle',k='#000')=>`<text x="${x}" y="${y}" style="font:700 ${fs}px Arial,Helvetica,sans-serif;fill:${c}" text-anchor="${a}" dominant-baseline="middle" stroke="${k}" stroke-width="${fs*.12}" paint-order="stroke">${t}</text>`;
 

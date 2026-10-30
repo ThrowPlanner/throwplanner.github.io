@@ -31,14 +31,6 @@ const DEFS=id=>`<defs>
  <linearGradient id="pjg${id}" x1="0" y1="0" x2="0" y2="1"><stop offset="0" style="stop-color:var(--pj-hi)"/><stop offset="1" style="stop-color:var(--pj)"/></linearGradient>
 </defs>`;
 
-function testPattern(x,y,w,h){const n=16,mrow=Math.max(4,Math.round(n*h/w));let s=`<rect x="${x}" y="${y}" width="${w}" height="${h}" fill="#1b1f24"/>`;
-  for(let i=1;i<n;i++)s+=`<line x1="${x+w*i/n}" y1="${y}" x2="${x+w*i/n}" y2="${y+h}" stroke="#fff" stroke-opacity=".28" stroke-width=".8"/>`;
-  for(let j=1;j<mrow;j++)s+=`<line x1="${x}" y1="${y+h*j/mrow}" x2="${x+w}" y2="${y+h*j/mrow}" stroke="#fff" stroke-opacity=".28" stroke-width=".8"/>`;
-  const cols=['#e6e6e6','#e8d33a','#32c7d6','#36c24a','#c53fc4','#d23a2e','#2f49c8'];const bw=w*.6/cols.length;
-  cols.forEach((c,i)=>s+=`<rect x="${x+w*.2+i*bw}" y="${y+h*.62}" width="${bw}" height="${h*.16}" fill="${c}"/>`);
-  for(let i=0;i<10;i++){const g=Math.round(i*255/9);s+=`<rect x="${x+w*.2+i*w*.06}" y="${y+h*.79}" width="${w*.06}" height="${h*.06}" fill="rgb(${g},${g},${g})"/>`}
-  const rr=Math.min(w,h)*.42;s+=`<circle cx="${x+w/2}" cy="${y+h/2}" r="${rr}" fill="none" stroke="#fff" stroke-width="1.6"/><line x1="${x+w/2}" y1="${y}" x2="${x+w/2}" y2="${y+h}" stroke="#fff"/><line x1="${x}" y1="${y+h/2}" x2="${x+w}" y2="${y+h/2}" stroke="#fff"/>`;
-  return s}
 function hull(pts){pts=pts.slice().sort((a,b)=>a[0]-b[0]||a[1]-b[1]);const cr=(o,a,b)=>(a[0]-o[0])*(b[1]-o[1])-(a[1]-o[1])*(b[0]-o[0]);const lo=[],up=[];
   for(const p of pts){while(lo.length>=2&&cr(lo[lo.length-2],lo[lo.length-1],p)<=0)lo.pop();lo.push(p)}
   for(const p of pts.slice().reverse()){while(up.length>=2&&cr(up[up.length-2],up[up.length-1],p)<=0)up.pop();up.push(p)}
