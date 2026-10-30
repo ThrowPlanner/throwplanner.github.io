@@ -11,7 +11,13 @@ function drawContrast(r){
   // simulering: lineært lys, sort niveau løftes af projektorens sort + omgivelseslys
   const fil=(id,b)=>{const ws=r.lux/(r.lux+b),ic=b/(r.lux+b);return `<filter id="${id}" color-interpolation-filters="linearRGB"><feComponentTransfer>${['R','G','B'].map(c=>`<feFunc${c} type="linear" slope="${ws.toFixed(4)}" intercept="${ic.toFixed(4)}"/>`).join('')}</feComponentTransfer></filter>`};
   const W=320,H=180;
-  let content=S.content==='img'&&IMG?`<image href="${IMG}" x="0" y="0" width="${W}" height="${H}" preserveAspectRatio="xMidYMid slice"/>`:(S.venue==='golf'&&S.content==='golf'?golfScene(0,0,W,H,'c'):tpSVG(0,0,W,H));
+  // ANSI-skakbræt (4×4, halvt hvidt/halvt sort) – det billede kontrastkravene er defineret ud fra – med farvebjælker og gråtrin nederst,
+  // så man også kan se farverne ved den beregnede kontrast; eget billede og golfbane vises som de er
+  const ansi=()=>{const hc=H*.7,hb=H*.2,C=['#fff','#ff0','#0ff','#0f0','#f0f','#f00','#00f'];let t='';
+    for(let i=0;i<4;i++)for(let j=0;j<4;j++)t+=`<rect x="${i*W/4}" y="${j*hc/4}" width="${W/4+.3}" height="${hc/4+.3}" fill="${(i+j)%2?'#000':'#fff'}"/>`;
+    C.forEach((c,i)=>t+=`<rect x="${i*W/7}" y="${hc}" width="${W/7+.3}" height="${hb+.3}" fill="${c}"/>`);
+    for(let i=0;i<11;i++){const g=Math.round(i*255/10);t+=`<rect x="${i*W/11}" y="${hc+hb}" width="${W/11+.3}" height="${H-hc-hb}" fill="rgb(${g},${g},${g})"/>`}return t};
+  let content=S.content==='img'&&IMG?`<image href="${IMG}" x="0" y="0" width="${W}" height="${H}" preserveAspectRatio="xMidYMid slice"/>`:(S.venue==='golf'&&S.content==='golf'?golfScene(0,0,W,H,'c'):ansi());
   $('crSvg').innerHTML=`<defs>${fil('cf1',r.blk)}<clipPath id="cfc"><rect width="${W}" height="${H}"/></clipPath></defs><g filter="url(#cf1)">${content}</g>`;
   $('crSum').innerHTML=`${worst>=req?pill('ok','Opfylder krav'):pill('bad','Under krav')} <span class="hint">Detaljer og indstillinger</span>`;$('dCr').open=!!S.openCr;
   $('crTag').innerHTML=`${fi(r.cr)}:1 · ${r.cr>=crMin()?'✓':'✗'} krav ${f2(crMin(),crMin()%1?1:0)}:1 · ${crName()}`;
