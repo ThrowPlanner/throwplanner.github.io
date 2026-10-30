@@ -115,23 +115,40 @@ async function tpDownload(){const I=TPI,k=tpKind(),W=I.W,H=I.H;
   let b;if(W<=16384&&H<=16384&&W*H<=1.2e8){const c=document.createElement('canvas');c.width=W;c.height=H;c.getContext('2d').drawImage(img,0,0,W,H);b=await new Promise(r=>c.toBlob(r,'image/png'))}
   else b=await tpPNGTiled(img,W,H);
   const a=document.createElement('a');a.href=URL.createObjectURL(b);a.download=`throwplanner-${k}-${W}x${H}.png`;document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(a.href),5000)}
-// eget billede med edge blend: overlap-mønstret lægges ovenpå; kan gemmes som 24-bit BMP i den samlede opløsning
+// eget billede med edge blend: overlap-mønstret lægges ovenpå; kan gemmes som BMP i den samlede opløsning
 const tpImgOv=()=>tpBlendOK()&&TPI.N*TPI.R>1;
-// eget billede (+ overlap) når det er valgt, ellers det valgte testbillede
-async function tpSaveBMP(){const I=TPI,W=I.W,H=I.H,row=Math.ceil(W*3/4)*4,size=54+row*H,own=S.content==='img'&&IMG,k0=tpKind();
+// farvetabeller til BMP med 1/4/8 bit: sort/hvid, de 16 standardfarver, 6×6×6-terning + 40 gråtoner
+function tpPal(bits){if(bits===1)return [[0,0,0],[255,255,255]];
+  if(bits===4)return ['000','800','080','880','008','808','088','ccc','888','f00','0f0','ff0','00f','f0f','0ff','fff'].map(h=>[...h].map(c=>c==='8'?128:c==='c'?192:parseInt(c+c,16)));
+  const p=[];for(let r=0;r<6;r++)for(let g=0;g<6;g++)for(let b=0;b<6;b++)p.push([r*51,g*51,b*51]);for(let i=0;i<40;i++){const v=Math.round((i+1)*255/41);p.push([v,v,v])}return p}
+// nærmeste farve i tabellen (med cache pr. RGB-værdi)
+function tpNear(bits,P){if(bits===1)return (r,g,b)=>(r*299+g*587+b*114)>=127500?1:0;
+  const C=new Uint16Array(1<<24),d2=(c,r,g,b)=>(c[0]-r)**2+(c[1]-g)**2+(c[2]-b)**2;
+  return (r,g,b)=>{const key=r<<16|g<<8|b;let v=C[key];if(v)return v-1;let best=0;
+    if(bits===4){let bd=1e9;for(let i=0;i<16;i++){const dd=d2(P[i],r,g,b);if(dd<bd){bd=dd;best=i}}}
+    else{const q=x=>Math.round(x/51),ci=q(r)*36+q(g)*6+q(b),y=(r+g+b)/3;let gi=216,gd=1e9;for(let i=216;i<256;i++){const dd=Math.abs(P[i][0]-y);if(dd<gd){gd=dd;gi=i}}best=d2(P[ci],r,g,b)<=d2(P[gi],r,g,b)?ci:gi}
+    C[key]=best+1;return best}}
+// eget billede (+ overlap) når det er valgt, ellers det valgte testbillede; bits = 1, 4, 8 eller 24
+async function tpSaveBMP(bits=24){const I=TPI,W=I.W,H=I.H,row=Math.ceil(W*bits/32)*4,P=bits<24?tpPal(bits):null,off=54+(P?P.length*4:0),size=off+row*H,own=S.content==='img'&&IMG,k0=tpKind();
   if(W*H>3e8){alert(I18.tr('Billedet er for stort til at blive lavet i browseren.',S.lang));return}
   const im=new Image();im.src=own?IMG:'data:image/svg+xml;charset=utf-8,'+encodeURIComponent(`<svg xmlns="http://www.w3.org/2000/svg" width="${W}" height="${H}" viewBox="0 0 ${W} ${H}">${tpSVG(0,0,W,H,k0,I)}</svg>`);await im.decode();let ov=null;
   if(own&&tpImgOv()){ov=new Image();ov.src='data:image/svg+xml;charset=utf-8,'+encodeURIComponent(`<svg xmlns="http://www.w3.org/2000/svg" width="${W}" height="${H}" viewBox="0 0 ${W} ${H}">${tpBlend(0,0,W,H,I,1,true)}</svg>`);await ov.decode()}
   // billedet fylder hele fladen og beskæres i midten (som i visningen)
   const k=own?Math.max(W/im.naturalWidth,H/im.naturalHeight):1,dw=own?im.naturalWidth*k:W,dh=own?im.naturalHeight*k:H,dx=(W-dw)/2,dy=(H-dh)/2;
-  const buf=new Uint8Array(size),v=new DataView(buf.buffer);buf[0]=66;buf[1]=77;v.setUint32(2,size,true);v.setUint32(10,54,true);
-  v.setUint32(14,40,true);v.setInt32(18,W,true);v.setInt32(22,H,true);v.setUint16(26,1,true);v.setUint16(28,24,true);v.setUint32(34,row*H,true);v.setInt32(38,2835,true);v.setInt32(42,2835,true);
+  const buf=new Uint8Array(size),v=new DataView(buf.buffer);buf[0]=66;buf[1]=77;v.setUint32(2,size,true);v.setUint32(10,off,true);
+  v.setUint32(14,40,true);v.setInt32(18,W,true);v.setInt32(22,H,true);v.setUint16(26,1,true);v.setUint16(28,bits,true);v.setUint32(34,row*H,true);v.setInt32(38,2835,true);v.setInt32(42,2835,true);
+  if(P){v.setUint32(46,P.length,true);P.forEach((c,i)=>{buf[54+i*4]=c[2];buf[55+i*4]=c[1];buf[56+i*4]=c[0]})}
+  const near=P?tpNear(bits,P):null;
   const TW=Math.min(W,8192),TH=Math.min(H,512),cv=document.createElement('canvas');cv.width=TW;cv.height=TH;const g=cv.getContext('2d',{willReadFrequently:true});
   for(let y0=0;y0<H;y0+=TH)for(let x0=0;x0<W;x0+=TW){const tw=Math.min(TW,W-x0),th=Math.min(TH,H-y0);
     g.setTransform(1,0,0,1,0,0);g.fillStyle='#000';g.fillRect(0,0,TW,TH);g.drawImage(im,dx-x0,dy-y0,dw,dh);if(ov)g.drawImage(ov,x0,y0,tw,th,0,0,tw,th);
     const d=g.getImageData(0,0,tw,th).data;
-    for(let r=0;r<th;r++){let o=54+(H-1-(y0+r))*row+x0*3,i=r*tw*4;for(let c=0;c<tw;c++,i+=4){buf[o++]=d[i+2];buf[o++]=d[i+1];buf[o++]=d[i]}}}   // BMP: nederste linje først, BGR
-  const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([buf],{type:'image/bmp'}));a.download=`throwplanner-${own?'image':k0}-${W}x${H}.bmp`;document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(a.href),5000)}
+    // BMP: nederste linje først; 24 bit = BGR, ellers indeks pakket fra venstre (høje bits først). x0 er et multiplum af 8192, så bytes deles aldrig mellem bidder
+    for(let r=0;r<th;r++){const rb=off+(H-1-(y0+r))*row;let i=r*tw*4;
+      if(!P){let o=rb+x0*3;for(let c=0;c<tw;c++,i+=4){buf[o++]=d[i+2];buf[o++]=d[i+1];buf[o++]=d[i]}}
+      else for(let c=0;c<tw;c++,i+=4){const x=x0+c,n=near(d[i],d[i+1],d[i+2]);
+        if(bits===8)buf[rb+x]=n;else if(bits===4)buf[rb+(x>>1)]|=x&1?n:n<<4;else if(n)buf[rb+(x>>3)]|=128>>(x&7)}}}
+  const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([buf],{type:'image/bmp'}));a.download=`throwplanner-${own?'image':k0}-${W}x${H}-${bits}bit.bmp`;document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(a.href),5000)}
 let TPCRC=null;const tpCrc=(u8)=>{if(!TPCRC){TPCRC=new Uint32Array(256);for(let n=0;n<256;n++){let c=n;for(let j=0;j<8;j++)c=c&1?0xEDB88320^(c>>>1):c>>>1;TPCRC[n]=c>>>0}}
   let c=0xFFFFFFFF;for(let i=0;i<u8.length;i++)c=TPCRC[(c^u8[i])&255]^(c>>>8);return (c^0xFFFFFFFF)>>>0};
 async function tpPNGTiled(img,W,H){const TW=Math.min(W,8192),TH=256,cv=document.createElement('canvas');cv.width=TW;cv.height=TH;const g=cv.getContext('2d',{willReadFrequently:true});

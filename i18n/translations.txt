@@ -249,6 +249,9 @@ Farvebjælker|Colour bars|カラーバー
 Edge blend-overlap|Edge blend overlap|エッジブレンドのオーバーラップ
 Hent som PNG|Download PNG|PNGをダウンロード
 Gem som BMP|Save as BMP|BMPで保存
+=# mio. farver|# million colours|# 百万色
+=# farver|# colours|# 色
+=sort/hvid|black and white|白黒
 Gem eget billede eller det valgte testbillede i den beregnede opløsning – med edge blend-overlap ovenpå, når edge blend er slået til|Save your own image or the selected test pattern at the calculated resolution – with the edge blend overlap on top when edge blend is on|自分の画像または選択したテストパターンを計算された解像度で保存（エッジブレンド有効時はオーバーラップを重ねて表示）
 =# × # px · # projektorer|# × # px · # projectors|# × # px · # 台
 Billedet er for stort til at blive lavet i browseren.|The image is too large to be created in the browser.|画像が大きすぎてブラウザーで作成できません。

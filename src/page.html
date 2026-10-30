@@ -213,7 +213,13 @@
             <button type="button" data-content="golf" aria-pressed="false" hidden>Golfbane</button>
             <button type="button" data-content="img" aria-pressed="false">Eget billede</button>
           </div>
-          <button type="button" class="btn imgsave" id="imgSave" title="Gem eget billede eller det valgte testbillede i den beregnede opløsning – med edge blend-overlap ovenpå, når edge blend er slået til">Gem som BMP</button>
+          <span class="dd bmpdd"><button type="button" class="btn imgsave" id="imgSave" aria-haspopup="menu" aria-expanded="false" title="Gem eget billede eller det valgte testbillede i den beregnede opløsning – med edge blend-overlap ovenpå, når edge blend er slået til">Gem som BMP<span class="car" aria-hidden="true">▾</span></button>
+            <span class="tpmenu" id="bmpMenu" role="menu" hidden>
+              <button type="button" role="menuitem" data-bmp="24"><b class="notr">24-bit</b><small>16,7 mio. farver</small></button>
+              <button type="button" role="menuitem" data-bmp="8"><b class="notr">8-bit</b><small>256 farver</small></button>
+              <button type="button" role="menuitem" data-bmp="4"><b class="notr">4-bit</b><small>16 farver</small></button>
+              <button type="button" role="menuitem" data-bmp="1"><b class="notr">1-bit</b><small>sort/hvid</small></button>
+            </span></span>
           <input type="file" id="file" accept="image/*" hidden></div>
         </div>
         <div class="canvas"><svg class="draw" id="front" viewBox="0 0 1000 560" role="img" aria-label="Lokalet set bagfra med lærred og projektor"></svg></div>
