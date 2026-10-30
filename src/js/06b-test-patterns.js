@@ -43,11 +43,12 @@ function tpBars(x,y,w,h){let s=`<rect x="${x}" y="${y}" width="${w}" height="${h
 // edge blend: ved hvert overlap et lille sæt farvebjælker, hvor den grønne bjælke ligger præcis i overlappet –
 // hvid/gul/cyan i den ene projektor, magenta/rød/blå i den anden. En projektor i midten får derfor to sæt.
 // Små cirkler kun i overlap, to linjer tværs over i top og bund, nummer og pixelområde pr. projektor.
-function tpBlend(x,y,w,h,I,u){const {N,R,ew,eh,bx,by,W,H}=I,kx=w/W,ky=h/H,lw=Math.max(2*u,.5),fs=Math.min(ew*kx,eh*ky)*.14;
+// ov = lagt oven på brugerens eget billede (ingen hvid baggrund)
+function tpBlend(x,y,w,h,I,u,ov){const {N,R,ew,eh,bx,by,W,H}=I,kx=w/W,ky=h/H,lw=Math.max(2*u,.5),fs=Math.min(ew*kx,eh*ky)*.14;
   const A=['#fff','#ff0','#0ff'],GRN='#0f0',B=['#f0f','#f00','#00f'],cl=(v,a,b)=>Math.min(b,Math.max(a,v));
   const sbw=cl(bx,ew*.05,ew*.07)*kx,sbh=cl(by,eh*.05,eh*.06)*ky;
   // hvid baggrund med rødt gitter (kvadratiske felter, 1/10 af højden)
-  let s=`<rect x="${x}" y="${y}" width="${w}" height="${h}" fill="#fff"/>`;const gs=h/10;
+  let s=ov?'':`<rect x="${x}" y="${y}" width="${w}" height="${h}" fill="#fff"/>`;const gs=h/10;
   for(let gx=x+gs;gx<x+w-1e-6;gx+=gs)s+=`<line x1="${gx}" y1="${y}" x2="${gx}" y2="${y+h}" stroke="#e00" stroke-width="${lw}"/>`;
   for(let gy=y+gs;gy<y+h-1e-6;gy+=gs)s+=`<line x1="${x}" y1="${gy}" x2="${x+w}" y2="${gy}" stroke="#e00" stroke-width="${lw}"/>`;
   const T=(x1,y1,f,t,a)=>tpTxt(x1,y1,f,t,'#000',a,'#fff');
@@ -114,6 +115,23 @@ async function tpDownload(){const I=TPI,k=tpKind(),W=I.W,H=I.H;
   let b;if(W<=16384&&H<=16384&&W*H<=1.2e8){const c=document.createElement('canvas');c.width=W;c.height=H;c.getContext('2d').drawImage(img,0,0,W,H);b=await new Promise(r=>c.toBlob(r,'image/png'))}
   else b=await tpPNGTiled(img,W,H);
   const a=document.createElement('a');a.href=URL.createObjectURL(b);a.download=`throwplanner-${k}-${W}x${H}.png`;document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(a.href),5000)}
+// eget billede med edge blend: overlap-mønstret lægges ovenpå; kan gemmes som 24-bit BMP i den samlede opløsning
+const tpImgOv=()=>tpBlendOK()&&TPI.N*TPI.R>1;
+// eget billede (+ overlap) når det er valgt, ellers det valgte testbillede
+async function tpSaveBMP(){const I=TPI,W=I.W,H=I.H,row=Math.ceil(W*3/4)*4,size=54+row*H,own=S.content==='img'&&IMG,k0=tpKind();
+  if(W*H>3e8){alert(I18.tr('Billedet er for stort til at blive lavet i browseren.',S.lang));return}
+  const im=new Image();im.src=own?IMG:'data:image/svg+xml;charset=utf-8,'+encodeURIComponent(`<svg xmlns="http://www.w3.org/2000/svg" width="${W}" height="${H}" viewBox="0 0 ${W} ${H}">${tpSVG(0,0,W,H,k0,I)}</svg>`);await im.decode();let ov=null;
+  if(own&&tpImgOv()){ov=new Image();ov.src='data:image/svg+xml;charset=utf-8,'+encodeURIComponent(`<svg xmlns="http://www.w3.org/2000/svg" width="${W}" height="${H}" viewBox="0 0 ${W} ${H}">${tpBlend(0,0,W,H,I,1,true)}</svg>`);await ov.decode()}
+  // billedet fylder hele fladen og beskæres i midten (som i visningen)
+  const k=own?Math.max(W/im.naturalWidth,H/im.naturalHeight):1,dw=own?im.naturalWidth*k:W,dh=own?im.naturalHeight*k:H,dx=(W-dw)/2,dy=(H-dh)/2;
+  const buf=new Uint8Array(size),v=new DataView(buf.buffer);buf[0]=66;buf[1]=77;v.setUint32(2,size,true);v.setUint32(10,54,true);
+  v.setUint32(14,40,true);v.setInt32(18,W,true);v.setInt32(22,H,true);v.setUint16(26,1,true);v.setUint16(28,24,true);v.setUint32(34,row*H,true);v.setInt32(38,2835,true);v.setInt32(42,2835,true);
+  const TW=Math.min(W,8192),TH=Math.min(H,512),cv=document.createElement('canvas');cv.width=TW;cv.height=TH;const g=cv.getContext('2d',{willReadFrequently:true});
+  for(let y0=0;y0<H;y0+=TH)for(let x0=0;x0<W;x0+=TW){const tw=Math.min(TW,W-x0),th=Math.min(TH,H-y0);
+    g.setTransform(1,0,0,1,0,0);g.fillStyle='#000';g.fillRect(0,0,TW,TH);g.drawImage(im,dx-x0,dy-y0,dw,dh);if(ov)g.drawImage(ov,x0,y0,tw,th,0,0,tw,th);
+    const d=g.getImageData(0,0,tw,th).data;
+    for(let r=0;r<th;r++){let o=54+(H-1-(y0+r))*row+x0*3,i=r*tw*4;for(let c=0;c<tw;c++,i+=4){buf[o++]=d[i+2];buf[o++]=d[i+1];buf[o++]=d[i]}}}   // BMP: nederste linje først, BGR
+  const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([buf],{type:'image/bmp'}));a.download=`throwplanner-${own?'image':k0}-${W}x${H}.bmp`;document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(a.href),5000)}
 let TPCRC=null;const tpCrc=(u8)=>{if(!TPCRC){TPCRC=new Uint32Array(256);for(let n=0;n<256;n++){let c=n;for(let j=0;j<8;j++)c=c&1?0xEDB88320^(c>>>1):c>>>1;TPCRC[n]=c>>>0}}
   let c=0xFFFFFFFF;for(let i=0;i<u8.length;i++)c=TPCRC[(c^u8[i])&255]^(c>>>8);return (c^0xFFFFFFFF)>>>0};
 async function tpPNGTiled(img,W,H){const TW=Math.min(W,8192),TH=256,cv=document.createElement('canvas');cv.width=TW;cv.height=TH;const g=cv.getContext('2d',{willReadFrequently:true});

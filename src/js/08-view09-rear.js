@@ -87,7 +87,7 @@ function drawFront(r){IMMPJ=null;if(S.venue==='golf')GCUR=golfCalc(r);
   const cl=X(r.cx-r.CW/2),ctp=Y(r.cy+r.CH/2),cwp=r.CW*s0,chp=r.CH*s0,bm=Math.max(3,.06*s0);
   FRONT={Yh,s0,E,X0};if(rear)s+='<g opacity=".84">';s+=`<rect class="fscr" x="${cl-bm}" y="${ctp-bm}" width="${cwp+2*bm}" height="${chp+2*bm}" rx="1.5" fill="#05080b"/>`;
   s+=`<clipPath id="cclip"><rect x="${cl}" y="${ctp}" width="${cwp}" height="${chp}"/></clipPath>`;
-  if(S.content==='img'&&IMG) s+=`<image href="${IMG}" x="${cl}" y="${ctp}" width="${cwp}" height="${chp}" preserveAspectRatio="xMidYMid slice" clip-path="url(#cclip)"/>`;
+  if(S.content==='img'&&IMG) s+=`<image href="${IMG}" x="${cl}" y="${ctp}" width="${cwp}" height="${chp}" preserveAspectRatio="xMidYMid slice" clip-path="url(#cclip)"/>`+(tpImgOv()?`<g clip-path="url(#cclip)">${tpBlend(cl,ctp,cwp,chp,TPI,cwp/TPI.W,true)}</g>`:'');
   else if(S.content==='test') s+=`<g clip-path="url(#cclip)">${tpSVG(cl,ctp,cwp,chp)}</g>`;
   else if(S.content==='golf'&&VN==='golf') s+=`<g clip-path="url(#cclip)">${golfScene(cl,ctp,cwp,chp,'f')}</g>`;
   else s+=`<rect class="fscr" x="${cl}" y="${ctp}" width="${cwp}" height="${chp}" fill="url(#scrf)"/>`;

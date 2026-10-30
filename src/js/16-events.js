@@ -107,6 +107,7 @@ num('stD',v=>S.stageD=Math.max(1,v));num('stH',v=>S.stageH=Math.max(0.2,Math.min
 // zoom i boks 09 (ikke gemt – kun til at læse detaljer, fx tallene i testbilledet)
 document.querySelectorAll('[data-z9]').forEach(b=>b.addEventListener('click',()=>{const d=+b.dataset.z9;Z9=d?Math.max(0,Math.min(Z9L.length-1,Z9+d)):0;render();
   const cv=$('front').parentElement;cv.scrollLeft=Z9C.x*cv.scrollWidth-cv.clientWidth/2;cv.scrollTop=Z9C.y*cv.scrollHeight-cv.clientHeight/2}));
+$('imgSave').addEventListener('click',()=>tpSaveBMP());
 // testbillede-dropdown: vælg mønster eller hent det som PNG i den beregnede opløsning
 {const M=$('tpMenu'),B=$('tpBtn'),open=o=>{M.hidden=!o;B.setAttribute('aria-expanded',o)};
  B.addEventListener('click',e=>{e.stopPropagation();const o=M.hidden;if(S.content!=='test'){S.content='test';render()}open(o)});
