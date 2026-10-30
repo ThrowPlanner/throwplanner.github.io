@@ -46,3 +46,18 @@ function hull(pts){pts=pts.slice().sort((a,b)=>a[0]-b[0]||a[1]-b[1]);const cr=(o
 const pts=a=>a.map(p=>p[0].toFixed(1)+','+p[1].toFixed(1)).join(' ');
 
 let GCUR=null;
+
+/* museum: fælles ophæng af malerier på sidevæggene – samme liste tegnes i boks 09 (perspektiv) og boks 10 (snit), så de ligner hinanden */
+const ARTC=['#C8553D','#2E6F95','#E0B04A','#5C8A5A','#7A4E8C','#D98C6A'];
+const ARTF=[[1.25,1.0,'r'],[.8,1.15,'a'],[1.0,1.0,'o'],[1.5,.95,'r'],[.75,1.05,'r'],[1.05,1.05,'o']];   // [bredde, højde (m), form: r=rektangel, a=bue, o=oval]
+function artWall(zN,h,side){const L=[];let i=side==='r'?3:0,z=side==='r'?2.3:1.2;   // højre væg starter længere tilbage
+  for(;;){const [w,hh,f]=ARTF[i%ARTF.length];if(z+w>zN-1.2)break;const yc=Math.min(1.85,h-.35-hh/2);
+    L.push({z,w,h:hh,y0:yc-hh/2,col:ARTC[i%ARTC.length],f});z+=w+1.5;i++}return L}
+// omrids i væggens (z,y)-koordinater; pad = rammens tykkelse
+function artShape(a,pad=0){const z0=a.z-pad,z1=a.z+a.w+pad,y0=a.y0-pad,y1=a.y0+a.h+pad,cz=(z0+z1)/2,rz=(z1-z0)/2;
+  if(a.f==='o'){const cy=(y0+y1)/2,ry=(y1-y0)/2;return [...Array(28).keys()].map(k=>{const t=k/28*2*Math.PI;return [cz+rz*Math.cos(t),cy+ry*Math.sin(t)]})}
+  if(a.f==='a'){const yb=y1-rz,p=[[z0,y0],[z1,y0]];for(let k=0;k<=14;k++){const t=k/14*Math.PI;p.push([cz+rz*Math.cos(t),yb+rz*Math.sin(t)])}return p}
+  return [[z0,y0],[z1,y0],[z1,y1],[z0,y1]]}
+// map(z,y) → [x,y] på tegningen
+function artSVG(L,map){return L.map(a=>{const poly=(P,st)=>`<polygon points="${P.map(p=>map(p[0],p[1]).join(',')).join(' ')}" ${st}/>`,o=a.f==='o',u=(uu,vv)=>[a.z+uu*a.w,a.y0+vv*a.h];
+  return poly(artShape(a,.06),'style="fill:#2B2622"')+poly(artShape(a),`style="fill:${a.col}"`)+poly([u(o?.3:.25,o?.2:0),u(.52,.7),u(o?.75:.85,o?.2:0)],'style="fill:#F4EFE6" opacity=".45"')}).join('')}
