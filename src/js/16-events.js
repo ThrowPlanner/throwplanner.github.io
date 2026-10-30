@@ -267,7 +267,8 @@ function printPage(){const closed=[...document.querySelectorAll('details')].filt
 const PDF_NEVER=['11','12'];
 function pdfSections(all){const out=[];document.querySelectorAll('.no').forEach(n=>{const el=n.closest('#kpis')||n.closest('.card,.view');if(!el||out.some(x=>x.el===el)||!el.getClientRects().length)return;
   if(!all&&PDF_NEVER.includes(n.textContent.trim()))return;
-  const t=n.nextSibling&&n.nextSibling.nodeType===3?n.nextSibling.nodeValue.trim():'';out.push({no:n.textContent.trim(),t,el})});return out.sort((a,b)=>a.no.localeCompare(b.no))}
+  // titlen står lige efter nummeret – som ren tekst eller i en <span> (fx boks 05)
+  const ns=n.nextSibling,t=!ns?'':ns.nodeType===3?ns.nodeValue.trim():ns.nodeType===1?ns.textContent.trim():'';out.push({no:n.textContent.trim(),t,el})});return out.sort((a,b)=>a.no.localeCompare(b.no))}
 // «Dine oplysninger» (firma, person, dato, projekt, logo) – huskes i browseren og vises nederst til venstre i PDF'en
 const PDFME_K='kasteplan_pdfme';
 function pdfMe(){try{return JSON.parse(localStorage.getItem(PDFME_K))||{}}catch(e){return {}}}
