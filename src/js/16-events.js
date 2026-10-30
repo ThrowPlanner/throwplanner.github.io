@@ -1,5 +1,7 @@
 /* ===== EVENTS ===== */
-function num(id,fn){$(id).addEventListener('input',e=>{const v=parseFloat(e.target.value);if(!Number.isFinite(v))return;fn(v);render()})}
+// talfelter bruges først ved Enter, når feltet forlades eller ved klik på pilene (change) – ellers retter render tallet midt i indtastningen (fx «1» før «10»)
+function num(id,fn){const el=$(id),go=()=>{const v=parseFloat(el.value);if(!Number.isFinite(v))return;fn(v);render()};
+  el.addEventListener('change',go);el.addEventListener('keydown',e=>{if(e.key==='Enter'){e.preventDefault();go();el.select()}})}
 num('dist',v=>{if(!S.lockL)S.L=Math.max(.1,v)});
 $('iov').addEventListener('input',e=>{const v=parseFloat(e.target.value);if(Number.isFinite(v)){S.immOv=Math.max(0,Math.min(50,v));render()}});
 $('iblRows').addEventListener('input',e=>{const t=e.target.closest('[data-g]');if(!t)return;const v=parseInt(t.value,10);if(!(v>=1))return;const k=t.dataset.g;S.immGrid={...(S.immGrid||{}),[k]:{...((S.immGrid||{})[k]||{}),[t.dataset.ax]:Math.min(20,v)}};render()});
@@ -102,6 +104,9 @@ document.querySelectorAll('button[data-venue]').forEach(b=>b.addEventListener('c
 document.querySelectorAll('[data-crowd]').forEach(b=>b.addEventListener('click',()=>{S.crowd=b.dataset.crowd==='1';render()}));
 document.querySelectorAll('[data-rear]').forEach(b=>b.addEventListener('click',()=>{const on=b.dataset.rear==='1';if(on&&!S.rear){const r=calc();S.bsd=Math.round(Math.max(1,Math.min(STAGE()-1.1,Math.max(3,r.outBack+0.4)))*10)/10}S.rear=on;render()}));
 num('stD',v=>S.stageD=Math.max(1,v));num('stH',v=>S.stageH=Math.max(0.2,Math.min(1.6,v)));num('trows',v=>S.trows=Math.max(1,Math.min(30,Math.round(v))));num('bsd',v=>S.bsd=Math.max(1,v));
+// zoom i boks 09 (ikke gemt – kun til at læse detaljer, fx tallene i testbilledet)
+document.querySelectorAll('[data-z9]').forEach(b=>b.addEventListener('click',()=>{const d=+b.dataset.z9;Z9=d?Math.max(0,Math.min(Z9L.length-1,Z9+d)):0;render();
+  const cv=$('front').parentElement;cv.scrollLeft=Z9C.x*cv.scrollWidth-cv.clientWidth/2;cv.scrollTop=Z9C.y*cv.scrollHeight-cv.clientHeight/2}));
 // testbillede-dropdown: vælg mønster eller hent det som PNG i den beregnede opløsning
 {const M=$('tpMenu'),B=$('tpBtn'),open=o=>{M.hidden=!o;B.setAttribute('aria-expanded',o)};
  B.addEventListener('click',e=>{e.stopPropagation();const o=M.hidden;if(S.content!=='test'){S.content='test';render()}open(o)});

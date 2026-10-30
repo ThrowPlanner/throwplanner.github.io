@@ -539,6 +539,11 @@ select,input[type=number]{border-radius:10px}
 .gear figure,.crview{border:0;border-radius:14px;box-shadow:2px 2px 6px var(--lo),-2px -2px 5px var(--hi)}
 th{background:transparent}
 @media print{.card,.view,.kpi,.gear figure,.crview{box-shadow:none;border:1px solid var(--line)}}
+/* zoom i boks 09 – i legend-rækken, helt til højre; rammen kan rulles, når der er zoomet */
+.canvas.zoomed{overflow:auto}.canvas.zoomed svg.draw{max-width:none}
+.lgtog .z9{margin-left:auto;padding:2px;gap:2px}
+.lgtog .z9 button{border:0;border-radius:6px;padding:4px 8px;min-width:30px;box-shadow:none;background:transparent;justify-content:center}
+.lgtog .z9 button:disabled{opacity:.35;cursor:default}
 /* testbillede-dropdown (boks 09) */
 .tpdd{position:relative;flex:1;display:flex}
 .tpdd>button{flex:1}.tpdd .car{margin-left:4px;font-size:10px;opacity:.7}
