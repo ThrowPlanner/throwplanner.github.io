@@ -539,3 +539,14 @@ select,input[type=number]{border-radius:10px}
 .gear figure,.crview{border:0;border-radius:14px;box-shadow:2px 2px 6px var(--lo),-2px -2px 5px var(--hi)}
 th{background:transparent}
 @media print{.card,.view,.kpi,.gear figure,.crview{box-shadow:none;border:1px solid var(--line)}}
+/* testbillede-dropdown (boks 09) */
+.tpdd{position:relative;flex:1;display:flex}
+.tpdd>button{flex:1}.tpdd .car{margin-left:4px;font-size:10px;opacity:.7}
+.tpmenu{position:absolute;top:calc(100% + 6px);left:0;z-index:40;min-width:200px;display:flex;flex-direction:column;gap:2px;padding:5px;background:var(--surface);border:1px solid var(--line);border-radius:10px;box-shadow:0 8px 24px rgba(0,0,0,.35)}
+.tpmenu[hidden]{display:none}
+.seg .tpmenu button{flex:none;text-align:left;padding:7px 10px 7px 26px;border-radius:6px;color:var(--ink);background:transparent;box-shadow:none;font-weight:400;position:relative}
+.seg .tpmenu button:hover,.seg .tpmenu button:focus-visible{background:var(--surface2)}
+.seg .tpmenu button[aria-checked=true]::before{content:"✓";position:absolute;left:9px;color:var(--beam);font-weight:700}
+.seg .tpmenu .tpdl{margin-top:4px;border-top:1px solid var(--line);border-radius:0 0 6px 6px;padding-top:9px;display:flex;flex-direction:column;gap:1px}
+.tpdl::before{content:"⤓";position:absolute;left:9px;color:var(--beam)}
+.tpdl small{color:var(--muted);font-size:11px;font-family:var(--f-mono)}

@@ -102,7 +102,14 @@ document.querySelectorAll('button[data-venue]').forEach(b=>b.addEventListener('c
 document.querySelectorAll('[data-crowd]').forEach(b=>b.addEventListener('click',()=>{S.crowd=b.dataset.crowd==='1';render()}));
 document.querySelectorAll('[data-rear]').forEach(b=>b.addEventListener('click',()=>{const on=b.dataset.rear==='1';if(on&&!S.rear){const r=calc();S.bsd=Math.round(Math.max(1,Math.min(STAGE()-1.1,Math.max(3,r.outBack+0.4)))*10)/10}S.rear=on;render()}));
 num('stD',v=>S.stageD=Math.max(1,v));num('stH',v=>S.stageH=Math.max(0.2,Math.min(1.6,v)));num('trows',v=>S.trows=Math.max(1,Math.min(30,Math.round(v))));num('bsd',v=>S.bsd=Math.max(1,v));
-document.querySelectorAll('[data-content]').forEach(b=>b.addEventListener('click',()=>{const again=S.content==='img';S.content=b.dataset.content;if(S.content==='img'&&(!IMG||again))$('file').click();render()}));
+// testbillede-dropdown: vælg mønster eller hent det som PNG i den beregnede opløsning
+{const M=$('tpMenu'),B=$('tpBtn'),open=o=>{M.hidden=!o;B.setAttribute('aria-expanded',o)};
+ B.addEventListener('click',e=>{e.stopPropagation();const o=M.hidden;if(S.content!=='test'){S.content='test';render()}open(o)});
+ M.querySelectorAll('[data-tp]').forEach(b=>b.addEventListener('click',()=>{S.tp=b.dataset.tp;S.content='test';open(false);render()}));
+ $('tpDl').addEventListener('click',()=>{open(false);tpDownload()});
+ document.addEventListener('click',e=>{if(!M.hidden&&!e.target.closest('.tpdd'))open(false)});
+ document.addEventListener('keydown',e=>{if(e.key==='Escape'&&!M.hidden){open(false);B.focus()}})}
+document.querySelectorAll('[data-content]:not(#tpBtn)').forEach(b=>b.addEventListener('click',()=>{const again=S.content==='img';S.content=b.dataset.content;if(S.content==='img'&&(!IMG||again))$('file').click();render()}));
 $('file').addEventListener('change',e=>{const f=e.target.files[0];if(!f)return;const fr=new FileReader();fr.onload=()=>{IMG=fr.result;S.content='img';render()};fr.readAsDataURL(f);e.target.value=''});
 
 $('dPlan').addEventListener('toggle',e=>{if(S.plan.open!==e.target.open){S.plan.open=e.target.open;save()}});

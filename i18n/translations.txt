@@ -243,6 +243,13 @@ Indhold på lærredet|Content on the screen|スクリーンの内容
 Lærred|Screen|スクリーン
 Testbillede|Test pattern|テストパターン
 Eget billede|Own image|自分の画像
+Gitter og farver|Grid and colours|グリッドとカラー
+Fokus|Focus|フォーカス
+Farvebjælker|Colour bars|カラーバー
+Edge blend-overlap|Edge blend overlap|エッジブレンドのオーバーラップ
+Hent som PNG|Download PNG|PNGをダウンロード
+=# × # px · # projektorer|# × # px · # projectors|# × # px · # 台
+Billedet er for stort til at blive lavet i browseren.|The image is too large to be created in the browser.|画像が大きすぎてブラウザーで作成できません。
 Vælg et billede fra din computer|Choose an image from your computer|コンピューターから画像を選択
 Klik igen for at skifte billede|Click again to change image|もう一度クリックで画像を変更
 Klik «Eget billede» for at vælge et billede|Click “Own image” to choose an image|「自分の画像」をクリックして画像を選択

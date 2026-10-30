@@ -202,7 +202,14 @@
           </div>
           <div class="seg" role="group" aria-label="Indhold på lærredet">
             <button type="button" data-content="none" aria-pressed="true">Lærred</button>
-            <button type="button" data-content="test" aria-pressed="false">Testbillede</button>
+            <span class="tpdd"><button type="button" id="tpBtn" data-content="test" aria-pressed="false" aria-haspopup="menu" aria-expanded="false">Testbillede<span class="car" aria-hidden="true">▾</span></button>
+              <span class="tpmenu" id="tpMenu" role="menu" hidden>
+                <button type="button" role="menuitemradio" data-tp="std">Gitter og farver</button>
+                <button type="button" role="menuitemradio" data-tp="focus">Fokus</button>
+                <button type="button" role="menuitemradio" data-tp="bars">Farvebjælker</button>
+                <button type="button" role="menuitemradio" data-tp="blend">Edge blend-overlap</button>
+                <button type="button" role="menuitem" id="tpDl" class="tpdl">Hent som PNG<small id="tpDim"></small></button>
+              </span></span>
             <button type="button" data-content="golf" aria-pressed="false" hidden>Golfbane</button>
             <button type="button" data-content="img" aria-pressed="false">Eget billede</button>
           </div>
