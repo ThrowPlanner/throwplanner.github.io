@@ -22,11 +22,7 @@ function drawFront(r){IMMPJ=null;if(S.venue==='golf')GCUR=golfCalc(r);
   s+=`<polygon points="${pts([P(-w,0,0),P(w,0,0),P(w,0,zN),P(-w,0,zN)])}" fill="url(#flrf)"/>`;
   for(let x=-w+(VN==='museum'?.25:1);x<w;x+=(VN==='museum'?.25:1))s+=`<line x1="${P(x,0,0)[0]}" y1="${P(x,0,0)[1]}" x2="${P(x,0,zN)[0]}" y2="${P(x,0,zN)[1]}" style="stroke:var(--r-floor2)" stroke-width="1" opacity=".6"/>`;
   [[-w,1],[w,-1]].forEach(([xw])=>{s+=`<polygon points="${pts([P(xw,0,0),P(xw,h,0),P(xw,h,zN),P(xw,0,zN)])}" style="fill:var(--r-side)"/>`;
-    if(VN==='museum'){const ART=['#C8553D','#2E6F95','#E0B04A','#5C8A5A','#7A4E8C','#D98C6A'];let i=xw<0?0:3;
-      for(let z=1.2;z<zN-1.4;z+=2.8){if(xw>0&&z<2.3)continue;const a=1.0+0.4*((i%3)/2),y0=1.35,y1=Math.min(h-0.4,y0+a);
-        s+=`<polygon points="${pts([P(xw,y0-.06,z-.06),P(xw,y1+.06,z-.06),P(xw,y1+.06,z+a*1.25+.06),P(xw,y0-.06,z+a*1.25+.06)])}" style="fill:#2B2622"/>`;
-        s+=`<polygon points="${pts([P(xw,y0,z),P(xw,y1,z),P(xw,y1,z+a*1.25),P(xw,y0,z+a*1.25)])}" style="fill:${ART[i%ART.length]}"/>`;
-        s+=`<polygon points="${pts([P(xw,y0,z+a*.3),P(xw,y0+(y1-y0)*.7,z+a*.65),P(xw,y0,z+a*1.1)])}" style="fill:#F4EFE6" opacity=".45"/>`;i++}}
+    if(VN==='museum')s+=artSVG(artWall(zN,h,xw<0?'l':'r'),(z,y)=>P(xw,y,z));
     else if(VN==='immersive'){if(S.imm&&S.imm[xw<0?'l':'r']&&!IMMC())s+=`<polygon points="${pts([P(xw,0,0),P(xw,h,0),P(xw,h,zN),P(xw,0,zN)])}" fill="url(#immf)" opacity=".5"/>`}
     else if(VN==='golf'){}
     else for(let z=0.6;z<zN-0.6;z+=1.25){if(xw>0&&z<2.3)continue;s+=`<polygon points="${pts([P(xw,0.45,z),P(xw,h-0.55,z),P(xw,h-0.55,z+1.05),P(xw,0.45,z+1.05)])}" style="fill:var(--r-panel)"/>`}
@@ -158,7 +154,7 @@ function drawFront(r){IMMPJ=null;if(S.venue==='golf')GCUR=golfCalc(r);
   // mål på væggen
   if(!NS){s+='<g class="Ldim">'+dimH(cl,cl+cwp,ctp-20,`${f3(r.CW)} m`,ctp-4,ctp-4);
   s+=dimV(cl+cwp+bm+22,ctp,ctp+chp,`${f3(r.CH)} m`,cl+cwp+bm+3,cl+cwp+bm+3);
-  if(S.blend&&r.N>1)s+=dimH(X(r.cx-r.CW/2+r.W*(1-r.o)),X(r.cx-r.CW/2+r.W),ctp-46,`blend ${f3(r.W*r.o)} m`,ctp-24,ctp-24);s+='</g>'}
+  if(S.blend&&r.N>1)s+=dimH(X(r.cx-r.CW/2+r.W*(1-r.o)),X(r.cx-r.CW/2+r.W),ctp-46,`blend ${fi(r.bzPx)} px`,ctp-24,ctp-24);s+='</g>'}
   // stole + projektorer (malerens algoritme: fjernest først)
   const seatX=[];for(let x=-w+0.8;x<=w-0.8;x+=0.56)if(Math.abs(x)>0.6)seatX.push(x);
   const items=[];
@@ -178,9 +174,8 @@ function drawFront(r){IMMPJ=null;if(S.venue==='golf')GCUR=golfCalc(r);
     cs.forEach((c,i)=>s+=`<line x1="${starts[i][0]}" y1="${starts[i][1]}" x2="${c[0]}" y2="${c[1]}" style="stroke:var(--beam)" stroke-width=".7" opacity=".45"/>`);s+='</g>'});return s};
   if(!rear&&!NS)s+=beams();
   items.forEach(it=>s+=it.draw());
-  // lærredets underkant: målt midt i lokalet (i midtergangen), tegnet oven på stolene så tallet kan læses
-  s+='<g class="Ldim">';if(NS);else if(S.sb>0.05){const x=X(r.cx),a=Y(0),b=Y(S.sb);s+=`<line x1="${x}" y1="${a}" x2="${x}" y2="${b}" style="stroke:var(--dim)" stroke-width="1.6" marker-start="url(#ar)" marker-end="url(#ar)"/>`+lbl(x,(a+b)/2,`underkant ${f3(S.sb)} m`)}
-  else s+=lbl(X(r.cx),Y(0)-12,'underkant 0,000 m');
+  // (lærredets underkant vises ikke her – den står i boks 01)
+  s+='<g class="Ldim">';
   if(!NS&&Math.abs(r.cx)>.005)s+=lbl(X(r.cx),ctp-42,`lærred forskudt ${f3(Math.abs(r.cx))} m til ${r.cx>0?'højre':'venstre'}`,'m');s+='</g>';
   // loftstruss ved loftmontering
   function truss(){let s='';if(S.ceil){const zt=(r.outFront+r.outBack)/2,a=PJ(-w,h-0.12,zt),b=PJ(w,h-0.42,zt);s+=`<rect x="${a[0]}" y="${a[1]}" width="${b[0]-a[0]}" height="${b[1]-a[1]}" fill="none" style="stroke:var(--r-truss)" stroke-width="2"/>`;
@@ -192,7 +187,8 @@ function drawFront(r){IMMPJ=null;if(S.venue==='golf')GCUR=golfCalc(r);
     const sLow=S.ceil?r.stk-1:0,row0=r.pjs.filter(p=>p.r===r.R-1&&p.s===sLow).sort((a,b)=>a.c-b.c);
     for(let i=0;i<row0.length-1;i++){const a=row0[i],b=row0[i+1];const yy=a.ly+r.F.y0-0.25;const A=PJ(a.lx,yy,zb),B=PJ(b.lx,yy,zb);
       const gap=r.pitchX-ow;s+=dimH(A[0],B[0],A[1],`c/c ${f3(r.pitchX)} m`,PJ(a.lx,a.ly+r.F.y0,zb)[1],PJ(b.lx,b.ly+r.F.y0,zb)[1]);
-      const G1=PJ(a.lx+r.F.x1,yy-0.32,zb),G2=PJ(b.lx+r.F.x0,yy-0.32,zb);if(gap>0)s+=lbl((G1[0]+G2[0])/2,A[1]+22,`fri ${mm(gap)} mm`,'m');else s+=lbl((A[0]+B[0])/2,A[1]+22,`overlap ${mm(-gap)} mm`,'d')}
+      // fri afstand vises ikke (kan regnes ud fra c/c) – kun en advarsel, hvis kabinetterne/rammerne rammer hinanden
+      if(gap<=0)s+=lbl((A[0]+B[0])/2,A[1]+22,`overlap ${mm(-gap)} mm`,'d')}
     if(r.R>1){const col=r.pjs.filter(p=>p.c===r.N-1&&!p.s).sort((a,b)=>b.r-a.r);for(let i=0;i<col.length-1;i++){const a=col[i],b=col[i+1];const xx=a.lx+r.F.x1+0.3;const A=PJ(xx,a.ly,zb),B=PJ(xx,b.ly,zb);
       s+=dimV(A[0],A[1],B[1],`c/c ${f3(r.pitchY)} m`,PJ(a.lx+r.F.x1,a.ly,zb)[0],PJ(b.lx+r.F.x1,b.ly,zb)[0])}}
   s+='</g>'}

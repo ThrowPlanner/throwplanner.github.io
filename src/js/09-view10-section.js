@@ -6,7 +6,7 @@ function drawSide(r){
   const T=.28;let s=DEFS('s');
   s+=`<rect x="${X(0)}" y="${Y(S.rh)}" width="${S.rd*sc}" height="${S.rh*sc}" style="fill:var(--r-side)"/>`;
   const VN=S.venue;
-  if(VN==='museum'){const ART=['#C8553D','#2E6F95','#E0B04A','#5C8A5A','#7A4E8C','#D98C6A'];let i=0;for(let z=2.4;z<S.rd-1.4;z+=2.8){const a=1.0+0.4*((i%3)/2);s+=`<rect x="${X(z)-3}" y="${Y(1.35+a)-3}" width="${a*1.25*sc+6}" height="${a*sc+6}" style="fill:#2B2622"/><rect x="${X(z)}" y="${Y(1.35+a)}" width="${a*1.25*sc}" height="${a*sc}" style="fill:${ART[i%ART.length]}"/>`;i++}}
+  if(VN==='museum')s+=artSVG(artWall(S.rd,S.rh,'r'),(z,y)=>[X(z),Y(y)]);   // samme malerier som højre væg i boks 09 (samme rækkefølge fra lærredet og bagud)
   else if(VN==='immersive'){const IM=immCalc(r),[v,l,rr,f]=IM,LB=[],pb=(z,y,c)=>`<rect x="${X(z)-.22*sc}" y="${Y(y+.1)}" width="${.44*sc}" height="${.2*sc}" rx="2" style="fill:var(--pj-hi);stroke:${c}" stroke-width="1.4"/>`;
     // sidevæg som baggrund i snittet (venstre eller højre – hvad der er valgt)
     const q=l.on&&l.ok?l:rr.on&&rr.ok?rr:null;
