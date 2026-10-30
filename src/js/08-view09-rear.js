@@ -227,7 +227,12 @@ function drawFront(r){IMMPJ=null;if(S.venue==='golf')GCUR=golfCalc(r);
   // klikflader for vinduer (custom) – øverst, så de kan rammes over alt andet
   HIT.forEach(([id,poly,t])=>{s+=`<polygon class="winhit" data-win="${id}" points="${pts(poly)}" fill="transparent"><title>${t} – klik for at ${OFF.has(id)?'tilføje':'fjerne'}</title></polygon>`});
   if(SUN&&CUST)s+=lbl(14,vh-18,`klik på et vindue for at fjerne/tilføje · ${HIT.length-OFF.size} af ${HIT.length} aktive`,'m','start');
-  $('front').innerHTML=s;{const L=S.l9||{};const fr=$('front');['gsw','gsh'].forEach(k=>$('side').classList.toggle('h-'+k,L[k]===false));['beam','shift','spill','pj','dim','gsw','gsh'].forEach(k=>{const on=L[k]!==false;fr.classList.toggle('h-'+k,!on);const b=document.querySelector(`[data-l9="${k}"]`);if(b)b.setAttribute('aria-pressed',on)})}
+  $('front').innerHTML=s;
+  // zoom (boks 09): tegningen gøres z gange større i en rulbar ramme med samme højde; Z9C = lærredets midte (til at centrere)
+  {const z=Z9L[Z9],fr=$('front'),cv=fr.parentElement;Z9C={x:NS?.5:(cl+cwp/2)/vw,y:NS?.5:(ctp+chp/2)/vh};
+   fr.style.width=z>1?z*100+'%':'';cv.classList.toggle('zoomed',z>1);cv.style.height=z>1?Math.round(cv.clientWidth*vh/vw)+'px':'';$('z9v').textContent=Math.round(z*100)+' %';
+   document.querySelector('[data-z9="-1"]').disabled=Z9<=0;document.querySelector('[data-z9="1"]').disabled=Z9>=Z9L.length-1}
+  {const L=S.l9||{};const fr=$('front');['gsw','gsh'].forEach(k=>$('side').classList.toggle('h-'+k,L[k]===false));['beam','shift','spill','pj','dim','gsw','gsh'].forEach(k=>{const on=L[k]!==false;fr.classList.toggle('h-'+k,!on);const b=document.querySelector(`[data-l9="${k}"]`);if(b)b.setAttribute('aria-pressed',on)})}
   drawImm(r);
 }
 function drawCrBand(){const b=$('crBand');b.hidden=S.venue!=='immersive';if(b.hidden)return;const lo=S.immCrMin??1,hi=S.immCrMax??100,a=cbC2V(lo),z=cbC2V(hi);
