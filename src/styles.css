@@ -544,6 +544,7 @@ th{background:transparent}
 .lgtog .z9{margin-left:auto;padding:2px;gap:2px}
 .lgtog .z9 button{border:0;border-radius:6px;padding:4px 8px;min-width:30px;box-shadow:none;background:transparent;justify-content:center}
 .lgtog .z9 button:disabled{opacity:.35;cursor:default}
+.imgsave{margin-left:6px;padding:6px 10px}.imgsave[hidden]{display:none}
 /* testbillede-dropdown (boks 09) */
 .tpdd{position:relative;flex:1;display:flex}
 .tpdd>button{flex:1}.tpdd .car{margin-left:4px;font-size:10px;opacity:.7}
