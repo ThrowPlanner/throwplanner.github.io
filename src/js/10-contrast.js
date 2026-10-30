@@ -1,6 +1,9 @@
 /* ===== KONTRAST (ANSI/AVIXA ISCR-kategorier) ===== */
 const crMin=()=>S.crReq==='custom'?Math.max(1,+S.crCust||5):+S.crReq;
 const crName=()=>S.crReq==='custom'?'eget krav':({7:'passiv visning',15:'enkle beslutninger',50:'analytisk',80:'fuld video'})[S.crReq];
+// simulering af kontrasten på lærredet (bruges i boks 06 og på lærredet i boks 09): lineært lys, hvid = projektor + sort niveau,
+// sort niveau = projektorens sort + omgivelseslys (inkl. sollys) → sort vises som 1/kontrast af hvid
+function crFilter(id,r){const b=r.blk,ws=r.lux/(r.lux+b),ic=b/(r.lux+b);return `<filter id="${id}" color-interpolation-filters="linearRGB"><feComponentTransfer>${['R','G','B'].map(c=>`<feFunc${c} type="linear" slope="${ws.toFixed(4)}" intercept="${ic.toFixed(4)}"/>`).join('')}</feComponentTransfer></filter>`}
 function drawContrast(r){
   const set=(id,v)=>{const el=$(id);if(document.activeElement!==el)el.value=v};
   $('crReq').value=S.crReq;$('crCustRow').hidden=S.crReq!=='custom';set('crCust',S.crCust);
@@ -8,19 +11,12 @@ function drawContrast(r){
   const req=crMin(),worst=r.cr;
   $('crPill').innerHTML=worst>=req?pill('ok',`Opfylder ${fi(req)}:1 (${crName()})`):pill('bad',`Under kravet ${f2(req,req%1?1:0)}:1 – mangler ${f2(req/worst,1)}× kontrast`);
   set('amb2',S.amb);set('ambR',Math.min(1000,S.amb));set('pcr',Math.round(r.pcr));
-  // simulering: lineært lys, sort niveau løftes af projektorens sort + omgivelseslys
-  const fil=(id,b)=>{const ws=r.lux/(r.lux+b),ic=b/(r.lux+b);return `<filter id="${id}" color-interpolation-filters="linearRGB"><feComponentTransfer>${['R','G','B'].map(c=>`<feFunc${c} type="linear" slope="${ws.toFixed(4)}" intercept="${ic.toFixed(4)}"/>`).join('')}</feComponentTransfer></filter>`};
   const W=320,H=180;
-  // ANSI-skakbræt (4×4, halvt hvidt/halvt sort) – det billede kontrastkravene er defineret ud fra – med farvebjælker og gråtrin nederst,
-  // så man også kan se farverne ved den beregnede kontrast; eget billede og golfbane vises som de er
-  const ansi=()=>{const hc=H*.7,hb=H*.2,C=['#fff','#ff0','#0ff','#0f0','#f0f','#f00','#00f'];let t='';
-    for(let i=0;i<4;i++)for(let j=0;j<4;j++)t+=`<rect x="${i*W/4}" y="${j*hc/4}" width="${W/4+.3}" height="${hc/4+.3}" fill="${(i+j)%2?'#000':'#fff'}"/>`;
-    C.forEach((c,i)=>t+=`<rect x="${i*W/7}" y="${hc}" width="${W/7+.3}" height="${hb+.3}" fill="${c}"/>`);
-    for(let i=0;i<11;i++){const g=Math.round(i*255/10);t+=`<rect x="${i*W/11}" y="${hc+hb}" width="${W/11+.3}" height="${H-hc-hb}" fill="rgb(${g},${g},${g})"/>`}return t};
-  let content=S.content==='img'&&IMG?`<image href="${IMG}" x="0" y="0" width="${W}" height="${H}" preserveAspectRatio="xMidYMid slice"/>`:(S.venue==='golf'&&S.content==='golf'?golfScene(0,0,W,H,'c'):ansi());
-  $('crSvg').innerHTML=`<defs>${fil('cf1',r.blk)}<clipPath id="cfc"><rect width="${W}" height="${H}"/></clipPath></defs><g filter="url(#cf1)">${content}</g>`;
+  // ANSI-skakbræt med farvebjælker (tpAnsi – det billede kontrastkravene er defineret ud fra); eget billede og golfbane vises som de er
+  let content=S.content==='img'&&IMG?`<image href="${IMG}" x="0" y="0" width="${W}" height="${H}" preserveAspectRatio="xMidYMid slice"/>`:(S.venue==='golf'&&S.content==='golf'?golfScene(0,0,W,H,'c'):tpAnsi(0,0,W,H));
+  $('crSvg').innerHTML=`<defs>${crFilter('cf1',r)}<clipPath id="cfc"><rect width="${W}" height="${H}"/></clipPath></defs><g filter="url(#cf1)">${content}</g>`;
   $('crSum').innerHTML=`${worst>=req?pill('ok','Opfylder krav'):pill('bad','Under krav')} <span class="hint">Detaljer og indstillinger</span>`;$('dCr').open=!!S.openCr;
-  $('crTag').innerHTML=`${fi(r.cr)}:1 · ${r.cr>=crMin()?'✓':'✗'} krav ${f2(crMin(),crMin()%1?1:0)}:1 · ${crName()}`;
+  $('crTag').innerHTML=`${r.immQ?`${esc(r.immQ.name)} · `:''}${fi(r.cr)}:1 ·${r.cr>=crMin()?'✓':'✗'} krav ${f2(crMin(),crMin()%1?1:0)}:1 · ${crName()}`;
   // skala (log 1–1000)
   const pos=c=>Math.max(0,Math.min(100,Math.log10(Math.max(1,c))/3*100));
   let sc='<div class="bar"></div>';
