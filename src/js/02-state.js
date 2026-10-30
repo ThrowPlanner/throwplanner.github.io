@@ -98,7 +98,7 @@ function immCalc(r0){const o=Math.min(.5,Math.max(0,(S.immOv??10)/100)),amb=AMB(
 const tiles=(len,sz,n,o,off=0)=>{const tot=n*sz-(n-1)*sz*o,a0=(len-tot)/2+off,out=[];for(let i=0;i<n;i++){const a=a0+i*sz*(1-o);out.push([Math.max(0,a),Math.min(len,a+sz),a+sz/2])}return out};
 // projektorer og deres billeder i rummets koordinater (x fra midten, y op, z fra frontvæggen)
 /* billede på en flade i perspektiv: fladen deles i tynde strimler, hver tegnet med en affin transformation og klippet til sin firkant */
-let TESTURI=null;const testURI=()=>TESTURI||(TESTURI='data:image/svg+xml;charset=utf-8,'+encodeURIComponent(`<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 1000" preserveAspectRatio="none">${testPattern(0,0,1600,1000)}</svg>`));
+const TESTURI={};const testURI=(k=tpKind())=>TESTURI[k]||(TESTURI[k]='data:image/svg+xml;charset=utf-8,'+encodeURIComponent(`<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 1000" preserveAspectRatio="none">${tpSVG(0,0,1600,1000,k,{W:1600,H:1000})}</svg>`));
 function warpImg(id,pt,ts,alongV,T=''){let s='';const n=ts.length-1;for(let i=0;i<n;i++){const t0=ts[i],t1=ts[i+1],tm=(t0+t1)/2,e=(t1-t0)*.08;let m,Q;
     if(!alongV){const M0=pt(tm,0),M1=pt(tm,1),U0=pt(t0,.5),U1=pt(t1,.5),a=(U1[0]-U0[0])/(t1-t0),b=(U1[1]-U0[1])/(t1-t0),c=M1[0]-M0[0],d=M1[1]-M0[1];
       m=[a,b,c,d,M0[0]-a*tm,M0[1]-b*tm];const u0=Math.max(0,t0-e),u1=Math.min(1,t1+e);Q=[pt(u0,0),pt(u1,0),pt(u1,1),pt(u0,1)]}

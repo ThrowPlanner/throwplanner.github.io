@@ -11,7 +11,7 @@ function drawContrast(r){
   // simulering: lineært lys, sort niveau løftes af projektorens sort + omgivelseslys
   const fil=(id,b)=>{const ws=r.lux/(r.lux+b),ic=b/(r.lux+b);return `<filter id="${id}" color-interpolation-filters="linearRGB"><feComponentTransfer>${['R','G','B'].map(c=>`<feFunc${c} type="linear" slope="${ws.toFixed(4)}" intercept="${ic.toFixed(4)}"/>`).join('')}</feComponentTransfer></filter>`};
   const W=320,H=180;
-  let content=S.content==='img'&&IMG?`<image href="${IMG}" x="0" y="0" width="${W}" height="${H}" preserveAspectRatio="xMidYMid slice"/>`:(S.venue==='golf'&&S.content==='golf'?golfScene(0,0,W,H,'c'):testPattern(0,0,W,H));
+  let content=S.content==='img'&&IMG?`<image href="${IMG}" x="0" y="0" width="${W}" height="${H}" preserveAspectRatio="xMidYMid slice"/>`:(S.venue==='golf'&&S.content==='golf'?golfScene(0,0,W,H,'c'):tpSVG(0,0,W,H));
   $('crSvg').innerHTML=`<defs>${fil('cf1',r.blk)}<clipPath id="cfc"><rect width="${W}" height="${H}"/></clipPath></defs><g filter="url(#cf1)">${content}</g>`;
   $('crSum').innerHTML=`${worst>=req?pill('ok','Opfylder krav'):pill('bad','Under krav')} <span class="hint">Detaljer og indstillinger</span>`;$('dCr').open=!!S.openCr;
   $('crTag').innerHTML=`${fi(r.cr)}:1 · ${r.cr>=crMin()?'✓':'✗'} krav ${f2(crMin(),crMin()%1?1:0)}:1 · ${crName()}`;

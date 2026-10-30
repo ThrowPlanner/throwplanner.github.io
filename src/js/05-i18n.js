@@ -22,7 +22,7 @@ function render(){
   syncPlan();blendAuto();constrain();LASTPY=S.py;LASTSB=S.sb;
   {const A={};if(hitOn('depth'))A.dist='→';if(hitOn('width')){A.cw='↔';A.cd='↔'}if(hitOn('height')){A.ch='↑';A.cd=A.cd||'↑';if(!A.cw)A.cw='↑'}if(hitOn('top'))A.sb='↑';if(hitOn('bsd'))A.bsd='→';
    ['dist','cw','ch','cd','sb','bsd'].forEach(id=>{const el=$('ha_'+id);el.hidden=!A[id];el.textContent=A[id]||'';el.title=A[id]?'Grænsen for rummet er nået':''})}
-  const r=calc();
+  const r=calc();TPI=tpInfo(r);
   const set=(id,v)=>{const el=$(id);if(document.activeElement!==el)el.value=v};
   if(fillLens.mi!==slotMI())fillLens();$('model').value=slotMI();$('lens').value=slotLI();{const o=$('lens').selectedOptions[0];if(o)$('lens').title=o.textContent}
   {const lk=!!S.lockLens;$('lens').disabled=lk;$('lensLock3').setAttribute('aria-pressed',lk);$('lensLock3').title=lk?'Optikken er låst – klik for at låse op':'Lås optikken – så skifter appen den ikke automatisk'}$('aspect').value=S.ak;$('cat').value=S.cat;$('minLm').value=S.minLm;
@@ -57,6 +57,8 @@ function render(){
    $('trRow').hidden=$('rearRow').hidden=$('stDRow').hidden=$('stHRow').hidden=V!=='theater';set('stD',STAGE().toFixed(1));set('stH',STH().toFixed(2));$('bsdRow').hidden=!REAR();set('trows',Math.round(S.trows));set('bsd',S.bsd.toFixed(1));
    document.querySelectorAll('[data-rear]').forEach(b=>b.setAttribute('aria-pressed',(b.dataset.rear==='1')===!!S.rear))}
   document.querySelectorAll('[data-content]').forEach(b=>b.setAttribute('aria-pressed',b.dataset.content===S.content));
+  {const k=tpKind();document.querySelectorAll('[data-tp]').forEach(b=>{b.setAttribute('aria-checked',b.dataset.tp===k);if(b.dataset.tp==='blend')b.hidden=!tpBlendOK()});
+   $('tpDim').textContent=`${fi(TPI.W)} × ${fi(TPI.H)} px`+(TPI.N*TPI.R>1?` · ${TPI.N*TPI.R} projektorer`:'')}
   {const b=document.querySelector('[data-content="img"]');b.title=IMG?'Klik igen for at skifte billede':'Vælg et billede fra din computer'}
   
   // billeder
