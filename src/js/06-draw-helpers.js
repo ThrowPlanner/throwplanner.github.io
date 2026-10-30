@@ -46,6 +46,8 @@ function hull(pts){pts=pts.slice().sort((a,b)=>a[0]-b[0]||a[1]-b[1]);const cr=(o
 const pts=a=>a.map(p=>p[0].toFixed(1)+','+p[1].toFixed(1)).join(' ');
 
 let GCUR=null;
+// hvor mørkt lokalet tegnes (0 = fuldt oplyst) ud fra omgivelseslyset i lux – logaritmisk: 0 lux ≈ 0,7 · 50 lux ≈ 0,29 · 200 lux ≈ 0,14 · 750+ lux = 0
+const ambDark=lux=>.7*(1-Math.min(1,Math.max(0,Math.log10(1+Math.max(0,lux||0))/Math.log10(751))));
 
 /* museum: fælles ophæng af malerier på sidevæggene – samme liste tegnes i boks 09 (perspektiv) og boks 10 (snit), så de ligner hinanden */
 const ARTC=['#C8553D','#2E6F95','#E0B04A','#5C8A5A','#7A4E8C','#D98C6A'];

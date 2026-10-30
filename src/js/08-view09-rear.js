@@ -78,6 +78,10 @@ function drawFront(r){IMMPJ=null;if(S.venue==='golf')GCUR=golfCalc(r);
     s+=beams()+'<g class="Lpj">'+r.pjs.map(p=>projector3D(PJ,r,p)).join('')+'</g>'+truss();
     const k=sc(RZ());s0=k;X=x=>X0+x*k;Y=y=>Yh-(y-E)*k;
     for(const sg of [-1,1])s+=`<line x1="${X(r.cx+sg*r.CW/2)}" y1="${Y(r.cy+r.CH/2)}" x2="${X(r.cx+sg*r.CW/2)}" y2="${Y(h)}" style="stroke:var(--r-truss)" stroke-width="1.2"/>`}
+  // omgivelseslys (lux i boks 02 + evt. sollys): lokalet tegnes mørkere jo mindre lys – lærred/billede, stråler og mål påvirkes ikke.
+  // Vægge/loft/gulv dæmpes med et sort lag her (før lærredet); stole, publikum og draperier, som tegnes senere, dæmpes med et filter (DIMG)
+  const AMBD=ambDark(S.amb+(SUN?sunLux().lux:0)),DIMG=x=>AMBD>0&&x?`<g filter="url(#amb9)">${x}</g>`:x;
+  if(AMBD>0){const k=(1-AMBD).toFixed(3);s+=`<rect x="0" y="0" width="${vw}" height="${vh}" fill="#000" opacity="${AMBD.toFixed(3)}" pointer-events="none"/><filter id="amb9"><feComponentTransfer><feFuncR type="linear" slope="${k}"/><feFuncG type="linear" slope="${k}"/><feFuncB type="linear" slope="${k}"/></feComponentTransfer></filter>`}
   // lærred (ikke i immersive – der er hele væggene projektionsflader)
   const NS=S.venue==='immersive',mS=s.length;
   const cl=X(r.cx-r.CW/2),ctp=Y(r.cy+r.CH/2),cwp=r.CW*s0,chp=r.CH*s0,bm=Math.max(3,.06*s0);
@@ -114,12 +118,12 @@ function drawFront(r){IMMPJ=null;if(S.venue==='golf')GCUR=golfCalc(r);
         person(PS,r.presX,r.presZ,'stand').replace('fill:var(--r-person)','fill:#000;fill-opacity:.62;stroke:var(--bad);stroke-width:1.2')+'</g>'});s+='</g>'}
   if(NS)s=s.slice(0,mS);
   // teater: tæppe/sidedraperier om lærredet og scene foran det
-  if(VN==='theater'){const gap=0.35,vb=Math.min(h,Math.max(r.cy+r.CH/2+0.15,h-0.9));
+  if(VN==='theater'){const t0=s.length,gap=0.35,vb=Math.min(h,Math.max(r.cy+r.CH/2+0.15,h-0.9));
     for(const sg of [-1,1]){const xa=X(sg*w),xb=X(Math.max(-w,Math.min(w,r.cx+sg*(r.CW/2+gap)))),x0=Math.min(xa,xb),wd=Math.abs(xa-xb);if(wd>2){s+=`<rect x="${x0}" y="${Y(h)}" width="${wd}" height="${h*s0}" fill="url(#drapef)"/>`;
       const n=Math.max(2,Math.round(wd/14));for(let i=1;i<n;i++)s+=`<line x1="${x0+wd*i/n}" y1="${Y(h)}" x2="${x0+wd*i/n}" y2="${Y(0)}" stroke="#4A0A14" stroke-width="1.2" opacity=".55"/>`}}
     s+=`<rect x="${X(-w)}" y="${Y(h)}" width="${S.rw*s0}" height="${(h-vb)*s0}" fill="url(#drapef)"/><rect x="${X(-w)}" y="${Y(vb)-3}" width="${S.rw*s0}" height="3" fill="#9C7A3C"/>`;
     const zS=STAGE(),fr=[P(-w,0,zS),P(w,0,zS),P(w,STH(),zS),P(-w,STH(),zS)],tp=[P(-w,STH(),rear?RZ():0),P(w,STH(),rear?RZ():0),P(w,STH(),zS),P(-w,STH(),zS)];
-    s+=`<polygon points="${pts(tp)}" style="fill:#6B4A2E"/><polygon points="${pts(fr)}" style="fill:#2A1810"/><line x1="${fr[3][0]}" y1="${fr[3][1]}" x2="${fr[2][0]}" y2="${fr[2][1]}" stroke="#9C7A3C" stroke-width="2"/>`}
+    s+=`<polygon points="${pts(tp)}" style="fill:#6B4A2E"/><polygon points="${pts(fr)}" style="fill:#2A1810"/><line x1="${fr[3][0]}" y1="${fr[3][1]}" x2="${fr[2][0]}" y2="${fr[2][1]}" stroke="#9C7A3C" stroke-width="2"/>`;s=s.slice(0,t0)+DIMG(s.slice(t0))}
   if(VN==='immersive'){const IM=immCalc(r),src=IMMC();
     // eget billede / testbillede: ét samlet indhold over alle valgte flader, foldet ud som en kasse:
     // venstre væg | front-væg | højre væg side om side, gulvet under front-væggen. Billedet strækkes over de valgte flader.
@@ -150,7 +154,7 @@ function drawFront(r){IMMPJ=null;if(S.venue==='golf')GCUR=golfCalc(r);
   FRONTI={Yh,E,X0,f,C};
   // taler ved lærredet (skala) – på scenen i teatret, ingen i immersive
   const PRS=g=>NOCROWD()?'':`<g class="presgrab"><title>Træk for at flytte taleren</title>${r.presHit?g.replace('fill:var(--r-person)','fill:var(--bad)'):g}</g>`;
-  const tx=r.presX;if(VN==='theater'){const zS=STAGE(),zp=r.presZ;s+=`<g transform="translate(0,${(P(tx,STH(),zp)[1]-P(tx,0,zp)[1]).toFixed(1)})">`+PRS(person(P,tx,zp,'stand'))+'</g>'}else if(VN!=='immersive'&&VN!=='golf')s+=PRS(person(P,tx,r.presZ,'stand'));
+  const tx=r.presX;if(VN==='theater'){const zS=STAGE(),zp=r.presZ;s+=`<g transform="translate(0,${(P(tx,STH(),zp)[1]-P(tx,0,zp)[1]).toFixed(1)})">`+PRS(person(P,tx,zp,'stand'))+'</g>'}else if(VN!=='immersive'&&VN!=='golf')s+=DIMG(PRS(person(P,tx,r.presZ,'stand')));
   // mål på væggen
   if(!NS){s+='<g class="Ldim">'+dimH(cl,cl+cwp,ctp-20,`${f3(r.CW)} m`,ctp-4,ctp-4);
   s+=dimV(cl+cwp+bm+22,ctp,ctp+chp,`${f3(r.CH)} m`,cl+cwp+bm+3,cl+cwp+bm+3);
@@ -163,7 +167,7 @@ function drawFront(r){IMMPJ=null;if(S.venue==='golf')GCUR=golfCalc(r);
     if(VN==='museum'){const zb=Math.min(S.rd-1.5,Math.max(S.r1+1,S.rd*0.55));
       const zp=Math.min(S.rd-0.8,S.r1+0.4),xp=w-1.1;items.push({z:zp+.5,draw:()=>{const f=[P(xp-.25,0,zp+.5),P(xp+.25,0,zp+.5),P(xp+.25,1.0,zp+.5),P(xp-.25,1.0,zp+.5)],t=[P(xp-.25,1.0,zp),P(xp+.25,1.0,zp),P(xp+.25,1.0,zp+.5),P(xp-.25,1.0,zp+.5)],c=P(xp,1.25,zp+.25),k=sc(zp+.25);return `<polygon points="${pts(t)}" style="fill:#FFFFFF"/><polygon points="${pts(f)}" style="fill:#E4E0D8"/><path d="M${c[0]-.1*k},${c[1]+.25*k} q${-.08*k},${-.3*k} ${.05*k},${-.5*k} q${.13*k},${.2*k} ${.05*k},${.5*k} z" style="fill:#7A5A3A"/>`}})}}
   else r.rows.forEach(z=>{if(z<S.rd-0.4)items.push({z:z+0.5,draw:()=>seatRow(P,z,seatX)})});
-  if(!rear&&!NS)r.pjs.forEach(p=>items.push({z:r.outBack,draw:()=>'<g class="Lpj">'+projector3D(PJ,r,p)+'</g>'}));
+  if(!rear&&!NS)r.pjs.forEach(p=>items.push({z:r.outBack,pj:1,draw:()=>'<g class="Lpj">'+projector3D(PJ,r,p)+'</g>'}));
   if(VN==='golf'&&GCUR){const GC=GCUR;s+=golfFloor(P,GC);items.push({z:GC.tz,draw:()=>golferFront(P,sc,GC)+golfSwingFront(P,GC)});items.push({z:GC.ioBox?GC.ioBox.z1:(GC.t4z||0),draw:()=>golfUnitFront(P,GC,r)});const zc=(r.outFront+r.outBack)/2;r.pjs.filter(p=>!p.s).forEach(p=>items.push({z:r.outBack-.001,draw:()=>{const a=P(p.lx,r.topY,zc),b=P(p.lx,S.rh,zc);return S.ceil&&r.topY<S.rh-.02?`<line class="Lpj" x1="${a[0]}" y1="${a[1]}" x2="${b[0]}" y2="${b[1]}" style="stroke:var(--r-truss)" stroke-width="3"/>`:''}}))}
   items.sort((a,b)=>a.z-b.z);
   // stråler under projektorer
@@ -173,7 +177,7 @@ function drawFront(r){IMMPJ=null;if(S.venue==='golf')GCUR=golfCalc(r);
     s+=`<g class="Lbeam"><polygon points="${pts(hull(cs.concat(starts)))}" style="fill:var(--beam)" opacity=".10"/>`;
     cs.forEach((c,i)=>s+=`<line x1="${starts[i][0]}" y1="${starts[i][1]}" x2="${c[0]}" y2="${c[1]}" style="stroke:var(--beam)" stroke-width=".7" opacity=".45"/>`);s+='</g>'});return s};
   if(!rear&&!NS)s+=beams();
-  items.forEach(it=>s+=it.draw());
+  items.forEach(it=>s+=it.pj?it.draw():DIMG(it.draw()));
   // (lærredets underkant vises ikke her – den står i boks 01)
   s+='<g class="Ldim">';
   if(!NS&&Math.abs(r.cx)>.005)s+=lbl(X(r.cx),ctp-42,`lærred forskudt ${f3(Math.abs(r.cx))} m til ${r.cx>0?'højre':'venstre'}`,'m');s+='</g>';
