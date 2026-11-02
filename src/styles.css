@@ -80,6 +80,11 @@ body::before{content:"";position:fixed;inset:0;z-index:-1;pointer-events:none;op
 .pdfdlg .savename .inl{display:flex;align-items:center;gap:6px}
 .pdfdlg .savename input{flex:1;min-width:0;font:inherit;font-size:14px;color:var(--ink);background:var(--bg);border:1px solid var(--line);border-radius:8px;padding:7px 10px}
 .pdfdlg .pdfgo{color:var(--beam);font-weight:700}.pdfdlg .pdfgo:disabled{opacity:.5;cursor:not-allowed}
+.ovnote,.ovwarn{display:block;margin-top:6px}
+.ovwarn{position:relative;padding:6px 9px 6px 34px;border-radius:8px;background:var(--warn-bg);color:var(--warn)}
+.ovwarn::before{content:'!';position:absolute;left:9px;top:7px;width:17px;height:17px;border-radius:50%;background:var(--bad);color:#fff;font-weight:800;font-size:12px;line-height:17px;text-align:center;animation:ovblink 1s steps(1,end) infinite}
+@keyframes ovblink{50%{opacity:0}}
+@media (prefers-reduced-motion:reduce){.ovwarn::before{animation:none}}
 .discdlg{width:min(520px,calc(100vw - 32px))}
 .discdlg ul,.disc ul{margin:0;padding-left:20px;line-height:1.5}.discdlg li{font-size:14px;margin:4px 0}
 .discdlg .pdfbtns{align-items:center}.discdlg .pdfbtns label{margin-right:auto;color:var(--muted);font-size:13px}
@@ -132,6 +137,9 @@ h1{font-family:var(--f-display);font-weight:800;font-stretch:118%;font-size:28px
 :root[data-venue="golf"] svg.draw{--r-wall:#1A1E24;--r-side:#15181D;--r-panel:#15181D;--r-ceil2:#0F1115;--r-tile:#1A1D22;--r-floor:#3A3F47;--r-floor2:#2E3239;--r-base:#0B0D10;--r-cornice:#2A2F37;--r-person:#C9D1DC;--r-light:#FFE9C2;--r-door:#22262D;--r-out:#08090B}
 :root[data-venue="golf"] #dPlan,:root[data-venue="golf"] #dMount,:root[data-venue="golf"] #dBlend{display:none}
 :root[data-venue="golf"] main.out>section.view:has(#front){order:-1}
+/* auditorium, museum og teater: snittet står over «set bagfra», lige under plantegningen (numrene byttes i render) */
+:root:is([data-venue="aud"],[data-venue="museum"],[data-venue="theater"]) main.out>#dPlan{order:-2}
+:root:is([data-venue="aud"],[data-venue="museum"],[data-venue="theater"]) main.out>section.view:has(#side){order:-1}
 .golfp .gh{margin:0 0 4px;font-size:14px}
 .golfp .gf{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:6px 22px;margin:6px 0 8px;align-items:center}
 .golfp .gf label{display:flex;align-items:center;justify-content:space-between;gap:8px;font-size:13px}

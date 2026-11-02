@@ -37,7 +37,9 @@ function open(){steps=STEPS.filter(s=>{const e=s[0]();return e&&e.offsetParent!=
   document.body.append(ui.shade,ui.spot,ui.arr,ui.tip);
   addEventListener('keydown',key);addEventListener('resize',relay);addEventListener('scroll',relay,true);go(0)}
 async function go(i){if(!ui)return;if(i>=steps.length)return close();i=Math.max(0,i);cur=i;
-  const [f,no,h,p]=steps[i],last=i===steps.length-1;el=f();
+  const [f,no0,h,p]=steps[i],last=i===steps.length-1;el=f();
+  // boks 09/10 bytter nummer i nogle temaer – nummeret læses fra selve boksen
+  const no=no0&&((el.querySelector('.vhead .no')||{}).textContent||no0);
   ui.tip.innerHTML=`<button type="button" class="qgx" aria-label="${tr('Luk')}">×</button><h4>${no?no+' · ':''}${tr(h)}</h4><p>${tr(p)}</p>
     <div class="qgnav"><span class="qgdots">${steps.map((_,k)=>`<i class="${k===i?'on':''}"></i>`).join('')}</span>${i?`<button type="button" data-n="-1">${tr('Tilbage')}</button>`:''}<button type="button" class="pri" data-n="1">${tr(last?'Færdig':'Næste')}</button></div>`;
   const tall=el.getBoundingClientRect().height>innerHeight*.55,blk=tall?'start':'center';

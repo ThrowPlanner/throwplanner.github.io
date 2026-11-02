@@ -764,3 +764,5 @@ Ingen projektor fundet|No projector found|プロジェクターが見つかり�
 =Linsens placering varierer fra projektor til projektor.|Lens layout varies depending on the projector.|レンズの配置はプロジェクターによって異なります。
 =Det du indtaster, gemmes ikke – hverken på din enhed eller eksternt. Brug «Gem projekt» for at beholde dit projekt.|Your input is not stored – neither on your device nor remotely. Use «Save project» to keep your project.|入力内容は保存されません（端末にも外部にも）。プロジェクトを残すには「プロジェクトを保存」を使用してください。
 =Vis ikke igen|Don't show again|今後表示しない
+=# % overlap er industristandard.|#% overlap is the industry standard.|#% のオーバーラップが業界標準です。
+=Et overlap på under # % kan give dårligere billedkvalitet. Kontrollér værdierne i det faktiske installationsmiljø.|An overlap area of less than #% may result in reduced image quality. Please verify the values in the actual installation environment.|オーバーラップ領域が#%未満の場合、画質が低下する可能性があります。実際の設置環境で値を確認してください。
