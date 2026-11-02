@@ -41,10 +41,10 @@ $('sizeHint').addEventListener('click',e=>{const b=e.target.closest('[data-lsug]
 // nulstil: første klik beder om bekræftelse, andet klik (inden 4 s) starter forfra – mørk/lys tilstand beholdes, sproget sættes til engelsk
 {let tmo=0;$('resetBtn').addEventListener('click',()=>{const b=$('resetBtn');
   if(!b.classList.contains('arm')){b.classList.add('arm');$('resetTxt').textContent='Klik igen for at nulstille';clearTimeout(tmo);tmo=setTimeout(()=>{b.classList.remove('arm');$('resetTxt').textContent='Nulstil'},4000);return}
-  try{sessionStorage.setItem('kasteplan_next',JSON.stringify({lang:'en',mode:S.mode}))}catch(e){}location.reload()})}
+  try{sessionStorage.setItem('kasteplan_next',JSON.stringify({lang:'en',mode:S.mode,ui:S.ui}))}catch(e){}location.reload()})}
 $('modeBtn').addEventListener('click',()=>{const dark=document.documentElement.classList.contains('isdark');S.mode=dark?'light':'dark';save();applyMode();render()});
 if(MQ&&MQ.addEventListener)MQ.addEventListener('change',()=>{if(!S.mode){applyMode();render()}});
 applyMode();
 document.querySelectorAll('[data-lang]').forEach(b=>b.addEventListener('click',()=>{S.lang=b.dataset.lang;save();document.querySelectorAll('[data-lang]').forEach(x=>x.setAttribute('aria-pressed',x.dataset.lang===S.lang));render();I18.all()}));
-if(!['da','en','ja'].includes(S.lang))S.lang='en';document.querySelectorAll('[data-lang]').forEach(x=>x.setAttribute('aria-pressed',x.dataset.lang===S.lang));
+if(!['en','ja'].includes(S.lang))S.lang='en';document.querySelectorAll('[data-lang]').forEach(x=>x.setAttribute('aria-pressed',x.dataset.lang===S.lang));
 I18.all();I18.start();
