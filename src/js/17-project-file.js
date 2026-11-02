@@ -24,9 +24,10 @@ function loadProject(txt){let d;try{d=JSON.parse(txt)}catch(e){pdfToast('<span>F
     if(!m.L[li]||m.L[li][0]!==n.lens){const k=m.L.findIndex(l=>l[0]===n.lens);li=k<0?0:k}return [mi,li]};
   const N=d.names||{};[st.mi,st.li]=find(N.main,st.mi,st.li);if(st.immPj&&N.imm)for(const k in st.immPj){const q=st.immPj[k];if(q)[q.mi,q.li]=find(N.imm[k],q.mi,q.li)}
   TRK('Åbn projekt',{tema:st.venue||''});const keep={lang:S.lang,mode:S.mode},nx={...JSON.parse(JSON.stringify(S0)),...st,...keep,defREQ:true};
-  try{localStorage.setItem('kasteplan5',JSON.stringify(nx));if(d.planImage)localStorage.setItem('kasteplan_planimg',d.planImage);else localStorage.removeItem('kasteplan_planimg');
-    if(localStorage.getItem('kasteplan5'))return location.reload()}catch(e){}
-  // ingen lokal lagring (fx privat vindue): indlæs direkte
+  // tilstanden gives videre til genindlæsningen via sessionStorage (læses og slettes med det samme i 02-state/11-floorplan)
+  try{sessionStorage.setItem('kasteplan_next',JSON.stringify(nx));if(d.planImage)sessionStorage.setItem('kasteplan_nextimg',d.planImage);else sessionStorage.removeItem('kasteplan_nextimg');
+    if(sessionStorage.getItem('kasteplan_next'))return location.reload()}catch(e){try{sessionStorage.removeItem('kasteplan_next');sessionStorage.removeItem('kasteplan_nextimg')}catch(e2){}}
+  // sessionStorage ikke muligt (fx for stor tegning): indlæs direkte
   for(const k of Object.keys(S))delete S[k];Object.assign(S,nx);PLANIMG=d.planImage||null;
   try{fillCats();fillModels();fillLens();fillFrames()}catch(e){}render();I18.all()}
 const readProj=f=>{if(!f)return;const r=new FileReader();r.onload=()=>loadProject(String(r.result));r.readAsText(f)};
@@ -37,10 +38,10 @@ $('projFile').addEventListener('change',e=>readProj(e.target.files[0]));
 document.addEventListener('dragover',e=>{if(e.dataTransfer&&[...e.dataTransfer.types].includes('Files'))e.preventDefault()});
 document.addEventListener('drop',e=>{const f=e.dataTransfer&&e.dataTransfer.files&&e.dataTransfer.files[0];if(!f||!/\.json$|json/i.test(f.name+' '+f.type))return;e.preventDefault();readProj(f)});
 $('sizeHint').addEventListener('click',e=>{const b=e.target.closest('[data-lsug]');if(!b)return;S.li=+b.dataset.lsug;fillLens();fitLens();zeroShift();render()});
-// nulstil: første klik beder om bekræftelse, andet klik (inden 4 s) sletter alle gemte indstillinger – mørk/lys tilstand beholdes, sproget sættes til engelsk
+// nulstil: første klik beder om bekræftelse, andet klik (inden 4 s) starter forfra – mørk/lys tilstand beholdes, sproget sættes til engelsk
 {let tmo=0;$('resetBtn').addEventListener('click',()=>{const b=$('resetBtn');
   if(!b.classList.contains('arm')){b.classList.add('arm');$('resetTxt').textContent='Klik igen for at nulstille';clearTimeout(tmo);tmo=setTimeout(()=>{b.classList.remove('arm');$('resetTxt').textContent='Nulstil'},4000);return}
-  try{localStorage.setItem('kasteplan5',JSON.stringify({lang:'en',mode:S.mode}));localStorage.removeItem('kasteplan_planimg')}catch(e){}location.reload()})}
+  try{sessionStorage.setItem('kasteplan_next',JSON.stringify({lang:'en',mode:S.mode}))}catch(e){}location.reload()})}
 $('modeBtn').addEventListener('click',()=>{const dark=document.documentElement.classList.contains('isdark');S.mode=dark?'light':'dark';save();applyMode();render()});
 if(MQ&&MQ.addEventListener)MQ.addEventListener('change',()=>{if(!S.mode){applyMode();render()}});
 applyMode();

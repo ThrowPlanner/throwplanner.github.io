@@ -8,7 +8,10 @@ const S={cat:0,minLm:0,mi:DEFM,li:DEFL,defREQ:true,lang:'en',mode:'dark',venue:'
   plan:{use:true,lock:false,v2:true,w:0,h:0,cal:null,calM:5,scr:null,tool:'cal',open:false},sun:{on:false,face:180,t:0.5,win:'sides',off:[]},pcr:null,stack:1,crReq:'7',crCust:5,frame:false,frameId:null,openMount:false,openBlend:false,fw:null,fh:null,fd:null,blend:false,bc:2,br:1,ov:10,content:'none'};
 let IMG=null;let FRESH=true;
 const S0=JSON.parse(JSON.stringify(S));
-let SAVED={};try{FRESH=!localStorage.getItem('kasteplan5');SAVED=JSON.parse(localStorage.getItem('kasteplan5')||'{}')||{};Object.assign(S,SAVED)}catch(e){}
+// intet huskes mellem besøg (kun disclaimer-valget, se 22-disclaimer.js): gamle gemte data slettes. «Åbn projekt» og «Nulstil» genindlæser siden
+// og giver tilstanden videre via sessionStorage, som læses og slettes med det samme
+let SAVED={};try{['kasteplan5','kasteplan_planimg','kasteplan_pdfme'].forEach(k=>localStorage.removeItem(k));
+  const nx=sessionStorage.getItem('kasteplan_next');sessionStorage.removeItem('kasteplan_next');if(nx){FRESH=false;SAVED=JSON.parse(nx)||{};Object.assign(S,SAVED)}}catch(e){}
 let MIG=false;if(!SAVED.defREQ){MIG=!FRESH;S.mi=DEFM;S.li=DEFL;S.pcr=null;S.frameId=null;S.fw=null;S.immPj={};S.defREQ=true}
 if(!S.mode)S.mode='dark';   // mørk tilstand er standard
 if(S.plan&&!S.plan.v2){S.plan.lock=false;S.plan.v2=true}
@@ -137,7 +140,7 @@ const lnURL=(m,ln)=>{const n=ln[0];const parts=n.split('/').map(x=>x.trim());con
   if(k==='et-d3lew600')return PAN+'products/projectors/et-d3lew600';
   if(k==='et-d3lew300'||k==='et-d75le50')return pjURL(m);  // ingen egen EU-side – projektorens side viser tilbehør
   return PAN+'projectors/'+k};
-const save=()=>{try{localStorage.setItem('kasteplan5',JSON.stringify(S))}catch(e){}};
+const save=()=>{};   // indstillinger gemmes ikke i browseren – brug «Gem projekt» (JSON-fil)
 const M=()=>MODELS[S.mi], LN=()=>M().L[S.li];
 /* immersive: egen projektor/optik pr. flade (S.immPj[k]={mi,li}); uden = standard (S.mi/S.li) */
 const SLOT=()=>S.venue==='immersive'&&S.immSel&&S.immSel!=='all'?S.immSel:null;

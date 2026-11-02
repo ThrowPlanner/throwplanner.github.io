@@ -139,7 +139,7 @@ $('calH').addEventListener('input',e=>{const v=parseFloat(e.target.value);S.plan
 document.querySelectorAll('[data-cal]').forEach(b=>b.addEventListener('click',()=>{const p=S.plan;p.tool='cal';p.calStep=b.dataset.cal;render()}));  // beholder linjen – punkterne kan nu flyttes, eller man tegner en ny
 $('planLock').addEventListener('change',e=>{S.plan.lock=e.target.checked;if(S.plan.lock)S.px=0;render()});
 $('planUse').addEventListener('change',e=>{S.plan.use=e.target.checked;render()});
-$('planDel').addEventListener('click',()=>{PLANIMG=null;try{localStorage.removeItem('kasteplan_planimg')}catch(e){}S.plan={...S.plan,w:0,h:0,cal:null,cal2:null,calStep:'w',scr:null,tool:'cal',pjSet:false};render()});
+$('planDel').addEventListener('click',()=>{PLANIMG=null;S.plan={...S.plan,w:0,h:0,cal:null,cal2:null,calStep:'w',scr:null,tool:'cal',pjSet:false};render()});
 // zoom i plantegningen – midten af det synlige udsnit bliver liggende
 document.querySelectorAll('[data-pz]').forEach(b=>b.addEventListener('click',()=>{const d=+b.dataset.pz,st=$('planStage');
   const i=PLANZ.indexOf(S.plan.zoom)<0?PLANZ.indexOf(1):PLANZ.indexOf(S.plan.zoom);S.plan.zoom=d?PLANZ[Math.max(0,Math.min(PLANZ.length-1,i+d))]:1;
@@ -269,9 +269,9 @@ function pdfSections(all){const out=[];document.querySelectorAll('.no').forEach(
   if(!all&&PDF_NEVER.includes(n.textContent.trim()))return;
   // titlen står lige efter nummeret – som ren tekst eller i en <span> (fx boks 05)
   const ns=n.nextSibling,t=!ns?'':ns.nodeType===3?ns.nodeValue.trim():ns.nodeType===1?ns.textContent.trim():'';out.push({no:n.textContent.trim(),t,el})});return out.sort((a,b)=>a.no.localeCompare(b.no))}
-// «Dine oplysninger» (firma, person, dato, projekt, logo) – huskes i browseren og vises nederst til venstre i PDF'en
-const PDFME_K='kasteplan_pdfme';
-function pdfMe(){try{return JSON.parse(localStorage.getItem(PDFME_K))||{}}catch(e){return {}}}
+// «Dine oplysninger» (firma, person, dato, projekt, logo) – huskes kun til siden lukkes og vises nederst til venstre i PDF'en
+let PDFME={};
+const pdfMe=()=>({...PDFME});
 const today=()=>{const d=new Date();return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`};
 function pdfHead(me){if(!me||!(me.co||me.person||me.proj||me.logo))return null;const h=document.createElement('div');h.className='pdfhead card';
   const dt=me.date?new Date(me.date+'T12:00').toLocaleDateString({da:'da-DK',en:'en-GB',ja:'ja-JP'}[S.lang]||'en-GB',{year:'numeric',month:'long',day:'numeric'}):'';
@@ -300,7 +300,7 @@ function pdfDialog(){const secs=pdfSections(),sel=S.pdfSel||{},me=pdfMe();let d=
   all.addEventListener('change',()=>{boxes.forEach(x=>x.checked=all.checked);sync()});boxes.forEach(x=>x.addEventListener('change',sync));
   d.querySelector('[value="no"]').addEventListener('click',()=>d.close());d.addEventListener('close',()=>d.remove());
   d.querySelector('form').addEventListener('submit',e=>{e.preventDefault();S.pdfSel={...sel};boxes.forEach(x=>S.pdfSel[x.dataset.no]=x.checked);save();
-    d.querySelectorAll('[data-me]').forEach(x=>me[x.dataset.me]=x.value.trim());try{localStorage.setItem(PDFME_K,JSON.stringify(me))}catch(err){}d.close();
+    d.querySelectorAll('[data-me]').forEach(x=>me[x.dataset.me]=x.value.trim());PDFME={...me};d.close();
     exportPDF(pdfSections(true).filter(s=>PDF_NEVER.includes(s.no)||!S.pdfSel[s.no]).map(s=>s.el),me)});
   d.showModal()}
 async function exportPDF(hide=[],me=null){const b=$('pdfBtn');if(b.getAttribute('aria-busy')==='true')return;b.setAttribute('aria-busy','true');pdfToast('');

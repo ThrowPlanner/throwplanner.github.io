@@ -756,3 +756,11 @@ Flyramme fra den udgåede projektor|Flying frame from the discontinued projector
 Søg projektor, fx RZ# eller DZ#K|Search projector, e.g. RZ# or DZ#K|プロジェクターを検索 例: RZ#、DZ#K
 =Søg projektor|Search projector|プロジェクターを検索
 Ingen projektor fundet|No projector found|プロジェクターが見つかりません
+=Ansvarsfraskrivelse|Disclaimer|免責事項
+=De beregnede værdier kan variere afhængigt af brug og omgivelsesforhold.|The calculated values may vary depending on usage and ambient conditions.|計算値は使用状況や周囲の環境によって異なる場合があります。
+=Beregnerens nøjagtighed: ±# % (for alle værdier undtagen projektorens lysudbytte og skærmens luminans).|Calculator accuracy: ±#% (for all values except projector output and screen luminance).|計算精度：±#%（プロジェクター出力とスクリーン輝度を除くすべての値）。
+=Projektorens målestok er ikke nøjagtig.|The scale of the projector is not accurate.|プロジェクターの縮尺は正確ではありません。
+=Beregningsresultatet er målt fra projektorens linsecentrum.|The calculation result is from the lens center of the projector.|計算結果はプロジェクターのレンズ中心からの値です。
+=Linsens placering varierer fra projektor til projektor.|Lens layout varies depending on the projector.|レンズの配置はプロジェクターによって異なります。
+=Det du indtaster, gemmes ikke – hverken på din enhed eller eksternt. Brug «Gem projekt» for at beholde dit projekt.|Your input is not stored – neither on your device nor remotely. Use «Save project» to keep your project.|入力内容は保存されません（端末にも外部にも）。プロジェクトを残すには「プロジェクトを保存」を使用してください。
+=Vis ikke igen|Don't show again|今後表示しない

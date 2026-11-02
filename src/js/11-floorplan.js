@@ -1,5 +1,6 @@
 /* ===== PLANTEGNING ===== */
-let PLANIMG=null;try{PLANIMG=localStorage.getItem('kasteplan_planimg')}catch(e){}
+// tegningen huskes kun til siden lukkes; ved «Åbn projekt» kommer den fra projektfilen via sessionStorage (slettes med det samme)
+let PLANIMG=null;try{PLANIMG=sessionStorage.getItem('kasteplan_nextimg');sessionStorage.removeItem('kasteplan_nextimg')}catch(e){}
 const V=(a,b)=>[b[0]-a[0],b[1]-a[1]],len=v=>Math.hypot(v[0],v[1]),dot=(a,b)=>a[0]*b[0]+a[1]*b[1];
 function planGeo(){const p=S.plan;if(!PLANIMG||!p.cal||!p.cal.b||!p.scr||!p.scr.b)return null;
   const sc=len(V(p.cal.a,p.cal.b))/Math.max(.01,p.calM);if(!(sc>0))return null;
@@ -21,8 +22,8 @@ const planEdit=c=>{const p=S.plan;return c==='scr'?p.tool==='scr'||p.tool==='pj'
 const planScale=()=>{const p=S.plan;return p.cal&&p.cal.b?len(V(p.cal.a,p.cal.b))/Math.max(.01,p.calM):0};
 function svgPt(e){const svg=$('planSvg'),pt=svg.createSVGPoint();pt.x=e.clientX;pt.y=e.clientY;const q=pt.matrixTransform(svg.getScreenCTM().inverse());return [q.x,q.y]}
 function drawPlan(r){
-  // et gemt billede uden mål (fx efter Nulstil i en ældre version) tæller ikke som indsat
-  if(PLANIMG&&!(S.plan.w>0&&S.plan.h>0)){PLANIMG=null;try{localStorage.removeItem('kasteplan_planimg')}catch(e){}}
+  // et billede uden mål tæller ikke som indsat
+  if(PLANIMG&&!(S.plan.w>0&&S.plan.h>0))PLANIMG=null;
   const p=S.plan,has=!!PLANIMG;$('dPlan').open=!!p.open;
   $('planEmpty').hidden=has;$('planSvg').style.display=has?'block':'none';
   document.querySelectorAll('[data-tool]').forEach(b=>b.setAttribute('aria-pressed',b.dataset.tool===p.tool));
@@ -108,7 +109,7 @@ $('planZoom').hidden=!has;if(document.activeElement!==$('calM'))$('calM').value=
   $('planSvg').innerHTML=s;
 }
 function planLoad(file){if(!file)return;
-  const done=url=>{const im=new Image();im.onload=()=>{PLANIMG=url;S.plan={...S.plan,w:im.naturalWidth,h:im.naturalHeight,cal:null,cal2:null,calStep:'w',scr:null,tool:'cal',open:true,pjSet:false};try{localStorage.setItem('kasteplan_planimg',url)}catch(e){}render()};im.src=url};
+  const done=url=>{const im=new Image();im.onload=()=>{PLANIMG=url;S.plan={...S.plan,w:im.naturalWidth,h:im.naturalHeight,cal:null,cal2:null,calStep:'w',scr:null,tool:'cal',open:true,pjSet:false};render()};im.src=url};
   if(/pdf/i.test(file.type)||/\.pdf$/i.test(file.name)){
     $('planInfo').hidden=false;$('planInfo').textContent='Læser PDF…';
     const go=async()=>{try{const lib=window.pdfjsLib;lib.GlobalWorkerOptions.workerSrc='https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';

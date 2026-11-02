@@ -14,7 +14,7 @@ Claude-artifact (én-fils-udgaven): https://claude.ai/artifact/VCjkMS7no1dYqKRxV
 ## Struktur
 - `src/page.html` markup · `src/styles.css` stil · `src/js/NN-navn.js` kode (sammensættes i filnavnsorden til ét `<script>` –
   alt deler samme scope, så funktioner/variabler kan bruges på tværs af filer).
-  - 00-data (katalog-indlæsning), 01-core (Panasonic-formler), 02-state (`S`, temaer, gem i localStorage `kasteplan5`),
+  - 00-data (katalog-indlæsning), 01-core (Panasonic-formler), 02-state (`S`, temaer; intet gemmes mellem besøg – kun disclaimer-valget `kasteplan_disc` i 22-disclaimer),
     03-calc (`calc()`), 04-ui (lister, `fitLens`, `constrain`), 05-i18n (`I18`, `render()`), 06-draw-helpers,
     07-golf (Golf Sim), 08-view09-rear (`drawFront`, boks 09), 09-view10-section (`drawSide`, boks 10), 10-contrast (boks 06),
     11-floorplan (boks 08), 12/13 træk og lens shift-bar, 14-sun, 15-solutions (boks 11), 16-events, 17-project-file (JSON), 18-start, 19-quick-guide (rundvisning).
