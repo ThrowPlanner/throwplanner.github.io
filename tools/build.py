@@ -52,7 +52,7 @@ HEAD = '''<!doctype html>
 <link rel="apple-touch-icon" href="icon-180.png">
 '''
 BOOT = "/*@boot*/render();"
-# hjemmesiden henter intet fra Google eller cdnjs: skrifter og pdf.js ligger i web/ (artifactet bruger stadig CDN'erne)
+# intet hentes fra Google eller cdnjs: skrifter og pdf.js ligger i web/
 GFONTS = '''<link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap">'''
 PDFJS_CDN = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/'
@@ -61,12 +61,13 @@ def main():
     s = page()
     dist = p('dist'); site = p('dist', 'site')
     shutil.rmtree(dist, ignore_errors=True); os.makedirs(site)
-    with open(p('dist', 'artifact.html'), 'w', encoding='utf-8', newline='\n') as f: f.write(s)
-    # hjemmesiden: lokale skrifter og pdf.js, service worker registreres, fuldt HTML-dokument
+    # begge udgaver: lokale skrifter og pdf.js (artifactet får filerne fra web/ med som ekstra filer)
     # (produktbillederne vises direkte fra Panasonics server – de kopieres ikke ind)
     assert s.count(BOOT) == 1 and s.count(GFONTS) == 1 and PDFJS_CDN in s
-    w = s.replace(GFONTS, '<link rel="stylesheet" href="fonts.css">').replace(PDFJS_CDN, '')
-    w = w.replace(BOOT, "render();\nif('serviceWorker' in navigator&&(location.protocol==='https:'||location.hostname==='localhost'))navigator.serviceWorker.register('sw.js').catch(()=>{});")
+    s = s.replace(GFONTS, '<link rel="stylesheet" href="fonts.css">').replace(PDFJS_CDN, '')
+    with open(p('dist', 'artifact.html'), 'w', encoding='utf-8', newline='\n') as f: f.write(s)
+    # hjemmesiden: service worker registreres, fuldt HTML-dokument
+    w = s.replace(BOOT, "render();\nif('serviceWorker' in navigator&&(location.protocol==='https:'||location.hostname==='localhost'))navigator.serviceWorker.register('sw.js').catch(()=>{});")
     j = w.index('</style>') + len('</style>')
     index = HEAD + w[:j] + '\n</head>\n<body>\n' + w[j:] + '\n</body>\n</html>\n'
     with open(os.path.join(site, 'index.html'), 'w', encoding='utf-8', newline='\n') as f: f.write(index)

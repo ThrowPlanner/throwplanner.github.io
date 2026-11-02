@@ -789,3 +789,4 @@ hos Panasonic|at Panasonic|（Panasonic）
 =Senest opdateret: #-#-#|Last updated: #-#-#|最終更新：#-#-#
 =Ingen statistik eller sporing|No statistics or tracking|統計・トラッキングなし
 =Throw Planner bruger ingen besøgsstatistik, ingen analyseværktøjer og ingen sporing.|Throw Planner uses no visit statistics, no analytics tools and no tracking.|Throw Plannerはアクセス統計、分析ツール、トラッキングを一切使用していません。
+=Denne udgave vises via Claude (Anthropic), som modtager din IP-adresse for at kunne levere siden. Hjemmesiden throwplanner.com hostes af GitHub Pages.|This version is shown via Claude (Anthropic), which receives your IP address in order to deliver the page. The website throwplanner.com is hosted by GitHub Pages.|このバージョンはClaude（Anthropic）経由で表示されており、ページを配信するためにAnthropicがIPアドレスを受け取ります。ウェブサイトthrowplanner.comはGitHub Pagesでホストされています。

@@ -7,7 +7,9 @@ const PRIV=[
     'Det eneste, der gemmes på din enhed, er dit valg «Vis ikke igen» ved ansvarsfraskrivelsen. Det er nødvendigt for funktionen og kræver ikke samtykke.',
     'Projektfiler («Gem projekt») gemmes kun der, hvor du selv vælger at gemme dem.']],
   ['Ingen statistik eller sporing',['Throw Planner bruger ingen besøgsstatistik, ingen analyseværktøjer og ingen sporing.']],
-  ['Hosting',['Siden hostes af GitHub Pages (GitHub Inc., USA). Som alle webservere modtager GitHub din IP-adresse for at kunne levere siden og kan logge den af sikkerhedshensyn. GitHub er certificeret under EU-US Data Privacy Framework.',
+  ['Hosting',[/(^|\.)throwplanner\.com$|\.github\.io$|^localhost$|^127\./.test(location.hostname)
+    ?'Siden hostes af GitHub Pages (GitHub Inc., USA). Som alle webservere modtager GitHub din IP-adresse for at kunne levere siden og kan logge den af sikkerhedshensyn. GitHub er certificeret under EU-US Data Privacy Framework.'
+    :'Denne udgave vises via Claude (Anthropic), som modtager din IP-adresse for at kunne levere siden. Hjemmesiden throwplanner.com hostes af GitHub Pages.',
     'Skrifter og PDF-læser ligger på siden selv – der hentes intet fra Google eller andre CDN\'er.']],
   ['Produktbilleder og links',['Billeder af projektorer og optikker vises direkte fra Panasonics server (docs.connect.panasonic.com), så Panasonic modtager din IP-adresse, når et billede vises. Knapperne til specifikationer, manualer og terminaler åbner Panasonics egne sider.']],
   ['Dine rettigheder',['Du har ret til indsigt, berigtigelse, sletning og indsigelse og kan klage til Datatilsynet (datatilsynet.dk). Da vi ikke gemmer oplysninger om dig, har vi som regel intet at udlevere eller slette.']],
