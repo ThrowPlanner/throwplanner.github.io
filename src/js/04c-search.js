@@ -8,7 +8,7 @@ function pjSearch(q){const k=pjKey(q);if(!k)return [];const r=[];
   return r.sort((a,b)=>a[0]-b[0]||a[1]-b[1]||MODELS[a[2]].m.localeCompare(MODELS[b[2]].m)).slice(0,12).map(x=>x[2])}
 // vælg som i modellisten: kategori og min. lumen åbnes, så modellen kan vises
 function pjPick(i){const m=MODELS[i];S.cat=isEOL(m)?7:0;if(m.lm<S.minLm)S.minLm=0;fillCats();fillModels();
-  const sel=$('model');sel.value=String(i);sel.dispatchEvent(new Event('change'));pjClose();$('pjQ').value='';TRK('Søg projektor',{model:m.m})}
+  const sel=$('model');sel.value=String(i);sel.dispatchEvent(new Event('change'));pjClose();$('pjQ').value='';}
 let pjAt=-1;
 function pjClose(){$('pjRes').hidden=true;$('pjQ').setAttribute('aria-expanded','false');pjAt=-1}
 function pjShow(){const q=$('pjQ').value,hits=pjSearch(q),box=$('pjRes');pjAt=hits.length?0:-1;

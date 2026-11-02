@@ -89,6 +89,13 @@ body::before{content:"";position:fixed;inset:0;z-index:-1;pointer-events:none;op
 .discdlg ul,.disc ul{margin:0;padding-left:20px;line-height:1.5}.discdlg li{font-size:14px;margin:4px 0}
 .discdlg .pdfbtns{align-items:center}.discdlg .pdfbtns label{margin-right:auto;color:var(--muted);font-size:13px}
 .disc{margin:28px 0 12px;padding-top:14px;border-top:1px solid var(--line);color:var(--muted);font-size:12px}
+.disc .discnote{margin:10px 0 6px}
+.disclink{font:inherit;font-size:12px;padding:0;border:0;background:none;color:var(--beam);text-decoration:underline;cursor:pointer}
+.privdlg{width:min(620px,calc(100vw - 32px))}
+.privdlg .privbody{max-height:65vh;overflow:auto;padding-right:6px;font-size:13.5px;line-height:1.55}
+.privdlg h4{margin:14px 0 4px;font-size:13.5px}.privdlg h4:first-child{margin-top:0}
+.privdlg p{margin:0 0 6px;color:var(--muted)}.privdlg a{color:var(--beam)}
+.privdlg .privdate{margin-top:14px;font-size:12px}
 .disc h2{margin:0 0 6px;font-size:12px;font-weight:700;letter-spacing:.04em;text-transform:uppercase}
 #pdfToast[hidden]{display:none}#pdfToast span{flex-basis:100%}#pdfToast .pb{font:inherit;cursor:pointer;font-weight:600;padding:5px 12px;border-radius:7px;border:1px solid var(--beam);color:var(--ink);text-decoration:none;background:var(--beam-soft)}#pdfToast .px{position:absolute;right:8px;top:6px;border:0;background:none;color:var(--muted);font-size:18px;cursor:pointer}
 .pdfbtn{display:inline-flex;align-items:center;gap:6px;height:38px;padding:0 12px;border-radius:8px;border:1px solid var(--line);background:var(--bg2);color:var(--ink);font:inherit;font-size:13px;font-weight:600;cursor:pointer;white-space:nowrap}
@@ -357,9 +364,7 @@ details.coll2[open]>summary .chev{transform:rotate(-135deg);margin-bottom:-2px}
 .gear a.spec:focus-visible{outline:none}
 .gear .gcol{display:flex;flex-direction:column;gap:6px;min-width:0}
 .termbtn{grid-column:1/-1;display:flex;align-items:center;gap:10px;padding:5px 10px 5px 5px;border:1px solid var(--line);border-radius:10px;background:var(--bg2);color:var(--ink);font:600 11px var(--f-mono);letter-spacing:.04em;text-align:left;cursor:pointer;transition:border-color .15s,box-shadow .15s}
-.termbtn .tth{flex:0 0 96px;height:40px;display:grid;place-items:center;border-radius:6px;background:var(--tile);overflow:hidden}
-.termbtn .tth:empty{display:none}
-.gear .termbtn img{max-width:100%;max-height:38px}
+.termbtn{padding:9px 10px}
 .termbtn .ttx{flex:1;min-width:0}
 .termbtn .ext{color:var(--beam);font-size:14px;opacity:.75}
 .termbtn:hover,.termbtn:focus-visible{border-color:var(--beam);box-shadow:0 0 0 2px var(--beam-soft);outline:none}.termbtn:hover .ext{opacity:1}
@@ -418,9 +423,6 @@ details.coll2[open]>summary .chev{transform:rotate(-135deg);margin-bottom:-2px}
 .mhgprev img{display:block;width:100%;height:auto;border-radius:8px;border:1px solid var(--line);margin:4px 0 10px}
 .mhgact{display:flex;flex-wrap:wrap;gap:8px}.mhgact .mhgimg{color:var(--beam);font-weight:700}
 .mhgmsg{min-height:18px;margin:8px 0 0;font-size:12.5px;color:var(--beam)}
-.termdlg{width:min(860px,calc(100vw - 32px))}
-.termdlg img{display:block;width:100%;height:auto;border-radius:10px;background:#fff}
-.termdlg .pdfbtns{align-items:center}.termdlg .termhi{margin-right:auto}
 .gear .gcol a.spec{flex:1}
 .manbtn{display:flex;align-items:center;justify-content:center;gap:6px;padding:5px 8px;border:1px solid var(--line);border-radius:8px;background:var(--bg2);color:var(--ink);font:600 11px var(--f-mono);letter-spacing:.04em;text-decoration:none;cursor:pointer;transition:border-color .15s}
 /* manual-ikon: åben bog (maske i tekstfarven, virker i lys og mørk tilstand) */

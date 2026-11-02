@@ -45,5 +45,5 @@ const eolClick=e=>{const t=e.target.closest('[data-eolm]');if(!t)return;
   const mi=+t.dataset.eolm,old=etCodes(LN()[0]);let li=+t.dataset.eoll,fit=false;
   if(li<0){li=MODELS[mi].L.findIndex(x=>etCodes(x[0]).some(k=>old.includes(k)));if(li<0){li=0;fit=true}}
   S.cat=0;fillCats();fillModels();S.pcr=null;S.mi=mi;S.li=li;
-  fillLens();frameDefaults();if(fit)fitLens();zeroShift();render();TRK(+t.dataset.eoll<0?'EOL flyramme':'EOL optik',{til:MODELS[mi].m})};
+  fillLens();frameDefaults();if(fit)fitLens();zeroShift();render();};
 $('eolBox').addEventListener('click',eolClick);$('eolFrame').addEventListener('click',eolClick);

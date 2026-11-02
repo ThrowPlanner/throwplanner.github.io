@@ -38,7 +38,8 @@ function blendAuto(){BAUTO=null;if(!S.blend||!S.bauto||S.venue==='immersive')ret
   W=S.cw/(n-(n-1)*o);const H=W*ah/aw;
   const chg=S.bc!==n||S.br!==rr;S.bc=n;S.br=rr;if(chg){S.bdx={};zeroShift()}BAUTO={n,r:rr,ok:!!best,small:!best&&W<Dmin*k-1e-6,ch:H*(rr-(rr-1)*o)}}
 function zeroShift(){const r=calc();S.py=r.cy-r.inv*r.off*r.H;S.px=r.cx-r.inv*r.offH*r.W;if(S.venue==='golf'&&S.ceil){const r2=calc(),t=S.rh-0.2;if(r2.pyRange)S.py=Math.round(Math.max(r2.pyRange[0],Math.min(r2.pyRange[1],t))*100)/100}}
-const imgTag=(key,alt)=>IMGS[key]?`<img src="${IMGS[key]}" alt="${alt}">`:'';
+// produktbilleder vises direkte fra Panasonics TDC-server (ophavsret: billederne kopieres ikke ind i appen); key = 'p:fil' eller 'l:fil'
+const imgTag=(key,alt)=>key&&key.length>2?`<img src="${TDC_IMG}${key[0]==='p'?'pj/':'lens/'}${encodeURIComponent(key.slice(2))}" alt="${alt}" referrerpolicy="no-referrer" onerror="this.outerHTML='<span class=none>Intet billede</span>'">`:'';
 
 let CLAMP='';const HITS={};let LASTPY=null,LASTSB=null;let hitTimer=0;
 function hit(k){HITS[k]=Date.now()+5000;clearTimeout(hitTimer);hitTimer=setTimeout(()=>render(),5050)}

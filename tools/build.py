@@ -3,7 +3,7 @@
 
 Samler src/ (page.html + styles.css + js/*.js i navneorden), data/ og i18n/ til:
   dist/site/      – hjemmesiden (index.html, sw.js, manifest, ikoner, pdfexport.js) – det GitHub Pages viser
-  dist/artifact.html – én-fils-udgaven til Claude-artifactet (henter billeder fra img.json)
+  dist/artifact.html – én-fils-udgaven til Claude-artifactet
 
 Kør:  python tools/build.py          (kun Python 3 – ingen andre programmer)
 """
@@ -50,18 +50,23 @@ HEAD = '''<!doctype html>
 <link rel="manifest" href="manifest.webmanifest">
 <link rel="icon" type="image/png" href="icon-192.png">
 <link rel="apple-touch-icon" href="icon-180.png">
-<script defer src="https://cloud.umami.is/script.js" data-website-id="beefa004-7993-4963-ba1f-2f1bdbdb1a51" data-domains="throwplanner.com"></script>
 '''
-BOOT = "fetch('img.json').then(r=>r.json()).then(j=>{IMGS=j;render()}).catch(()=>{IMGS={};render()});"
+BOOT = "/*@boot*/render();"
+# hjemmesiden henter intet fra Google eller cdnjs: skrifter og pdf.js ligger i web/ (artifactet bruger stadig CDN'erne)
+GFONTS = '''<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap">'''
+PDFJS_CDN = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/'
 
 def main():
     s = page()
     dist = p('dist'); site = p('dist', 'site')
     shutil.rmtree(dist, ignore_errors=True); os.makedirs(site)
     with open(p('dist', 'artifact.html'), 'w', encoding='utf-8', newline='\n') as f: f.write(s)
-    # hjemmesiden: billeder indlejret, service worker registreres, fuldt HTML-dokument
-    assert BOOT in s
-    w = s.replace(BOOT, 'IMGS=' + read('data', 'images.json') + ";render();\nif('serviceWorker' in navigator&&(location.protocol==='https:'||location.hostname==='localhost'))navigator.serviceWorker.register('sw.js').catch(()=>{});")
+    # hjemmesiden: lokale skrifter og pdf.js, service worker registreres, fuldt HTML-dokument
+    # (produktbillederne vises direkte fra Panasonics server – de kopieres ikke ind)
+    assert s.count(BOOT) == 1 and s.count(GFONTS) == 1 and PDFJS_CDN in s
+    w = s.replace(GFONTS, '<link rel="stylesheet" href="fonts.css">').replace(PDFJS_CDN, '')
+    w = w.replace(BOOT, "render();\nif('serviceWorker' in navigator&&(location.protocol==='https:'||location.hostname==='localhost'))navigator.serviceWorker.register('sw.js').catch(()=>{});")
     j = w.index('</style>') + len('</style>')
     index = HEAD + w[:j] + '\n</head>\n<body>\n' + w[j:] + '\n</body>\n</html>\n'
     with open(os.path.join(site, 'index.html'), 'w', encoding='utf-8', newline='\n') as f: f.write(index)

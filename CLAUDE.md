@@ -1,8 +1,9 @@
 # Throw Planner – noter til Claude
 
 Simons projektor-planlægningsapp (Panasonic-data). Live: https://throwplanner.com/ (GitHub: ThrowPlanner/throwplanner.github.io).
-Claude-artifact (én-fils-udgaven): https://claude.ai/artifact/VCjkMS7no1dYqKRxV1qPH5 – opdateres med `dist/artifact.html`
-(billederne ligger som `img.json` ved siden af i artifactet).
+Claude-artifact (én-fils-udgaven): https://claude.ai/artifact/VCjkMS7no1dYqKRxV1qPH5 – opdateres med `dist/artifact.html`.
+Jura: produktbilleder vises direkte fra Panasonics TDC-server (kopiér dem aldrig ind), skrifter og pdf.js ligger i `web/`
+(intet fra Google/cdnjs på siden), privatliv/kontakt i `src/js/23-privacy.js` (`CONTACT` + teksten skal holdes opdateret).
 
 ## Arbejdsgang
 1. Ret i `src/` (kun de filer der skal ændres – læs ikke hele projektet).

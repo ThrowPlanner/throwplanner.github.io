@@ -13,8 +13,7 @@ const etCodes=n=>(String(n).match(/ET-[A-Z0-9]+/gi)||[]).map(x=>x.toUpperCase())
 const CUR_ET=new Set(CAT.models.flatMap(m=>m.L.flatMap(l=>etCodes(l[0]))));
 const lnEOL=l=>{const c=etCodes(l[0]);return c.length>0&&!c.some(x=>CUR_ET.has(x))};
 let IMGS={};
-// besøgsstatistik (Umami, kun på throwplanner.com – scriptet findes ikke i artifactet)
-const TRK=(n,d)=>{try{window.umami&&window.umami.track(n,d)}catch(e){}};
+// ingen besøgsstatistik (Umami fjernet 2026-11-02 – siden indsamler ingen persondata)
 
 /* Panasonic flyrammer (ET-RFD-serien). Kilde: Panasonic "Overview Frames table FY25" + kompatibilitetstabel på eu.connect.panasonic.com
    stk:[loft,gulv] = maks. stablede projektorer (loft ×3 kræver ET-LINK200/201 eller ET-LINK210/211). ET-RFD80 står ikke i tabellen – produktsiden: «Stacking of up to 2 projectors» */

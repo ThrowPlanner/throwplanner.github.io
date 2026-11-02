@@ -180,13 +180,13 @@ function menuHelp(){
   const gd=d.querySelector('.mhguide'),gb=d.querySelector('.mhgo');let G=null;
   const guideMode=on=>{gb.setAttribute('aria-pressed',on);gb.textContent=on?'Back to search':'Make a guided help';gd.hidden=!on;
     for(const el of [q,d.querySelector('.mhchips'),out])el.hidden=on;
-    if(on){G=mhGuide(gd,MENUS[sel.value],url);TRK('Guided help',{model:MENUS[sel.value].mo[0]})}else{gd.innerHTML='';G=null}};
+    if(on){G=mhGuide(gd,MENUS[sel.value],url);}else{gd.innerHTML='';G=null}};
   gb.addEventListener('click',()=>guideMode(!G));
   sel.addEventListener('change',()=>{if(G)guideMode(true)});
   q.addEventListener('input',draw);sel.addEventListener('change',draw);
   d.querySelectorAll('[data-q]').forEach(b=>b.addEventListener('click',()=>{q.value=b.dataset.q;draw();q.focus()}));
   d.querySelector('[value="no"]').addEventListener('click',()=>d.close());d.addEventListener('click',e=>{if(e.target===d)d.close()});d.addEventListener('close',()=>d.remove());
-  document.body.appendChild(d);draw();d.showModal();q.focus();TRK('Menu-hjælp',{model:cur})}
+  document.body.appendChild(d);draw();d.showModal();q.focus();}
 $('mhBtn').addEventListener('click',menuHelp);
 
 // «Make a guided help»: klik dig gennem menu › punkt › undermenu › valg – laver et step-by-step-billede til en mail
@@ -238,12 +238,12 @@ function mhGuide(box,man,url){
   const html=()=>`<div style="font-family:Arial,sans-serif;font-size:14px"><b style="font-size:16px">${esc(title())}</b><br>Projector: ${esc(model)}<br>Menu path: <b>MENU › ${path.map(x=>esc(x.n)).join(' › ')}</b><ol>${steps().map(s=>`<li>${esc(s).replace(/\[([^\]]+)\]/g,'<b>[$1]</b>')}</li>`).join('')}</ol>${no.value.trim()?`<p>${esc(no.value.trim())}</p>`:''}</div>`;
   const blob=()=>new Promise(r=>cv.toBlob(r,'image/png'));
   $$('.mhgimg').addEventListener('click',async()=>{if(!path.length)return say('Choose at least one menu first.');
-    try{await navigator.clipboard.write([new ClipboardItem({'image/png':blob()})]);say('Image copied – paste it into your e-mail (Ctrl+V / ⌘V).');TRK('Guided help kopi',{type:'billede'})}
+    try{await navigator.clipboard.write([new ClipboardItem({'image/png':blob()})]);say('Image copied – paste it into your e-mail (Ctrl+V / ⌘V).');}
     catch(e){say('This browser does not allow copying images here – use «Copy text» or «Save PNG».')}});
   $$('.mhgtxt').addEventListener('click',async()=>{if(!path.length)return say('Choose at least one menu first.');
     try{await navigator.clipboard.write([new ClipboardItem({'text/html':new Blob([html()],{type:'text/html'}),'text/plain':new Blob([plain()],{type:'text/plain'})})]);say('Text copied – paste it into your e-mail.')}
     catch(e){try{await navigator.clipboard.writeText(plain());say('Text copied – paste it into your e-mail.')}catch(e2){say('Copying is blocked in this browser.')}}
-    TRK('Guided help kopi',{type:'tekst'})});
+    });
   $$('.mhgpng').addEventListener('click',async()=>{if(!path.length)return say('Choose at least one menu first.');
     const a=document.createElement('a');a.href=URL.createObjectURL(await blob());a.download=title().replace(/[^\w\- ]+/g,'').trim().replace(/\s+/g,'-')+'.png';document.body.appendChild(a);a.click();a.remove()});
   draw();return {draw}}

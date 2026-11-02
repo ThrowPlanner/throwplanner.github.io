@@ -35,6 +35,6 @@ python tools/build.py
 Creates `dist/site/` (the website – open `dist/site/index.html` to test locally) and `dist/artifact.html` (single-file version). `dist/` is not committed; GitHub Actions builds it on every push. The service worker cache version is set automatically from the content.
 
 ## Notes
-- PDF floor plans load pdf.js from cdnjs.cloudflare.com; fonts load from Google Fonts. Everything else is local.
-- Settings are stored in the visitor's own browser (localStorage).
+- Fonts (Manrope, JetBrains Mono) and pdf.js are hosted in `web/` – the site loads nothing from Google or cdnjs. Product images are shown directly from Panasonic's TDC server (not copied). See `web/THIRD-PARTY-LICENSES.txt`.
+- Nothing the visitor enters is stored: every visit starts fresh (use «Save project» to keep a JSON file). Only the disclaimer's «Don't show again» choice is kept in localStorage. No analytics or tracking.
 - Data is based on Panasonic's Throw Distance Calculator and product pages; always verify against Panasonic's official specifications before installation. Not affiliated with Panasonic or TrackMan.
