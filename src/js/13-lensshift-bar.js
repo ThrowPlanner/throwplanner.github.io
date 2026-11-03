@@ -1,7 +1,7 @@
 /* ===== LENS SHIFT-BAR (Panasonic shift-polygon for valgt optik og format) ===== */
 // tilladt sideforskydning (m) for kolonne c i edge blend, ud over den fælles placering
 function bdxRange(r){if(!r.P.length)return null;const hr=shRange(r.sv,r.P);if(!hr)return null;const dX=S.px-r.cx;
-  return c=>{const a=-r.inv*(hr[0]+r.th)*r.W-dX,b=-r.inv*(hr[1]+r.th)*r.W-dX;return [Math.min(a,b),Math.max(a,b)]}}
+  return c=>{const a=-r.inv*(hr[0]+r.th)*r.Ws-dX,b=-r.inv*(hr[1]+r.th)*r.Ws-dX;return [Math.min(a,b),Math.max(a,b)]}}
 function shRange(sv,P){let lo=null,hi=null;for(let s=-1.5;s<=1.5;s+=.0025){if(shiftOK(s,sv,P)){if(lo===null)lo=s;hi=s}}return lo===null?null:[lo,hi]}
 function drawShiftBar(r){const P=r.P,none=!P.length,blend=S.blend&&(r.N>1||r.R>1);
   const pc=v=>{const x=Math.round(v*1000)/10;return (x>0?'+':'')+f2(x===0?0:x,x%1?1:0)+' %'};
@@ -21,6 +21,12 @@ function drawShiftBar(r){const P=r.P,none=!P.length,blend=S.blend&&(r.N>1||r.R>1
      const nP=r.N*r.R,lostPct=(1-r.ksUse)*100,pf=v=>f2(v,v>0&&v<10?1:0);
      $('ksLoss').innerHTML=on?(r.kv||r.kh?`Tabte pixels: <b>${fi(r.ksLost*nP)}</b> (${pf(lostPct)} %)${nP>1?` · ${fi(r.ksLost)} pr. projektor`:''} · Lystab: <b>${pf(lostPct)} %</b> (≈ ${fi(Math.round(r.lm0*nP*(1-r.ksUse)))} lm)`:`Inden for lens shift – keystone 0° · ingen tab af pixels eller lys`)+(r.ksBad?` · <span class="bad">uden for keystone-grænsen</span>`:''):''}
    else{$('ksNote').textContent='Ingen keystone-data for denne model';$('ksLoss').innerHTML=''}}
+  // Digital Zoom Extender: kun på modeller hvor Panasonic oplyser funktionen; tab af pixels og lys pr. projektor som ved keystone
+  {const sp=dzeSpec(r.m),on=r.dz,row=$('dzRow');row.hidden=!sp||S.venue==='immersive';
+   if(sp){$('dzBtn').setAttribute('aria-pressed',on);row.classList.toggle('on',on);const tr=v=>f2(v,(String(v).split('.')[1]||'').length);
+     $('dzNote').textContent=`Panasonic: throw ratio ${tr(sp[0])}–${tr(sp[1])}:1 ved 80 % · skaleres højst ned til 80 %`;
+     const nP=r.N*r.R,pct=r.dzS*100,lost=(1-r.dzUse)*100,pf=v=>f2(v,v>0&&v<10?1:0);
+     $('dzLoss').innerHTML=on?(r.dzS<1?`Digital zoom: <b>${pf(pct)} %</b> · Opløsning: <b>${fi(r.ew)}×${fi(r.eh)}</b> af ${fi(r.ew0)}×${fi(r.eh0)} px (−${pf(lost)} % pixels) · Lystab: <b>${pf(lost)} %</b> (≈ ${fi(Math.round(r.lm0*nP*(1-r.dzUse)))} lm)`:`Inden for optikkens zoom – 100 % · ingen tab af pixels eller lys`)+(r.dzQ<DZE_MIN-0.002?` · <span class="bad">længere væk end 80 %</span>`:''):''}}
   {const pts=P.map(([a,b])=>`${a},${-b}`).join(' ');const ok=r.shOK;
    // loft/inverteret: drejes 180° så grafikken svarer til rummet (procenterne er stadig projektorens egne)
    $('shMini').innerHTML=`<rect x="-1.5" y="-1.3" width="3" height="2.6" rx=".12" style="fill:var(--bg2);stroke:var(--line)" stroke-width=".03"/><g${r.inv<0?' transform="rotate(180)"':''}>`+
@@ -32,5 +38,5 @@ function drawShiftBar(r){const P=r.P,none=!P.length,blend=S.blend&&(r.N>1||r.R>1
 }
 function setShift(sv,sh){const r=calc();let v=sv??r.sv,h=sh??r.sh;
   if(r.P.length&&!shiftOK(h,v,r.P)){if(sv!=null){const hr=shRange(v,r.P);if(hr)h=Math.max(hr[0],Math.min(hr[1],h))}else{const vr=svRange(h,r.P);if(vr)v=Math.max(vr[0],Math.min(vr[1],v))}}
-  guardShift({py:S.py,px:S.px},{py:r.cy-r.inv*(v+r.off+r.tv)*r.H,px:r.cx-r.inv*(h+r.th)*r.W});render()}
+  guardShift({py:S.py,px:S.px},{py:r.cy-r.inv*(v+r.off+r.tv)*r.Hs,px:r.cx-r.inv*(h+r.th)*r.Ws});render()}
 

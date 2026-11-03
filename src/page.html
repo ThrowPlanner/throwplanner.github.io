@@ -275,7 +275,9 @@
           <div class="ksrow"><button class="btn" type="button" id="ksBtn" aria-pressed="false">Keystone</button><button class="btn" type="button" id="lensLock" aria-pressed="false" title="Når optikken er låst, skifter den ikke optik, når du trækker i projektoren"><span id="lensLockTxt">Lås optik</span></button>
           <label class="sbr ksc"><span class="notr">V</span><span class="sbmin" id="kvMin"></span><input type="range" id="kvR" step="0.5" aria-label="Lodret keystone"><span class="sbmax" id="kvMax"></span><b id="kvVal"></b><button class="btn z0" type="button" id="kv0" title="Lodret keystone 0°">0°</button></label>
           <label class="sbr ksc"><span class="notr">H</span><span class="sbmin" id="khMin"></span><input type="range" id="khR" step="0.5" aria-label="Vandret keystone"><span class="sbmax" id="khMax"></span><b id="khVal"></b><button class="btn z0" type="button" id="kh0" title="Vandret keystone 0°">0°</button></label>
-          <span class="hint" id="ksNote"></span><span class="ksloss" id="ksLoss"></span></div></div>
+          <span class="hint" id="ksNote"></span><span class="ksloss" id="ksLoss"></span></div>
+          <div class="ksrow dzrow" id="dzRow" hidden><button class="btn" type="button" id="dzBtn" aria-pressed="false" title="Skalerer billedet digitalt ned, så projektoren kan stå længere væk end optikkens zoom rækker">Digital Zoom Extender</button>
+          <span class="hint" id="dzNote"></span><span class="ksloss" id="dzLoss"></span><span class="dzwarn" id="dzWarn">⚠ Billedet skaleres digitalt ned på panelet: lavere opløsning og mindre lys. Keystone, 6-punkts-korrektion og buet lærred kan ikke bruges, og hjørnejustering er begrænset.</span></div></div>
         <div class="canvas"><svg class="draw" id="side" viewBox="0 0 1000 430" role="img" aria-label="Snit gennem lokalet set fra siden"></svg></div>
       </section>
 

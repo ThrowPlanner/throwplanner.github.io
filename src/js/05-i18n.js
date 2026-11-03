@@ -113,8 +113,8 @@ function render(){
   const o=r.outer;
   const KH='<h3 class="kh"><span class="no">07</span>Nøgletal</h3>';
   if(S.venue==='immersive')$('kpis').innerHTML=KH+immKPI(r,K);else $('kpis').innerHTML=KH+
-    K(r.zoomOK?'ok':'bad','Zoomfaktor',r.fixed?'Fast':`${f2(S.L/r.Lw,1)}<small>x</small>`,r.fixed?`linse kaster ${f3(r.Lw)} m`:r.zoomOK?`linsen kan 1,0–${f2(r.Lt/r.Lw,1)}x`:(r.z<0?'projektor for tæt på':'projektor for langt væk'))+
-    K('','Afstand L',`${f3(S.L)}<small>m</small>`,r.fixed?`aktuel TR ${f2(r.Lw/r.W)}:1`:`linse ${f3(r.Lw)}–${f3(r.Lt)} m · aktuel TR ${f2(S.L/r.W)}:1`)+
+    K(r.zoomOK?(r.dzS<1?'warn':'ok'):'bad','Zoomfaktor',(r.fixed?'Fast':`${f2(Math.min(S.L,r.LtO)/r.Lw,1)}<small>x</small>`)+(r.dzS<1?`<small> + ${f2(r.dzS*100,0)} %</small>`:''),(r.fixed?`linse kaster ${f3(r.Lw)} m`:r.zoomOK||r.dz&&r.z>=0?`linsen kan 1,0–${f2(r.LtO/r.Lw,1)}x`:(r.z<0?'projektor for tæt på':'projektor for langt væk'))+(r.dz?` · Digital Zoom Extender til ${f3(r.Lt)} m${r.zoomOK?'':' – projektor for langt væk'}`:''))+
+    K('','Afstand L',`${f3(S.L)}<small>m</small>`,r.fixed?`aktuel TR ${f2(r.Lw/r.W)}:1`:`linse ${f3(r.Lw)}–${f3(r.LtO)} m · aktuel TR ${f2(S.L/r.W)}:1`)+
     K(r.sizeOK?'':'warn',S.blend?'Billede pr. projektor':'Billede',`${f3(r.W)}<small>×</small>${f3(r.H)}<small>m</small>`,S.blend?`${fi(r.D)}″ · samlet ${fi(r.pxW)}×${fi(r.pxH)} px`:`${fi(r.D)}″ · ${fi(r.ew)}×${fi(r.eh)} px`,'sm')+
     K(r.shOK?'ok':'bad','Lens shift V / H',`${Math.round(r.sv*100)}<small>/</small>${Math.round(r.sh*100)}<small>%</small>`,(S.blend&&r.N>1&&r.shC.some(v=>Math.abs(v-r.sh)>.004)?`H pr. projektor ${r.shC.map(v=>Math.round(v*100)).join(' / ')} % · `:'')+(r.shOK?'inden for linsens shift':'uden for linsens shift'))+
     K('','Lys pr. projektor',`${fi(r.lux)}<small>lux</small>`,`${fi(r.nits)} cd/m² · kontrast ${fi(r.cr)}:1`)+

@@ -27,7 +27,7 @@ $('aspect').addEventListener('change',e=>{const r0=calc(),dm=S.lockW?S.lockDim||
   zeroShift();render()});
 $('cat').addEventListener('change',e=>{const m0=S.mi;S.cat=+e.target.value;fillModels();if(!SLOT()&&S.mi!==m0){fitLens();zeroShift()}render()});
 $('minLm').addEventListener('change',e=>{const m0=S.mi;S.minLm=+e.target.value;fillCats();fillModels();if(!SLOT()&&S.mi!==m0){fitLens();zeroShift()}render()});
-$('model').addEventListener('change',e=>{const k=SLOT();if(k){S.immPj={...(S.immPj||{}),[k]:{mi:+e.target.value,li:0}};S.immAdj={...(S.immAdj||{}),[k]:{}};fillLens();render();return}const ln=S.lockLens&&M().L[S.li]?M().L[S.li][0]:null;S.pcr=null;S.mi=+e.target.value;S.li=ln?Math.max(0,M().L.findIndex(l=>l[0]===ln)):0;fillLens();frameDefaults();fitLens();zeroShift();render();});
+$('model').addEventListener('change',e=>{const k=SLOT();if(k){S.immPj={...(S.immPj||{}),[k]:{mi:+e.target.value,li:0}};S.immAdj={...(S.immAdj||{}),[k]:{}};fillLens();render();return}const ln=S.lockLens&&M().L[S.li]?M().L[S.li][0]:null;S.pcr=null;S.dze=false;S.mi=+e.target.value;S.li=ln?Math.max(0,M().L.findIndex(l=>l[0]===ln)):0;fillLens();frameDefaults();fitLens();zeroShift();render();});
 $('lens').addEventListener('change',e=>{const k=SLOT();if(k){S.immPj={...(S.immPj||{}),[k]:{mi:slotMI(),li:+e.target.value}};S.immAdj={...(S.immAdj||{}),[k]:{}};render();return}S.li=+e.target.value;fitLens();zeroShift();render()});
 $('frameSel').addEventListener('change',e=>{S.frameId=e.target.value;applyFrame();render()});
 
@@ -197,7 +197,7 @@ function autoLens(z,y){if(S.lockLens||S.lockL||SLOT()||S.venue==='immersive')ret
   const out=(rr,yy)=>{if(rr.kon||!rr.pyRange)return 0;return Math.max(0,rr.pyRange[0]-yy,yy-rr.pyRange[1])};
   const curZ=Math.abs(Math.max(lo0,Math.min(hi0,z))-z),curY=out(r0,y);if(!dz&&curY<.005)return false;
   let best=null;
-  for(let i=0;i<m.L.length;i++){if(i===cur)continue;S.li=i;S.L=L0;let r=calc();if(!r.aspOK||!r.sizeOK)continue;if(!r.P.length&&!r.kon&&!isUST(r.row,r.aw,r.ah,r.kind)){const w=r.cy-r.inv*r.off*r.H;if(w<.05||w>S.rh-.05)continue}
+  for(let i=0;i<m.L.length;i++){if(i===cur)continue;S.li=i;S.L=L0;let r=calc();if(!r.aspOK||!r.sizeOK)continue;if(!r.P.length&&!r.kon&&!isUST(r.row,r.aw,r.ah,r.kind)){const w=r.cy-r.inv*r.off*r.Hs;if(w<.05||w>S.rh-.05)continue}
     const lo=Math.min(r.Lw,r.Lt),hi=Math.max(r.Lw,r.Lt);let L=r.fixed?r.Lw:Math.max(lo,Math.min(hi,dz?z:L0));
     if(L>DEPTH()-.2||L<.2)continue;
     if(dz>0&&!(hi>hi0+1e-6))continue;if(dz<0&&!(lo<lo0-1e-6))continue;if(!dz&&Math.abs(L-L0)>.005)continue;
@@ -212,9 +212,13 @@ $('side').addEventListener('pointermove',e=>{if(scrDrag){moveScreen(scrDrag.pt(e
 ['pointerup','pointercancel'].forEach(t=>$('side').addEventListener(t,()=>{if(sideDrag||scrDrag){sideDrag=null;scrDrag=null;save()}}));
 $('svR').addEventListener('input',e=>setShift(+e.target.value/100,null));
 for(const id of ['lensLock','lensLock3'])$(id).addEventListener('click',()=>{S.lockLens=!S.lockLens;render()});
-$('ksBtn').addEventListener('click',()=>{if(S.ks&&S.ks.on){const r=calc();S.py=r.cy-r.inv*(r.sv+r.off)*r.H;S.px=r.cx-r.inv*(r.sh+r.offH)*r.W;S.ks={v:0,h:0,on:false}}else S.ks={v:0,h:0,on:true};render()});
+$('ksBtn').addEventListener('click',()=>{if(S.ks&&S.ks.on){const r=calc();S.py=r.cy-r.inv*(r.sv+r.off)*r.H;S.px=r.cx-r.inv*(r.sh+r.offH)*r.W;S.ks={v:0,h:0,on:false}}else{if(S.dze)dzeSet(false);S.ks={v:0,h:0,on:true}}render()});
+// Digital Zoom Extender: kan ikke bruges sammen med keystone (Panasonic) – slås det til, slås keystone fra; slås det fra, flyttes projektoren ind i optikkens zoom
+function dzeSet(on){if(on){if(S.ks&&S.ks.on){const r=calc();S.py=r.cy-r.inv*(r.sv+r.off)*r.H;S.px=r.cx-r.inv*(r.sh+r.offH)*r.W;S.ks={v:0,h:0,on:false}}S.dze=true;return}
+  const r=calc();S.dze=false;if(r.dzS<1)fitLens(true)}
+$('dzBtn').addEventListener('click',()=>{dzeSet(!S.dze);render();save()});
 // keystone-bar: optikken lægges på kanten af sin lens shift, og projektoren flyttes (vippes) resten – 0° = projektoren inden for lens shift
-const ksSet=(k,val)=>{const r0=calc();if(!r0.KL)return;S.ks={...(S.ks||{}),on:true};const D=Math.PI/180,o={py:S.py,px:S.px},old=k==='v'?r0.kv:r0.kh;
+const ksSet=(k,val)=>{if(S.dze){dzeSet(false)}const r0=calc();if(!r0.KL)return;S.ks={...(S.ks||{}),on:true};const D=Math.PI/180,o={py:S.py,px:S.px},old=k==='v'?r0.kv:r0.kh;
   const ap=x=>{S.py=o.py;S.px=o.px;if(k==='v'){const nh=r0.sh+r0.th-r0.offH,vr=(Math.abs(x)<1e-9?svInt(nh,r0.P):null)||svRange(r0.sh,r0.P)||[0,0],e=x>0?vr[1]:x<0?vr[0]:Math.max(vr[0],Math.min(vr[1],r0.sv+r0.tv)),need=e+Math.tan(x*D)*S.L/r0.H;S.py=r0.cy-r0.inv*(need+r0.off)*r0.H;return S.py>0.1&&S.py<S.rh-0.1&&calc().shOK}
     const nv=r0.sv+r0.tv;let hr=null;if(Math.abs(x)<1e-9){for(let q=-2.5;q<=2.5001;q+=.005){const iv=svInt(q,r0.P);if(iv&&nv>=iv[0]-1e-9&&nv<=iv[1]+1e-9){if(!hr)hr=[q,q];hr[1]=q}}}hr=hr||shRange(r0.sv,r0.P)||[0,0];const e=x>0?hr[1]:x<0?hr[0]:Math.max(hr[0],Math.min(hr[1],r0.sh+r0.th-r0.offH)),need=e+Math.tan(x*D)*S.L/r0.W;S.px=r0.cx-r0.inv*(need+r0.offH)*r0.W;return Math.abs(S.px)<S.rw/2-0.2&&calc().shOK};
   if(!ap(val)){let lo=0,hi=1;for(let i=0;i<16;i++){const m=(lo+hi)/2;if(ap(old+(val-old)*m))lo=m;else hi=m}ap(old+(val-old)*lo);hit('shift')}
@@ -222,7 +226,7 @@ const ksSet=(k,val)=>{const r0=calc();if(!r0.KL)return;S.ks={...(S.ks||{}),on:tr
 $('kvR').addEventListener('input',e=>ksSet('v',+e.target.value));$('khR').addEventListener('input',e=>ksSet('h',+e.target.value));
 $('shR').addEventListener('input',e=>setShift(null,+e.target.value/100));
 // 0-knapper pr. bar: lens shift 0 % = billedet midt for optikken (uden vip); keystone 0° = projektoren tilbage inden for lens shift
-const zero=(k,e)=>{e.preventDefault();const r=calc();if(k==='sv')guardShift({py:S.py},{py:r.cy-r.inv*r.off*r.H});else if(k==='sh')guardShift({px:S.px},{px:r.cx-r.inv*r.offH*r.W});else ksSet(k==='kv'?'v':'h',0);render();save()};
+const zero=(k,e)=>{e.preventDefault();const r=calc();if(k==='sv')guardShift({py:S.py},{py:r.cy-r.inv*r.off*r.Hs});else if(k==='sh')guardShift({px:S.px},{px:r.cx-r.inv*r.offH*r.Ws});else ksSet(k==='kv'?'v':'h',0);render();save()};
 ['sv','sh','kv','kh'].forEach(k=>$(k+'0').addEventListener('click',e=>zero(k,e)));
 
 {const fp=e=>{const svg=$('front'),pt=svg.createSVGPoint();pt.x=e.clientX;pt.y=e.clientY;const q=pt.matrixTransform(svg.getScreenCTM().inverse());return {x:(q.x-FRONT.X0)/FRONT.s0,y:FRONT.E-(q.y-FRONT.Yh)/FRONT.s0}};

@@ -27,6 +27,14 @@ function ksKey(name){const n=name.toUpperCase();
 function ksLim(m,ln){const k=ksKey(m.m);if(!k)return null;const d=KSD[k];const tab=d.l||(d.like&&KSD[d.like].l)||{};let v=d.b[0],h=d.b[1],vmin=-v,safe=!!d.safe;
   for(const t in tab){if(ln[0].toUpperCase().includes(t)){const e=tab[t];if(e[0]==='+5'){v=Math.min(v,5);vmin=0}else{v=Math.min(v,e[0]);vmin=-v}if(e[1]!=null)h=Math.min(h,e[1]);if(e[2])safe=true;break}}
   vmin=Math.max(vmin,-v);return {vmin,vmax:v,h,cap:55,safe}}
+/* Digital Zoom Extender (Panasonics spec-sider, docs.connect.panasonic.com): billedet skaleres digitalt ned på panelet, så projektoren kan stå
+   længere væk end optikkens zoom rækker. Panasonic oplyser throw ratio «ved 80 %» (corresponding value) – appen går derfor højst ned til 80 %.
+   Opløsning og lys falder med skaleringen (s²); keystone, 6-punkts-korrektion og buet lærred kan ikke bruges samtidig, hjørnejustering er begrænset. */
+const DZE_MIN=.8;
+function dzeSpec(m){const n=m.m.toUpperCase();
+  if(/VMQ(85|75|65)|VMZ(82|72|62|51S)/.test(n))return [1.09,2.21];if(/LMZ4[26]0/.test(n))return [1.36,2.05];if(/VMZ[67]ST/.test(n))return [.797,1.27];
+  if(/TMZ400/.test(n))return [.43,.54];if(/CMZ50/.test(n))return [.235,.288];return null}
+const dzeOn=m=>!!(S.dze&&S.venue!=='immersive'&&dzeSpec(m));
 // ultrakort kast (UST): Panasonics «u»-kabinet eller throw ratio under 0,5:1
 const isUST=(row,aw,ah,kind)=>kind==='u'||row[0]*Math.hypot(aw,ah)/(IN*aw)<.5;
 function calc(){
@@ -39,20 +47,25 @@ function calc(){
   const kx=N-(N-1)*o, ky=R-(R-1)*o;
   const W=S.cw/kx, H=W*ah/aw, CW=S.cw, CH=H*ky;
   const D=Math.hypot(W,H)/IN;
-  const Lw=distAt(row,D,0), Lt=distAt(row,D,1);
+  // Digital Zoom Extender: Lt = længste afstand ved 80 % (optikkens tele-kast for billedet ÷ 0,8), LtO = optikkens eget tele-kast
+  const dz=dzeOn(m), Lw=distAt(row,D,0), LtO=distAt(row,D,1), Lt=dz?distAt(row,D/DZE_MIN,1):LtO;
   const z=fixed?0:zoomFor(row,D,S.L);
-  const zoomOK=fixed?Math.abs(S.L-Lw)<=0.015*Lw:(z>=-0.002&&z<=1.002);
   const sizeOK=D>=row[4]-.5&&D<=row[5]+.5;
   const Dzw=diagFor(row,S.L,0),Dzt=diagFor(row,S.L,1);
+  // dzS: digital skalering (1 = hele panelet); kun når projektoren står længere væk end optikken kan zoome
+  const dzQ=dz&&D<Dzt?D/Dzt:1, dzS=Math.max(DZE_MIN,dzQ);
+  const zoomOK=dz?(fixed?S.L>=Lw*(1-0.015):z>=-0.002)&&dzQ>=DZE_MIN-0.002:fixed?Math.abs(S.L-Lw)<=0.015*Lw:(z>=-0.002&&z<=1.002);
   const cy=S.sb+CH/2, cx=SX(), inv=S.ceil?-1:1, off=PT?0:ln[4], offH=PT?ln[4]:0;
   const dX=S.px-cx, dY=S.py-cy;
   // edge blend: hver kolonne kan forskydes sidelæns for sig (S.bdx[c], m) – inden for sin egen lens shift
   const BD=c=>S.blend&&N>1?((S.bdx&&S.bdx[c])||0):0;
   // keystone: projektoren vippes – vippen tager en del af forskydningen, resten klares med lens shift (sv/sh = optikkens lens shift)
   // keystone (auto): bruges kun, når projektoren står uden for optikkens lens shift – inden for lens shift er keystone 0°
-  const KL0=ksLim(m,ln),KL=KL0&&PT?{...KL0,vmin:-KL0.h,vmax:KL0.h,h:Math.min(KL0.vmax,-KL0.vmin)}:KL0,kon=!!(S.ks&&S.ks.on&&KL&&S.venue!=='immersive');
+  // Digital Zoom Extender: lens shift/offset regnes i procent af optikkens (fulde) billede Hs×Ws – keystone kan ikke bruges samtidig
+  const Hs=H/dzS, Ws=W/dzS;
+  const KL0=ksLim(m,ln),KL=KL0&&PT?{...KL0,vmin:-KL0.h,vmax:KL0.h,h:Math.min(KL0.vmax,-KL0.vmin)}:KL0,kon=!!(S.ks&&S.ks.on&&KL&&S.venue!=='immersive'&&!dz);
   const DEG=Math.PI/180,P=PT?ln[3].map(([a,b])=>[b,a]):ln[3];
-  const needV=inv*(-dY)/H-off, needC=[...Array(N).keys()].map(c=>inv*(-(dX+BD(c)))/W-offH), dC=needC.map(v=>v-needC[0]);
+  const needV=inv*(-dY)/Hs-off, needC=[...Array(N).keys()].map(c=>inv*(-(dX+BD(c)))/Ws-offH), dC=needC.map(v=>v-needC[0]);
   const ivAt=x=>{let lo=-Infinity,hi=Infinity;for(const d of dC){const iv=svInt(x+d,P);if(!iv)return null;lo=Math.max(lo,iv[0]);hi=Math.min(hi,iv[1])}return lo<=hi+1e-9?[lo,Math.max(lo,hi)]:null};
   let kv=0,kh=0,tv=0,thk=0,ksBad=false;
   if(kon){const iv0=ivAt(needC[0]);
@@ -66,13 +79,13 @@ function calc(){
       const pick=best||bestAny;if(pick){kv=pick.a;kh=pick.b;tv=needV-pick.y;thk=needC[0]-pick.x}ksBad=!best}}
   const th=thk+offH;
   const kr=(k,a)=>Math.cos(Math.abs(k*DEG)+a)/Math.cos(Math.abs(k*DEG)-a);
-  const sv=needV-tv, sh=inv*(-dX)/W-th, shC=needC.map(v=>v-thk);
+  const sv=needV-tv, sh=inv*(-dX)/Ws-th, shC=needC.map(v=>v-thk);
   const shAt=y=>shC.every(v=>shiftOK(v,y,P)||(kon&&(()=>{const iv=svInt(v,P);return iv&&y>=iv[0]-1e-6&&y<=iv[1]+1e-6})()));
   let shOK=!ksBad&&shAt(sv);
   const ksUse=kon&&(kv||kh)?ksFrac(kv,kh,sv,sh,W,H,S.L,aw,ah):1;
   const vr=svRange(sh,P); let pyRange=null;
   if(vr){let e0=vr[0]+off+tv,e1=vr[1]+off+tv;if(kon){const room=Math.max(0,KL.cap-Math.abs(kh));e0=vr[0]+off+Math.tan(Math.max(KL.vmin,-room)*DEG)*S.L/H;e1=vr[1]+off+Math.tan(Math.min(KL.vmax,room)*DEG)*S.L/H}
-    const a=cy-inv*e0*H,b=cy-inv*e1*H;pyRange=[Math.min(a,b),Math.max(a,b)]}
+    const a=cy-inv*e0*Hs,b=cy-inv*e1*Hs;pyRange=[Math.min(a,b),Math.max(a,b)]}
   const dim=m.dim.map(v=>v/1000), prot=(ln[5]||0)/1000, kind=(ln[7]&&ln[7][0])||'n';
   // kabinet som boks i linsens koordinater: x til højre, y op, z væk fra lærredet (verden: afstand = L + z)
   let B;
@@ -91,7 +104,7 @@ function calc(){
   // stacking: enhed 0 sidder ved ophænget (loft: øverst, bord: nederst), de næste stables væk fra det med kabinettets/rammens højde
   // hver enhed rammer samme billede med lodret lens shift – alle skal kunne nå det
   const stk=stackN(), stkDir=S.ceil?-1:1, stkPitch=outer[1];
-  for(let k=1;k<stk&&shOK;k++)shOK=shAt(sv+inv*(-stkDir*k*stkPitch)/H);
+  for(let k=1;k<stk&&shOK;k++)shOK=shAt(sv+inv*(-stkDir*k*stkPitch)/Hs);
   const pjs=[];for(let s=0;s<stk;s++)for(let r=0;r<R;r++)for(let c=0;c<N;c++){
     const tx=cx-CW/2+W/2+c*W*(1-o), ty=cy+CH/2-H/2-r*H*(1-o);
     pjs.push({c,r,s,tx,ty,lx:tx+dX+BD(c),ly:ty+dY+stkDir*s*stkPitch})}
@@ -119,11 +132,12 @@ function calc(){
   const presHit=S.venue!=='immersive'&&S.venue!=='golf'&&!NOCROWD()&&!REAR()&&presZ<S.L&&pjs.some(p=>{const k=presZ/S.L,b=p.ty-H/2,t=p.ty+H/2,l=p.tx-W/2,rr=p.tx+W/2;
     const yb=b+(p.ly-b)*k,yt=t+(p.ly-t)*k,xl=l+(p.lx-l)*k,xr=rr+(p.lx-rr)*k;return yb<presTop&&yt>presBase&&xr>presX-0.25&&xl<presX+0.25});
   const pcr=S.pcr||m.cr;
-  const amb=AMB();const lm=(m.lc||m.lm)*stk*ksUse, lux=lm/(W*H), nits=S.gain*lux/Math.PI, cr=(lux+amb)/(lux/pcr+amb);
+  // lys: keystone og Digital Zoom Extender bruger kun en del af panelet – resten af lyset går tabt
+  const dzUse=dzS*dzS, amb=AMB();const lm=(m.lc||m.lm)*stk*ksUse*dzUse, lux=lm/(W*H), nits=S.gain*lux/Math.PI, cr=(lux+amb)/(lux/pcr+amb);
   const blk=lux/pcr+amb, blk2=2*lux/pcr+amb, blk4=4*lux/pcr+amb, cr2=(lux+blk2)/blk2, cr4=(lux+blk4)/blk4;
-  const [ew,eh]=effRes(PT?[m.res[1],m.res[0]]:m.res,aw,ah), pxW=Math.round(ew*kx), pxH=Math.round(eh*ky), ksLost=Math.round(ew*eh*(1-ksUse)), lm0=(m.lc||m.lm)*stk, bzPx=Math.round(ew*o);
+  const [ew0,eh0]=effRes(PT?[m.res[1],m.res[0]]:m.res,aw,ah), ew=Math.round(ew0*dzS), eh=Math.round(eh0*dzS), pxW=Math.round(ew*kx), pxH=Math.round(eh*ky), ksLost=Math.round(ew*eh*(1-ksUse)), lm0=(m.lc||m.lm)*stk, bzPx=Math.round(ew*o);
   const seatsRow=stand?0:Math.max(0,Math.floor((S.rw-1.6-1.2)/0.56));
-  return {m,ln,ai,aspOK,row,aw,ah,fixed,N,R,o,kx,ky,W,H,CW,CH,D,Lw,Lt,z,zoomOK,sizeOK,Dzw,Dzt,cy,cx,inv,off,dX,dY,sv,sh,P,shOK,pyRange,
+  return {m,ln,ai,aspOK,row,aw,ah,fixed,N,R,o,kx,ky,W,H,Ws,Hs,CW,CH,D,Lw,Lt,LtO,dz,dzQ,dzS,dzUse,ew0,eh0,z,zoomOK,sizeOK,Dzw,Dzt,cy,cx,inv,off,dX,dY,sv,sh,P,shOK,pyRange,
     body,prot,outer,B,F,kind,bodyFront,outFront,outBack,pjs,shC,PT,offH,KL,kon,kv,kh,tv,th,ksUse,ksLost,lm0,ksBad,pitchX,pitchY,clashX,clashY,topY,botY,roomIssues,rows,hit,presHit,presZ,presX,stand,lm,lux,amb,pcr,stk,blk,blk2,blk4,cr2,cr4,nits,cr,ew,eh,pxW,pxH,bzPx,seatsRow};
 }
 

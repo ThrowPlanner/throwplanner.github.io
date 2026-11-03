@@ -108,8 +108,8 @@ function drawFront(r){IMMPJ=null;if(S.venue==='golf')GCUR=golfCalc(r);
      s+='</g>'}
    const sb=document.querySelector('[data-l9="spill"]');if(sb)sb.hidden=!spill}
   // lens shift-område for hver projektor (ved edge blend har hver sin linse)
-  if(r.P.length)r.pjs.forEach(p=>{const zx=p.lx,zy=p.ly+r.inv*r.off*r.H;
-    s+=`<polygon class="Lshift" points="${r.P.map(([a,b])=>`${X(zx+r.inv*(a+r.th)*r.W)},${Y(zy+r.inv*(b+r.tv)*r.H)}`).join(' ')}" style="fill:none;stroke:var(--beam)" stroke-width="1.2" stroke-dasharray="5 4" opacity=".85"/>`});
+  if(r.P.length)r.pjs.forEach(p=>{const zx=p.lx,zy=p.ly+r.inv*r.off*r.Hs;
+    s+=`<polygon class="Lshift" points="${r.P.map(([a,b])=>`${X(zx+r.inv*(a+r.th)*r.Ws)},${Y(zy+r.inv*(b+r.tv)*r.Hs)}`).join(' ')}" style="fill:none;stroke:var(--beam)" stroke-width="1.2" stroke-dasharray="5 4" opacity=".85"/>`});
   const ok=r.zoomOK&&r.shOK&&r.sizeOK;
   // sollys på tomt lærred (med indhold er sollyset allerede med i kontrastfilteret)
   if(SUN&&!SHOW){const sl=sunLux();if(sl.lux>0){const a=Math.min(.8,sl.lux/(sl.lux+r.lux)*0.9);s+=`<rect x="${cl}" y="${ctp}" width="${cwp}" height="${chp}" style="fill:${sunColor(sl.el)}" opacity="${a.toFixed(2)}" pointer-events="none"/>`}}

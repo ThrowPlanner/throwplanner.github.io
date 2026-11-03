@@ -21,7 +21,8 @@ function formula(r){const[aw,bw,at,bt]=r.row;
   $('formula').textContent=
 `Afstand (Panasonic):   L = A · diagonal(″) + B
   wide: ${aw} · ${f2(r.D,1)} ${bw<0?'−':'+'} ${Math.abs(bw)} = ${f2(r.Lw,3)} m
-  tele: ${at} · ${f2(r.D,1)} ${bt<0?'−':'+'} ${Math.abs(bt)} = ${f2(r.Lt,3)} m
+  tele: ${at} · ${f2(r.D,1)} ${bt<0?'−':'+'} ${Math.abs(bt)} = ${f2(r.LtO,3)} m${r.dz?`
+  Digital Zoom Extender (80 %): ${at} · ${f2(r.D,1)}/0,8 ${bt<0?'−':'+'} ${Math.abs(bt)} = ${f2(r.Lt,3)} m · aktuelt ${f2(r.dzS*100,1)} %`:''}
 Zoom:        z = (L − L_wide) / (L_tele − L_wide) = ${r.fixed?'fast linse':f2(r.z*100,1)+' %'}
 Størrelse:   B = D·w/√(w²+h²),  H = D·h/√(w²+h²)
 Throw ratio: L / B = ${f2(S.L/r.W)}

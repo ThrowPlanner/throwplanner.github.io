@@ -31,6 +31,7 @@ Jura: produktbilleder vises direkte fra Panasonics TDC-server (kopiér dem aldri
 | Immersive | `immCalc` i `02-state.js`, `drawImm` i `08-view09-rear.js`, `09-view10-section.js`, `16-events.js` |
 | Teater / Auditorium / Museum | `02-state.js` (temaregler), `08-view09-rear.js`, `09-view10-section.js` |
 | Optik, lens shift, keystone | `01-core.js` (shift-polygon), `03-calc.js` (`calc`, `ksLim`), `13-lensshift-bar.js` |
+| Digital Zoom Extender | `dzeSpec`/`DZE_MIN` i `03-calc.js` (lens shift regnes i `r.Hs`/`r.Ws`), visning i `13-lensshift-bar.js`, `dzeSet` i `16-events.js` |
 | Kontrast og sollys | `10-contrast.js`, `14-sun.js` |
 | Plantegning (boks 08) | `11-floorplan.js` |
 | Edge blend og portræt (boks 05) | `03-calc.js`, `blendAuto` i `04-ui.js` |

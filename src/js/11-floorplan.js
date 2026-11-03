@@ -77,7 +77,7 @@ $('planZoom').hidden=!has;if(document.activeElement!==$('calM'))$('calM').value=
      let BRX=null;if(S.blend&&r.N>1){const lim=bdxRange(r);const z0=lo+B.z0,z1=hi+B.z1;
        r.pjs.filter(pj=>pj.r===0).forEach(pj=>{let a=pj.lx,b=pj.lx;if(lim){const [m0,m1]=lim(pj.c);a=pj.tx+(S.px-r.cx)+m0;b=pj.tx+(S.px-r.cx)+m1}const box=[P(a-hw,z0),P(b+hw,z0),P(b+hw,z1),P(a-hw,z1)];BRX=Math.max(BRX??-1e9,b+hw);
          s+=`<polygon points="${poly(box)}" fill="#62C9EC" fill-opacity=".16" stroke="#0B6E9C" stroke-width="${1.2*k}" stroke-dasharray="${6*k} ${4*k}"/>`});x0=x1=S.px}
-     else if(r.P.length){const hr=shRange(r.sv,r.P);if(hr){const a=r.cx-r.inv*(hr[0]+r.th)*r.W,b2=r.cx-r.inv*(hr[1]+r.th)*r.W;x0=Math.min(a,b2);x1=Math.max(a,b2)}}else{x0=x1=0}
+     else if(r.P.length){const hr=shRange(r.sv,r.P);if(hr){const a=r.cx-r.inv*(hr[0]+r.th)*r.Ws,b2=r.cx-r.inv*(hr[1]+r.th)*r.Ws;x0=Math.min(a,b2);x1=Math.max(a,b2)}}else{x0=x1=0}
      const z0=lo+B.z0,z1=hi+B.z1,box=[P(x0-hw,z0),P(x1+hw,z0),P(x1+hw,z1),P(x0-hw,z1)];
      if(!(S.blend&&r.N>1))s+=`<polygon points="${poly(box)}" fill="#62C9EC" fill-opacity=".22" stroke="#0B6E9C" stroke-width="${1.4*k}" stroke-dasharray="${6*k} ${4*k}"/>`;
      const cl=P((x0+x1)/2,lo),cr=P((x0+x1)/2,hi);s+=`<line x1="${cl[0]}" y1="${cl[1]}" x2="${cr[0]}" y2="${cr[1]}" stroke="#0B6E9C" stroke-width="${1.2*k}" stroke-opacity=".7"/>`;

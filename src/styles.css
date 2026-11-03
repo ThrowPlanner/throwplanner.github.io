@@ -293,8 +293,9 @@ details.coll>summary:focus-visible{outline:2px solid var(--beam);outline-offset:
 .lflash{animation:lflash 1.4s ease-out}
 .shiftbar .btn.z0{padding:2px 6px;font-size:11.5px;margin-left:2px}
 .ksrow{flex-basis:100%;display:flex;flex-wrap:wrap;align-items:center;gap:6px 16px;padding-top:6px;border-top:1px dashed var(--line)}
-#ksBtn[aria-pressed=true],#lensLock[aria-pressed=true]{background:var(--beam-soft);border-color:var(--beam);color:var(--ink)}
+#ksBtn[aria-pressed=true],#lensLock[aria-pressed=true],#dzBtn[aria-pressed=true]{background:var(--beam-soft);border-color:var(--beam);color:var(--ink)}
 .ksrow:not(.on) .ksc,.ksrow:not(.on) .ksloss{display:none}
+.dzrow[hidden]{display:none}.dzwarn{flex-basis:100%;font-size:12.5px;color:var(--warn,var(--bad))}.dzrow:not(.on) .dzwarn{display:none}
 .ksloss{font-size:12.5px;font-variant-numeric:tabular-nums}.ksloss b{font-weight:650}.ksloss .bad{color:var(--bad)}
 #shMini{flex:none;display:block}
 

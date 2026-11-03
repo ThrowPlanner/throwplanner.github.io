@@ -548,6 +548,16 @@ pr. projektor|per projector|台あたり
 Inden for lens shift – keystone #°|Within the lens shift – keystone #°|レンズシフト範囲内 – キーストーン #°
 ingen tab af pixels eller lys|no loss of pixels or light|画素・光の損失なし
 uden for keystone-grænsen|outside the keystone limit|キーストーン限界外
+Skalerer billedet digitalt ned, så projektoren kan stå længere væk end optikkens zoom rækker|Scales the image down digitally so the projector can stand further away than the lens zoom allows|画像をデジタルで縮小し、レンズのズーム範囲より遠くに設置できるようにします
+Panasonic: throw ratio #–#:# ved # %|Panasonic: throw ratio #–#:# at # %|Panasonic：投写比 #–#:#（# % 時）
+skaleres højst ned til # %|scaled down to # % at most|最大 # % まで縮小
+Digital zoom:|Digital zoom:|デジタルズーム：
+Opløsning:|Resolution:|解像度：
+af # px (−# % pixels)|of # px (−# % pixels)|/ # px（画素 −# %）
+Inden for optikkens zoom – # %|Within the lens zoom – # %|レンズのズーム範囲内 – # %
+længere væk end # %|further away than # %|# % を超える距離
+⚠ Billedet skaleres digitalt ned på panelet: lavere opløsning og mindre lys. Keystone, #-punkts-korrektion og buet lærred kan ikke bruges, og hjørnejustering er begrænset.|⚠ The image is scaled down digitally on the panel: lower resolution and less light. Keystone, #-point correction and curved screen cannot be used, and corner adjustment is limited.|⚠ 画像はパネル上でデジタル縮小されます：解像度と明るさが低下します。キーストーン、#点補正、曲面スクリーン補正は使用できず、コーナー補正も制限されます。
+Digital Zoom Extender til # m|Digital Zoom Extender up to # m|Digital Zoom Extender で # m まで
 Gem projekt|Save project|プロジェクトを保存
 Åbn projekt|Open project|プロジェクトを開く
 Gem projektet som en JSON-fil, der kan sendes til andre|Save the project as a JSON file that can be sent to others|他の人に送れるJSONファイルとしてプロジェクトを保存
