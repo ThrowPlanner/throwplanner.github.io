@@ -169,13 +169,19 @@
           <button class="btn" type="button" id="planUp">Indsæt plantegning…</button>
           <div class="seg" role="group" aria-label="Værktøj" id="planTools">
             <button type="button" data-tool="cal" aria-pressed="false">1 · Målestok</button>
-            <button type="button" data-tool="scr" aria-pressed="false">2 · Lærred</button>
-            <button type="button" data-tool="pj" aria-pressed="false">3 · Projektor</button>
+            <button type="button" data-tool="room" aria-pressed="false">2 · Rum</button>
+            <button type="button" data-tool="scr" aria-pressed="false">3 · Lærred</button>
+            <button type="button" data-tool="pj" aria-pressed="false">4 · Projektor</button>
+            <button type="button" data-tool="ruler" aria-pressed="false" title="Mål en afstand på tegningen">Lineal</button>
           </div>
-          <span class="calbox" id="calBox"><span class="seg calseg" role="group" aria-label="Målestok"><button type="button" data-cal="w" title="Klik to punkter på tværs af rummet">Tegn bredde</button><button type="button" data-cal="l" title="Klik to punkter på langs af rummet">Tegn længde</button></span>
-            <span class="inl"><span class="hint">Bredde</span><input type="number" id="calM" step="0.1" min="0.1" style="width:70px" aria-label="Rummets bredde"><span class="unit">m</span></span>
-            <span class="inl"><span class="hint">Længde</span><input type="number" id="calL" step="0.1" min="0.1" style="width:70px" aria-label="Rummets længde"><span class="unit">m</span></span>
-            <span class="inl"><span class="hint">Højde</span><input type="number" id="calH" step="0.1" min="2" style="width:84px" placeholder="valgfri" aria-label="Rummets højde (valgfri)"><span class="unit">m</span></span></span>
+          <span class="calbox" id="calBox"><span class="inl"><span class="hint">Linjen er</span><input type="number" id="calM" step="0.01" min="0.1" style="width:76px" aria-label="Målestokslinjens længde"><span class="unit">m</span></span><span class="hint" id="calAcc"></span></span>
+          <span class="calbox" id="roomBox" hidden>
+            <span class="inl"><span class="hint">Bredde</span><input type="number" id="planRw" step="0.01" min="0.5" style="width:76px" aria-label="Rummets bredde"><span class="unit">m</span></span>
+            <span class="inl"><span class="hint">Længde</span><input type="number" id="calL" step="0.01" min="0.5" style="width:76px" aria-label="Rummets længde"><span class="unit">m</span></span>
+            <span class="inl"><span class="hint">Højde</span><input type="number" id="calH" step="0.1" min="2" style="width:84px" placeholder="valgfri" aria-label="Rummets højde (valgfri)"><span class="unit">m</span></span>
+            <span class="inl"><span class="hint">Lærredsvæg</span><span class="seg calseg" role="group" aria-label="Lærredsvæg"><button type="button" data-wall="top">Top</button><button type="button" data-wall="right">Højre</button><button type="button" data-wall="bottom">Bund</button><button type="button" data-wall="left">Venstre</button></span></span></span>
+          <span class="calbox" id="rulBox" hidden><span class="hint" id="rulList"></span><button class="btn" type="button" id="rulClr">Slet linealer</button></span>
+          <label class="inl hint" style="gap:6px"><input type="checkbox" id="planSnap">Fang streger</label>
           <span class="calbox" id="scrBox" hidden><span class="inl"><span class="hint">Lærredsbredde</span><input type="number" id="planCw" step="0.05" min="0.2" style="width:70px" aria-label="Lærredets bredde"><span class="unit">m</span></span></span>
           <span class="calbox" id="pjBox" hidden><span class="inl"><span class="hint">Afstand</span><input type="number" id="planL" step="0.05" min="0.1" style="width:70px" aria-label="Projektorens afstand til lærredet"><span class="unit">m</span></span>
             <span class="inl"><span class="hint">Sideforskydning</span><input type="number" id="planPx" step="0.05" style="width:70px" aria-label="Projektorens sideforskydning"><span class="unit">m</span></span></span>
@@ -191,7 +197,7 @@
         </div>
         <div class="pinfo" id="planInfo"></div>
         <div class="pstage" id="planStage"><svg id="planSvg" class="draw" role="img" aria-label="Plantegning med projektor"></svg>
-          <div class="pempty" id="planEmpty"><b>Ingen plantegning</b><span>Indsæt en PNG, JPG eller PDF. Sæt derefter målestok, markér lærredet og træk projektoren på plads.</span><button class="btn" type="button" id="planUp2">Indsæt plantegning…</button></div>
+          <div class="pempty" id="planEmpty"><b>Ingen plantegning</b><span>Indsæt en PNG, JPG eller PDF. Tegn derefter én målestok over et kendt mål, træk en firkant om rummet, markér lærredet og træk projektoren på plads.</span><button class="btn" type="button" id="planUp2">Indsæt plantegning…</button></div>
         </div>
       </details>
 

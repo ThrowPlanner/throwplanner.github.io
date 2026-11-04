@@ -330,8 +330,8 @@ details.coll2[open]>summary .chev{transform:rotate(-135deg);margin-bottom:-2px}
 .zseg{display:inline-flex;align-items:center}.zseg button{display:inline-flex;align-items:center;justify-content:center;padding:5px 9px;min-width:34px}
 #planZv{font-family:var(--f-mono);font-size:12px;min-width:58px}
 .pstage svg .pjgrab{cursor:grab}
-.pstage svg .scrh,.pstage svg .calh{cursor:grab}.pstage svg .scrline,.pstage svg .calline{cursor:move}
-#side .sgrab{cursor:grab}
+.pstage svg .scrh,.pstage svg .calh,.pstage svg .rulh{cursor:grab}.pstage svg .scrline,.pstage svg .calline{cursor:move}
+.pstage svg .roomh{cursor:nwse-resize}.pstage svg .roomedge,.pstage svg .rulline{cursor:pointer}#side .sgrab{cursor:grab}
 #side .scrgrab{cursor:ns-resize}
 #side .stgrab[data-st=d]{cursor:ew-resize}#side .stgrab[data-st=h]{cursor:ns-resize}
 #front{touch-action:none}

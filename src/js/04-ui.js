@@ -29,13 +29,18 @@ function blendAuto(){BAUTO=null;if(!S.blend||!S.bauto||S.venue==='immersive')ret
   const Dmax=Math.min(row[5],diagFor(row,S.L,0)),Dmin=Math.max(row[4],Math.min(diagFor(row,S.L,0),diagFor(row,S.L,1)));
   if(!(S.bth>0)){const r0=calc();S.bth=Math.round(r0.CH*100)/100}
   if(!S.lockW&&S.cw>S.rw)S.cw=S.rw;
+  // låst højde/diagonal: den samlede bredde for n×r projektorer regnes ud fra det låste mål (ellers ændrer et nyt antal rækker målet)
+  const dm=S.lockW?S.lockDim||'w':'w',r0=calc(),lH=r0.CH,lD=Math.hypot(r0.CW,r0.CH);
+  const cwFor=(n1,r1)=>{const kx=n1-(n1-1)*o,ky=r1-(r1-1)*o;return dm==='h'?lH/ky*aw/ah*kx:dm==='d'?lD*kx*aw/Math.hypot(kx*aw,ky*ah):S.cw};
   // søg alle kombinationer: billedet pr. projektor inden for optikkens zoom ved afstanden, samlet højde ≥ mål og ≤ rummets højde
-  const tgt=Math.min(S.bth,S.rh);let best=null;
-  for(let n1=1;n1<=8;n1++)for(let r1=1;r1<=4;r1++){const W=S.cw/(n1-(n1-1)*o),H=W*ah/aw,CH=H*(r1-(r1-1)*o);
-    const ok=W<=Dmax*k+1e-6&&W>=Dmin*k-1e-6&&CH>=tgt-1e-6&&CH<=S.rh+1e-6;if(!ok)continue;
+  // (låst højde/diagonal: behold antallet, så længe det passer – ellers den opdeling, hvor bredden ændres mindst)
+  const tgt=Math.min(S.bth,S.rh);let best=null;const cur=Math.round(S.bc)+'x'+Math.round(S.br);
+  for(let n1=1;n1<=8;n1++)for(let r1=1;r1<=4;r1++){const cw=cwFor(n1,r1),W=cw/(n1-(n1-1)*o),H=W*ah/aw,CH=H*(r1-(r1-1)*o);
+    const ok=W<=Dmax*k+1e-6&&W>=Dmin*k-1e-6&&(dm==='h'||CH>=tgt-1e-6&&CH<=S.rh+1e-6);if(!ok)continue;
+    if(dm!=='w'){const sc=n1+'x'+r1===cur?-1:Math.abs(cw-r0.CW);if(!best||sc<best.sc-1e-6||(Math.abs(sc-best.sc)<=1e-6&&n1*r1<best.n*best.r))best={n:n1,r:r1,ch:CH,sc};continue}
     if(!best||n1*r1<best.n*best.r||(n1*r1===best.n*best.r&&CH<best.ch))best={n:n1,r:r1,ch:CH}}
-  let n,rr,W;if(best){n=best.n;rr=best.r}else{n=1;while(n<8&&S.cw/(n-(n-1)*o)>Dmax*k+1e-6)n++;W=S.cw/(n-(n-1)*o);rr=1;while(rr<4&&W*ah/aw*(rr-(rr-1)*o)<tgt-1e-6&&W*ah/aw*(rr+1-rr*o)<=S.rh+1e-6)rr++}
-  W=S.cw/(n-(n-1)*o);const H=W*ah/aw;
+  let n,rr,W;if(best){n=best.n;rr=best.r}else if(dm!=='w'){n=S.bc;rr=S.br}else{n=1;while(n<8&&S.cw/(n-(n-1)*o)>Dmax*k+1e-6)n++;W=S.cw/(n-(n-1)*o);rr=1;while(rr<4&&W*ah/aw*(rr-(rr-1)*o)<tgt-1e-6&&W*ah/aw*(rr+1-rr*o)<=S.rh+1e-6)rr++}
+  if(dm!=='w')S.cw=cwFor(n,rr);W=S.cw/(n-(n-1)*o);const H=W*ah/aw;
   const chg=S.bc!==n||S.br!==rr;S.bc=n;S.br=rr;if(chg){S.bdx={};zeroShift()}BAUTO={n,r:rr,ok:!!best,small:!best&&W<Dmin*k-1e-6,ch:H*(rr-(rr-1)*o)}}
 function zeroShift(){const r=calc();S.py=r.cy-r.inv*r.off*r.Hs;S.px=r.cx-r.inv*r.offH*r.Ws;if(S.venue==='golf'&&S.ceil){const r2=calc(),t=S.rh-0.2;if(r2.pyRange)S.py=Math.round(Math.max(r2.pyRange[0],Math.min(r2.pyRange[1],t))*100)/100}}
 // produktbilleder vises direkte fra Panasonics TDC-server (ophavsret: billederne kopieres ikke ind i appen); key = 'p:fil' eller 'l:fil'

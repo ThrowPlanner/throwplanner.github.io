@@ -807,3 +807,31 @@ hos Panasonic|at Panasonic|（Panasonic）
 =Vis dem|Show them|表示する
 =Hurtigt svar – kun det vigtigste|Quick answer – just the essentials|すばやく回答 – 必要な項目だけ
 =Alle værktøjer, indstillinger og Immersive|All tools, settings and Immersive|すべてのツール、設定とイマーシブ
+# · Rum|# · Room|# · 部屋
+# · Rum:|# · Room:|# · 部屋：
+=Lineal|Ruler|定規
+Lineal:|Ruler:|定規：
+Mål en afstand på tegningen|Measure a distance on the drawing|図面上の距離を測定
+Linjen er|The line is|線の長さ
+Målestokslinjens længde|Length of the scale line|縮尺線の長さ
+Lærredsvæg|Screen wall|スクリーン壁
+=Top|Top|上
+=Højre|Right|右
+=Bund|Bottom|下
+=Venstre|Left|左
+Slet linealer|Delete rulers|定規を削除
+Fang streger|Snap to lines|線にスナップ
+# px = # cm|# px = # cm|# px = # cm
+Skriv hvor lang linjen er|Enter how long the line is|線の長さを入力
+træk en linje for at måle en afstand på tegningen. Træk i punkterne for at rette den. Shift låser vinklen til #/#/#°, Delete sletter den valgte.|drag a line to measure a distance on the drawing. Drag the end points to adjust it. Shift locks the angle to #/#/#°, Delete removes the selected one.|線をドラッグして図面上の距離を測定します。端点をドラッグして調整。Shiftで角度を #/#/#° に固定、Deleteで選択中を削除。
+Lav først en målestok (#) – så viser linealen meter.|Set a scale first (#) – then the ruler shows metres.|先に縮尺（#）を設定すると、定規がメートルで表示されます。
+træk en linje hen over et mål du kender – fx en målsætning eller en væg – og skriv længden i feltet «Linjen er». Alle andre mål regnes ud fra den.|drag a line across a dimension you know – e.g. a dimension line or a wall – and enter its length in the “The line is” field. All other measurements are calculated from it.|既知の寸法（寸法線や壁など）に沿って線を引き、「線の長さ」欄に長さを入力します。他の寸法はすべてこれから計算されます。
+Linjen er kort i forhold til tegningen – brug et længere mål, hvis du har et, så bliver alle mål mere præcise.|The line is short compared to the drawing – use a longer dimension if you have one, and all measurements become more accurate.|線が図面に対して短すぎます – より長い寸法があれば使うと、すべての寸法がより正確になります。
+træk en firkant fra hjørne til hjørne langs rummets indervægge – bredde og længde regnes ud og sættes i #, # og #. Klik på den væg, lærredet sidder på (orange). Højden kan skrives i feltet «Højde» (valgfri).|drag a rectangle from corner to corner along the room's inner walls – width and length are calculated and set in #, # and #. Click the wall the screen is on (orange). The height can be entered in the “Height” field (optional).|部屋の内壁に沿って角から角へ四角形をドラッグ – 幅と長さが計算され #・#・# に設定されます。スクリーンのある壁（オレンジ）をクリック。高さは「高さ」欄に入力できます（任意）。
+klik eller træk projektoren på plads – den holder sig inde i rummet, inden for billedets bredde og optikkens zoom. Træk i lærredet for at flytte det, eller i dets punkter for at rotere det. Afstand|click or drag the projector into place – it stays inside the room, within the image width and the lens zoom. Drag the screen to move it, or its end points to rotate it. Distance|クリックまたはドラッグで配置 – 部屋の中、画面幅とレンズのズーム範囲内に保たれます。スクリーンをドラッグで移動、端点で回転できます。距離
+Projektoren skal stå inde i rummet.|The projector must be inside the room.|プロジェクターは部屋の中に置く必要があります。
+Indsæt en PNG, JPG eller PDF. Tegn derefter én målestok over et kendt mål, træk en firkant om rummet, markér lærredet og træk projektoren på plads.|Insert a PNG, JPG or PDF. Then draw one scale line over a known dimension, drag a rectangle around the room, mark the screen and drag the projector into place.|PNG・JPG・PDFを挿入し、既知の寸法に縮尺線を1本引き、部屋を四角形で囲み、スクリーンを指定してプロジェクターを配置します。
+rum bredde # m|room width # m|部屋の幅 # m
+længde # m|length # m|長さ # m
+målestok # m|scale # m|縮尺 # m
+skriv længden|enter the length|長さを入力

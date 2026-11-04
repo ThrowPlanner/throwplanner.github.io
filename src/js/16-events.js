@@ -17,17 +17,17 @@ $('stackOn').addEventListener('change',e=>{S.stackOn=e.target.checked;if(S.stack
 $('crReq').addEventListener('change',e=>{S.crReq=e.target.value;render()});num('crCust',v=>S.crCust=Math.max(1,v));
 $('ambR').addEventListener('input',e=>{S.amb=+e.target.value;render()});
 num('fw',v=>S.fw=v);num('fh',v=>S.fh=v);num('fd',v=>S.fd=v);
-$('portrait').addEventListener('change',e=>{S.portrait=e.target.checked;S.bdx={};render();if(!S.bauto&&!S.lockL)fitLens(true);zeroShift();render()});
+$('portrait').addEventListener('change',e=>{keepLocked(()=>S.portrait=e.target.checked);S.bdx={};render();if(!S.bauto&&!S.lockL)fitLens(true);zeroShift();render()});
 $('bauto').addEventListener('change',e=>{S.bauto=e.target.checked;if(S.bauto){S.bth=Math.round(calc().CH*100)/100}render()});
 num('bth',v=>S.bth=Math.max(0.2,v));
-num('bc',v=>S.bc=Math.max(1,Math.min(8,Math.round(v))));num('br',v=>S.br=Math.max(1,Math.min(4,Math.round(v))));num('ov',v=>S.ov=Math.max(0,Math.min(50,v)));
-$('aspect').addEventListener('change',e=>{const r0=calc(),dm=S.lockW?S.lockDim||'w':'w';S.ak=e.target.value;
-  // låst højde eller diagonal: bredden regnes om, så det låste mål bliver det samme i det nye format
-  if(dm!=='w'){const r1=calc();if(dm==='h'&&r1.CH>0)S.cw*=r0.CH/r1.CH;else if(dm==='d'){const d0=Math.hypot(r0.CW,r0.CH),d1=Math.hypot(r1.CW,r1.CH);if(d1>0)S.cw*=d0/d1}}
-  zeroShift();render()});
-$('cat').addEventListener('change',e=>{const m0=S.mi;S.cat=+e.target.value;fillModels();if(!SLOT()&&S.mi!==m0){fitLens();zeroShift()}render()});
-$('minLm').addEventListener('change',e=>{const m0=S.mi;S.minLm=+e.target.value;fillCats();fillModels();if(!SLOT()&&S.mi!==m0){fitLens();zeroShift()}render()});
-$('model').addEventListener('change',e=>{const k=SLOT();if(k){S.immPj={...(S.immPj||{}),[k]:{mi:+e.target.value,li:0}};S.immAdj={...(S.immAdj||{}),[k]:{}};fillLens();render();return}const ln=S.lockLens&&M().L[S.li]?M().L[S.li][0]:null;S.pcr=null;S.dze=false;S.mi=+e.target.value;S.li=ln?Math.max(0,M().L.findIndex(l=>l[0]===ln)):0;fillLens();frameDefaults();fitLens();zeroShift();render();});
+// låst højde eller diagonal: efter ændringen (format, overlap, antal, portræt) regnes bredden om, så det låste mål bliver det samme
+function keepLocked(fn){const r0=calc(),dm=S.lockW?S.lockDim||'w':'w';fn();
+  if(dm!=='w'){const r1=calc();if(dm==='h'&&r1.CH>0)S.cw*=r0.CH/r1.CH;else if(dm==='d'){const d0=Math.hypot(r0.CW,r0.CH),d1=Math.hypot(r1.CW,r1.CH);if(d1>0)S.cw*=d0/d1}}}
+num('bc',v=>keepLocked(()=>S.bc=Math.max(1,Math.min(8,Math.round(v)))));num('br',v=>keepLocked(()=>S.br=Math.max(1,Math.min(4,Math.round(v)))));num('ov',v=>keepLocked(()=>S.ov=Math.max(0,Math.min(50,v))));
+$('aspect').addEventListener('change',e=>{keepLocked(()=>S.ak=e.target.value);zeroShift();render()});
+$('cat').addEventListener('change',e=>{const m0=S.mi;keepLocked(()=>{S.cat=+e.target.value;fillModels()});if(!SLOT()&&S.mi!==m0){fitLens();zeroShift()}render()});
+$('minLm').addEventListener('change',e=>{const m0=S.mi;keepLocked(()=>{S.minLm=+e.target.value;fillCats();fillModels()});if(!SLOT()&&S.mi!==m0){fitLens();zeroShift()}render()});
+$('model').addEventListener('change',e=>{const k=SLOT();if(k){S.immPj={...(S.immPj||{}),[k]:{mi:+e.target.value,li:0}};S.immAdj={...(S.immAdj||{}),[k]:{}};fillLens();render();return}const ln=S.lockLens&&M().L[S.li]?M().L[S.li][0]:null;S.pcr=null;keepLocked(()=>{S.dze=false;S.mi=+e.target.value;S.li=ln?Math.max(0,M().L.findIndex(l=>l[0]===ln)):0});fillLens();frameDefaults();fitLens();zeroShift();render();});
 $('lens').addEventListener('change',e=>{const k=SLOT();if(k){S.immPj={...(S.immPj||{}),[k]:{mi:slotMI(),li:+e.target.value}};S.immAdj={...(S.immAdj||{}),[k]:{}};render();return}S.li=+e.target.value;fitLens();zeroShift();render()});
 $('frameSel').addEventListener('change',e=>{S.frameId=e.target.value;applyFrame();render()});
 
@@ -36,7 +36,7 @@ $('mCeil').addEventListener('click',()=>{S.ceil=true;zeroShift();render()});
 $('dMount').addEventListener('toggle',e=>{if(S.openMount!==e.target.open){S.openMount=e.target.open;save()}});
 $('dBlend').addEventListener('toggle',e=>{if(S.openBlend!==e.target.open){S.openBlend=e.target.open;save()}});
 $('frame').addEventListener('change',e=>{S.frame=e.target.checked;render()});
-$('blend').addEventListener('change',e=>{S.blend=e.target.checked;zeroShift();render()});
+$('blend').addEventListener('change',e=>{keepLocked(()=>S.blend=e.target.checked);zeroShift();render()});
 {const py=(e,z)=>{const svg=$('front'),pt=svg.createSVGPoint();pt.x=e.clientX;pt.y=e.clientY;const q=pt.matrixTransform(svg.getScreenCTM().inverse());const F=FRONTI;return F.E+(F.Yh-q.y)*(F.C-z)/F.f};
  const pl=(e,yp)=>{const svg=$('front'),pt=svg.createSVGPoint();pt.x=e.clientX;pt.y=e.clientY;const q=pt.matrixTransform(svg.getScreenCTM().inverse());const F=FRONTI;
    const dyE=yp-F.E,k=(F.Yh-q.y)/(Math.abs(dyE)<.25?(dyE<0?-.25:.25):dyE);if(!(k>0))return null;return {x:(q.x-F.X0)/k,z:F.C-F.f/k}};
@@ -126,55 +126,85 @@ $('file').addEventListener('change',e=>{const f=e.target.files[0];if(!f)return;c
 $('dPlan').addEventListener('toggle',e=>{if(S.plan.open!==e.target.open){S.plan.open=e.target.open;save()}});
 ['planUp','planUp2'].forEach(id=>$(id).addEventListener('click',()=>$('planFile').click()));
 $('planFile').addEventListener('change',e=>{planLoad(e.target.files[0]);e.target.value=''});
-document.querySelectorAll('[data-tool]').forEach(b=>b.addEventListener('click',()=>{const p=S.plan;p.tool=b.dataset.tool;if(p.tool==='cal')p.calStep=!p.cal||!p.cal.b?'w':!p.cal2||!p.cal2.b?'l':'h';render()}));
-$('calM').addEventListener('input',e=>{const v=parseFloat(e.target.value);if(v>0){S.plan.calM=v;applyPlanRoom();render()}});
+document.querySelectorAll('[data-tool]').forEach(b=>b.addEventListener('click',()=>{S.plan.tool=b.dataset.tool;render()}));
+$('calM').addEventListener('input',e=>{const v=parseFloat(e.target.value);if(v>0){S.plan.calM=v;applyPlanRoom();if(planActive())syncPlan();render()}});
+$('calM').addEventListener('keydown',e=>{if(e.key==='Enter'&&S.plan.calM>0){e.target.blur();if(!S.plan.room){S.plan.tool='room';render()}}});
+$('planRw').addEventListener('change',e=>{setRoomDim('scr',parseFloat(e.target.value));render()});
+$('calL').addEventListener('change',e=>{setRoomDim('side',parseFloat(e.target.value));render()});
+document.querySelectorAll('[data-wall]').forEach(b=>b.addEventListener('click',()=>{S.plan.wall=b.dataset.wall;applyPlanRoom();render()}));
+$('planSnap').addEventListener('change',e=>{S.plan.snap=e.target.checked;render()});
+$('rulClr').addEventListener('click',()=>{S.plan.rulers=[];RULSEL=-1;render()});
+document.addEventListener('keydown',e=>{if((e.key==='Delete'||e.key==='Backspace')&&S.plan.tool==='ruler'&&RULSEL>=0&&!/INPUT|SELECT|TEXTAREA/.test(document.activeElement.tagName)){S.plan.rulers.splice(RULSEL,1);RULSEL=-1;e.preventDefault();render()}});
 $('planCw').addEventListener('input',e=>{const v=parseFloat(e.target.value),p=S.plan;if(!(v>=.2)||!p.scr||!p.scr.b)return;
   if(planActive()){if(S.lockW)return;S.cw=v}
   else{const sc=planScale();if(!(sc>0))return;const a=p.scr.a,b=p.scr.b,l=len(V(a,b)),c=[(a[0]+b[0])/2,(a[1]+b[1])/2],h=v*sc/2;p.scr.a=[c[0]-(b[0]-a[0])/l*h,c[1]-(b[1]-a[1])/l*h];p.scr.b=[c[0]+(b[0]-a[0])/l*h,c[1]+(b[1]-a[1])/l*h]}
   render()});
 $('planL').addEventListener('input',e=>{const v=parseFloat(e.target.value);if(v>0&&!S.lockL){S.L=v;render()}});
 $('planPx').addEventListener('input',e=>{const v=parseFloat(e.target.value);if(Number.isFinite(v)&&!S.plan.lock){guardShift({px:S.px},{px:v});render()}});
-$('calL').addEventListener('input',e=>{const v=parseFloat(e.target.value);if(v>0){S.plan.calL=v;applyPlanRoom();render()}});
 $('calH').addEventListener('input',e=>{const v=parseFloat(e.target.value);S.plan.calH=v>0?v:null;applyPlanRoom();render()});
-document.querySelectorAll('[data-cal]').forEach(b=>b.addEventListener('click',()=>{const p=S.plan;p.tool='cal';p.calStep=b.dataset.cal;render()}));  // beholder linjen – punkterne kan nu flyttes, eller man tegner en ny
 $('planLock').addEventListener('change',e=>{S.plan.lock=e.target.checked;if(S.plan.lock)S.px=0;render()});
 $('planUse').addEventListener('change',e=>{S.plan.use=e.target.checked;render()});
-$('planDel').addEventListener('click',()=>{PLANIMG=null;S.plan={...S.plan,w:0,h:0,cal:null,cal2:null,calStep:'w',scr:null,tool:'cal',pjSet:false};render()});
+$('planDel').addEventListener('click',()=>{PLANIMG=null;S.plan={...S.plan,w:0,h:0,cal:null,room:null,rulers:[],scr:null,tool:'cal',pjSet:false};RULSEL=-1;render()});
 // zoom i plantegningen – midten af det synlige udsnit bliver liggende
 document.querySelectorAll('[data-pz]').forEach(b=>b.addEventListener('click',()=>{const d=+b.dataset.pz,st=$('planStage');
   const i=PLANZ.indexOf(S.plan.zoom)<0?PLANZ.indexOf(1):PLANZ.indexOf(S.plan.zoom);S.plan.zoom=d?PLANZ[Math.max(0,Math.min(PLANZ.length-1,i+d))]:1;
   const fx=(st.scrollLeft+st.clientWidth/2)/st.scrollWidth,fy=(st.scrollTop+st.clientHeight/2)/st.scrollHeight;render();
   st.scrollLeft=fx*st.scrollWidth-st.clientWidth/2;st.scrollTop=fy*st.scrollHeight-st.clientHeight/2;save()}));
 let scrDraw=null;
-function scrSet(which,q,keep){const p=S.plan,sc=planScale();const o=which==='a'?p.scr.b:p.scr.a;let v=V(o,q),l=len(v);if(l<1)return;
-  if(keep){const h=len(V(p.scr.a,p.scr.b));q=[o[0]+v[0]/l*h,o[1]+v[1]/l*h]}   // trin 3: kun rotation om det andet punkt
+function scrSet(which,q,keep){const p=S.plan,sc=planScale();q=clampRoom(q);const o=which==='a'?p.scr.b:p.scr.a;let v=V(o,q),l=len(v);if(l<1)return;
+  if(keep){const h=len(V(p.scr.a,p.scr.b));q=[o[0]+v[0]/l*h,o[1]+v[1]/l*h]}   // trin 4: kun rotation om det andet punkt
   else if(S.lockW&&sc>0&&p.use){const h=S.cw*sc;q=[o[0]+v[0]/l*h,o[1]+v[1]/l*h]}else if(sc>0&&p.use)S.cw=Math.max(.2,l/sc);
   p.scr[which]=q;if(!planRaf)planRaf=requestAnimationFrame(()=>{planRaf=0;render()})}
-let calDrag=null;
-$('planSvg').addEventListener('pointerdown',e=>{if(!PLANIMG)return;const q=svgPt(e),p=S.plan;
-  {const ch=e.target.closest('.calh'),cl=e.target.closest('.calline');if((ch&&!planEdit(ch.dataset.c))||(cl&&!planEdit(cl.dataset.c)))return;
-   if(ch&&p[ch.dataset.c]&&p[ch.dataset.c].b){calDrag={c:ch.dataset.c,end:ch.dataset.end};$('planSvg').setPointerCapture(e.pointerId);e.preventDefault();return}
-   if(cl&&p[cl.dataset.c]&&p[cl.dataset.c].b){const L=p[cl.dataset.c];calDrag={c:cl.dataset.c,q0:q,a0:L.a.slice(),b0:L.b.slice()};$('planSvg').setPointerCapture(e.pointerId);e.preventDefault();return}}
+const planRaf1=()=>{if(!planRaf)planRaf=requestAnimationFrame(()=>{planRaf=0;render()})};
+// ptDrag: målestok, rum og lineal – {k:'cal'|'room'|'ruler', new?, end?/c?/i?, q0/a0/b0 ved flyt af hele linjen}
+let ptDrag=null;
+$('planSvg').addEventListener('pointerdown',e=>{if(!PLANIMG)return;const q=svgPt(e),p=S.plan,cap=()=>{$('planSvg').setPointerCapture(e.pointerId);e.preventDefault()};
+  // målestok: punkter (ret) og linje (flyt)
+  {const ch=e.target.closest('.calh'),cl=e.target.closest('.calline');
+   if(ch&&planEdit('cal')&&p.cal&&p.cal.b){ptDrag={k:'cal',end:ch.dataset.end};PLANLOUPE=p.cal[ptDrag.end];cap();return}
+   if(cl&&planEdit('cal')&&p.cal&&p.cal.b){ptDrag={k:'cal',q0:q,a0:p.cal.a.slice(),b0:p.cal.b.slice()};cap();return}}
+  // rum: hjørner (træk) og vægge (klik = lærredsvæg)
+  {const rh=e.target.closest('.roomh');if(rh&&planEdit('room')&&p.room){ptDrag={k:'room',c:rh.dataset.c};cap();return}
+   const re=e.target.closest('.roomedge');if(re&&planEdit('room')&&p.room){p.wall=re.dataset.wall;applyPlanRoom();e.preventDefault();render();return}}
+  // lineal: punkter (ret) og linje (vælg)
+  {const uh=e.target.closest('.rulh');if(uh&&planEdit('ruler')){RULSEL=+uh.dataset.i;ptDrag={k:'ruler',i:RULSEL,end:uh.dataset.end};PLANLOUPE=p.rulers[RULSEL][ptDrag.end];cap();render();return}
+   const ul=e.target.closest('.rulline');if(ul&&planEdit('ruler')){RULSEL=+ul.dataset.i;e.preventDefault();render();return}}
   // lærredets to punkter (flyt/rotér) og selve lærredet (flyt)
   const h=planEdit('scr')&&e.target.closest('.scrh');if(h&&p.scr&&p.scr.b){scrDraw={mode:'end',which:h.dataset.end,keep:p.tool==='pj'};$('planSvg').setPointerCapture(e.pointerId);e.preventDefault();return}
   if(planEdit('scr')&&e.target.closest('.scrline')&&p.scr&&p.scr.b){scrDraw={mode:'move',q0:q,a0:p.scr.a.slice(),b0:p.scr.b.slice(),keep:p.tool==='pj'};$('planSvg').setPointerCapture(e.pointerId);e.preventDefault();return}
   if(p.tool==='scr'&&p.scr&&p.scr.a&&!p.scr.b){p.scr.b=p.scr.a.slice();scrSet('b',q);p.tool='pj';if(p.lock)S.px=0;cancelAnimationFrame(planRaf);planRaf=0;if(planActive()){syncPlan();fitLens(true);zeroShift()}save();render();e.preventDefault();return}  // klik-klik virker stadig
-  if(p.tool==='scr'&&(!p.scr||!p.scr.b||!planGeo())){p.scr={a:q,b:q.slice()};scrDraw={mode:'new'};$('planSvg').setPointerCapture(e.pointerId);e.preventDefault();render();return}
+  if(p.tool==='scr'){const a=clampRoom(planSnap(q,e));p.scr={a,b:a.slice()};scrDraw={mode:'new'};$('planSvg').setPointerCapture(e.pointerId);e.preventDefault();render();return}
   if(e.target.closest('.pjgrab')||p.tool==='pj'){const g=planGeo();if(!g)return;const gr=e.target.closest('.pjgrab');planDrag={i:gr?+gr.dataset.pj:null};if(gr){const r0=calc(),pj=r0.pjs[+gr.dataset.pj]||r0.pjs[0];const L0=g.at(S.blend?pj.lx:S.px,S.L);planOff=[q[0]-L0[0],q[1]-L0[1]]}else planOff=[0,0];p.tool='pj';$('planSvg').setPointerCapture(e.pointerId);planMove(q);e.preventDefault();return}
-  if(p.tool==='cal'){const st=p.calStep||'w';
-    if(st==='w'){if(!p.cal||p.cal.b)p.cal={a:q,b:null};else{p.cal.b=q;p.calStep='l';if(!(p.calM>=2))p.calM=S.rw;applyPlanRoom()}}
-    else if(st==='l'){if(!p.cal2||p.cal2.b)p.cal2={a:q,b:null};else{p.cal2.b=q;p.calStep='h';if(!(p.scr&&p.scr.b))p.tool='scr';  // målestok færdig – videre til 2 · Lærred
-const sc=planScale();if(!(p.calL>0))p.calL=sc>0?Math.round(len(V(p.cal2.a,p.cal2.b))/sc*10)/10:S.rd;applyPlanRoom()}}
-    save();render()}
-  else if(p.tool==='scr'){p.scr={a:q,b:q.slice()};scrDraw={mode:'new'};$('planSvg').setPointerCapture(e.pointerId);render()}});
+  // nye: målestok (længden skrives bagefter), rum-firkant, lineal
+  const s=planSnap(q,e);
+  if(p.tool==='cal'){p.cal={a:s,b:s.slice()};p.calM=0;ptDrag={k:'cal',end:'b',new:true}}
+  else if(p.tool==='room'){p.room={x0:s[0],y0:s[1],x1:s[0],y1:s[1]};ptDrag={k:'room',c:'11',new:true}}
+  else if(p.tool==='ruler'){p.rulers=[...(p.rulers||[]),{a:s,b:s.slice()}];RULSEL=p.rulers.length-1;ptDrag={k:'ruler',i:RULSEL,end:'b',new:true}}
+  else return;
+  PLANLOUPE=s;cap();render()});
 $('planSvg').addEventListener('pointermove',e=>{const q=svgPt(e);
-  if(calDrag){const L=S.plan[calDrag.c];if(calDrag.end)L[calDrag.end]=q;else{const d=V(calDrag.q0,q);L.a=[calDrag.a0[0]+d[0],calDrag.a0[1]+d[1]];L.b=[calDrag.b0[0]+d[0],calDrag.b0[1]+d[1]]}
-    if(!planRaf)planRaf=requestAnimationFrame(()=>{planRaf=0;render()});return}
-  if(scrDraw){const p=S.plan;if(scrDraw.mode==='move'){const d=V(scrDraw.q0,q);p.scr.a=[scrDraw.a0[0]+d[0],scrDraw.a0[1]+d[1]];p.scr.b=[scrDraw.b0[0]+d[0],scrDraw.b0[1]+d[1]];if(!planRaf)planRaf=requestAnimationFrame(()=>{planRaf=0;render()})}
-    else scrSet(scrDraw.mode==='new'?'b':scrDraw.which,q,scrDraw.keep);return}
-  if(planDrag)planMove(q)});
+  if(ptDrag){const p=S.plan,d=ptDrag;
+    if(d.q0){const v=V(d.q0,q);p.cal.a=[d.a0[0]+v[0],d.a0[1]+v[1]];p.cal.b=[d.b0[0]+v[0],d.b0[1]+v[1]];planRaf1();return}
+    let w=planSnap(q,e);
+    if(d.k==='cal'){w=angleLock(p.cal[d.end==='a'?'b':'a'],w,e);p.cal[d.end]=w}
+    else if(d.k==='ruler'){const r=p.rulers[d.i];w=angleLock(r[d.end==='a'?'b':'a'],w,e);r[d.end]=w}
+    else{const R=p.room;if(d.c[0]==='0')R.x0=w[0];else R.x1=w[0];if(d.c[1]==='0')R.y0=w[1];else R.y1=w[1];if(!d.new)applyPlanRoom()}
+    PLANLOUPE=w;planRaf1();return}
+  if(scrDraw){const p=S.plan;if(scrDraw.mode==='move'){const d=V(scrDraw.q0,q);let a=[scrDraw.a0[0]+d[0],scrDraw.a0[1]+d[1]],b=[scrDraw.b0[0]+d[0],scrDraw.b0[1]+d[1]];
+      const R=p.room;if(R){const dx=Math.max(R.x0-Math.min(a[0],b[0]),0)-Math.max(Math.max(a[0],b[0])-R.x1,0),dy=Math.max(R.y0-Math.min(a[1],b[1]),0)-Math.max(Math.max(a[1],b[1])-R.y1,0);a=[a[0]+dx,a[1]+dy];b=[b[0]+dx,b[1]+dy]}   // lærredet bliver inde i rummet
+      p.scr.a=a;p.scr.b=b;planRaf1()}
+    else{const w=scrDraw.keep?q:planSnap(q,e);if(!scrDraw.keep)PLANLOUPE=clampRoom(w);scrSet(scrDraw.mode==='new'?'b':scrDraw.which,w,scrDraw.keep)}return}
+  if(planDrag){planMove(q);return}
+  // sigte før første klik: luppen følger musen (med «fang streger»), så første punkt også rammer præcist
+  if(PLANIMG&&e.pointerType!=='touch'&&['cal','room','ruler','scr'].includes(S.plan.tool)){PLANLOUPE=planSnap(q,e);if(!planLoupeDraw.raf)planLoupeDraw.raf=requestAnimationFrame(()=>{planLoupeDraw.raf=0;planLoupeDraw()})}});
+$('planSvg').addEventListener('pointerleave',()=>{if(!ptDrag&&!scrDraw&&PLANLOUPE){PLANLOUPE=null;planLoupeDraw()}});
 ['pointerup','pointercancel'].forEach(t=>$('planSvg').addEventListener(t,()=>{
-  if(calDrag){calDrag=null;applyPlanRoom();save();render();return}
+  if(ptDrag){const p=S.plan,d=ptDrag,kp=planPxPerScreen();ptDrag=null;PLANLOUPE=null;
+    if(d.k==='cal'&&d.new){if(len(V(p.cal.a,p.cal.b))<6*kp)p.cal=null;else setTimeout(()=>{$('calM').focus();$('calM').select()},0)}
+    if(d.k==='ruler'&&d.new){const r=p.rulers[d.i];if(len(V(r.a,r.b))<6*kp){p.rulers.splice(d.i,1);RULSEL=-1}}
+    if(d.k==='room'){const R=p.room;p.room={x0:Math.min(R.x0,R.x1),x1:Math.max(R.x0,R.x1),y0:Math.min(R.y0,R.y1),y1:Math.max(R.y0,R.y1)};
+      if((p.room.x1-p.room.x0)<10*kp||(p.room.y1-p.room.y0)<10*kp)p.room=null;else applyPlanRoom()}
+    if(planActive())syncPlan();save();render();return}
   if(scrDraw){const p=S.plan,m=scrDraw.mode,keep=scrDraw.keep;scrDraw=null;if(m==='new'){if(len(V(p.scr.a,p.scr.b))<6){p.scr={a:p.scr.a,b:null}}else{p.tool='pj';if(p.lock)S.px=0}}else if(p.tool==='scr'&&planGeo())p.tool='pj';if(planActive()&&!keep){fitLens(true);zeroShift()}save();render();return}
   if(planDrag){planDrag=null;save()}}));
 let presDrag=null;
@@ -239,7 +269,7 @@ $('sunWin').addEventListener('change',e=>{S.sun.win=e.target.value;render()});
 $('front').addEventListener('click',e=>{const t=e.target.closest&&e.target.closest('[data-win]');if(!t)return;const id=t.dataset.win,o=new Set(S.sun.off||[]);o.has(id)?o.delete(id):o.add(id);S.sun.off=[...o];render()});
 {const setFace=e=>{const svg=$('compass'),pt=svg.createSVGPoint();pt.x=e.clientX;pt.y=e.clientY;const q=pt.matrixTransform(svg.getScreenCTM().inverse());let a=Math.atan2(q.x,-q.y)/RAD;S.sun.face=(Math.round(((a+360)%360)/15)*15)%360;render()};
  $('compass').addEventListener('click',setFace);$('compass').addEventListener('keydown',e=>{if(e.key==='ArrowRight'||e.key==='ArrowLeft'){S.sun.face=(S.sun.face+(e.key==='ArrowRight'?15:345))%360;render();e.preventDefault()}})}
-function pickRow(tr){if(!tr)return;S.pcr=null;S.mi=+tr.dataset.mi;S.li=+tr.dataset.li;fillLens();frameDefaults();fitLens();zeroShift();render()}
+function pickRow(tr){if(!tr)return;S.pcr=null;keepLocked(()=>{S.mi=+tr.dataset.mi;S.li=+tr.dataset.li});fillLens();frameDefaults();fitLens();zeroShift();render()}
 $('solCur').addEventListener('click',e=>pickRow(e.target.closest('tr[data-mi]')));
 $('dSol').addEventListener('toggle',e=>{S.openSol=e.target.open;save()});
 $('solView').addEventListener('toggle',e=>{if(e.target.open!==(S.solOpen!==false)){S.solOpen=e.target.open;save()}});

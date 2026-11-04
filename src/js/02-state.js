@@ -5,7 +5,7 @@ const ASPECTS=['16:10','16:9','17:9','4:3','21:9'];
 window.__T={get immDragApply(){return immDragApply},get immCalc(){return immCalc}};
 const DEFM=Math.max(0,MODELS.findIndex(m=>m.m==='PT-REQ15')),DEFL=Math.max(0,MODELS[DEFM].L.findIndex(l=>/C1S600/.test(l[0])));
 const S={cat:0,minLm:0,mi:DEFM,li:DEFL,defREQ:true,lang:'en',mode:'dark',venue:'aud',lockL:false,lockW:false,trows:4,rear:false,bsd:4,imm:{v:true,l:true,r:true,f:true},ak:'16:10',L:10,cw:5,sb:0.9,ceil:true,py:null,px:0,rd:16,rw:12,rh:5,r1:3,rp:0.95,gain:1,amb:200,
-  plan:{use:true,lock:false,v2:true,w:0,h:0,cal:null,calM:5,scr:null,tool:'cal',open:false},sun:{on:false,face:180,t:0.5,win:'sides',off:[]},pcr:null,stack:1,crReq:'7',crCust:5,frame:false,frameId:null,openMount:false,openBlend:false,fw:null,fh:null,fd:null,blend:false,bc:2,br:1,ov:10,content:'none',dze:false};
+  plan:{use:true,lock:false,v2:true,w:0,h:0,cal:null,calM:5,scr:null,tool:'cal',open:false,room:null,wall:'top',rulers:[],snap:true},sun:{on:false,face:180,t:0.5,win:'sides',off:[]},pcr:null,stack:1,crReq:'7',crCust:5,frame:false,frameId:null,openMount:false,openBlend:false,fw:null,fh:null,fd:null,blend:false,bc:2,br:1,ov:10,content:'none',dze:false};
 let IMG=null;let FRESH=true;
 const S0=JSON.parse(JSON.stringify(S));
 // intet huskes mellem besøg (kun disclaimer-valget, se 22-disclaimer.js): gamle gemte data slettes. «Åbn projekt» og «Nulstil» genindlæser siden
@@ -15,6 +15,8 @@ let SAVED={};try{['kasteplan5','kasteplan_planimg','kasteplan_pdfme'].forEach(k=
 let MIG=false;if(!SAVED.defREQ){MIG=!FRESH;S.mi=DEFM;S.li=DEFL;S.pcr=null;S.frameId=null;S.fw=null;S.immPj={};S.defREQ=true}
 if(!S.mode)S.mode='dark';   // mørk tilstand er standard
 if(S.plan&&!S.plan.v2){S.plan.lock=false;S.plan.v2=true}
+// plantegning v3: én målestok + rum-firkant (gamle projekter: breddelinjen bliver målestok, længdelinjen droppes)
+if(S.plan){if(!Array.isArray(S.plan.rulers))S.plan.rulers=[];if(!S.plan.wall)S.plan.wall='top';if(S.plan.snap===undefined)S.plan.snap=true;if(S.plan.room===undefined)S.plan.room=null;delete S.plan.cal2;delete S.plan.calStep;delete S.plan.calL}
 if(!S.imm||typeof S.imm!=='object')S.imm={v:true,l:true,r:true,f:true};if(S.imm.v===undefined)S.imm.v=true;
 if(S.sun){if(S.sun.win==='all')S.sun.win='custom';if(S.sun.win==='back')S.sun.win='sides';if(!Array.isArray(S.sun.off))S.sun.off=[];delete S.sun.sky}
 const CROWDOPT=()=>S.venue==='museum'||S.venue==='immersive',NOCROWD=()=>CROWDOPT()&&S.crowd===false;
