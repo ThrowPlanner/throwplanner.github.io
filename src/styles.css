@@ -589,4 +589,4 @@ th{background:transparent}
 .seg .tpmenu button[aria-checked=true]::before{content:"✓";position:absolute;left:9px;color:var(--beam);font-weight:700}
 .seg .tpmenu .tpdl{margin-top:4px;border-top:1px solid var(--line);border-radius:0 0 6px 6px;padding-top:9px;display:flex;flex-direction:column;gap:1px}
 .tpdl::before{content:"⤓";position:absolute;left:9px;color:var(--beam)}
-.tpdl small{color:var(--muted);font-size:11px;font-family:var(--f-mono)}
+.tpdl small{color:var(--muted);font-size:11px;font-family:var(--f-mono)}#front .Lpj{cursor:grab}

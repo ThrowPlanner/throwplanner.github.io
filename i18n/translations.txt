@@ -837,3 +837,7 @@ målestok # m|scale # m|縮尺 # m
 skriv længden|enter the length|長さを入力
 vandret FOV #°|horizontal FOV #°|水平FOV #°
 Billedflade|Image Canvas|画像キャンバス
+Edge Blend|Edge Blend|エッジブレンド
+Centrér|Center|中央
+Centrér projektoren på lærredet (lens shift 0)|Center the projector on the screen (lens shift 0)|プロジェクターをスクリーン中央に戻す（レンズシフト0）
+træk i lærredet eller projektoren for at flytte dem|drag the screen or projector to move them|スクリーンまたはプロジェクターをドラッグして移動

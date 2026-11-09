@@ -85,7 +85,7 @@ function drawFront(r){IMMPJ=null;if(S.venue==='golf')GCUR=golfCalc(r);
   // lærred (ikke i immersive – der er hele væggene projektionsflader)
   const NS=S.venue==='immersive',mS=s.length;
   const cl=X(r.cx-r.CW/2),ctp=Y(r.cy+r.CH/2),cwp=r.CW*s0,chp=r.CH*s0,bm=Math.max(3,.06*s0);
-  FRONT={Yh,s0,E,X0};if(rear)s+='<g opacity=".84">';s+=`<rect class="fscr" x="${cl-bm}" y="${ctp-bm}" width="${cwp+2*bm}" height="${chp+2*bm}" rx="1.5" fill="#05080b"/>`;
+  FRONT={Yh,s0,E,X0,kp:sc(S.L)};if(rear)s+='<g opacity=".84">';s+=`<rect class="fscr" x="${cl-bm}" y="${ctp-bm}" width="${cwp+2*bm}" height="${chp+2*bm}" rx="1.5" fill="#05080b"/>`;
   s+=`<clipPath id="cclip"><rect x="${cl}" y="${ctp}" width="${cwp}" height="${chp}"/></clipPath>`;
   // indhold på lærredet vises med samme kontrast som i boks 06 (crFilter: sort løftes af omgivelses- og sollys)
   const SHOW=(S.content==='img'&&IMG)||S.content==='test'||(S.content==='golf'&&VN==='golf');if(SHOW)s+=crFilter('cf9',r)+'<g filter="url(#cf9)">';
@@ -311,6 +311,7 @@ function projector3D(P,r,p){let s='';const B=r.B;const z1=S.L+B.z0,z2=S.L+B.z1,x
       [[fx0,fy0,fz0],[fx1,fy0,fz0]],[[fx0,fy1,fz0],[fx1,fy1,fz0]],[[fx0,fy0,fz0],[fx0,fy1,fz0]],[[fx1,fy0,fz0],[fx1,fy1,fz0]],
       [[fx0,fy0,fz1],[fx1,fy0,fz1]],[[fx0,fy1,fz1],[fx1,fy1,fz1]],[[fx0,fy0,fz1],[fx0,fy1,fz1]],[[fx1,fy0,fz1],[fx1,fy1,fz1]]];
     E.forEach(([u,v])=>{const A=P(...u),B=P(...v);s+=`<line x1="${A[0]}" y1="${A[1]}" x2="${B[0]}" y2="${B[1]}" style="stroke:var(--frame)" stroke-width="2.6" stroke-linecap="round"/>`})}
+  {const c=P(p.lx,(y0+y1)/2,z2),hw=Math.max(22,(b[0]-a[0])/2+10),hh=Math.max(16,(b[1]-a[1])/2+10);s+=`<rect class="pjgrab" x="${c[0]-hw}" y="${c[1]-hh}" width="${2*hw}" height="${2*hh}" fill="transparent"/>`}
   return s}
 
 /* Lysstrålen tegnes fra det sted, hvor den forlader kabinettet (ultrakort kast: spejlet sidder inde i kabinettet, lyset går ud gennem toppen) */

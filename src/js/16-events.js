@@ -260,6 +260,16 @@ const zero=(k,e)=>{e.preventDefault();const r=calc();if(k==='sv')guardShift({py:
 ['sv','sh','kv','kh'].forEach(k=>$(k+'0').addEventListener('click',e=>zero(k,e)));
 
 {const fp=e=>{const svg=$('front'),pt=svg.createSVGPoint();pt.x=e.clientX;pt.y=e.clientY;const q=pt.matrixTransform(svg.getScreenCTM().inverse());return {x:(q.x-FRONT.X0)/FRONT.s0,y:FRONT.E-(q.y-FRONT.Yh)/FRONT.s0}};
+ /* træk i projektoren: højde (S.py) og venstre/højre (S.px) – holdes inden for lens shift; vandret låst ved flere projektorer */
+ const sp=e=>{const svg=$('front'),pt=svg.createSVGPoint();pt.x=e.clientX;pt.y=e.clientY;return pt.matrixTransform(svg.getScreenCTM().inverse())};
+ let pjDrag=null;
+ $('front').addEventListener('pointerdown',e=>{if(!FRONT||S.venue==='immersive'||!e.target.closest('.Lpj'))return;const q=sp(e);pjDrag={x:q.x,y:q.y,px:S.px,py:S.py,k:FRONT.kp};$('front').setPointerCapture(e.pointerId);e.preventDefault();e.stopImmediatePropagation()});
+ $('front').addEventListener('pointermove',e=>{if(!pjDrag)return;e.stopImmediatePropagation();const q=sp(e),r=calc(),lim=lensLimits();let ny=pjDrag.py-(q.y-pjDrag.y)/pjDrag.k;if(lim.py)ny=Math.max(lim.py[0],Math.min(lim.py[1],ny));if(ny>S.rh-.05)hit('pyTop');if(ny<.05)hit('pyBot');
+   const o={py:S.py},n={py:Math.round(Math.max(.05,Math.min(S.rh-.05,ny))*100)/100};
+   if(!(S.blend&&r.N>1)){o.px=S.px;n.px=Math.round(Math.max(-S.rw/2,Math.min(S.rw/2,pjDrag.px+(q.x-pjDrag.x)/pjDrag.k))*100)/100}
+   guardShift(o,n);if(!sideRaf)sideRaf=requestAnimationFrame(()=>{sideRaf=0;render()})});
+ ['pointerup','pointercancel'].forEach(t=>$('front').addEventListener(t,()=>{if(pjDrag){pjDrag=null;save()}}));
+ $('pjCenter').addEventListener('click',()=>{zeroShift();render();save()});
  $('front').addEventListener('pointerdown',e=>{if(!FRONT||S.venue==='immersive')return;const q=fp(e);const r=calc();if(Math.abs(q.x-r.cx)>r.CW/2||q.y<S.sb||q.y>S.sb+r.CH)return;scrDrag={dy:q.y-S.sb,dx:q.x-r.cx,pt:fp,h:true};$('front').setPointerCapture(e.pointerId);e.preventDefault()});
  $('front').addEventListener('pointermove',e=>{if(scrDrag){const q=scrDrag.pt(e);moveScreen(q.y-scrDrag.dy,scrDrag.h?q.x-scrDrag.dx:null);return}if(!FRONT||S.venue==='immersive')return;const q=fp(e),r=calc();$('front').style.cursor=(Math.abs(q.x-r.cx)<=r.CW/2&&q.y>=S.sb&&q.y<=S.sb+r.CH)?(planActive()?'ns-resize':'move'):''});
  ['pointerup','pointercancel'].forEach(t=>$('front').addEventListener(t,()=>{if(scrDrag){scrDrag=null;save()}}));}

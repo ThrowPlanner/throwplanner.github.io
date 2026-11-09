@@ -120,7 +120,7 @@
         <summary><h3><span class="no">05</span><span class="ttlw">Edge Blend, Stacking &amp; Portrait Mode</span><span class="sumtxt" id="sumBlend"></span><span class="chev" aria-hidden="true"></span></h3></summary><div class="collbody">
         <div id="blendStd">
         <div class="row"><span style="color:var(--ink)">Portrait mode <span class="hint">(projektor drejet 90°)</span></span><label class="switch"><input type="checkbox" id="portrait" aria-label="Portrait mode"><span></span></label></div>
-        <div class="row"><span style="color:var(--ink)">Flere projektorer</span><label class="switch"><input type="checkbox" id="blend" aria-label="Edge blend"><span></span></label></div>
+        <div class="row"><span style="color:var(--ink)">Edge Blend</span><label class="switch"><input type="checkbox" id="blend" aria-label="Edge blend"><span></span></label></div>
         <div class="hint" id="blendOff">Slå til for flere projektorer, der danner ét billede med overlap.</div>
         <div class="sub" id="blendBox" hidden>
           <div class="row"><span>Beregn antal automatisk</span><label class="switch"><input type="checkbox" id="bauto" aria-label="Beregn antal projektorer automatisk"><span></span></label></div>
@@ -203,13 +203,14 @@
 
       <section class="view">
         <div class="vhead">
-          <h2><span class="no">09</span>Lokalet set bagfra</h2><span class="cap">mål på lærredsvæggen er i målestok · træk i lærredet for at flytte det</span><span class="sp"></span>
+          <h2><span class="no">09</span>Lokalet set bagfra</h2><span class="cap">mål på lærredsvæggen er i målestok · træk i lærredet eller projektoren for at flytte dem</span><span class="sp"></span>
           <div class="vtools"><div class="sunbar" id="sunBar">
             <label class="switch" title="Sollys til/fra"><input type="checkbox" id="sunOn" aria-label="Medregn sollys"><span></span></label>
             <svg id="compass" viewBox="-30 -30 60 60" width="52" height="52" role="button" tabindex="0" aria-label="Kompas: klik i den retning lærredet vender mod publikum"></svg>
             <div class="sunctl"><div class="suntop"><span id="sunTime">–</span><select id="sunWin" aria-label="Vinduer"><option value="left">Vindue: venstre</option><option value="right">Vindue: højre</option><option value="sides">Vindue: sider</option><option value="none">Vindue: ingen</option><option value="custom">Vindue: custom</option></select></div>
               <div class="sunrow"><span class="hint">☀ op</span><input type="range" id="sunT" min="0" max="1000" step="1" aria-label="Solens position fra solopgang til solnedgang"><span class="hint">ned</span></div></div>
           </div>
+          <button type="button" class="btn" id="pjCenter" title="Centrér projektoren på lærredet (lens shift 0)">Centrér</button>
           <div class="seg" role="group" aria-label="Indhold på lærredet">
             <button type="button" data-content="none" aria-pressed="true">Lærred</button>
             <span class="tpdd"><button type="button" id="tpBtn" data-content="test" aria-pressed="false" aria-haspopup="menu" aria-expanded="false">Testbillede<span class="car" aria-hidden="true">▾</span></button>
