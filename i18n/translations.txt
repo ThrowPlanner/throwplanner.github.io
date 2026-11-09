@@ -835,3 +835,4 @@ rum bredde # m|room width # m|部屋の幅 # m
 længde # m|length # m|長さ # m
 målestok # m|scale # m|縮尺 # m
 skriv længden|enter the length|長さを入力
+vandret FOV #°|horizontal FOV #°|水平FOV #°
