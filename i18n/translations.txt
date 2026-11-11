@@ -845,5 +845,10 @@ vandret FOV #°|horizontal FOV #°|水平FOV #°
 Billedflade|Image Canvas|画像キャンバス
 Edge Blend|Edge Blend|エッジブレンド
 Centrér|Center|中央
-Centrér projektoren på lærredet (lens shift 0)|Center the projector on the screen (lens shift 0)|プロジェクターをスクリーン中央に戻す（レンズシフト0）
+Centrér projektoren på lærredet (lens shift #)|Center the projector on the screen (lens shift #)|プロジェクターをスクリーン中央に戻す（レンズシフト#）
+Zoom ind på lærredet|Zoom in on the screen|スクリーンを拡大
+projektorer kolliderer|projectors collide|プロジェクターが干渉
+uden for zoom|outside zoom|ズーム範囲外
+kortest mulige kast er # m med denne projektor|shortest possible throw is # m with this projector|このプロジェクターでの最短投写距離は # m
+længst mulige kast er # m med denne projektor|longest possible throw is # m with this projector|このプロジェクターでの最長投写距離は # m
 træk i lærredet eller projektoren for at flytte dem|drag the screen or projector to move them|スクリーンまたはプロジェクターをドラッグして移動
