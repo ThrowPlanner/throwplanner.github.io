@@ -304,6 +304,8 @@ Passer|Fits|適合
 For tæt|Too close|近すぎ
 For langt|Too far|遠すぎ
 Tæt på:|Close:|近い：
+Se projektorer og optik der passer ↓|See projectors and lenses that fit ↓|適合するプロジェクターとレンズを見る ↓
+Forslag der passer – klik for at vælge:|Suggestions that fit – click to select:|適合する候補 – クリックで選択：
 Vis alle løsninger|Show all solutions|すべての解決策を表示
 · # passer|· # fit|· # 件適合
 Resultater|Results|結果

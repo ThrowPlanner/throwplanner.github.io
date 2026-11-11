@@ -281,6 +281,8 @@ $('front').addEventListener('click',e=>{const t=e.target.closest&&e.target.close
  $('compass').addEventListener('click',setFace);$('compass').addEventListener('keydown',e=>{if(e.key==='ArrowRight'||e.key==='ArrowLeft'){S.sun.face=(S.sun.face+(e.key==='ArrowRight'?15:345))%360;render();e.preventDefault()}})}
 function pickRow(tr){if(!tr)return;S.pcr=null;keepLocked(()=>{S.mi=+tr.dataset.mi;S.li=+tr.dataset.li});fillLens();frameDefaults();fitLens();zeroShift();render()}
 $('solCur').addEventListener('click',e=>pickRow(e.target.closest('tr[data-mi]')));
+// boks 01: «Passer ikke» med låste mål → åbn boks 11 med alle løsninger og ryk ned til den
+$('sizeHint').addEventListener('click',e=>{if(!e.target.closest('#solGo'))return;S.solOpen=true;S.openSol=true;render();$('solView').scrollIntoView({behavior:'smooth',block:'start'})});
 $('dSol').addEventListener('toggle',e=>{S.openSol=e.target.open;save()});
 $('solView').addEventListener('toggle',e=>{if(e.target.open!==(S.solOpen!==false)){S.solOpen=e.target.open;save()}});
 $('dCr').addEventListener('toggle',e=>{S.openCr=e.target.open;save()});

@@ -85,13 +85,14 @@ function render(){
   const LK=(S.lockL||S.lockW)?(()=>{const ok=r.zoomOK&&r.sizeOK,lo=Math.min(r.Lw,r.Lt),hi=Math.max(r.Lw,r.Lt),c=ok?'var(--ok)':'var(--bad)';
      const need=r.fixed?`${f3(r.Lw)} m`:`${f3(lo)}–${f3(hi)} m`;
      const what=S.lockL&&S.lockW?`${f3(S.L)} m og ${f3(S.cw)} m bredde`:S.lockL?`afstand ${f3(S.L)} m`:`bredde ${f3(S.cw)} m`;
-     return `<span style="display:block;margin-bottom:4px;color:${c};font-weight:600">${ok?'Passer':'Passer ikke'}: ${what}${ok?'':` – med denne optik skal afstanden være ${need} for ${f3(S.cw)} m bredde`}</span>`})():'';
+     return `<span style="display:block;margin-bottom:4px;color:${c};font-weight:600">${ok?'Passer':'Passer ikke'}: ${what}${ok?'':` – med denne optik skal afstanden være ${need} for ${f3(S.cw)} m bredde`}</span>`+
+       (ok||S.venue==='immersive'?'':`<button type="button" class="btn solgo" id="solGo">Se projektorer og optik der passer ↓</button>`)})():'';
   // låst afstand: optikker til den valgte projektor, der giver billedet ved den låste afstand
   const LS=S.lockL&&S.venue!=='immersive'?(()=>{const m=r.m;let ai=aiFor(m);if(ai<0)ai=0;const D=r.D,fits=[];
     m.L.forEach((l,li)=>{const row=l[2][ai];if(!row||!(row[0]>0))return;const fx=l[1]==='F',a=distAt(row,D,0),b=distAt(row,D,1);
       const sizeOK=D>=row[4]-.5&&D<=row[5]+.5,z=fx?0:zoomFor(row,D,S.L);const ok=sizeOK&&(fx?Math.abs(S.L-a)<=.015*a:(z>=-0.002&&z<=1.002));
       if(ok)fits.push({li,l,z,fx})});
-    const btn=f=>`<button type="button" class="lsug${f.li===S.li?' cur':''}" data-lsug="${f.li}">${f.l[0]} · ${f.fx?'fast':Math.round(f.z*100)+' %'}</button>`;
+    const btn=f=>`<button type="button" class="lsug${f.li===S.li?' cur':''}" data-lsug="${f.li}">${f.l[0]} · ${f.fx?'fast':Math.round(f.z*100)+' % zoom'}</button>`;
     return `<span class="lsugbox"><b class="notr">${m.m.split(' (')[0]}</b><br>${fits.length?`Passende optik ved ${f3(S.L)} m og ${f3(r.W)} m bredde:`:`Ingen passende optik ved ${f3(S.L)} m og ${f3(r.W)} m bredde.`}${fits.length?'<span class="lsugs">'+fits.map(btn).join('')+'</span>':''}</span>`})():'';
   $('sizeHint').innerHTML=LK+LS+(CLAMP?`<span style="color:var(--warn)">${CLAMP}</span>`:'')+(planActive()?'<b>Bredden er koblet til lærredet på plantegningen.</b> ':'')+(S.blend?`Samlet billede. Pr. projektor: <b>${f3(r.W)} × ${f3(r.H)} m</b> (${fi(r.D)}″).`:
     `${r.fixed?'Billedstørrelse':'Maksimal billedstørrelse'} ved ${f3(S.L)} m: <b>${f3(wpr)} × ${f3(wpr*r.H/r.W)} m</b> (${fi(Math.hypot(wpr,wpr*r.H/r.W)/0.0254)}″)`);
