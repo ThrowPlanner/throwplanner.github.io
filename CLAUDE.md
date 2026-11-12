@@ -39,6 +39,7 @@ Jura: produktbilleder vises direkte fra Panasonics TDC-server (kopiér dem aldri
 | Løsninger (boks 11) | `15-solutions.js` |
 | Projektfil (JSON) | `17-project-file.js` |
 | Quick Guide (rundvisning) | `src/js/19-quick-guide.js` (trin i `STEPS`), knap `#qgBtn` i `src/page.html`, `.qg*` i `src/styles.css` |
+| Warping (TEST) – tema kun i Avanceret | `src/warp.html` (selvstændig side med egen kode/stil, kun engelsk; bygges til `dist/site/warp.html` og vises i en ramme), `src/js/25-warp.js` (rammen), `web/warp-three.js` (three.js r128 lokalt), knap `data-venue="warp"` i `src/page.html`. Ikke med i én-fils-artifactet. Free Grid-tabellen (`geoLevel`) følger Panasonics liste fra maj 2024. |
 | Oversættelser | `i18n/translations.txt` |
 | Layout og design | `src/page.html`, `src/styles.css` |
 

@@ -2,7 +2,7 @@
 """Byg Throw Planner.
 
 Samler src/ (page.html + styles.css + js/*.js i navneorden), data/ og i18n/ til:
-  dist/site/      – hjemmesiden (index.html, sw.js, manifest, ikoner, pdfexport.js) – det GitHub Pages viser
+  dist/site/      – hjemmesiden (index.html, warp.html, sw.js, manifest, ikoner, pdfexport.js) – det GitHub Pages viser
   dist/artifact.html – én-fils-udgaven til Claude-artifactet
 
 Kør:  python tools/build.py          (kun Python 3 – ingen andre programmer)
@@ -56,6 +56,8 @@ BOOT = "/*@boot*/render();"
 GFONTS = '''<link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap">'''
 PDFJS_CDN = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/'
+# temaet «Warping (TEST)» er en selvstændig side (src/warp.html) i en ramme – kun på hjemmesiden, ikke i én-fils-artifactet
+WARP_BTN = '      <button type="button" data-venue="warp" aria-pressed="false" class="notr">Warping (TEST)</button>\n'
 
 def main():
     s = page()
@@ -65,12 +67,16 @@ def main():
     # (produktbillederne vises direkte fra Panasonics server – de kopieres ikke ind)
     assert s.count(BOOT) == 1 and s.count(GFONTS) == 1 and PDFJS_CDN in s
     s = s.replace(GFONTS, '<link rel="stylesheet" href="fonts.css">').replace(PDFJS_CDN, '')
-    with open(p('dist', 'artifact.html'), 'w', encoding='utf-8', newline='\n') as f: f.write(s)
+    assert s.count(WARP_BTN) == 1
+    with open(p('dist', 'artifact.html'), 'w', encoding='utf-8', newline='\n') as f: f.write(s.replace(WARP_BTN, ''))
     # hjemmesiden: service worker registreres, fuldt HTML-dokument
     w = s.replace(BOOT, "render();\nif('serviceWorker' in navigator&&(location.protocol==='https:'||location.hostname==='localhost'))navigator.serviceWorker.register('sw.js').catch(()=>{});")
     j = w.index('</style>') + len('</style>')
     index = HEAD + w[:j] + '\n</head>\n<body>\n' + w[j:] + '\n</body>\n</html>\n'
     with open(os.path.join(site, 'index.html'), 'w', encoding='utf-8', newline='\n') as f: f.write(index)
+    warp = read('src', 'warp.html')
+    assert warp.count('/*__CATALOG__*/') == 1 and 'googleapis' not in warp and 'cdnjs' not in warp and 'jsdelivr' not in warp
+    with open(os.path.join(site, 'warp.html'), 'w', encoding='utf-8', newline='\n') as f: f.write(warp.replace('/*__CATALOG__*/', read('data', 'catalog.json')))
     for fn in os.listdir(p('web')):
         if fn != 'sw.js': shutil.copy(p('web', fn), os.path.join(site, fn))
     # cache-navnet skifter automatisk, når index.html ændrer sig – så brugerne altid får den nye version

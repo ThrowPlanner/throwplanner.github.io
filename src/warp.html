@@ -1,0 +1,476 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex">
+<title>Throw Planner – Warping (TEST)</title>
+<!-- Tema «Warping (TEST)»: selvstændig side, der vises i en ramme i appen (src/js/25-warp.js).
+     Bygges af tools/build.py til dist/site/warp.html; three.js ligger lokalt i web/warp-three.js. -->
+<link rel="stylesheet" href="fonts.css">
+<style>
+/* Layout: same language as the Throw Planner app – numbered cards, controls left, 3D room and projector output right. */
+:root{
+  --bg:#252A31;--surface2:#2B3139;--ink:#E9EDF2;--muted:#9CA6B2;--faint:#68727E;--line:#343B44;
+  --beam:#FF9840;--beam-soft:rgba(255,152,64,.13);--dim:#79C2FF;--ok:#4FD49C;--bad:#FF7C68;--warn:#F1CB5A;--hi:#2F353E;--lo:#1A1E23;--view:#12161B;
+  --f-body:"Manrope",system-ui,-apple-system,"Segoe UI",sans-serif;--f-mono:"JetBrains Mono",ui-monospace,Consolas,monospace;
+  color-scheme:dark;
+}
+@media (prefers-color-scheme: light){:root:not([data-theme="dark"]){
+  --bg:#E2E5EA;--surface2:#E8EBEF;--ink:#232A33;--muted:#5E6875;--faint:#98A1AC;--line:#CDD2D9;
+  --beam:#EE7A1E;--beam-soft:rgba(238,122,30,.12);--dim:#1F6FB5;--ok:#17834F;--bad:#C23A22;--warn:#8E6B00;--hi:#FFFFFF;--lo:#BEC4CC;--view:#12161B;color-scheme:light}}
+:root[data-theme="light"]{
+  --bg:#E2E5EA;--surface2:#E8EBEF;--ink:#232A33;--muted:#5E6875;--faint:#98A1AC;--line:#CDD2D9;
+  --beam:#EE7A1E;--beam-soft:rgba(238,122,30,.12);--dim:#1F6FB5;--ok:#17834F;--bad:#C23A22;--warn:#8E6B00;--hi:#FFFFFF;--lo:#BEC4CC;--view:#12161B;color-scheme:light}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:14.5px/1.45 var(--f-body);padding:10px 10px 24px}
+[hidden]{display:none!important}
+button,input,select{font:inherit;color:inherit}
+:focus-visible{outline:2px solid var(--beam);outline-offset:2px}
+.top{display:flex;flex-wrap:wrap;align-items:flex-end;gap:6px 18px;margin-bottom:14px}
+h1{font-weight:800;font-size:26px;letter-spacing:-.01em;margin:0;line-height:1}
+.tagl{font-family:var(--f-mono);font-size:11.5px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted)}
+.wrap{display:grid;grid-template-columns:350px minmax(0,1fr);gap:14px;align-items:start}
+.col{display:flex;flex-direction:column;gap:14px;min-width:0}
+.card{background:var(--surface2);border-radius:14px;padding:14px 16px;box-shadow:-3px -3px 8px var(--hi),4px 4px 10px var(--lo);min-width:0}
+.card h3{display:flex;flex-wrap:wrap;align-items:center;gap:10px;margin:0 0 10px;font-weight:700;font-size:15px}
+.no{font-family:var(--f-mono);font-size:11px;font-weight:600;color:var(--beam);border:1px solid var(--beam);border-radius:4px;padding:1px 5px;letter-spacing:.05em}
+.h3r{margin-left:auto;font-weight:400;font-size:12.5px;color:var(--muted);display:flex;align-items:center;gap:6px}
+.f{display:grid;grid-template-columns:104px minmax(0,1fr) 64px;align-items:center;gap:8px;margin-top:7px}
+.f.two{grid-template-columns:104px minmax(0,1fr)}
+.f label{color:var(--muted);font-size:13px}
+.f output{font-family:var(--f-mono);font-size:12.5px;text-align:right;font-variant-numeric:tabular-nums;white-space:nowrap}
+.f input[type=range]{width:100%;accent-color:var(--beam);min-width:0}
+select{width:100%;background:var(--bg);border:1px solid var(--line);border-radius:7px;padding:6px 8px;min-width:0}
+select+select{margin-top:7px}
+.xyz{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;margin-top:9px}
+.xyz label{font-size:12px;color:var(--muted);display:flex;flex-direction:column;gap:3px}
+.xyz input{width:100%;background:var(--bg);border:1px solid var(--line);border-radius:7px;padding:6px 8px;font-family:var(--f-mono);font-size:13px;text-align:right;min-width:0}
+.btn{background:var(--bg);border:1px solid var(--line);border-radius:7px;padding:6px 12px;cursor:pointer;font-size:13px}
+.btn:hover{border-color:var(--beam)}
+.btn[aria-pressed=true]{background:var(--beam);border-color:var(--beam);color:#1b1206;font-weight:700}
+.btn:disabled{opacity:.45;cursor:default}
+.row{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin-top:9px}
+.pcs{display:flex;flex-wrap:wrap;gap:6px}
+.pc{width:32px;height:32px;border-radius:8px;border:2px solid var(--c);background:var(--bg);font-family:var(--f-mono);font-weight:600;cursor:pointer}
+.pc[aria-pressed=true]{background:var(--c);color:#10151b}
+.pc.pri{outline:2px solid var(--ink);outline-offset:2px}
+.hint{color:var(--muted);font-size:12.5px;margin:8px 0 0}
+.chip{display:inline-block;font-family:var(--f-mono);font-size:11px;border:1px solid var(--line);border-radius:999px;padding:1px 8px;color:var(--muted)}
+.chip.ok{color:var(--ok);border-color:var(--ok)}.chip.warn{color:var(--warn);border-color:var(--warn)}
+#view{display:block;width:100%;border-radius:10px;background:var(--view);touch-action:none;cursor:grab}
+.split{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:14px}
+#out{display:block;width:100%;height:auto;border-radius:8px;background:#000;border:1px solid var(--line)}
+.vd{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:9px}
+.vd li{border-left:3px solid var(--ok);padding:1px 0 1px 10px}
+.vd li.warn{border-color:var(--warn)}.vd li.bad{border-color:var(--bad)}
+.tw{overflow-x:auto;margin-top:12px}
+table{border-collapse:collapse;width:100%;font-size:12.5px}
+th{font-weight:500;color:var(--muted);text-align:left;padding:3px 10px 5px 0;white-space:nowrap}
+td{padding:5px 10px 5px 0;border-top:1px solid var(--line);white-space:nowrap}
+td.n,th.n{text-align:right;font-family:var(--f-mono);font-variant-numeric:tabular-nums}
+td i{display:inline-block;width:10px;height:10px;border-radius:3px;background:var(--c);margin-right:6px}
+td.bad{color:var(--bad);white-space:normal;min-width:160px}
+tr[data-sel]{cursor:pointer}tr.cur td{background:var(--beam-soft)}
+.facts{margin:0;padding-left:18px;display:flex;flex-direction:column;gap:6px;max-width:75ch}
+.foot{color:var(--muted);font-size:12.5px;margin-top:16px;max-width:85ch}
+#err{color:var(--bad);font-size:13px;margin:8px 0 0}
+@media (max-width:900px){.wrap{grid-template-columns:minmax(0,1fr)}.col.right{order:-1}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="col">
+    <section class="card">
+      <h3><span class="no">W1</span>3D model</h3>
+      <div class="f two"><label for="ex">Example</label><select id="ex"><option value="castle">Castle</option><option value="set">Stage set</option></select></div>
+      <div class="row"><input type="file" id="file" accept=".glb,.obj,.stl" aria-label="Load your own 3D model (GLB, OBJ or STL)"></div>
+      <p class="hint" id="modelInfo"></p>
+      <p id="err" hidden></p>
+      <div class="f"><label for="k_size">Largest side</label><input type="range" id="k_size" data-k="size" min="0.3" max="80" step="0.1"><output data-o="size" data-u=" m" data-d="1"></output></div>
+      <div class="row"><button class="btn" type="button" id="turn">Turn 90°</button><button class="btn" type="button" id="zup" aria-pressed="false">Z is up</button><button class="btn" type="button" id="calc" aria-pressed="true">Calculate</button></div>
+      <p class="hint" id="calcMsg">Calculate works out how many of the chosen projector the model needs, places them, picks lenses and warps the picture.</p>
+    </section>
+    <section class="card">
+      <h3><span class="no">W2</span>Projectors<span class="h3r" id="pjCount"></span></h3>
+      <div class="pcs" id="pcs"></div>
+      <p class="hint">Click a number to select a projector. Hold Ctrl and click to select several; they then move together, and model, portrait, fit and remove apply to all of them.</p>
+      <div class="row"><button class="btn" type="button" id="add">Add</button><button class="btn" type="button" id="del">Remove</button><button class="btn" type="button" id="copy">Same model for all</button></div>
+      <div class="f"><label for="k_ld">Place at</label><input type="range" id="k_ld" data-k="ld" min="1" max="150" step="0.5"><output data-o="ld" data-u=" m" data-d="1"></output></div>
+      <div class="f"><label for="k_lh">Lens height</label><input type="range" id="k_lh" data-k="lh" min="0.1" max="40" step="0.1"><output data-o="lh" data-u=" m" data-d="1"></output></div>
+      <div class="f"><label for="k_ov">Blend overlap</label><input type="range" id="k_ov" data-k="ov" min="0" max="0.5" step="0.01"><output data-o="ov" data-u=" %" data-d="0" data-x="100"></output></div>
+      <div class="row"><button class="btn" type="button" id="sp360">Place all around</button><button class="btn" type="button" id="sp120">Place across the front</button></div>
+      <p class="hint">Placing cuts the model's outline into fields, one projector per field, and turns a projector to portrait when its field is taller than wide. Blend overlap is the share of each picture that is shared with its neighbour and faded out; changing it places the projectors again.</p>
+    </section>
+    <section class="card">
+      <h3><span class="no">W3</span><span id="curTitle">Projector 1</span></h3>
+      <select id="selM" aria-label="Projector model"></select><select id="selL" aria-label="Lens"></select>
+      <div class="row"><span class="chip" id="geo"></span></div>
+      <div class="xyz"><label>X <input type="number" id="px" step="0.1"></label><label>Height <input type="number" id="py" step="0.1"></label><label>Z <input type="number" id="pz" step="0.1"></label></div>
+      <div class="f"><label for="k_dist">Distance</label><input type="range" id="k_dist" data-k="cur.dist" min="1" max="150" step="0.1"><output data-o="cur.dist" data-u=" m" data-d="1"></output></div>
+      <div class="f"><label for="k_az">Angle</label><input type="range" id="k_az" data-k="cur.az" min="-180" max="180" step="1"><output data-o="cur.az" data-u="°" data-d="0"></output></div>
+      <div class="f"><label for="k_h">Lens height</label><input type="range" id="k_h" data-k="cur.h" min="0.1" max="40" step="0.1"><output data-o="cur.h" data-u=" m" data-d="1"></output></div>
+      <div class="f"><label for="k_ax">Aim sideways</label><input type="range" id="k_ax" data-k="cur.ax" min="-40" max="40" step="0.1"><output data-o="cur.ax" data-u=" m" data-d="1"></output></div>
+      <div class="f"><label for="k_ay">Aim up/down</label><input type="range" id="k_ay" data-k="cur.ay" min="-20" max="20" step="0.1"><output data-o="cur.ay" data-u=" m" data-d="1"></output></div>
+      <div class="f"><label for="k_tilt">Tilt</label><input type="range" id="k_tilt" min="-80" max="80" step="0.5"><output id="o_tilt"></output></div>
+      <div class="f"><label for="k_pan">Pan</label><input type="range" id="k_pan" min="-80" max="80" step="0.5"><output id="o_pan"></output></div>
+      <div class="f"><label for="k_roll">Roll</label><input type="range" id="k_roll" data-k="cur.roll" min="-45" max="45" step="0.5"><output data-o="cur.roll" data-u="°" data-d="1"></output></div>
+      <div class="f"><label for="k_zoom">Zoom</label><input type="range" id="k_zoom" data-k="cur.zoom" min="0" max="1" step="0.01"><output data-o="cur.zoom" data-u=" %" data-d="0" data-x="100"></output></div>
+      <div class="f"><label for="k_sv">Shift up/down</label><input type="range" id="k_sv" data-k="cur.sv" min="-1.2" max="1.2" step="0.01"><output data-o="cur.sv" data-u=" %" data-d="0" data-x="100"></output></div>
+      <div class="f"><label for="k_sh">Shift sideways</label><input type="range" id="k_sh" data-k="cur.sh" min="-0.8" max="0.8" step="0.01"><output data-o="cur.sh" data-u=" %" data-d="0" data-x="100"></output></div>
+      <div class="row"><button class="btn" type="button" id="port" aria-pressed="false">Portrait</button><button class="btn" type="button" id="fit">Pick lens and fit picture</button></div>
+    </section>
+    <section class="card">
+      <h3><span class="no">W4</span>Audience and content</h3>
+      <div class="f two"><label for="k_map">Picture is</label><select id="k_map" data-k="map">
+        <option value="1">Straight for the audience (warped)</option><option value="0">Sent flat from each projector (no warp)</option><option value="2">Wrapped on the model's own UV</option></select></div>
+      <div class="f"><label for="k_vd">Audience at</label><input type="range" id="k_vd" data-k="v.dist" min="1" max="150" step="0.1"><output data-o="v.dist" data-u=" m" data-d="1"></output></div>
+      <div class="f"><label for="k_va">Angle</label><input type="range" id="k_va" data-k="v.az" min="-180" max="180" step="1"><output data-o="v.az" data-u="°" data-d="0"></output></div>
+      <div class="f"><label for="k_vh">Eye height</label><input type="range" id="k_vh" data-k="v.h" min="0.3" max="15" step="0.05"><output data-o="v.h" data-u=" m" data-d="2"></output></div>
+      <div class="f"><label for="k_amb">Room light</label><input type="range" id="k_amb" data-k="amb" min="0" max="1" step="0.02"><output data-o="amb" data-u=" %" data-d="0" data-x="100"></output></div>
+      <div class="row"><label class="btn" for="img" style="cursor:pointer">Use my own picture</label><input type="file" id="img" accept="image/*" hidden><button class="btn" type="button" id="pat">Test pattern</button>
+        <label class="h3r" style="margin-left:0"><input type="checkbox" id="k_blend" data-k="blend"> Blend overlaps</label></div>
+    </section>
+  </div>
+
+  <div class="col right">
+    <section class="card" id="w5">
+      <h3><span class="no">W5</span>The site in 3D<span class="h3r"><button class="btn" type="button" id="vAud">Audience view</button><button class="btn" type="button" id="vFree">Overview</button><button class="btn" type="button" id="vTop">From above</button></span></h3>
+      <canvas id="view" aria-label="3D view of the model, the projectors and the projected picture"></canvas>
+      <div class="row"><button class="btn" type="button" data-giz="pj" aria-pressed="true">Move projector</button><button class="btn" type="button" data-giz="rot" aria-pressed="false">Tilt and pan</button><button class="btn" type="button" data-giz="aim" aria-pressed="false">Move aim point</button><button class="btn" type="button" data-giz="off" aria-pressed="false">Hide handles</button></div>
+      <p class="hint">Drag an arrow to move the selected projector along one axis (red X, green height, blue Z), or a small square to move in a plane. «Tilt and pan» swaps the arrows for rings: drag a ring to tilt the projector up or down or pan it sideways. Click a projector's number to select it. Drag elsewhere to orbit, scroll to zoom, right-drag to pan. With the mouse over this box the arrow keys turn the camera around the model, Shift + arrows slide it sideways and up or down, and + and − zoom. The white marker is the audience.</p>
+    </section>
+    <div class="split">
+      <section class="card">
+        <h3><span class="no">W6</span><span id="outTitle">What projector 1 must send</span></h3>
+        <canvas id="out" width="640" height="400" aria-label="The pre-warped frame for the selected projector"></canvas>
+        <div class="f two"><label for="k_grid">Warp grid</label><select id="k_grid" data-k="grid">
+          <option value="0">Off</option><option value="9x9">9 × 9</option><option value="17x17">17 × 17 – Free Grid maximum</option><option value="41x26">41 × 26 – upgrade kit maximum</option></select></div>
+        <p class="hint" id="gridNote"></p>
+      </section>
+      <section class="card">
+        <h3><span class="no">W7</span>Does it work</h3>
+        <ul class="vd" id="vd"></ul>
+      </section>
+    </div>
+    <section class="card">
+      <h3><span class="no">W8</span>Every projector</h3>
+      <div class="tw" style="margin-top:0"><table id="tbl"></table></div>
+    </section>
+    <section class="card">
+      <h3><span class="no">W9</span>How Panasonic projectors warp</h3>
+      <ul class="facts">
+        <li><b>Geometric Adjustment</b> is built into the projector and run from the remote: corner adjustment, keystone and curved correction for pillars, cylinders and spheres.</li>
+        <li><b>Free Grid</b> is built into selected models. A grid of 2 × 2 up to 17 × 17 lines is laid over the picture and each node is moved until the picture sits right on the surface.</li>
+        <li><b>Geometry Manager Pro</b> is free Windows software that does the same from a laptop over Ethernet. It is now part of Panasonic's Visual Software Suite.</li>
+        <li>The <b>ET-UK20</b> upgrade kit raised the grid to as many as 41 × 26 lines and added masking. Panasonic states that ET-UK20 and ET-CUK10 are discontinued in the second quarter of 2026.</li>
+        <li>A grid bends a flat picture smoothly. Sharp steps in depth on a 3D object cannot be followed by any grid. For those the picture must be rendered from the projector's own position, as box W6 does, and played out by a media server.</li>
+      </ul>
+    </section>
+  </div>
+</div>
+<p class="foot">Test theme: a planning aid, not a guarantee. Throw data comes unchanged from the Throw Planner catalog; the light cone starts where the throw formula puts it. Projectors are aimed straight at the model's centre and may be tilted, since warping removes the keystone. Model support for Geometric Adjustment and Free Grid follows Panasonic's compatibility table dated May 2024; models missing from that table are shown as not listed. Brightness in the 3D view is relative, not measured. Nothing is uploaded: the model file stays in your browser.</p>
+
+<script src="warp-three.js"></script>
+<script>
+const CAT=/*__CATALOG__*/;
+const IN=0.0254,RAD=Math.PI/180,NP=12,IDX=[...Array(NP).keys()];
+const COLS=['#FF9840','#79C2FF','#4FD49C','#F58ACB','#F1CB5A','#B39BFF','#5FD6D6','#FF7C68','#A9D86E','#E0A27A','#8FA8FF','#D9D9D9'];
+const ratioOf=s=>{const m=s.match(/(\d+(?:\.\d+)?)\s*:\s*(\d+(?:\.\d+)?)/);return [+m[1],+m[2]]};
+function inPoly(x,y,P){let c=false;for(let i=0,j=P.length-1;i<P.length;j=i++){const[xi,yi]=P[i],[xj,yj]=P[j];if(((yi>y)!==(yj>y))&&(x<(xj-xi)*(y-yi)/(yj-yi)+xi))c=!c}return c}
+function onEdge(x,y,P){const e=1e-6;return P.some(([px,py],i)=>{const[qx,qy]=P[(i+1)%P.length];const cr=(qx-px)*(y-py)-(qy-py)*(x-px);return Math.abs(cr)<e&&x>=Math.min(px,qx)-e&&x<=Math.max(px,qx)+e&&y>=Math.min(py,qy)-e&&y<=Math.max(py,qy)+e})}
+function shiftOK(sh,sv,P){if(!P.length)return Math.abs(sh)<.01&&Math.abs(sv)<.01;return [[-.5,-.5],[.5,-.5],[.5,.5],[-.5,.5]].every(([a,b])=>inPoly(sh+a,sv+b,P)||onEdge(sh+a,sv+b,P))}
+const MODELS=CAT.models.map(m=>({...m,lum:m.lc||m.lm||0,dim:m.dim&&m.dim.length===3?m.dim:[400,150,350],res:m.res&&m.res.length===2?m.res:[1920,1200],
+  L:m.L.filter(l=>l[2].length&&l[2][0]&&l[2][0][0]>0)})).filter(m=>m.L.length);
+/* Panasonic compatibility table (May 2024): 2 = Geometric Adjustment with Free Grid, 1 = Geometric Adjustment + Geometry Manager Pro, 0 = not in the table */
+const geoLevel=n=>/RQ50K|RQ35K|RZ34K|RQ25K|RZ24K|RQ18K|RZ17K|RE[QZ](15|12|10|80)|FR[QZ](60|50)|MZ(20|17|14|11)K/.test(n)?2:/MZ[678]82/.test(n)?1:0;
+const GEO=['Not in Panasonic\'s geometry table','Geometric Adjustment, no Free Grid','Free Grid up to 17 × 17'];
+
+const $=id=>document.getElementById(id);
+const esc=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const f=(v,d=2)=>Number(v).toFixed(d),n0=v=>Math.round(v).toLocaleString('en-US'),clamp=(v,a,b)=>Math.min(b,Math.max(a,v));
+const mIdx=re=>Math.max(0,MODELS.findIndex(m=>re.test(m.m)));
+const newPj=(mi,az)=>({mi,li:0,dist:6,az,h:2.4,zoom:.5,sv:0,sh:0,ax:0,ay:0,roll:0,span:0,port:false});
+const S={ld:8,lh:2,ov:.15,arc:360,size:3,turn:0,zup:false,map:1,amb:.25,blend:true,grid:'17x17',sel:0,v:{dist:9,az:0,h:1.6},pj:[newPj(mIdx(/REQ12/),0)]};
+const root=k=>k[0]==='cur'?[S.pj[S.sel],k.slice(1)]:[S,k];
+const getP=k=>{const[o,a]=root(k.split('.'));return a.reduce((x,p)=>x[p],o)};
+const setP=(k,v)=>{const[o,a]=root(k.split('.')),l=a.pop();a.reduce((x,p)=>x[p],o)[l]=v};
+
+/* ---- three.js scene ---- */
+const cv=$('view'),renderer=new THREE.WebGLRenderer({canvas:cv,antialias:true});
+renderer.setPixelRatio(Math.min(2,window.devicePixelRatio||1));
+const scene=new THREE.Scene(),cam=new THREE.PerspectiveCamera(40,1.6,.05,1500);
+const orbit=new THREE.OrbitControls(cam,cv);orbit.addEventListener('change',()=>paint());
+const helpers=new THREE.Group(),pjHelp=new THREE.Group(),holder=new THREE.Group();scene.add(helpers,holder);helpers.add(pjHelp);
+helpers.add(new THREE.GridHelper(300,150,0x4a5562,0x262d34));
+/* move handles, as in 3D programs: arrows for one axis, squares for a plane */
+const grip=new THREE.Object3D(),tc=new THREE.TransformControls(cam,cv);helpers.add(grip,tc);tc.attach(grip);tc.setSpace('world');tc.setSize(.9);let GIZ='pj',dragging=false;
+tc.addEventListener('dragging-changed',e=>{dragging=e.value;orbit.enabled=!e.value;if(!e.value)update()});
+tc.addEventListener('change',()=>paint());
+tc.addEventListener('objectChange',()=>{if(GIZ==='rot')rotSel();else moveSel(grip.position,GIZ==='aim');update()});
+/* tilt and pan are the angles of the line from the lens to the aim point: tilt up from level, pan right of the model's centre */
+function aimAngles(i){const o=OPT[i],p=S.pj[i],d=o.target.clone().sub(o.lens);return [Math.atan2(d.y,Math.hypot(d.x,d.z))/RAD,Math.atan2(p.ax,p.dist)/RAD]}
+function setAngles(i,tilt,pan){const p=S.pj[i];tilt=clamp(tilt,-80,80);pan=clamp(pan,-80,80);p.ax=clamp(p.dist*Math.tan(pan*RAD),-150,150);p.ay=p.h+Math.tan(tilt*RAD)*Math.hypot(p.dist,p.ax)-C.y}
+function rotSel(){const p=S.pj[S.sel],a=p.az*RAD,d=new THREE.Vector3(0,0,-1).applyQuaternion(grip.quaternion),[t0,p0]=aimAngles(S.sel);
+  const dt=Math.asin(clamp(d.y,-1,1))/RAD-t0,dp=Math.atan2(d.dot(rightOf(a)),-d.dot(dirOf(a)))/RAD-p0;for(const i of MULTI){const[t,q]=aimAngles(i);setAngles(i,t+dt,q+dp)}}
+function moveAim(T,i=S.sel){const p=S.pj[i],d=T.clone().sub(C);p.ax=clamp(d.dot(rightOf(p.az*RAD)),-150,150);p.ay=clamp(d.y,-60,60)}
+function movePj(x,y,z,i=S.sel){const p=S.pj[i],T=OPT[i]?OPT[i].target.clone():C.clone();p.dist=Math.max(.2,Math.hypot(x,z));p.az=Math.atan2(x,z)/RAD;p.h=Math.max(.05,y);moveAim(T,i)}
+/* several selected projectors move together: the same step is applied to each of them */
+let MULTI=new Set([0]);
+function moveSel(pos,aim){const d=pos.clone().sub(aim?OPT[S.sel].target:OPT[S.sel].lens);for(const i of MULTI){if(aim)moveAim(OPT[i].target.clone().add(d),i);else{const L=OPT[i].lens.clone().add(d);movePj(L.x,L.y,L.z,i)}}}
+function pick(i,add){if(add){if(MULTI.has(i)&&MULTI.size>1){MULTI.delete(i);if(S.sel===i)S.sel=[...MULTI][MULTI.size-1]}else{MULTI.add(i);S.sel=i}}else{S.sel=i;MULTI=new Set([i])}update()}
+const PCAM=IDX.map(()=>new THREE.Camera()),vcam=new THREE.PerspectiveCamera(30,1.6,.1,1500),tcam=new THREE.PerspectiveCamera(40,1.6,.1,1500);
+const DRT=[],drt=i=>DRT[i]||(DRT[i]=new THREE.WebGLRenderTarget(1024,1024,{minFilter:THREE.NearestFilter,magFilter:THREE.NearestFilter}));
+const depthMat=new THREE.MeshDepthMaterial({depthPacking:THREE.RGBADepthPacking,side:THREE.DoubleSide});
+let outRT=new THREE.WebGLRenderTarget(640,400);const maskRT=new THREE.WebGLRenderTarget(160,100),blank=new THREE.DataTexture(new Uint8Array([255,255,255,255]),1,1,THREE.RGBAFormat);blank.needsUpdate=true;
+const pcv=document.createElement('canvas');pcv.width=1600;pcv.height=1000;
+const tex=new THREE.CanvasTexture(pcv);tex.minFilter=THREE.LinearFilter;tex.generateMipmaps=false;
+function pattern(){const c=pcv.getContext('2d'),W=1600,H=1000;c.fillStyle='#10151b';c.fillRect(0,0,W,H);
+  for(let y=0;y<10;y++)for(let x=0;x<16;x++){c.fillStyle=(x+y)%2?'#1d2a38':'#27384b';c.fillRect(x*100,y*100,100,100)}
+  const g=c.createLinearGradient(0,0,W,0);['#ff5a5a','#ffb347','#fff275','#5fe08a','#5ac8fa','#8a7dff','#ff7ad9'].forEach((k,i)=>g.addColorStop(i/6,k));c.fillStyle=g;c.fillRect(0,440,W,120);
+  c.strokeStyle='#ffffff';c.lineWidth=3;for(let x=0;x<=16;x++){c.beginPath();c.moveTo(x*100,0);c.lineTo(x*100,H);c.stroke()}for(let y=0;y<=10;y++){c.beginPath();c.moveTo(0,y*100);c.lineTo(W,y*100);c.stroke()}
+  c.lineWidth=5;c.beginPath();c.arc(W/2,H/2,380,0,7);c.stroke();
+  c.fillStyle='#ffffff';c.font='600 30px monospace';c.textAlign='center';c.textBaseline='middle';
+  for(let y=0;y<10;y++)for(let x=0;x<16;x++){if(y===4||y===5)continue;c.fillText(String.fromCharCode(65+x)+(y+1),x*100+50,y*100+50)}
+  c.lineWidth=14;c.strokeStyle='#FF9840';c.strokeRect(7,7,W-14,H-14);tex.needsUpdate=true}
+pattern();
+const U={tex:{value:tex},mapMode:{value:1},showMode:{value:0},outIdx:{value:0},blend:{value:true},amb:{value:.25},bw:{value:.15},viewerVP:{value:new THREE.Matrix4()}};
+IDX.forEach(i=>{U['pOn'+i]={value:false};U['pVP'+i]={value:new THREE.Matrix4()};U['pPos'+i]={value:new THREE.Vector3()};U['pGain'+i]={value:1};U['pDepth'+i]={value:blank}});
+const MAT=new THREE.ShaderMaterial({uniforms:U,side:THREE.DoubleSide,
+  vertexShader:'varying vec3 vW;varying vec3 vN;varying vec2 vUv;void main(){vec4 w=modelMatrix*vec4(position,1.);vW=w.xyz;vN=mat3(modelMatrix)*normal;vUv=uv;gl_Position=projectionMatrix*viewMatrix*w;}',
+  fragmentShader:`#include <packing>
+uniform sampler2D tex;uniform int mapMode,showMode,outIdx;uniform bool blend;uniform float amb,bw;uniform mat4 viewerVP;varying vec3 vW;varying vec3 vN;varying vec2 vUv;
+${IDX.map(i=>`uniform sampler2D pDepth${i};uniform bool pOn${i};uniform mat4 pVP${i};uniform vec3 pPos${i};uniform float pGain${i};`).join('\n')}
+float litBy(bool on,mat4 vp,vec3 pp,float gain,sampler2D dm,vec3 n,out vec2 puv,out float wgt){puv=vec2(0.);wgt=1.;float r=0.;
+  if(on){vec4 pc=vp*vec4(vW,1.);if(pc.w>0.){vec3 ndc=pc.xyz/pc.w;if(abs(ndc.x)<=1.&&abs(ndc.y)<=1.&&ndc.z<=1.){
+    vec3 l=pp-vW;float d=length(l);float c=dot(n,l/d);if(c>.03){puv=ndc.xy*.5+.5;if(bw>0.)wgt=max(.001,smoothstep(0.,1.,min(1.-abs(ndc.x),1.-abs(ndc.y))*.5/bw));float dz=unpackRGBAToDepth(texture2D(dm,puv));if(ndc.z*.5+.5<=dz+.003+.016*(1.-c))r=c*gain/(d*d);}}}}
+  return r;}
+vec3 contentAt(vec2 puv){vec2 uv=puv;float ok=1.;
+  if(mapMode==2)uv=fract(vUv);else if(mapMode==1){vec4 vc=viewerVP*vec4(vW,1.);if(vc.w<=0.)ok=0.;else uv=vc.xy/vc.w*.5+.5;}
+  if(uv.x<0.||uv.x>1.||uv.y<0.||uv.y>1.)ok=0.;vec3 col=texture2D(tex,clamp(uv,0.,1.)).rgb*ok;return col;}
+void main(){vec3 n=normalize(vN);if(!gl_FrontFacing)n=-n;vec2 u;float l,w;vec3 c;vec3 acc=vec3(0.),accB=vec3(0.);float s=0.,sw=0.,lo=0.,wo=0.;vec3 co=vec3(0.);
+${IDX.map(i=>`  l=litBy(pOn${i},pVP${i},pPos${i},pGain${i},pDepth${i},n,u,w);if(l>0.){c=contentAt(u);acc+=c*min(l,1.5);accB+=c*min(l,1.5)*w;s+=l;sw+=w;if(outIdx==${i}){lo=l;co=c;wo=w;}}`).join('\n')}
+  if(showMode==2){gl_FragColor=s>0.?vec4(1.,0.,0.,1.):vec4(0.,0.,1.,1.);return;}
+  /* edge blend: each picture fades out over the blend width, and the shares are scaled so they add up to one */
+  if(showMode==1){float k=(blend&&sw>0.)?wo/sw:1.;gl_FragColor=vec4(lo>0.?co*k:vec3(0.),1.);return;}
+  if(blend&&sw>0.)acc=accB/sw;
+  float shade=.3+.7*abs(dot(n,normalize(cameraPosition-vW)));
+  gl_FragColor=vec4(vec3(.17,.19,.22)*shade*(.3+1.3*amb)+acc,1.);}`});
+
+/* ---- models ---- */
+let RAW=null,C=new THREE.Vector3(0,1,0),R=1.5,BOX=new THREE.Box3(),TRIS=0,NAME='',PTS=[];
+const mk=(g,geo,x,y,z,ry)=>{const m=new THREE.Mesh(geo);m.position.set(x,y,z);if(ry)m.rotation.y=ry;g.add(m);return m};
+function stageSet(){const g=new THREE.Group();
+  mk(g,new THREE.BoxGeometry(3,2,.2),0,1,-.5);mk(g,new THREE.BoxGeometry(.9,1.4,.7),-.8,.7,-.05);mk(g,new THREE.BoxGeometry(.7,.7,.5),.55,1.55,-.15);
+  mk(g,new THREE.CylinderGeometry(.32,.32,1.1,48),.75,.55,.15);mk(g,new THREE.SphereGeometry(.3,48,32),-.8,1.7,-.05);mk(g,new THREE.BoxGeometry(1.3,.25,.9),.35,.125,.35);return g}
+function castle(){const g=new THREE.Group(),B=(w,h,d,x,y,z,ry)=>mk(g,new THREE.BoxGeometry(w,h,d),x,y,z,ry),Cy=(r,h,x,y,z,r2)=>mk(g,new THREE.CylinderGeometry(r2==null?r:r2,r,h,40),x,y,z),Co=(r,h,x,y,z,seg,ry)=>mk(g,new THREE.ConeGeometry(r,h,seg||40),x,y,z,ry);
+  const half=10,wh=6,wt=1.2;
+  /* curtain walls with battlements */
+  for(const s of[-1,1]){B(2*half,wh,wt,0,wh/2,s*half);B(wt,wh,2*half,s*half,wh/2,0);
+    for(let i=-7;i<=7;i++){if(Math.abs(i)<2&&s===1)continue;B(.8,1,wt,i*1.25,wh+.5,s*half);B(wt,1,.8,s*half,wh+.5,i*1.25)}}
+  /* corner towers */
+  for(const sx of[-1,1])for(const sz of[-1,1]){const x=sx*half,z=sz*half;Cy(2.3,10,x,5,z);Cy(2.7,.8,x,10.4,z);Co(2.9,3.6,x,12.6,z);
+    for(let k=0;k<10;k++){const a=k/10*Math.PI*2;B(.6,.8,.5,x+Math.cos(a)*2.55,11.2,z+Math.sin(a)*2.55,-a+Math.PI/2)}}
+  /* gatehouse on the front (+z) */
+  B(6,8.5,3.2,0,4.25,half+.6);B(2.6,.6,3.4,0,5.2,half+.7);for(let i=-2;i<=2;i++)B(.8,1,3.2,i*1.3,9,half+.6);
+  for(const sx of[-1,1]){Cy(1.1,11,sx*3.3,5.5,half+1.4);Co(1.4,2.4,sx*3.3,12.2,half+1.4)}
+  B(2.4,3.6,.5,0,1.8,half+2.3);
+  /* keep */
+  B(7.5,13,7.5,0,6.5,-1.5);B(8.3,.8,8.3,0,13.4,-1.5);Co(5.6,4.2,0,15.9,-1.5,4,Math.PI/4);
+  for(const sx of[-1,1])for(const sz of[-1,1]){Cy(.9,15,sx*3.75,7.5,-1.5+sz*3.75);Co(1.15,2.2,sx*3.75,16.1,-1.5+sz*3.75)}
+  for(let i=-1;i<=1;i++)for(let j=0;j<3;j++)B(.9,1.5,.3,i*2.2,4+j*3,2.3);
+  /* hall and chapel in the yard */
+  B(5,4.5,9,-6.2,2.25,-2);mk(g,new THREE.CylinderGeometry(2.9,2.9,9,3),-6.2,5.2,-2).rotation.set(Math.PI/2,0,0);
+  B(4,5,6,6.4,2.5,-4.5);Co(3.2,3,6.4,6.5,-4.5,4,Math.PI/4);Cy(.7,9,6.4,4.5,-1.2);Co(.95,2.2,6.4,10.1,-1.2);
+  return g}
+function loadExample(id){const cas=id==='castle';S.turn=0;S.zup=false;S.size=cas?26:3;S.sel=0;MULTI=new Set([0]);
+  const mi=mIdx(cas?/RQ35K/:/REQ12/),n=cas?12:2;S.pj=[...Array(n).keys()].map(()=>newPj(mi,0));
+  RAW=cas?castle():stageSet();NAME=cas?'Example: castle':'Example: stage set';place(false);
+  if(cas){S.v.dist=50;S.v.h=1.7;S.v.az=0;S.ld=60;S.lh=6;spread(360)}else{S.v.dist=9;S.v.h=1.6;S.v.az=0;S.ld=6.5;S.lh=1.8;spread(120)}overview()}
+function setModel(obj,name){RAW=obj;NAME=name;place(true)}
+function place(reset){while(holder.children.length)holder.remove(holder.children[0]);
+  const fit=new THREE.Group(),rot=new THREE.Group();rot.add(RAW);fit.add(rot);holder.add(fit);
+  rot.rotation.set(S.zup?-Math.PI/2:0,S.turn*Math.PI/2,0,'YXZ');TRIS=0;
+  RAW.traverse(o=>{if(o.isMesh){o.material=MAT;o.frustumCulled=false;const gm=o.geometry;if(gm&&!gm.attributes.normal)gm.computeVertexNormals();if(gm)TRIS+=(gm.index?gm.index.count:gm.attributes.position.count)/3}});
+  holder.updateMatrixWorld(true);const b=new THREE.Box3().setFromObject(rot),sz=b.getSize(new THREE.Vector3()),mx=Math.max(sz.x,sz.y,sz.z)||1,s=S.size/mx,c=b.getCenter(new THREE.Vector3());
+  fit.scale.setScalar(s);fit.position.set(-c.x*s,-b.min.y*s,-c.z*s);holder.updateMatrixWorld(true);
+  BOX.setFromObject(holder);C=BOX.getCenter(new THREE.Vector3());R=BOX.getSize(new THREE.Vector3()).length()/2;
+  {let tot=0;holder.traverse(o=>{if(o.isMesh&&o.geometry)tot+=o.geometry.attributes.position.count});const st=Math.max(1,Math.ceil(tot/8000));PTS=[];
+    holder.traverse(o=>{if(!o.isMesh||!o.geometry)return;const a=o.geometry.attributes.position;for(let k=0;k<a.count;k+=st)PTS.push(new THREE.Vector3().fromBufferAttribute(a,k).applyMatrix4(o.matrixWorld))})}
+  if(reset){S.ld=clamp(R*2.6,1,150);S.lh=clamp(C.y+R*.25,.1,40);S.v.dist=clamp(R*3.4,1,150);S.v.h=1.6;S.v.az=0;spread(S.pj.length>2?360:120)}
+  overview();
+  $('modelInfo').textContent=NAME+' · '+n0(TRIS)+' triangles · '+f(BOX.max.x-BOX.min.x,1)+' × '+f(BOX.max.y-BOX.min.y,1)+' × '+f(BOX.max.z-BOX.min.z,1)+' m (w × h × d)'}
+function overview(){const r=Math.max(R,.62*Math.max(S.ld,...S.pj.map(p=>p.dist)));cam.position.set(r*2.2,C.y+r*1.9,r*3.6);orbit.target.copy(C);orbit.update()}
+const V=()=>new THREE.Vector3(),rightOf=a=>V().set(Math.cos(a),0,-Math.sin(a)),dirOf=a=>V().set(Math.sin(a),0,Math.cos(a));
+/* automatic layout: the model's outline is cut into upright or lying fields, one projector per field, as on a real building */
+function spread(arc){S.arc=arc;const n=S.pj.length,sides=arc===360?(n>=8&&n%4===0?4:n>=6&&n%3===0?3:n):1,per=n/sides,Hh=BOX.max.y-BOX.min.y;
+  for(let s=0;s<sides;s++){const a=(S.v.az+360*s/sides)*RAD,rt=rightOf(a);let lo=1e9,hi=-1e9;corners(q=>{const u=q.sub(C).dot(rt);lo=Math.min(lo,u);hi=Math.max(hi,u)});const Wd=hi-lo;
+    for(let j=0;j<per;j++){const i=s*per+j,p=S.pj[i],u=lo+Wd*(j+.5)/per,P=dirOf(a).multiplyScalar(S.ld).addScaledVector(rt,u),pa=Math.atan2(P.x,P.z);
+      p.az=Math.round(pa/RAD*10)/10;p.dist=Math.hypot(P.x,P.z);p.h=S.lh;p.ax=u*Math.cos(a-pa);p.ay=0;p.sv=p.sh=0;p.span=per>1?Wd/per/(1-S.ov):Wd*1.03;
+      for(let k=0;k<3;k++){const o=setCam(i);p.ay=clamp(p.ay+need(i,o)[2]*o.dc,-20,20)}
+      const o=setCam(i),nd=need(i,o);p.port=nd[0]<nd[1];fitLens(i)}}}
+
+/* ---- optics: the throw formula L = A·D + B gives the cone (apex B along the axis from the lens). Portrait = projector turned 90°. ---- */
+function optics(p){const m=MODELS[p.mi],ln=m.L[p.li],row=ln[2][0],[na,nb]=ratioOf(m.asp[0]),hyp=Math.hypot(na,nb),fixed=ln[1]==='F',z=fixed?0:p.zoom,pt=!!p.port;
+  const A=row[0]+(row[2]-row[0])*z,B=row[1]+(row[3]-row[1])*z,TP=IN*na/(hyp*A),Tw=pt?TP*nb/na:TP,Th=pt?TP:TP*nb/na;
+  return {m,ln,row,aw:pt?nb:na,ah:pt?na:nb,hyp,fixed,A,B,Tw,Th,pt,AofT:T=>IN*na/(hyp*(pt?T*na/nb:T)),P:pt?(ln[3]||[]).map(([a,b])=>[b,a]):(ln[3]||[]),resW:pt?m.res[1]:m.res[0]}}
+function setCam(i){const p=S.pj[i],o=optics(p),az=p.az*RAD,lens=dirOf(az).multiplyScalar(p.dist).setY(p.h),target=C.clone().addScaledVector(rightOf(az),p.ax||0);target.y+=p.ay||0;
+  const dir=target.clone().sub(lens).normalize(),apex=lens.clone().addScaledVector(dir,o.B),c=PCAM[i];
+  c.position.copy(apex);c.up.set(0,1,0);c.lookAt(apex.clone().add(dir));if(p.roll)c.rotateZ(p.roll*RAD);c.updateMatrixWorld(true);c.matrixWorldInverse.copy(c.matrixWorld).invert();
+  const dc=target.distanceTo(apex),dC=C.distanceTo(apex),near=Math.max(.15,dC-R*1.4),far=dC+R*2.2;
+  c.projectionMatrix.makePerspective(near*(p.sh-.5)*o.Tw,near*(p.sh+.5)*o.Tw,near*(p.sv+.5)*o.Th,near*(p.sv-.5)*o.Th,near,far);c.projectionMatrixInverse.copy(c.projectionMatrix).invert();
+  return Object.assign(o,{lens,target,dir,apex,dc,far,vp:new THREE.Matrix4().multiplyMatrices(c.projectionMatrix,c.matrixWorldInverse)})}
+function corners(fn){const b=BOX;for(const x of[b.min.x,b.max.x])for(const y of[b.min.y,b.max.y])for(const z of[b.min.z,b.max.z])fn(V().set(x,y,z))}
+/* what the picture must cover, measured on the model's own points (inside this projector's field when it has one) */
+function need(i,o){const sp=S.pj[i].span,q=V(),mw=PCAM[i].matrixWorldInverse;let tx=0,y0=1e9,y1=-1e9;
+  for(const pt of PTS){q.copy(pt).applyMatrix4(mw);if(q.z>-.01)continue;if(sp>0&&Math.abs(q.x)>sp/2)continue;const d=-q.z;tx=Math.max(tx,Math.abs(q.x/d));y0=Math.min(y0,q.y/d);y1=Math.max(y1,q.y/d)}
+  if(y0>y1){y0=y1=0}return [sp>0?sp/o.dc:2*tx,2*Math.max(Math.abs(y0),Math.abs(y1)),(y0+y1)/2]}
+function fitZoom(i){const p=S.pj[i];p.sv=p.sh=0;for(let k=0;k<3;k++){const o=setCam(i),[nw,nh]=need(i,o),T=Math.max(nw,nh*o.aw/o.ah)*1.03,A=o.AofT(T);if(o.fixed)break;p.zoom=clamp((A-o.row[0])/((o.row[2]-o.row[0])||1),0,1)}}
+function fitLens(i){const p=S.pj[i],m=MODELS[p.mi];p.sv=p.sh=0;const o=setCam(i),[nw,nh]=need(i,o),T=Math.max(nw,nh*o.aw/o.ah)*1.03,A=o.AofT(T),D=Math.hypot(T*o.dc,T*o.dc*o.ah/o.aw)/IN;let best=-1,sc=1e9;
+  m.L.forEach((ln,j)=>{const r=ln[2][0],fx=ln[1]==='F',z=fx?(Math.abs(A-r[0])/r[0]<.04?.5:(A<r[0]?-1:2)):(A-r[0])/((r[2]-r[0])||1e-9);
+    let s=z>=0&&z<=1?Math.abs(z-.5):10+Math.min(Math.abs(z),Math.abs(z-1));if(D<r[4]-.5||D>r[5]+.5)s+=100;if(s<sc){sc=s;best=j}});
+  if(best>=0)p.li=best;fitZoom(i)}
+
+function issues(i,o){const p=S.pj[i],W=o.Tw*o.dc,H=o.Th*o.dc,D=Math.hypot(W,H)/IN,[nw,nh]=need(i,o),a=[];
+  if(!shiftOK(p.sh,p.sv,o.P))a.push('Lens shift is outside this lens\'s range.');
+  if(D<o.row[4]-.5||D>o.row[5]+.5)a.push('Picture is '+n0(D)+'″; lens covers '+n0(o.row[4])+'–'+n0(o.row[5])+'″.');
+  if(!p.sv&&!p.sh&&(nw>o.Tw*1.001||nh>o.Th*1.001))a.push('Picture is smaller than its part of the model.');return a}
+/* Calculate: the fewest projectors of the chosen model that cover the model within every lens's limits */
+function calculate(){const mi=S.pj[S.sel].mi,arc=S.arc,sides=arc===360?4:1,maxPer=Math.floor(NP/sides),moved=S.ld<R*1.5;
+  if(moved)S.ld=clamp(Math.round(R*3),1,150);if(S.v.dist<R*2)S.v.dist=clamp(Math.round(R*2.6),1,150);
+  let ok=false,per=1;for(;per<=maxPer;per++){S.pj=[...Array(sides*per).keys()].map(()=>newPj(mi,0));spread(arc);ok=S.pj.every((p,i)=>!issues(i,setCam(i)).length);if(ok)break}
+  S.sel=0;MULTI=new Set([0]);uiKey='';const n=S.pj.length,name=MODELS[mi].m;
+  $('calcMsg').textContent=(ok?'Calculated: '+n+' × '+name+(arc===360?' all around, '+n/4+' per side':' across the front')+', at '+f(S.ld,1)+' m. Every picture is within its lens\'s limits.'
+    :'Even '+n+' × '+name+' cannot cover a model this size within the lens limits. Pick a brighter model with larger picture sizes, or move the projectors.')+(moved?' The projectors were moved out, because they stood too close to the model.':'')}
+
+/* ---- render ---- */
+let OPT=[],dirty=false,COV=null,COVALL=null;
+function sizeView(){const w=cv.clientWidth||600,h=Math.round(clamp(w*.6,260,640));renderer.setSize(w,h,false);cv.style.height=h+'px';cam.aspect=w/h;cam.updateProjectionMatrix()}
+function buildHelpers(){while(pjHelp.children.length){const o=pjHelp.children[0];pjHelp.remove(o);if(o.geometry)o.geometry.dispose();if(o.material)o.material.dispose()}
+  const bs=Math.max(1,R/6);
+  S.pj.forEach((p,i)=>{const o=OPT[i],c=PCAM[i],col=new THREE.Color(COLS[i]),pts=[],k=o.dc/o.far,cs=[[-1,-1],[1,-1],[1,1],[-1,1]].map(([x,y])=>{const q=V().set(x,y,1).applyMatrix4(c.projectionMatrixInverse).applyMatrix4(c.matrixWorld);return o.apex.clone().lerp(q,k)});
+    cs.forEach((q,j)=>{pts.push(o.lens,q,q,cs[(j+1)%4])});pjHelp.add(new THREE.LineSegments(new THREE.BufferGeometry().setFromPoints(pts),new THREE.LineBasicMaterial({color:col,transparent:true,opacity:MULTI.has(i)?.95:.3})));
+    const d=o.m.dim.map(v=>v/1000*bs),body=new THREE.Mesh(new THREE.BoxGeometry(d[0],d[1],d[2]),new THREE.MeshBasicMaterial({color:col}));body.position.copy(o.lens).addScaledVector(o.dir,-d[2]/2);body.quaternion.copy(c.quaternion);body.userData.pj=i;pjHelp.add(body);
+    pjHelp.add(new THREE.LineSegments(new THREE.BufferGeometry().setFromPoints([o.lens,V().set(o.lens.x,0,o.lens.z)]),new THREE.LineBasicMaterial({color:col,transparent:true,opacity:.5})))});
+  const eye=vcam.position.clone(),head=new THREE.Mesh(new THREE.SphereGeometry(.14*bs,16,12),new THREE.MeshBasicMaterial({color:0xffffff}));head.position.copy(eye);pjHelp.add(head);
+  pjHelp.add(new THREE.LineSegments(new THREE.BufferGeometry().setFromPoints([eye,V().set(eye.x,0,eye.z)]),new THREE.LineBasicMaterial({color:0xffffff})))}
+function pass(target,camera,mode,clear){U.showMode.value=mode;helpers.visible=mode===0;renderer.setRenderTarget(target);renderer.setClearColor(clear,1);renderer.clear();renderer.render(scene,camera)}
+function paint(){if(dirty)return;dirty=true;requestAnimationFrame(()=>{dirty=false;pass(null,cam,0,0x12161b)})}
+const mb=new Uint8Array(160*100*4);
+function cover(camera){pass(maskRT,camera,2,0x000000);renderer.readRenderTargetPixels(maskRT,0,0,160,100,mb);let lit=0,all=0;for(let i=0;i<mb.length;i+=4){if(mb[i]>128){lit++;all++}else if(mb[i+2]>128)all++}return [lit,all]}
+function update(){
+  S.sel=clamp(S.sel,0,S.pj.length-1);MULTI=new Set([...MULTI].filter(i=>i<S.pj.length));MULTI.add(S.sel);OPT=S.pj.map((p,i)=>setCam(i));
+  const az=S.v.az*RAD;vcam.position.set(S.v.dist*Math.sin(az),S.v.h,S.v.dist*Math.cos(az));vcam.lookAt(C);vcam.updateMatrixWorld(true);vcam.matrixWorldInverse.copy(vcam.matrixWorld).invert();
+  {/* the picture frame the audience sees: tight around the model, 16:10 */
+    let x0=1e9,x1=-1e9,y0=1e9,y1=-1e9;corners(q=>{q.applyMatrix4(vcam.matrixWorldInverse);if(q.z<-.01){const tx=q.x/-q.z,ty=q.y/-q.z;x0=Math.min(x0,tx);x1=Math.max(x1,tx);y0=Math.min(y0,ty);y1=Math.max(y1,ty)}});
+    if(x0>x1){x0=y0=-.5;x1=y1=.5}const cx=(x0+x1)/2,cy=(y0+y1)/2,w=Math.max(x1-x0,(y1-y0)*1.6)*1.02,h=w/1.6,n=.1;
+    vcam.projectionMatrix.makePerspective(n*(cx-w/2),n*(cx+w/2),n*(cy+h/2),n*(cy-h/2),n,1500);vcam.projectionMatrixInverse.copy(vcam.projectionMatrix).invert()}
+  U.viewerVP.value.multiplyMatrices(vcam.projectionMatrix,vcam.matrixWorldInverse);
+  const inten=OPT.map(o=>o.m.lum/(o.Tw*o.Th)),ref=Math.max(1e-9,...OPT.map((o,i)=>inten[i]/(o.dc*o.dc)));
+  IDX.forEach(i=>{const on=i<S.pj.length;U['pOn'+i].value=on;if(on){U['pVP'+i].value.copy(OPT[i].vp);U['pPos'+i].value.copy(OPT[i].apex);U['pGain'+i].value=inten[i]/ref;U['pDepth'+i].value=drt(i).texture}else U['pDepth'+i].value=blank});
+  U.mapMode.value=+S.map;U.blend.value=!!S.blend;U.amb.value=S.amb;U.bw.value=S.ov;U.outIdx.value=S.sel;
+  /* depth from each projector, for shadows */
+  helpers.visible=false;scene.overrideMaterial=depthMat;S.pj.forEach((p,i)=>{renderer.setRenderTarget(drt(i));renderer.setClearColor(0xffffff,1);renderer.clear();renderer.render(scene,PCAM[i])});scene.overrideMaterial=null;
+  buildHelpers();
+  if(!dragging){tc.setMode(GIZ==='rot'?'rotate':'translate');tc.setSpace(GIZ==='rot'?'local':'world');grip.position.copy(GIZ==='aim'?OPT[S.sel].target:OPT[S.sel].lens);
+    if(GIZ==='rot')grip.quaternion.copy(PCAM[S.sel].quaternion);else grip.quaternion.set(0,0,0,1)}tc.visible=tc.enabled=GIZ!=='off';
+  /* coverage: from the audience, and averaged from eight sides */
+  {const[l,a]=cover(vcam);COV=a?l/a:null;let L=0,A=0;for(let k=0;k<8;k++){const t=k*Math.PI/4;tcam.position.set(R*3*Math.sin(t),C.y+R*.7,R*3*Math.cos(t));tcam.lookAt(C);tcam.updateMatrixWorld(true);const[l2,a2]=cover(tcam);L+=l2;A+=a2}COVALL=A?L/A:null}
+  drawOut();pass(null,cam,0,0x12161b);syncUI();verdict()}
+function drawOut(){const o=OPT[S.sel],w=o.pt?400:640,h=Math.round(w*o.ah/o.aw),oc=$('out');if(outRT.height!==h||outRT.width!==w){outRT.dispose();outRT=new THREE.WebGLRenderTarget(w,h)}
+  if(oc.height!==h||oc.width!==w){oc.width=w;oc.height=h}oc.style.maxWidth=o.pt?'300px':'';oc.style.margin=o.pt?'0 auto':'';const c=oc.getContext('2d');
+  pass(outRT,PCAM[S.sel],1,0x000000);const buf=new Uint8Array(w*h*4);renderer.readRenderTargetPixels(outRT,0,0,w,h,buf);const im=c.createImageData(w,h);
+  for(let y=0;y<h;y++)im.data.set(buf.subarray((h-1-y)*w*4,(h-y)*w*4),y*w*4);c.putImageData(im,0,0);
+  const note=$('gridNote');if(String(S.grid)==='0'){note.textContent='Black areas get no picture from this projector: the model is not there, it is in shadow, or it faces away.';return}
+  if(+S.map===2){note.textContent='A warp grid does not apply when the picture follows the model\'s own UV.';return}
+  const[gx,gy]=String(S.grid).split('x').map(Number),N=[],rc=new THREE.Raycaster();
+  if(TRIS*gx*gy>4e8){note.textContent='The model is too heavy to trace this grid in the test. Pick a coarser grid.';return}
+  for(let j=0;j<gy;j++){const rowN=[];for(let i=0;i<gx;i++){const nx=-1+2*i/(gx-1),ny=1-2*j/(gy-1);
+      if(+S.map===0){rowN.push([(nx*.5+.5)*w,(1-(ny*.5+.5))*h]);continue}
+      rc.setFromCamera({x:nx,y:ny},vcam);const hit=rc.intersectObject(holder,true)[0];if(!hit){rowN.push(null);continue}
+      const q=hit.point.clone().applyMatrix4(o.vp);rowN.push(Math.abs(q.x)<=1.001&&Math.abs(q.y)<=1.001&&q.z<1?[(q.x*.5+.5)*w,(1-(q.y*.5+.5))*h]:null)}N.push(rowN)}
+  c.strokeStyle='rgba(255,152,64,.95)';c.lineWidth=1;c.beginPath();let used=0;
+  for(let j=0;j<gy;j++)for(let i=0;i<gx;i++){const a=N[j][i];if(!a)continue;used++;const r=i+1<gx&&N[j][i+1],d=j+1<gy&&N[j+1][i];if(r){c.moveTo(a[0],a[1]);c.lineTo(r[0],r[1])}if(d){c.moveTo(a[0],a[1]);c.lineTo(d[0],d[1])}}c.stroke();
+  c.fillStyle='#fff';for(const rowN of N)for(const a of rowN)if(a)c.fillRect(a[0]-1.5,a[1]-1.5,3,3);
+  const lv=geoLevel(o.m.m),big=gx>17||gy>17;
+  note.textContent=(+S.map===0?'With no warp the grid stays square. ':used+' of '+gx*gy+' nodes land on the model inside this projector\'s picture. Each node shows where that point of the picture must be moved. ')+
+    (big?'A grid this fine needed the ET-UK20 upgrade kit.':lv===2?'This model has Free Grid built in for grids up to 17 × 17.':lv===1?'This model has no built-in Free Grid; use Geometry Manager Pro.':'This model is not in Panasonic\'s geometry table – check before promising grid warping.')}
+
+function verdict(){const li=[],rows=[];let bad=0,lm=0;
+  S.pj.forEach((p,i)=>{const o=OPT[i],W=o.Tw*o.dc,H=o.Th*o.dc,D=Math.hypot(W,H)/IN,lux=o.m.lum/(W*H),iss=issues(i,o);lm+=o.m.lum;
+    if(iss.length)bad++;
+    rows.push('<tr data-sel="'+i+'" class="'+(MULTI.has(i)?'cur':'')+'"><td style="--c:'+COLS[i]+'"><i></i>'+(i+1)+'</td><td>'+esc(o.m.m)+'</td><td>'+esc(o.ln[0])+'</td><td>'+(o.pt?'Portrait':'Landscape')+'</td><td class="n">'+f(o.dc,1)+' m</td><td class="n">'+f(W,1)+' × '+f(H,1)+' m</td><td class="n">'+n0(D)+'″</td><td class="n">'+f(W/o.resW*1000,1)+'</td><td class="n">'+n0(lux)+'</td><td class="'+(iss.length?'bad':'')+'">'+(iss.length?iss.map(esc).join(' '):'OK')+'</td></tr>')});
+  $('tbl').innerHTML='<tr><th>No.</th><th>Projector</th><th>Lens</th><th>Mounted</th><th class="n">Throw</th><th class="n">Picture at model</th><th class="n">Diagonal</th><th class="n">mm per pixel</th><th class="n">Lux</th><th>Check</th></tr>'+rows.join('');
+  li.push('<li class="'+(bad?'bad':'')+'"><b>'+S.pj.length+' projector'+(S.pj.length>1?'s':'')+', '+n0(lm)+' lumens in all.</b> '+(bad?bad+' of them '+(bad>1?'have':'has')+' a problem – see box W8.':'Every lens and lens shift is within range.')+'</li>');
+  if(COV!=null){const pc=Math.round(COV*100);li.push('<li class="'+(pc>=97?'':pc>=80?'warn':'bad')+'"><b>'+pc+' % of what the audience sees is lit.</b>'+(pc>=97?'':' The rest is in shadow or outside every picture.')+'</li>')}
+  if(COVALL!=null){const pc=Math.round(COVALL*100);li.push('<li class="'+(pc>=95?'':pc>=75?'warn':'bad')+'"><b>'+pc+' % is lit when you walk all the way round.</b>'+(pc>=95?'':' Roofs and inner faces that no projector can see stay dark. More projectors, or higher positions, close the gaps.')+'</li>')}
+  if(+S.map===0)li.push('<li class="warn"><b>No warp.</b> Each flat picture bends over the model, and lines break at every edge. Choose «Straight for the audience» to see the corrected result.</li>');
+  if(+S.map===1)li.push('<li><b>Warped for one viewpoint.</b> The picture is straight from the audience position and drifts as people move away from it. Deep models drift more. For a show seen from all sides, the content is normally made on the model\'s own UV instead.</li>');
+  $('vd').innerHTML=li.join('')}
+
+/* ---- UI ---- */
+function fillSel(){const p=S.pj[S.sel];let h='';for(const[c,name]of CAT.cats){const ms=MODELS.map((m,j)=>[m,j]).filter(([m])=>m.c===c);if(!ms.length)continue;
+    h+='<optgroup label="'+esc(name)+'">'+ms.map(([m,j])=>'<option value="'+j+'">'+esc(m.m)+' · '+n0(m.lum)+' lm</option>').join('')+'</optgroup>'}
+  $('selM').innerHTML=h;$('selM').value=p.mi;$('selL').innerHTML=MODELS[p.mi].L.map((l,j)=>'<option value="'+j+'">'+esc(l[0])+(l[1]==='F'?' (fixed)':'')+'</option>').join('');$('selL').value=p.li}
+let uiKey='';
+function syncUI(){const p=S.pj[S.sel],ms=[...MULTI].sort((a,b)=>a-b),key=S.sel+'/'+p.mi+'/'+S.pj.length+'/'+ms.join();if(key!==uiKey){uiKey=key;fillSel();
+    $('pcs').innerHTML=S.pj.map((q,i)=>'<button class="pc'+(i===S.sel&&ms.length>1?' pri':'')+'" type="button" data-sel="'+i+'" style="--c:'+COLS[i]+'" aria-pressed="'+MULTI.has(i)+'" aria-label="Projector '+(i+1)+'">'+(i+1)+'</button>').join('')}
+  $('selL').value=p.li;
+  document.querySelectorAll('[data-k]').forEach(e=>{const v=getP(e.dataset.k);if(e.type==='checkbox')e.checked=!!v;else e.value=v});
+  document.querySelectorAll('[data-o]').forEach(e=>{e.textContent=f(getP(e.dataset.o)*(+e.dataset.x||1),+e.dataset.d)+e.dataset.u});
+  const lv=geoLevel(MODELS[p.mi].m),g=$('geo');g.textContent=GEO[lv];g.className='chip '+(lv?'ok':'warn');$('k_zoom').disabled=MODELS[p.mi].L[p.li][1]==='F';
+  $('curTitle').textContent=ms.length>1?'Projectors '+ms.map(i=>i+1).join(', ')+' – showing '+(S.sel+1):'Projector '+(S.sel+1);$('outTitle').textContent='What projector '+(S.sel+1)+' must send';$('pjCount').textContent=S.pj.length+' of '+NP;
+  {const L=OPT[S.sel].lens;[['px',L.x],['py',L.y],['pz',L.z]].forEach(([id,v])=>{const e=$(id);if(document.activeElement!==e)e.value=f(v,2)})}
+  {const[t,q]=aimAngles(S.sel);$('k_tilt').value=t;$('k_pan').value=q;$('o_tilt').textContent=f(t,1)+'°';$('o_pan').textContent=f(q,1)+'°'}
+  document.querySelectorAll('[data-giz]').forEach(b=>b.setAttribute('aria-pressed',b.dataset.giz===GIZ));
+  $('port').setAttribute('aria-pressed',!!p.port);$('add').disabled=S.pj.length>=NP;$('del').disabled=S.pj.length<=1;$('zup').setAttribute('aria-pressed',S.zup)}
+document.addEventListener('input',e=>{const t=e.target,k=t.dataset&&t.dataset.k;if(!k)return;setP(k,t.type==='checkbox'?t.checked:k==='grid'?t.value:+t.value);if(k==='size'){place(false);$('calcMsg').textContent='Size changed. Press Calculate to place the projectors and warp again.'}if(k==='ov')spread(S.arc);update()});
+$('calc').onclick=()=>{calculate();overview();update()};
+$('k_tilt').addEventListener('input',e=>{for(const i of MULTI)setAngles(i,+e.target.value,aimAngles(i)[1]);update()});
+$('k_pan').addEventListener('input',e=>{for(const i of MULTI)setAngles(i,aimAngles(i)[0],+e.target.value);update()});
+document.addEventListener('click',e=>{const b=e.target.closest('[data-giz]');if(b){GIZ=b.dataset.giz;update()}});
+for(const id of['px','py','pz'])$(id).addEventListener('input',()=>{const v=['px','py','pz'].map(k=>$(k).valueAsNumber);if(v.every(Number.isFinite)){moveSel(new THREE.Vector3(v[0],v[1],v[2]),false);update()}});
+document.addEventListener('click',e=>{const b=e.target.closest('[data-sel]');if(b)pick(+b.dataset.sel,e.ctrlKey||e.metaKey||e.shiftKey)});
+$('selM').addEventListener('change',e=>{for(const i of MULTI){S.pj[i].mi=+e.target.value;S.pj[i].li=0;fitLens(i)}update()});
+$('selL').addEventListener('change',e=>{S.pj[S.sel].li=+e.target.value;fitZoom(S.sel);update()});
+$('fit').onclick=()=>{for(const i of MULTI)fitLens(i);update()};$('port').onclick=()=>{const v=!S.pj[S.sel].port;for(const i of MULTI){S.pj[i].port=v;fitLens(i)}update()};
+$('add').onclick=()=>{if(S.pj.length>=NP)return;const p=S.pj[S.sel],q={...p,az:Math.round(((p.az+30+540)%360)-180)};S.pj.push(q);S.sel=S.pj.length-1;MULTI=new Set([S.sel]);fitLens(S.sel);update()};
+$('del').onclick=()=>{const rm=[...MULTI].sort((a,b)=>b-a);for(const i of rm)if(S.pj.length>1)S.pj.splice(i,1);S.sel=Math.min(S.sel,S.pj.length-1);MULTI=new Set([S.sel]);update()};
+/* click a projector in the 3D view to select it; Ctrl + click adds it to the selection */
+{let dn=null;cv.addEventListener('pointerdown',e=>{dn=tc.axis?null:[e.clientX,e.clientY]});
+  cv.addEventListener('pointerup',e=>{if(!dn||Math.hypot(e.clientX-dn[0],e.clientY-dn[1])>4)return;const r=cv.getBoundingClientRect(),rc=new THREE.Raycaster();
+    rc.setFromCamera({x:(e.clientX-r.left)/r.width*2-1,y:-((e.clientY-r.top)/r.height*2-1)},cam);const hit=rc.intersectObjects(pjHelp.children.filter(o=>o.userData.pj!=null))[0];if(hit)pick(hit.object.userData.pj,e.ctrlKey||e.metaKey||e.shiftKey)})}
+$('copy').onclick=()=>{const p=S.pj[S.sel];S.pj.forEach((q,i)=>{if(q!==p){q.mi=p.mi;q.li=0;fitLens(i)}});update()};
+$('sp360').onclick=()=>{spread(360);update()};$('sp120').onclick=()=>{spread(120);update()};
+$('turn').onclick=()=>{S.turn=(S.turn+1)%4;place(false);update()};$('zup').onclick=()=>{S.zup=!S.zup;place(false);update()};
+$('vAud').onclick=()=>{cam.position.copy(vcam.position);orbit.target.copy(C);orbit.update();paint()};$('vFree').onclick=()=>{overview();paint()};
+$('vTop').onclick=()=>{cam.position.set(0,C.y+R*6.5,.01);orbit.target.copy(C);orbit.update();paint()};
+$('pat').onclick=()=>{pattern();update()};
+$('ex').addEventListener('change',e=>{$('file').value='';loadExample(e.target.value);update()});
+$('img').addEventListener('change',e=>{const fl=e.target.files[0];if(!fl)return;const rd=new FileReader();rd.onload=()=>{const im=new Image();im.onload=()=>{const c=pcv.getContext('2d'),s=Math.max(1600/im.width,1000/im.height),w=im.width*s,h=im.height*s;c.fillStyle='#000';c.fillRect(0,0,1600,1000);c.drawImage(im,(1600-w)/2,(1000-h)/2,w,h);tex.needsUpdate=true;update()};im.src=rd.result};rd.readAsDataURL(fl)});
+$('file').addEventListener('change',e=>{const fl=e.target.files[0];if(!fl)return;const ext=fl.name.split('.').pop().toLowerCase(),er=$('err'),fail=m=>{er.hidden=false;er.textContent=m},rd=new FileReader();er.hidden=true;
+  rd.onerror=()=>fail('The file could not be read.');
+  rd.onload=()=>{try{
+    if(ext==='glb')new THREE.GLTFLoader().parse(rd.result,'',g=>{setModel(g.scene,fl.name);update()},()=>fail('This GLB file could not be opened. Export it again as binary glTF (.glb).'));
+    else if(ext==='obj'){setModel(new THREE.OBJLoader().parse(rd.result),fl.name);update()}
+    else if(ext==='stl'){setModel(new THREE.Mesh(new THREE.STLLoader().parse(rd.result)),fl.name);update()}
+    else fail('Use a .glb, .obj or .stl file.')}catch(x){fail('This file could not be opened as a 3D model. Try exporting it as .glb.')}};
+  if(ext==='obj')rd.readAsText(fl);else rd.readAsArrayBuffer(fl)});
+addEventListener('resize',()=>{sizeView();paint()});
+/* arrow keys steer the camera while the mouse is over box W5 */
+let overView=false;$('w5').addEventListener('pointerenter',()=>{overView=true});$('w5').addEventListener('pointerleave',()=>{overView=false});
+addEventListener('keydown',e=>{if(!overView||e.ctrlKey||e.metaKey||e.altKey)return;const k=e.key,dx=k==='ArrowLeft'?-1:k==='ArrowRight'?1:0,dy=k==='ArrowUp'?1:k==='ArrowDown'?-1:0,dz=k==='+'||k==='='?-1:k==='-'?1:0;if(!dx&&!dy&&!dz)return;e.preventDefault();
+  const off=cam.position.clone().sub(orbit.target),sp=new THREE.Spherical().setFromVector3(off);
+  if(dz)sp.radius=clamp(sp.radius*(1+dz*.08),.5,1200);
+  else if(e.shiftKey){const st=sp.radius*.04,rt=new THREE.Vector3().setFromMatrixColumn(cam.matrixWorld,0),mv=rt.multiplyScalar(dx*st);mv.y+=dy*st;orbit.target.add(mv)}
+  else{sp.theta+=dx*5*RAD;sp.phi=clamp(sp.phi-dy*4*RAD,.05,Math.PI/2-.01)}
+  cam.position.copy(orbit.target).add(new THREE.Vector3().setFromSpherical(sp));orbit.update();paint()});
+/* indlejret i Throw Planner: følg appens lys/mørk, meld højden til rammen, og tag tastaturet når musen er over 3D-boksen */
+function setTheme(t){if(t==='light'||t==='dark')document.documentElement.dataset.theme=t}
+addEventListener('message',e=>{if(e.source===parent&&e.data&&e.data.tp==='theme')setTheme(e.data.mode)});
+if(parent!==window){const tell=()=>parent.postMessage({tp:'warpH',h:document.body.offsetHeight},'*');new ResizeObserver(tell).observe(document.body);tell();parent.postMessage({tp:'warpReady'},'*')}
+$('w5').addEventListener('pointerenter',()=>window.focus());
+sizeView();loadExample('castle');update();
+</script>
+</body>
+</html>
