@@ -123,7 +123,7 @@ tr[data-sel]{cursor:pointer}tr.cur td{background:var(--beam-soft)}
     <section class="card">
       <h3><span class="no">W4</span>Audience and content</h3>
       <div class="f two"><label for="k_map">Picture is</label><select id="k_map" data-k="map">
-        <option value="1">Straight for the audience (warped)</option><option value="0">Sent flat from each projector (no warp)</option><option value="2">Wrapped on the model's own UV</option></select></div>
+        <option value="3">On the model, straight on every side</option><option value="2">On the model's own UV</option><option value="1">Straight for one audience point (illusion)</option><option value="0">Sent flat from each projector (no warp)</option></select></div>
       <div class="f"><label for="k_vd">Audience at</label><input type="range" id="k_vd" data-k="v.dist" min="1" max="150" step="0.1"><output data-o="v.dist" data-u=" m" data-d="1"></output></div>
       <div class="f"><label for="k_va">Angle</label><input type="range" id="k_va" data-k="v.az" min="-180" max="180" step="1"><output data-o="v.az" data-u="°" data-d="0"></output></div>
       <div class="f"><label for="k_vh">Eye height</label><input type="range" id="k_vh" data-k="v.h" min="0.3" max="15" step="0.05"><output data-o="v.h" data-u=" m" data-d="2"></output></div>
@@ -191,7 +191,7 @@ const esc=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;',
 const f=(v,d=2)=>Number(v).toFixed(d),n0=v=>Math.round(v).toLocaleString('en-US'),clamp=(v,a,b)=>Math.min(b,Math.max(a,v));
 const mIdx=re=>Math.max(0,MODELS.findIndex(m=>re.test(m.m)));
 const newPj=(mi,az)=>({mi,li:0,dist:6,az,h:2.4,zoom:.5,sv:0,sh:0,ax:0,ay:0,roll:0,span:0,port:false});
-const S={ld:8,lh:2,ov:.15,arc:360,size:3,turn:0,zup:false,map:1,amb:.25,blend:true,grid:'17x17',sel:0,v:{dist:9,az:0,h:1.6},pj:[newPj(mIdx(/REQ12/),0)]};
+const S={ld:8,lh:2,ov:.15,arc:360,size:3,turn:0,zup:false,map:3,amb:.25,blend:true,grid:'17x17',sel:0,v:{dist:9,az:0,h:1.6},pj:[newPj(mIdx(/REQ12/),0)]};
 const root=k=>k[0]==='cur'?[S.pj[S.sel],k.slice(1)]:[S,k];
 const getP=k=>{const[o,a]=root(k.split('.'));return a.reduce((x,p)=>x[p],o)};
 const setP=(k,v)=>{const[o,a]=root(k.split('.')),l=a.pop();a.reduce((x,p)=>x[p],o)[l]=v};
@@ -234,19 +234,22 @@ function pattern(){const c=pcv.getContext('2d'),W=1600,H=1000;c.fillStyle='#1015
   for(let y=0;y<10;y++)for(let x=0;x<16;x++){if(y===4||y===5)continue;c.fillText(String.fromCharCode(65+x)+(y+1),x*100+50,y*100+50)}
   c.lineWidth=14;c.strokeStyle='#FF9840';c.strokeRect(7,7,W-14,H-14);tex.needsUpdate=true}
 pattern();
-const U={tex:{value:tex},mapMode:{value:1},showMode:{value:0},outIdx:{value:0},blend:{value:true},amb:{value:.25},bw:{value:.15},viewerVP:{value:new THREE.Matrix4()}};
+const U={bmin:{value:new THREE.Vector3()},bsize:{value:new THREE.Vector3(1,1,1)},tex:{value:tex},mapMode:{value:3},showMode:{value:0},outIdx:{value:0},blend:{value:true},amb:{value:.25},bw:{value:.15},viewerVP:{value:new THREE.Matrix4()}};
 IDX.forEach(i=>{U['pOn'+i]={value:false};U['pVP'+i]={value:new THREE.Matrix4()};U['pPos'+i]={value:new THREE.Vector3()};U['pGain'+i]={value:1};U['pDepth'+i]={value:blank}});
 const MAT=new THREE.ShaderMaterial({uniforms:U,side:THREE.DoubleSide,
   vertexShader:'varying vec3 vW;varying vec3 vN;varying vec2 vUv;void main(){vec4 w=modelMatrix*vec4(position,1.);vW=w.xyz;vN=mat3(modelMatrix)*normal;vUv=uv;gl_Position=projectionMatrix*viewMatrix*w;}',
   fragmentShader:`#include <packing>
-uniform sampler2D tex;uniform int mapMode,showMode,outIdx;uniform bool blend;uniform float amb,bw;uniform mat4 viewerVP;varying vec3 vW;varying vec3 vN;varying vec2 vUv;
+uniform sampler2D tex;uniform int mapMode,showMode,outIdx;uniform bool blend;uniform float amb,bw;uniform vec3 bmin,bsize;uniform mat4 viewerVP;varying vec3 vW;varying vec3 vN;varying vec2 vUv;
 ${IDX.map(i=>`uniform sampler2D pDepth${i};uniform bool pOn${i};uniform mat4 pVP${i};uniform vec3 pPos${i};uniform float pGain${i};`).join('\n')}
 float litBy(bool on,mat4 vp,vec3 pp,float gain,sampler2D dm,vec3 n,out vec2 puv,out float wgt){puv=vec2(0.);wgt=1.;float r=0.;
   if(on){vec4 pc=vp*vec4(vW,1.);if(pc.w>0.){vec3 ndc=pc.xyz/pc.w;if(abs(ndc.x)<=1.&&abs(ndc.y)<=1.&&ndc.z<=1.){
     vec3 l=pp-vW;float d=length(l);float c=dot(n,l/d);if(c>.03){puv=ndc.xy*.5+.5;if(bw>0.)wgt=max(.001,smoothstep(0.,1.,min(1.-abs(ndc.x),1.-abs(ndc.y))*.5/bw));float dz=unpackRGBAToDepth(texture2D(dm,puv));if(ndc.z*.5+.5<=dz+.003+.016*(1.-c))r=c*gain/(d*d);}}}}
   return r;}
 vec3 contentAt(vec2 puv){vec2 uv=puv;float ok=1.;
-  if(mapMode==2)uv=fract(vUv);else if(mapMode==1){vec4 vc=viewerVP*vec4(vW,1.);if(vc.w<=0.)ok=0.;else uv=vc.xy/vc.w*.5+.5;}
+  if(mapMode==2)uv=fract(vUv);
+  else if(mapMode==3){/* facade template: every side gets the picture as seen straight on from outside */
+    vec3 a=normalize(vN),q=(vW-bmin)/bsize;if(abs(a.x)>abs(a.z))uv=vec2(a.x>0.?1.-q.z:q.z,q.y);else uv=vec2(a.z>=0.?q.x:1.-q.x,q.y);}
+  else if(mapMode==1){vec4 vc=viewerVP*vec4(vW,1.);if(vc.w<=0.)ok=0.;else uv=vc.xy/vc.w*.5+.5;}
   if(uv.x<0.||uv.x>1.||uv.y<0.||uv.y>1.)ok=0.;vec3 col=texture2D(tex,clamp(uv,0.,1.)).rgb*ok;return col;}
 void main(){vec3 n=normalize(vN);if(!gl_FrontFacing)n=-n;vec2 u;float l,w;vec3 c;vec3 acc=vec3(0.),accB=vec3(0.);float s=0.,sw=0.,lo=0.,wo=0.;vec3 co=vec3(0.);
 ${IDX.map(i=>`  l=litBy(pOn${i},pVP${i},pPos${i},pGain${i},pDepth${i},n,u,w);if(l>0.){c=contentAt(u);acc+=c*min(l,1.5);accB+=c*min(l,1.5)*w;s+=l;sw+=w;if(outIdx==${i}){lo=l;co=c;wo=w;}}`).join('\n')}
@@ -368,7 +371,7 @@ function update(){
   U.viewerVP.value.multiplyMatrices(vcam.projectionMatrix,vcam.matrixWorldInverse);
   const inten=OPT.map(o=>o.m.lum/(o.Tw*o.Th)),ref=Math.max(1e-9,...OPT.map((o,i)=>inten[i]/(o.dc*o.dc)));
   IDX.forEach(i=>{const on=i<S.pj.length;U['pOn'+i].value=on;if(on){U['pVP'+i].value.copy(OPT[i].vp);U['pPos'+i].value.copy(OPT[i].apex);U['pGain'+i].value=inten[i]/ref;U['pDepth'+i].value=drt(i).texture}else U['pDepth'+i].value=blank});
-  U.mapMode.value=+S.map;U.blend.value=!!S.blend;U.amb.value=S.amb;U.bw.value=S.ov;U.outIdx.value=S.sel;
+  U.bmin.value.copy(BOX.min);BOX.getSize(U.bsize.value);U.mapMode.value=+S.map;U.blend.value=!!S.blend;U.amb.value=S.amb;U.bw.value=S.ov;U.outIdx.value=S.sel;
   /* depth from each projector, for shadows */
   helpers.visible=false;scene.overrideMaterial=depthMat;S.pj.forEach((p,i)=>{renderer.setRenderTarget(drt(i));renderer.setClearColor(0xffffff,1);renderer.clear();renderer.render(scene,PCAM[i])});scene.overrideMaterial=null;
   buildHelpers();
@@ -387,7 +390,11 @@ function drawOut(){const o=OPT[S.sel],w=o.pt?400:640,h=Math.round(w*o.ah/o.aw),o
   if(TRIS*gx*gy>4e8){note.textContent='The model is too heavy to trace this grid in the test. Pick a coarser grid.';return}
   for(let j=0;j<gy;j++){const rowN=[];for(let i=0;i<gx;i++){const nx=-1+2*i/(gx-1),ny=1-2*j/(gy-1);
       if(+S.map===0){rowN.push([(nx*.5+.5)*w,(1-(ny*.5+.5))*h]);continue}
-      rc.setFromCamera({x:nx,y:ny},vcam);const hit=rc.intersectObject(holder,true)[0];if(!hit){rowN.push(null);continue}
+      if(+S.map===3){/* the grid of the side this projector faces: straight rays in from outside that side */
+        const d=o.dir,bx=Math.abs(d.x)>Math.abs(d.z),sg=bx?-Math.sign(d.x):-Math.sign(d.z)||1,u=nx*.5+.5,v=ny*.5+.5,b=BOX,sz=b.getSize(V()),y=b.min.y+v*sz.y,far=R*3;
+        if(bx)rc.set(V().set(C.x+sg*far,y,sg>0?b.max.z-u*sz.z:b.min.z+u*sz.z),V().set(-sg,0,0));else rc.set(V().set(sg>0?b.min.x+u*sz.x:b.max.x-u*sz.x,y,C.z+sg*far),V().set(0,0,-sg))}
+      else rc.setFromCamera({x:nx,y:ny},vcam);
+      const hit=rc.intersectObject(holder,true)[0];if(!hit){rowN.push(null);continue}
       const q=hit.point.clone().applyMatrix4(o.vp);rowN.push(Math.abs(q.x)<=1.001&&Math.abs(q.y)<=1.001&&q.z<1?[(q.x*.5+.5)*w,(1-(q.y*.5+.5))*h]:null)}N.push(rowN)}
   c.strokeStyle='rgba(255,152,64,.95)';c.lineWidth=1;c.beginPath();let used=0;
   for(let j=0;j<gy;j++)for(let i=0;i<gx;i++){const a=N[j][i];if(!a)continue;used++;const r=i+1<gx&&N[j][i+1],d=j+1<gy&&N[j+1][i];if(r){c.moveTo(a[0],a[1]);c.lineTo(r[0],r[1])}if(d){c.moveTo(a[0],a[1]);c.lineTo(d[0],d[1])}}c.stroke();
@@ -404,8 +411,10 @@ function verdict(){const li=[],rows=[];let bad=0,lm=0;
   li.push('<li class="'+(bad?'bad':'')+'"><b>'+S.pj.length+' projector'+(S.pj.length>1?'s':'')+', '+n0(lm)+' lumens in all.</b> '+(bad?bad+' of them '+(bad>1?'have':'has')+' a problem – see box W8.':'Every lens and lens shift is within range.')+'</li>');
   if(COV!=null){const pc=Math.round(COV*100);li.push('<li class="'+(pc>=97?'':pc>=80?'warn':'bad')+'"><b>'+pc+' % of what the audience sees is lit.</b>'+(pc>=97?'':' The rest is in shadow or outside every picture.')+'</li>')}
   if(COVALL!=null){const pc=Math.round(COVALL*100);li.push('<li class="'+(pc>=95?'':pc>=75?'warn':'bad')+'"><b>'+pc+' % is lit when you walk all the way round.</b>'+(pc>=95?'':' Roofs and inner faces that no projector can see stay dark. More projectors, or higher positions, close the gaps.')+'</li>')}
-  if(+S.map===0)li.push('<li class="warn"><b>No warp.</b> Each flat picture bends over the model, and lines break at every edge. Choose «Straight for the audience» to see the corrected result.</li>');
-  if(+S.map===1)li.push('<li><b>Warped for one viewpoint.</b> The picture is straight from the audience position and drifts as people move away from it. Deep models drift more. For a show seen from all sides, the content is normally made on the model\'s own UV instead.</li>');
+  if(+S.map===0)li.push('<li class="warn"><b>No warp.</b> Each flat picture bends over the model, and lines break at every edge. Choose «On the model, straight on every side» to see the corrected result.</li>');
+  if(+S.map===3)li.push('<li><b>Picture on the model.</b> Each side carries the picture as seen straight on, so it looks the same from every side and does not move when people walk around. Round towers show a seam where two sides meet.</li>');
+  if(+S.map===2)li.push('<li><b>Picture on the model\'s own UV.</b> It follows the texture layout saved in the 3D file. A model without a proper UV layout will look scrambled.</li>');
+  if(+S.map===1)li.push('<li><b>Warped for one viewpoint.</b> The picture is straight from the audience position and drifts as people move away from it. Deep models drift more, and the sides seen edge-on get a stretched picture. Use it for depth illusions; for a show seen from all sides, put the picture on the model.</li>');
   $('vd').innerHTML=li.join('')}
 
 /* ---- UI ---- */
