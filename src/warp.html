@@ -50,6 +50,24 @@ select+select{margin-top:7px}
 .part .ph label{display:flex;gap:5px;align-items:center;color:var(--muted)}
 .part .ph .btn{margin-left:auto;padding:3px 10px}
 .part.off .pn{color:var(--faint)}
+.f input[type=number]{width:100%;background:var(--bg);border:1px solid var(--line);border-radius:7px;padding:6px 8px;font-family:var(--f-mono);font-size:13px;text-align:right;min-width:0}
+.crview{position:relative;max-width:520px;border-radius:8px;overflow:hidden;background:#000;line-height:0;border:1px solid var(--line)}
+.crview svg{width:100%;height:auto;display:block}
+.crtag{position:absolute;left:8px;top:8px;font-family:var(--f-mono);font-size:11px;line-height:1.3;color:#fff;background:rgba(0,0,0,.55);padding:3px 7px;border-radius:5px}
+.crscale{margin:12px 0 4px;position:relative;height:58px}
+.crscale .bar{position:absolute;left:0;right:0;top:22px;height:8px;border-radius:4px;background:linear-gradient(90deg,var(--bad),var(--warn) 45%,var(--ok) 80%);opacity:.85}
+.crscale .tick{position:absolute;top:18px;width:1px;height:16px;background:var(--ink);opacity:.5}
+.crscale .tl{position:absolute;top:38px;transform:translateX(-50%);font-family:var(--f-mono);font-size:10px;color:var(--muted);white-space:nowrap}
+.crscale .mk{position:absolute;top:0;transform:translateX(-50%);font-family:var(--f-mono);font-size:10.5px;font-weight:600;white-space:nowrap;display:flex;flex-direction:column;align-items:center;gap:1px}
+.crscale .mk i{width:2px;height:16px;border-radius:1px;background:currentColor;display:block}
+.crnums{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:6px;margin:6px 0 4px}
+.crnums div{background:var(--bg);border:1px solid var(--line);border-radius:8px;padding:6px 9px;min-width:0}
+.crnums b{display:block;font-size:18px;font-variant-numeric:tabular-nums;white-space:nowrap}
+.crnums span{font-family:var(--f-mono);font-size:10px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+.pnb{background:none;border:0;padding:0;text-align:left;cursor:pointer;color:inherit;font-family:inherit}
+.pnb:hover{color:var(--beam)}
+.part.sel{box-shadow:inset 3px 0 0 var(--beam);padding-left:9px}
+.mv{margin-top:7px}.mv summary{cursor:pointer;color:var(--muted);font-size:12.5px}
 .lnk{background:none;border:0;padding:0;margin-top:6px;color:var(--beam);font-size:12.5px;cursor:pointer;text-align:left}
 .lnk:hover{text-decoration:underline}
 .xyz{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;margin-top:9px}
@@ -102,7 +120,7 @@ tr[data-sel],tr[data-selgrp]{cursor:pointer}tr.cur td{background:var(--beam-soft
       <div class="f two"><label for="unit">Sizes in</label><select id="unit"><option value="m">Metres (m)</option><option value="cm">Centimetres (cm)</option><option value="mm">Millimetres (mm)</option><option value="in">Inches (in)</option><option value="ft">Feet (ft)</option></select></div>
       <div class="row"><label class="h3r" style="margin-left:0"><input type="checkbox" id="keep" checked> Keep proportions</label><button class="btn" type="button" id="allOn">Project on all</button></div>
       <div id="parts"></div>
-      <p class="hint" id="partMsg">Each block is a separate part of the model; type a size to change it. Untick «Show» to take a part away. Untick «Project» to leave a part dark: it still stands there and casts shadows. «Split» cuts a part into the pieces that do not touch each other.</p>
+      <p class="hint" id="partMsg">Each block is a separate part of the model; type a size to change it. Open «Move and turn» to place a part somewhere else or turn it. Untick «Show» to take a part away. Untick «Project» to leave a part dark: it still stands there and casts shadows. «Split» cuts a part into the pieces that do not touch each other.</p>
     </section>
     <section class="card">
       <h3><span class="no">W2</span>Projectors<span class="h3r" id="pjCount"></span></h3>
@@ -141,51 +159,62 @@ tr[data-sel],tr[data-selgrp]{cursor:pointer}tr.cur td{background:var(--beam-soft
       <div class="f"><label for="k_vd">Audience at</label><input type="range" id="k_vd" data-k="v.dist" min="1" max="150" step="0.1"><output data-o="v.dist" data-u=" m" data-d="1"></output></div>
       <div class="f"><label for="k_va">Angle</label><input type="range" id="k_va" data-k="v.az" min="-180" max="180" step="1"><output data-o="v.az" data-u="°" data-d="0"></output></div>
       <div class="f"><label for="k_vh">Eye height</label><input type="range" id="k_vh" data-k="v.h" min="0.3" max="15" step="0.05"><output data-o="v.h" data-u=" m" data-d="2"></output></div>
-      <div class="f"><label for="k_amb">Room light</label><input type="range" id="k_amb" data-k="amb" min="0" max="1" step="0.02"><output data-o="amb" data-u=" %" data-d="0" data-x="100"></output></div>
       <div class="row"><label class="btn" for="img" style="cursor:pointer">Use my own picture</label><input type="file" id="img" accept="image/*" hidden><button class="btn" type="button" id="pat">Test pattern</button>
         <label class="h3r" style="margin-left:0"><input type="checkbox" id="k_blend" data-k="blend"> Blend overlaps</label></div>
       <div class="row"><label class="h3r" style="margin-left:0"><input type="checkbox" id="k_per" data-k="per"> One whole picture on each part</label></div>
+    </section>
+    <section class="card">
+      <h3><span class="no">W5</span>Contrast</h3>
+      <p class="hint" id="crWho" style="margin:-4px 0 8px"></p>
+      <div class="crview"><svg id="crSvg" viewBox="0 0 320 180" role="img" aria-label="The picture simulated with the calculated contrast"></svg><span class="crtag" id="crTag"></span></div>
+      <div class="crscale" id="crScale"></div>
+      <div class="crnums" id="crNums"></div>
+      <div class="f two"><label for="crReq">Requirement</label><select id="crReq" data-k="crReq"><option value="7">7:1 – passive viewing</option><option value="15">15:1 – basic decision making</option><option value="50">50:1 – analytical decision making</option><option value="80">80:1 – full motion video</option></select></div>
+      <div class="f"><label for="k_lux">Light on the model</label><input type="range" id="k_lux" data-k="lux" min="0" max="1000" step="5"><output data-o="lux" data-u=" lux" data-d="0"></output></div>
+      <div class="f"><label for="k_gain">Surface gain</label><input type="range" id="k_gain" data-k="gain" min="0.2" max="2" step="0.05"><output data-o="gain" data-u=" ×" data-d="2"></output></div>
+      <div class="f two"><label for="k_pcr">Projector contrast</label><input type="number" id="k_pcr" min="0" step="100" placeholder="from the datasheet"></div>
+      <p class="hint" id="crHint"></p>
     </section>
   </div>
 
   <div class="col right">
     <section class="card" id="w5">
-      <h3><span class="no">W5</span>The site in 3D<span class="h3r"><button class="btn" type="button" id="vAud">Audience view</button><button class="btn" type="button" id="vFree">Overview</button><button class="btn" type="button" id="vTop">From above</button></span></h3>
+      <h3><span class="no">W6</span>The site in 3D<span class="h3r"><button class="btn" type="button" id="vAud">Audience view</button><button class="btn" type="button" id="vFree">Overview</button><button class="btn" type="button" id="vTop">From above</button></span></h3>
       <canvas id="view" aria-label="3D view of the model, the projectors and the projected picture"></canvas>
-      <div class="row"><button class="btn" type="button" data-giz="pj" aria-pressed="true">Move projector</button><button class="btn" type="button" data-giz="rot" aria-pressed="false">Tilt and pan</button><button class="btn" type="button" data-giz="aim" aria-pressed="false">Move aim point</button><button class="btn" type="button" data-giz="off" aria-pressed="false">Hide handles</button></div>
-      <p class="hint">Drag an arrow to move the selected projector along one axis (red X, green height, blue Z), or a small square to move in a plane. «Tilt and pan» swaps the arrows for rings: drag a ring to tilt the projector up or down or pan it sideways. Click a projector's number to select it. Drag elsewhere to orbit, scroll to zoom, right-drag to pan. With the mouse over this box the arrow keys turn the camera around the model, Shift + arrows slide it sideways and up or down, and + and − zoom. The white marker is the audience.</p>
+      <div class="row"><button class="btn" type="button" data-giz="pj" aria-pressed="true">Move projector</button><button class="btn" type="button" data-giz="rot" aria-pressed="false">Tilt and pan</button><button class="btn" type="button" data-giz="aim" aria-pressed="false">Move aim point</button><button class="btn" type="button" data-giz="pmove" aria-pressed="false">Move part</button><button class="btn" type="button" data-giz="prot" aria-pressed="false">Turn part</button><button class="btn" type="button" data-giz="off" aria-pressed="false">Hide handles</button></div>
+      <p class="hint">Drag an arrow to move the selected projector along one axis (red X, green height, blue Z), or a small square to move in a plane. «Move part» and «Turn part» put the handles on the part whose name you clicked in box W1. «Tilt and pan» swaps the arrows for rings: drag a ring to tilt the projector up or down or pan it sideways. Click a projector's number to select it. Drag elsewhere to orbit, scroll to zoom, right-drag to pan. With the mouse over this box the arrow keys turn the camera around the model, Shift + arrows slide it sideways and up or down, and + and − zoom. The white marker is the audience.</p>
     </section>
     <div class="split">
       <section class="card">
-        <h3><span class="no">W6</span><span id="outTitle">What projector 1 must send</span></h3>
+        <h3><span class="no">W7</span><span id="outTitle">What projector 1 must send</span></h3>
         <canvas id="out" width="640" height="400" aria-label="The pre-warped frame for the selected projector"></canvas>
         <div class="f two"><label for="k_grid">Warp grid</label><select id="k_grid" data-k="grid">
           <option value="0">Off</option><option value="9x9">9 × 9</option><option value="17x17">17 × 17 – Free Grid maximum</option><option value="41x26">41 × 26 – upgrade kit maximum</option></select></div>
         <p class="hint" id="gridNote"></p>
       </section>
       <section class="card">
-        <h3><span class="no">W7</span>Does it work</h3>
+        <h3><span class="no">W8</span>Does it work</h3>
         <ul class="vd" id="vd"></ul>
       </section>
     </div>
     <section class="card">
-      <h3><span class="no">W8</span>Every projector</h3>
+      <h3><span class="no">W9</span>Every projector</h3>
       <div class="tw" style="margin-top:0"><table id="tbl"></table></div>
     </section>
     <section class="card">
-      <h3><span class="no">W9</span>The whole setup</h3>
+      <h3><span class="no">W10</span>The whole setup</h3>
       <ul class="vd" id="totLine"></ul>
       <div class="tw"><table id="totParts"></table></div>
       <div class="tw"><table id="totKit"></table></div>
     </section>
     <section class="card">
-      <h3><span class="no">W10</span>How Panasonic projectors warp</h3>
+      <h3><span class="no">W11</span>How Panasonic projectors warp</h3>
       <ul class="facts">
         <li><b>Geometric Adjustment</b> is built into the projector and run from the remote: corner adjustment, keystone and curved correction for pillars, cylinders and spheres.</li>
         <li><b>Free Grid</b> is built into selected models. A grid of 2 × 2 up to 17 × 17 lines is laid over the picture and each node is moved until the picture sits right on the surface.</li>
         <li><b>Geometry Manager Pro</b> is free Windows software that does the same from a laptop over Ethernet. It is now part of Panasonic's Visual Software Suite.</li>
         <li>The <b>ET-UK20</b> upgrade kit raised the grid to as many as 41 × 26 lines and added masking. Panasonic states that ET-UK20 and ET-CUK10 are discontinued in the second quarter of 2026.</li>
-        <li>A grid bends a flat picture smoothly. Sharp steps in depth on a 3D object cannot be followed by any grid. For those the picture must be rendered from the projector's own position, as box W6 does, and played out by a media server.</li>
+        <li>A grid bends a flat picture smoothly. Sharp steps in depth on a 3D object cannot be followed by any grid. For those the picture must be rendered from the projector's own position, as box W7 does, and played out by a media server.</li>
       </ul>
     </section>
   </div>
@@ -195,8 +224,9 @@ tr[data-sel],tr[data-selgrp]{cursor:pointer}tr.cur td{background:var(--beam-soft
 <script src="warp-three.js"></script>
 <script>
 const CAT=/*__CATALOG__*/;
-const IN=0.0254,RAD=Math.PI/180,NP=12,IDX=[...Array(NP).keys()];
+const IN=0.0254,RAD=Math.PI/180,NP=25,IDX=[...Array(NP).keys()];
 const COLS=['#FF9840','#79C2FF','#4FD49C','#F58ACB','#F1CB5A','#B39BFF','#5FD6D6','#FF7C68','#A9D86E','#E0A27A','#8FA8FF','#D9D9D9'];
+for(let i=COLS.length;i<NP;i++)COLS.push('hsl('+Math.round(i*137.5%360)+',72%,'+(i%2?62:74)+'%)');
 const ratioOf=s=>{const m=s.match(/(\d+(?:\.\d+)?)\s*:\s*(\d+(?:\.\d+)?)/);return [+m[1],+m[2]]};
 function inPoly(x,y,P){let c=false;for(let i=0,j=P.length-1;i<P.length;j=i++){const[xi,yi]=P[i],[xj,yj]=P[j];if(((yi>y)!==(yj>y))&&(x<(xj-xi)*(y-yi)/(yj-yi)+xi))c=!c}return c}
 function onEdge(x,y,P){const e=1e-6;return P.some(([px,py],i)=>{const[qx,qy]=P[(i+1)%P.length];const cr=(qx-px)*(y-py)-(qy-py)*(x-px);return Math.abs(cr)<e&&x>=Math.min(px,qx)-e&&x<=Math.max(px,qx)+e&&y>=Math.min(py,qy)-e&&y<=Math.max(py,qy)+e})}
@@ -212,7 +242,7 @@ const esc=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;',
 const f=(v,d=2)=>Number(v).toFixed(d),n0=v=>Math.round(v).toLocaleString('en-US'),clamp=(v,a,b)=>Math.min(b,Math.max(a,v));
 const mIdx=re=>Math.max(0,MODELS.findIndex(m=>re.test(m.m)));
 const newPj=(mi,az)=>({mi,li:0,dist:6,az,h:2.4,zoom:.5,sv:0,sh:0,ax:0,ay:0,ad:0,roll:0,span:0,port:false,tp:null});
-const S={per:false,g:1,unit:'m',ld:8,lh:2,ov:.15,arc:360,size:3,turn:0,zup:false,map:3,amb:.25,blend:true,grid:'17x17',sel:0,v:{dist:9,az:0,h:1.6},pj:[newPj(mIdx(/REQ12/),0)]};
+const S={crReq:15,lux:10,pcr:0,gain:1,per:false,g:1,unit:'m',ld:8,lh:2,ov:.15,arc:360,size:3,turn:0,zup:false,map:3,amb:.25,blend:true,grid:'17x17',sel:0,v:{dist:9,az:0,h:1.6},pj:[newPj(mIdx(/REQ12/),0)]};
 const root=k=>k[0]==='cur'?[S.pj[S.sel],k.slice(1)]:[S,k];
 const getP=k=>{const[o,a]=root(k.split('.'));return a.reduce((x,p)=>x[p],o)};
 const setP=(k,v)=>{const[o,a]=root(k.split('.')),l=a.pop();a.reduce((x,p)=>x[p],o)[l]=v};
@@ -226,9 +256,12 @@ const helpers=new THREE.Group(),pjHelp=new THREE.Group(),holder=new THREE.Group(
 helpers.add(new THREE.GridHelper(300,150,0x4a5562,0x262d34));
 /* move handles, as in 3D programs: arrows for one axis, squares for a plane */
 const grip=new THREE.Object3D(),tc=new THREE.TransformControls(cam,cv);helpers.add(grip,tc);tc.attach(grip);tc.setSpace('world');tc.setSize(.9);let GIZ='pj',dragging=false;
-tc.addEventListener('dragging-changed',e=>{dragging=e.value;orbit.enabled=!e.value;if(!e.value)update()});
+tc.addEventListener('dragging-changed',e=>{dragging=e.value;orbit.enabled=!e.value;if(e.value&&GIZ==='prot'&&PARTS[SELP])PARTS[SELP]._q0=partQ(PARTS[SELP]);if(!e.value)update()});
 tc.addEventListener('change',()=>paint());
-tc.addEventListener('objectChange',()=>{if(GIZ==='rot')rotSel();else moveSel(grip.position,GIZ==='aim');update()});
+tc.addEventListener('objectChange',()=>{const sp=PARTS[SELP];
+  if(GIZ==='pmove'){if(sp){sp.off.add(grip.position.clone().sub(sp.wc));applyPart(sp);refresh();changed()}}
+  else if(GIZ==='prot'){if(sp&&sp._q0){const e=new THREE.Euler().setFromQuaternion(grip.quaternion.clone().multiply(sp._q0),'YXZ');sp.rot=[e.x/RAD,e.y/RAD,e.z/RAD];applyPart(sp);refresh();changed()}}
+  else if(GIZ==='rot')rotSel();else moveSel(grip.position,GIZ==='aim');update()});
 /* tilt and pan are the angles of the line from the lens to the aim point: tilt up from level, pan right of the model's centre */
 /* a projector can be given one part to work on; without one it works on all ticked parts */
 const tpOf=i=>{const t=S.pj[i]&&S.pj[i].tp;return t&&PARTS.includes(t)?t:null},ctr=i=>{const t=tpOf(i);return t&&t.wc?t.wc:C};
@@ -245,7 +278,8 @@ let MULTI=new Set([0]);
 function moveSel(pos,aim){const d=pos.clone().sub(aim?OPT[S.sel].target:OPT[S.sel].lens);for(const i of MULTI){if(aim)moveAim(OPT[i].target.clone().add(d),i);else{const L=OPT[i].lens.clone().add(d);movePj(L.x,L.y,L.z,i)}}}
 function pick(i,add){if(add){if(MULTI.has(i)&&MULTI.size>1){MULTI.delete(i);if(S.sel===i)S.sel=[...MULTI][MULTI.size-1]}else{MULTI.add(i);S.sel=i}}else{S.sel=i;MULTI=new Set([i])}update()}
 const PCAM=IDX.map(()=>new THREE.Camera()),vcam=new THREE.PerspectiveCamera(30,1.6,.1,1500),tcam=new THREE.PerspectiveCamera(40,1.6,.1,1500);
-const DRT=[],drt=i=>DRT[i]||(DRT[i]=new THREE.WebGLRenderTarget(1024,1024,{minFilter:THREE.NearestFilter,magFilter:THREE.NearestFilter}));
+/* the shadow depth of every projector lies in one shared sheet of GRID × GRID tiles: a shader may only use about 16 textures, so one per projector would stop at 12 */
+const GRID=5,TILE=800,ATL=new THREE.WebGLRenderTarget(GRID*TILE,GRID*TILE,{minFilter:THREE.NearestFilter,magFilter:THREE.NearestFilter});ATL.scissorTest=true;
 const depthMat=new THREE.MeshDepthMaterial({depthPacking:THREE.RGBADepthPacking,side:THREE.DoubleSide});
 let outRT=new THREE.WebGLRenderTarget(640,400);const maskRT=new THREE.WebGLRenderTarget(160,100),blank=new THREE.DataTexture(new Uint8Array([255,255,255,255]),1,1,THREE.RGBAFormat);blank.needsUpdate=true;
 const pcv=document.createElement('canvas');pcv.width=1600;pcv.height=1000;
@@ -259,16 +293,16 @@ function pattern(){const c=pcv.getContext('2d'),W=1600,H=1000;c.fillStyle='#1015
   for(let y=0;y<10;y++)for(let x=0;x<16;x++){if(y===4||y===5)continue;c.fillText(String.fromCharCode(65+x)+(y+1),x*100+50,y*100+50)}
   c.lineWidth=14;c.strokeStyle='#FF9840';c.strokeRect(7,7,W-14,H-14);tex.needsUpdate=true}
 pattern();
-const U={tgt:{value:1},pm:{value:4095},bmin:{value:new THREE.Vector3()},bsize:{value:new THREE.Vector3(1,1,1)},tex:{value:tex},mapMode:{value:3},showMode:{value:0},outIdx:{value:0},blend:{value:true},amb:{value:.25},bw:{value:.15},viewerVP:{value:new THREE.Matrix4()}};
-IDX.forEach(i=>{U['pOn'+i]={value:false};U['pVP'+i]={value:new THREE.Matrix4()};U['pPos'+i]={value:new THREE.Vector3()};U['pGain'+i]={value:1};U['pDepth'+i]={value:blank}});
+const U={wash:{value:0},tgt:{value:1},pm:{value:4095},pm2:{value:8191},bmin:{value:new THREE.Vector3()},bsize:{value:new THREE.Vector3(1,1,1)},tex:{value:tex},mapMode:{value:3},showMode:{value:0},outIdx:{value:0},blend:{value:true},amb:{value:.25},bw:{value:.15},viewerVP:{value:new THREE.Matrix4()}};
+IDX.forEach(i=>{U['pOn'+i]={value:false};U['pVP'+i]={value:new THREE.Matrix4()};U['pPos'+i]={value:new THREE.Vector3()};U['pGain'+i]={value:1}});U.dAtlas={value:ATL.texture};
 const MAT=new THREE.ShaderMaterial({uniforms:U,side:THREE.DoubleSide,
   vertexShader:'varying vec3 vW;varying vec3 vN;varying vec2 vUv;void main(){vec4 w=modelMatrix*vec4(position,1.);vW=w.xyz;vN=(vec4(normalMatrix*normal,0.)*viewMatrix).xyz;vUv=uv;gl_Position=projectionMatrix*viewMatrix*w;}',
   fragmentShader:`#include <packing>
-uniform sampler2D tex;uniform int mapMode,showMode,outIdx;uniform bool blend;uniform float amb,bw,tgt,pm;uniform vec3 bmin,bsize;uniform mat4 viewerVP;varying vec3 vW;varying vec3 vN;varying vec2 vUv;
-${IDX.map(i=>`uniform sampler2D pDepth${i};uniform bool pOn${i};uniform mat4 pVP${i};uniform vec3 pPos${i};uniform float pGain${i};`).join('\n')}
-float litBy(bool on,mat4 vp,vec3 pp,float gain,sampler2D dm,vec3 n,out vec2 puv,out float wgt){puv=vec2(0.);wgt=1.;float r=0.;
+uniform sampler2D tex,dAtlas;uniform int mapMode,showMode,outIdx;uniform bool blend;uniform float amb,bw,tgt,pm,pm2,wash;uniform vec3 bmin,bsize;uniform mat4 viewerVP;varying vec3 vW;varying vec3 vN;varying vec2 vUv;
+${IDX.map(i=>`uniform bool pOn${i};uniform mat4 pVP${i};uniform vec3 pPos${i};uniform float pGain${i};`).join('\n')}
+float litBy(bool on,mat4 vp,vec3 pp,float gain,vec2 tile,vec3 n,out vec2 puv,out float wgt){puv=vec2(0.);wgt=1.;float r=0.;
   if(on){vec4 pc=vp*vec4(vW,1.);if(pc.w>0.){vec3 ndc=pc.xyz/pc.w;if(abs(ndc.x)<=1.&&abs(ndc.y)<=1.&&ndc.z<=1.){
-    vec3 l=pp-vW;float d=length(l);float c=dot(n,l/d);if(c>.03){puv=ndc.xy*.5+.5;if(bw>0.)wgt=max(.001,smoothstep(0.,1.,min(1.-abs(ndc.x),1.-abs(ndc.y))*.5/bw));float dz=unpackRGBAToDepth(texture2D(dm,puv));if(ndc.z*.5+.5<=dz+.003+.016*(1.-c))r=c*gain/(d*d);}}}}
+    vec3 l=pp-vW;float d=length(l);float c=dot(n,l/d);if(c>.03){puv=ndc.xy*.5+.5;if(bw>0.)wgt=max(.001,smoothstep(0.,1.,min(1.-abs(ndc.x),1.-abs(ndc.y))*.5/bw));float dz=unpackRGBAToDepth(texture2D(dAtlas,(clamp(puv,.001,.999)+tile)/${GRID}.));if(ndc.z*.5+.5<=dz+.003+.016*(1.-c))r=c*gain/(d*d);}}}}
   return r;}
 vec3 contentAt(vec2 puv){vec2 uv=puv;float ok=1.;
   if(mapMode==2)uv=fract(vUv);
@@ -280,11 +314,13 @@ void main(){vec3 n=normalize(vN);if(!gl_FrontFacing)n=-n;
   /* a part that is not projected on: masked out of every picture, drawn dark in the 3D view, left out of the coverage count */
   if(tgt<.5){float sh=.3+.7*abs(dot(n,normalize(cameraPosition-vW)));gl_FragColor=showMode==0?vec4(vec3(.17,.19,.22)*sh*(.3+1.3*amb)*.6,1.):vec4(0.,0.,0.,1.);return;}
   vec2 u;float l,w;vec3 c;vec3 acc=vec3(0.),accB=vec3(0.);float s=0.,sw=0.,lo=0.,wo=0.;vec3 co=vec3(0.);
-${IDX.map(i=>`  if(mod(floor(pm/${Math.pow(2,i).toFixed(1)}),2.)>.5){l=litBy(pOn${i},pVP${i},pPos${i},pGain${i},pDepth${i},n,u,w);if(l>0.){c=contentAt(u);acc+=c*min(l,1.5);accB+=c*min(l,1.5)*w;s+=l;sw+=w;if(outIdx==${i}){lo=l;co=c;wo=w;}}}`).join('\n')}
+${IDX.map(i=>`  if(mod(floor(${i<12?'pm':'pm2'}/${Math.pow(2,i<12?i:i-12).toFixed(1)}),2.)>.5){l=litBy(pOn${i},pVP${i},pPos${i},pGain${i},vec2(${i%GRID}.,${Math.floor(i/GRID)}.),n,u,w);if(l>0.){c=contentAt(u);acc+=c*min(l,1.5);accB+=c*min(l,1.5)*w;s+=l;sw+=w;if(outIdx==${i}){lo=l;co=c;wo=w;}}}`).join('\n')}
   if(showMode==2){gl_FragColor=s>0.?vec4(1.,0.,0.,1.):vec4(0.,0.,1.,1.);return;}
   /* edge blend: each picture fades out over the blend width, and the shares are scaled so they add up to one */
   if(showMode==1){float k=(blend&&sw>0.)?wo/sw:1.;gl_FragColor=vec4(lo>0.?co*k:vec3(0.),1.);return;}
   if(blend&&sw>0.)acc=accB/sw;
+  /* contrast: the room light and the projector's own black lift black towards white, as in the contrast box */
+  if(s>0.)acc=acc*(1.-wash)+vec3(wash)*min(1.,s*4.);
   float shade=.3+.7*abs(dot(n,normalize(cameraPosition-vW)));
   gl_FragColor=vec4(vec3(.17,.19,.22)*shade*(.3+1.3*amb)+acc,1.);}`});
 
@@ -317,9 +353,9 @@ function castle(){const root=new THREE.Group();let g;const part=n=>{g=new THREE.
   B(4,5,6,6.4,2.5,-4.5);Co(3.2,3,6.4,6.5,-4.5,4,Math.PI/4);Cy(.7,9,6.4,4.5,-1.2);Co(.95,2.2,6.4,10.1,-1.2);
   return root}
 /* a part: its meshes (geometry baked into one common space), whether it is shown and projected on, and its own scale */
-function mkPart(name,geos,on,show){const b=new THREE.Box3(),p={name,on:on!==false,show:show!==false,s:new THREE.Vector3(1,1,1),box:b};
+function mkPart(name,geos,on,show){const b=new THREE.Box3(),p={name,on:on!==false,show:show!==false,s:new THREE.Vector3(1,1,1),off:new THREE.Vector3(),rot:[0,0,0],box:b};
   p.meshes=geos.map(g=>{const m=new THREE.Mesh(g,MAT);m.frustumCulled=false;m.userData.part=p;g.computeBoundingBox();b.union(g.boundingBox);
-    m.onBeforeRender=()=>{U.tgt.value=p.on?1:0;U.pm.value=p.mask;const bx=S.per&&p.wb?p.wb:BOX;U.bmin.value.copy(bx.min);bx.getSize(U.bsize.value);MAT.uniformsNeedUpdate=true};return m});p.mask=4095;return p}
+    m.onBeforeRender=()=>{U.tgt.value=p.on?1:0;U.pm.value=p.mask;U.pm2.value=p.mask2;U.wash.value=p.wash||0;const bx=S.per&&p.wb?p.wb:BOX;U.bmin.value.copy(bx.min);bx.getSize(U.bsize.value);MAT.uniformsNeedUpdate=true};return m});p.mask=4095;p.mask2=8191;return p}
 /* a loaded file becomes one part per top-level object in it */
 function bake(obj){obj.updateMatrixWorld(true);let node=obj;while(!node.isMesh&&node.children.length===1)node=node.children[0];const parts=[];
   (node.isMesh?[node]:node.children).forEach(t=>{const gs=[];t.traverse(o=>{if(o.isMesh&&o.geometry&&o.geometry.attributes.position){const g=o.geometry.clone();g.applyMatrix4(o.matrixWorld);if(!g.attributes.normal)g.computeVertexNormals();gs.push(g)}});
@@ -328,8 +364,15 @@ function setParts(parts){PARTS.forEach(p=>p.meshes.forEach(m=>{ROOT.remove(m);m.
 /* which of the model's own axes each world axis (width, height, depth) follows after Turn 90° / Z is up */
 function axisMap(){const q=rotG.quaternion.clone().invert();return [0,1,2].map(k=>{const v=new THREE.Vector3().setComponent(k,1).applyQuaternion(q),a=[Math.abs(v.x),Math.abs(v.y),Math.abs(v.z)],j=a.indexOf(Math.max(...a));return [j,Math.sign(v.getComponent(j))||1]})}
 /* a part is scaled from the middle of its underside, so it stays standing where it is */
+const partQ=p=>new THREE.Quaternion().setFromEuler(new THREE.Euler(p.rot[0]*RAD,p.rot[1]*RAD,p.rot[2]*RAD,'YXZ'));
 function applyPart(p){const[j,sg]=axisMap()[1],pv=p.box.getCenter(new THREE.Vector3());pv.setComponent(j,sg>0?p.box.min.getComponent(j):p.box.max.getComponent(j));
-  p.meshes.forEach(m=>{m.scale.copy(p.s);m.position.set(pv.x*(1-p.s.x),pv.y*(1-p.s.y),pv.z*(1-p.s.z));m.visible=p.show})}
+  /* size, then turn, then move – all about the middle of the part's underside; move and turn are given in room axes */
+  const qR=rotG.quaternion,qi=qR.clone().invert(),q=qi.clone().multiply(partQ(p)).multiply(qR),t=pv.clone().add(p.off.clone().applyQuaternion(qi).divideScalar(S.g||1));
+  const M=new THREE.Matrix4().compose(t,q,p.s).multiply(new THREE.Matrix4().makeTranslation(-pv.x,-pv.y,-pv.z));
+  p.meshes.forEach(m=>{m.matrixAutoUpdate=false;m.matrix.copy(M);m.matrixWorldNeedsUpdate=true;m.visible=p.show})}
+/* a part's own width, height and depth (before it is turned) */
+function partDim(p,k){const j=axisMap()[k][0];return p.box.getSize(new THREE.Vector3()).getComponent(j)*p.s.getComponent(j)*S.g}
+let SELP=0;
 function partBox(p){const b=new THREE.Box3();p.meshes.forEach(m=>b.expandByObject(m));return b}
 /* size = set the whole model's largest side (metres); recentre = stand it on the floor in the middle again */
 function layout(recentre,size){rotG.rotation.set(S.zup?-Math.PI/2:0,S.turn*Math.PI/2,0,'YXZ');PARTS.forEach(applyPart);
@@ -373,8 +416,11 @@ function autoSplit(){const n0p=PARTS.length;let big=0;for(let i=PARTS.length-1;i
   if(add)layout(true)}
 function partsUI(){const u=UNITS[S.unit],key=S.unit+'/'+PARTS.map(p=>p.name).join('|'),box=$('parts');
   if(key!==partsKey){partsKey=key;const dims=i=>'<div class="xyz">'+['Width','Height','Depth'].map((l,k)=>'<label>'+l+', '+u[2]+' <input type="number" step="any" min="0" data-pd="'+i+':'+k+'"></label>').join('')+'</div>';
-    box.innerHTML='<div class="part"><div class="ph"><span class="pn">Whole model</span></div>'+dims('all')+'</div>'+PARTS.map((p,i)=>'<div class="part" data-part="'+i+'"><div class="ph"><span class="pn">'+esc(p.name)+'</span><label><input type="checkbox" data-ps="'+i+'"> Show</label><label><input type="checkbox" data-pp="'+i+'"> Project</label><button class="btn" type="button" data-split="'+i+'">Split</button></div>'+dims(i)+'<button class="lnk" type="button" data-selgrp="" data-pjof="'+i+'"></button></div>').join('')}
-  box.querySelectorAll('[data-pd]').forEach(e=>{if(document.activeElement===e)return;const[i,k]=e.dataset.pd.split(':'),sz=(i==='all'?ABOX:partBox(PARTS[+i])).getSize(new THREE.Vector3());e.value=f(sz.getComponent(+k)/u[0],u[1])});
+    box.innerHTML='<div class="part"><div class="ph"><span class="pn">Whole model</span></div>'+dims('all')+'</div>'+PARTS.map((p,i)=>'<div class="part" data-part="'+i+'"><div class="ph"><button class="pn pnb" type="button" data-pick="'+i+'" title="Select this part for the handles in the 3D view">'+esc(p.name)+'</button><label><input type="checkbox" data-ps="'+i+'"> Show</label><label><input type="checkbox" data-pp="'+i+'"> Project</label><button class="btn" type="button" data-split="'+i+'">Split</button></div>'+dims(i)+'<details class="mv"><summary>Move and turn</summary><div class="xyz">'+['Move X','Move up','Move Z'].map((l,k)=>'<label>'+l+', '+u[2]+' <input type="number" step="any" data-po="'+i+':'+k+'"></label>').join('')+'</div><div class="xyz">'+['Tilt about X','Turn (upright)','Tilt about Z'].map((l,k)=>'<label>'+l+', ° <input type="number" step="1" data-pr="'+i+':'+k+'"></label>').join('')+'</div><div class="row"><button class="btn" type="button" data-pback="'+i+'">Put back</button></div></details><button class="lnk" type="button" data-selgrp="" data-pjof="'+i+'"></button></div>').join('')}
+  box.querySelectorAll('[data-pd]').forEach(e=>{if(document.activeElement===e)return;const[i,k]=e.dataset.pd.split(':');e.value=f((i==='all'?ABOX.getSize(new THREE.Vector3()).getComponent(+k):partDim(PARTS[+i],+k))/u[0],u[1])});
+  box.querySelectorAll('[data-po]').forEach(e=>{if(document.activeElement===e)return;const[i,k]=e.dataset.po.split(':');e.value=f(PARTS[+i].off.getComponent(+k)/u[0],u[1])});
+  box.querySelectorAll('[data-pr]').forEach(e=>{if(document.activeElement===e)return;const[i,k]=e.dataset.pr.split(':');e.value=f(PARTS[+i].rot[+k],1)});
+  SELP=clamp(SELP,0,Math.max(0,PARTS.length-1));box.querySelectorAll('[data-part]').forEach(e=>e.classList.toggle('sel',+e.dataset.part===SELP));
   box.querySelectorAll('[data-pjof]').forEach(e=>{const t=PARTS[+e.dataset.pjof],idx=S.pj.map((p,i)=>i).filter(i=>tpOf(i)===t);e.hidden=!idx.length;e.dataset.selgrp=idx.join(',');
     e.textContent=idx.length?'Projector'+(idx.length>1?'s ':' ')+idx.map(i=>i+1).join(', ')+' · '+[...new Set(idx.map(i=>MODELS[S.pj[i].mi].m))].join(', ')+' – select':''});
   box.querySelectorAll('[data-ps]').forEach(e=>{e.checked=PARTS[+e.dataset.ps].show});
@@ -437,6 +483,28 @@ function calcEach(){const mi0=S.pj[S.sel].mi,arc=S.arc,sides=arc===360?4:1,tg=PA
   $('calcMsg').textContent='Calculated part by part: '+S.pj.length+' projector'+(S.pj.length===1?'':'s')+' for '+(done+tight.length)+' of '+tg.length+' parts.'+
     (tight.length?' Outside the lens limits even with the projectors that were left: '+tight.join(', ')+'.':'')+(none.length?' No projector left for: '+none.join(', ')+' (the limit is '+NP+').':'')+(tight.length||none.length?'':' Every picture is within its lens\'s limits.')}
 
+/* ---- contrast (ANSI/AVIXA ISCR categories), same formulas as box 06 in the app ---- */
+const CRN={7:'passive viewing',15:'basic decision making',50:'analytical decision making',80:'full motion video'},crTxt=c=>(c>=100?n0(c):f(c,1))+':1';
+let IMGURL='';
+/* lux = this projector's light on its picture; black = the projector's own black + the light already on the model */
+function crOf(i){const o=OPT[i],lux=o.m.lum/(o.Tw*o.dc*o.Th*o.dc),pcr=S.pcr>0?S.pcr:(o.m.cr||2000),blk=lux/pcr+S.lux;return {lux,pcr,blk,cr:(lux+S.lux)/blk}}
+function drawContrast(){const i=S.sel,r=crOf(i),req=+S.crReq,W=320,H=180,t=tpOf(i),ws=r.lux/(r.lux+r.blk),ic=r.blk/(r.lux+r.blk);
+  let pic='';if(IMGURL)pic='<image href="'+IMGURL+'" x="0" y="0" width="'+W+'" height="'+H+'" preserveAspectRatio="xMidYMid slice"/>';
+  else{for(let y=0;y<4;y++)for(let x=0;x<4;x++)pic+='<rect x="'+x*W/4+'" y="'+y*H/4+'" width="'+W/4+'" height="'+H/4+'" fill="'+((x+y)%2?'#000':'#fff')+'"/>';
+    ['#fff','#ff0','#0ff','#0f0','#f0f','#f00','#00f','#000'].forEach((c,k)=>{pic+='<rect x="'+(W*.125+k*W*.75/8)+'" y="'+H*.44+'" width="'+W*.75/8+'" height="'+H*.12+'" fill="'+c+'"/>'})}
+  $('crSvg').innerHTML='<defs><filter id="cf1" color-interpolation-filters="linearRGB"><feComponentTransfer>'+['R','G','B'].map(c=>'<feFunc'+c+' type="linear" slope="'+ws.toFixed(4)+'" intercept="'+ic.toFixed(4)+'"/>').join('')+'</feComponentTransfer></filter></defs><g filter="url(#cf1)">'+pic+'</g>';
+  $('crWho').textContent='Projector '+(i+1)+' on '+(t?t.name:'all ticked parts');
+  $('crTag').textContent=crTxt(r.cr)+' · '+(r.cr>=req?'✓':'✗')+' requirement '+req+':1';
+  const pos=c=>Math.max(0,Math.min(100,Math.log10(Math.max(1,c))/3*100));let sc='<div class="bar"></div>';
+  [[1,'1'],[7,'7'],[15,'15'],[50,'50'],[80,'80'],[1000,'1000']].forEach(([v,tx])=>{const on=v===req;sc+='<span class="tick" style="left:'+pos(v)+'%;'+(on?'opacity:1;width:3px;height:20px;top:16px;background:var(--dim)':'')+'"></span><span class="tl" style="left:'+Math.min(97,Math.max(2,pos(v)))+'%;'+(on?'color:var(--dim);font-weight:700':'')+'">'+(on?'req. ':'')+tx+'</span>'});
+  sc+='<span class="mk" style="left:'+pos(r.cr)+'%;color:var(--ink)">'+crTxt(r.cr)+'<i></i></span>';$('crScale').innerHTML=sc;
+  const L=e=>S.gain*e/Math.PI;
+  $('crNums').innerHTML='<div><span>Illuminance (centre)</span><b>'+n0(r.lux)+' lux</b></div><div><span>White</span><b>'+n0(L(r.lux+r.blk))+' cd/m²</b></div><div><span>Black</span><b>'+f(L(r.blk),1)+' cd/m²</b></div>'+
+    '<div><span>Contrast</span><b style="color:'+(r.cr>=15?'var(--ok)':r.cr>=7?'var(--warn)':'var(--bad)')+'">'+crTxt(r.cr)+'</b></div>';
+  const all=S.pj.map((p,k)=>crOf(k).cr),lo=Math.min(...all),wi=all.indexOf(lo),pe=$('k_pcr');if(document.activeElement!==pe)pe.value=S.pcr>0?S.pcr:'';pe.placeholder=n0(r.pcr)+' (datasheet)';
+  $('crHint').innerHTML='The light on the model makes up <b>'+f(S.lux/r.blk*100,1)+' %</b> of the black level. Lowest contrast in the setup: <b>'+crTxt(lo)+'</b> (projector '+(wi+1)+'). Where pictures overlap, both white and black rise. '+
+    'The datasheet contrast is full on/off; type the projector\'s ANSI contrast for a more realistic figure. Requirements follow ANSI/INFOCOMM 3M-2011 (now AVIXA V201.01), measured in the room with an ANSI checkerboard.'}
+
 /* ---- render ---- */
 let OPT=[],dirty=false,COV=null,COVALL=null;
 function sizeView(){const w=cv.clientWidth||600,h=Math.round(clamp(w*.6,260,640));renderer.setSize(w,h,false);cv.style.height=h+'px';cam.aspect=w/h;cam.updateProjectionMatrix()}
@@ -454,7 +522,8 @@ const mb=new Uint8Array(160*100*4);
 function cover(camera){pass(maskRT,camera,2,0x000000);renderer.readRenderTargetPixels(maskRT,0,0,160,100,mb);let lit=0,all=0;for(let i=0;i<mb.length;i+=4){if(mb[i]>128){lit++;all++}else if(mb[i+2]>128)all++}return [lit,all]}
 function update(){
   S.sel=clamp(S.sel,0,S.pj.length-1);MULTI=new Set([...MULTI].filter(i=>i<S.pj.length));MULTI.add(S.sel);OPT=S.pj.map((p,i)=>setCam(i));
-  PARTS.forEach(p=>{let m=0;S.pj.forEach((q,i)=>{const t=tpOf(i);if(!t||t===p)m+=Math.pow(2,i)});p.mask=m});
+  PARTS.forEach(p=>{let m=0,m2=0;S.pj.forEach((q,i)=>{const t=tpOf(i);if(!t||t===p){if(i<12)m+=Math.pow(2,i);else m2+=Math.pow(2,i-12)}});p.mask=m;p.mask2=m2;
+    const cs=S.pj.map((q,i)=>i).filter(i=>{const t=tpOf(i);return !t||t===p}).map(i=>crOf(i).cr);p.wash=cs.length?Math.pow(1/Math.max(1,Math.min(...cs)),1/2.2):0});
   const az=S.v.az*RAD;vcam.position.set(S.v.dist*Math.sin(az),S.v.h,S.v.dist*Math.cos(az));vcam.lookAt(C);vcam.updateMatrixWorld(true);vcam.matrixWorldInverse.copy(vcam.matrixWorld).invert();
   {/* the picture frame the audience sees: tight around the model, 16:10 */
     let x0=1e9,x1=-1e9,y0=1e9,y1=-1e9;corners(q=>{q.applyMatrix4(vcam.matrixWorldInverse);if(q.z<-.01){const tx=q.x/-q.z,ty=q.y/-q.z;x0=Math.min(x0,tx);x1=Math.max(x1,tx);y0=Math.min(y0,ty);y1=Math.max(y1,ty)}});
@@ -462,16 +531,16 @@ function update(){
     vcam.projectionMatrix.makePerspective(n*(cx-w/2),n*(cx+w/2),n*(cy+h/2),n*(cy-h/2),n,1500);vcam.projectionMatrixInverse.copy(vcam.projectionMatrix).invert()}
   U.viewerVP.value.multiplyMatrices(vcam.projectionMatrix,vcam.matrixWorldInverse);
   const inten=OPT.map(o=>o.m.lum/(o.Tw*o.Th)),ref=Math.max(1e-9,...OPT.map((o,i)=>inten[i]/(o.dc*o.dc)));
-  IDX.forEach(i=>{const on=i<S.pj.length;U['pOn'+i].value=on;if(on){U['pVP'+i].value.copy(OPT[i].vp);U['pPos'+i].value.copy(OPT[i].apex);U['pGain'+i].value=inten[i]/ref;U['pDepth'+i].value=drt(i).texture}else U['pDepth'+i].value=blank});
-  U.bmin.value.copy(BOX.min);BOX.getSize(U.bsize.value);U.mapMode.value=+S.map;U.blend.value=!!S.blend;U.amb.value=S.amb;U.bw.value=S.ov;U.outIdx.value=S.sel;
+  IDX.forEach(i=>{const on=i<S.pj.length;U['pOn'+i].value=on;if(on){U['pVP'+i].value.copy(OPT[i].vp);U['pPos'+i].value.copy(OPT[i].apex);U['pGain'+i].value=inten[i]/ref}});
+  U.bmin.value.copy(BOX.min);BOX.getSize(U.bsize.value);U.mapMode.value=+S.map;U.blend.value=!!S.blend;U.amb.value=clamp(S.lux/600,0,1);U.bw.value=S.ov;U.outIdx.value=S.sel;
   /* depth from each projector, for shadows */
-  helpers.visible=false;scene.overrideMaterial=depthMat;S.pj.forEach((p,i)=>{renderer.setRenderTarget(drt(i));renderer.setClearColor(0xffffff,1);renderer.clear();renderer.render(scene,PCAM[i])});scene.overrideMaterial=null;
+  helpers.visible=false;scene.overrideMaterial=depthMat;S.pj.forEach((p,i)=>{const x=(i%GRID)*TILE,y=Math.floor(i/GRID)*TILE;ATL.viewport.set(x,y,TILE,TILE);ATL.scissor.set(x,y,TILE,TILE);renderer.setRenderTarget(ATL);renderer.setClearColor(0xffffff,1);renderer.clear();renderer.render(scene,PCAM[i])});scene.overrideMaterial=null;
   buildHelpers();
-  if(!dragging){tc.setMode(GIZ==='rot'?'rotate':'translate');tc.setSpace(GIZ==='rot'?'local':'world');grip.position.copy(GIZ==='aim'?OPT[S.sel].target:OPT[S.sel].lens);
+  if(!dragging){const pg=(GIZ==='pmove'||GIZ==='prot')&&PARTS[SELP]&&PARTS[SELP].wc;tc.setMode(GIZ==='rot'||GIZ==='prot'?'rotate':'translate');tc.setSpace(GIZ==='rot'?'local':'world');grip.position.copy(pg?PARTS[SELP].wc:GIZ==='aim'?OPT[S.sel].target:OPT[S.sel].lens);
     if(GIZ==='rot')grip.quaternion.copy(PCAM[S.sel].quaternion);else grip.quaternion.set(0,0,0,1)}tc.visible=tc.enabled=GIZ!=='off';
   /* coverage: from the audience, and averaged from eight sides */
   {const[l,a]=cover(vcam);COV=a?l/a:null;let L=0,A=0;for(let k=0;k<8;k++){const t=k*Math.PI/4;tcam.position.set(R*3*Math.sin(t),C.y+R*.7,R*3*Math.cos(t));tcam.lookAt(C);tcam.updateMatrixWorld(true);const[l2,a2]=cover(tcam);L+=l2;A+=a2}COVALL=A?L/A:null}
-  drawOut();pass(null,cam,0,0x12161b);syncUI();verdict()}
+  drawOut();pass(null,cam,0,0x12161b);syncUI();verdict();drawContrast()}
 function drawOut(){const o=OPT[S.sel],w=o.pt?400:640,h=Math.round(w*o.ah/o.aw),oc=$('out');if(outRT.height!==h||outRT.width!==w){outRT.dispose();outRT=new THREE.WebGLRenderTarget(w,h)}
   if(oc.height!==h||oc.width!==w){oc.width=w;oc.height=h}oc.style.maxWidth=o.pt?'300px':'';oc.style.margin=o.pt?'0 auto':'';const c=oc.getContext('2d');
   pass(outRT,PCAM[S.sel],1,0x000000);const buf=new Uint8Array(w*h*4);renderer.readRenderTargetPixels(outRT,0,0,w,h,buf);const im=c.createImageData(w,h);
@@ -498,9 +567,10 @@ function drawOut(){const o=OPT[S.sel],w=o.pt?400:640,h=Math.round(w*o.ah/o.aw),o
 function verdict(){const li=[],rows=[];let bad=0,lm=0;
   S.pj.forEach((p,i)=>{const o=OPT[i],W=o.Tw*o.dc,H=o.Th*o.dc,D=Math.hypot(W,H)/IN,lux=o.m.lum/(W*H),iss=issues(i,o);lm+=o.m.lum;
     if(iss.length)bad++;
-    rows.push('<tr data-sel="'+i+'" class="'+(MULTI.has(i)?'cur':'')+'"><td style="--c:'+COLS[i]+'"><i></i>'+(i+1)+'</td><td>'+esc(tpOf(i)?tpOf(i).name:'All ticked parts')+'</td><td>'+esc(o.m.m)+'</td><td>'+esc(o.ln[0])+'</td><td>'+(o.pt?'Portrait':'Landscape')+'</td><td class="n">'+f(o.dc,1)+' m</td><td class="n">'+f(W,1)+' × '+f(H,1)+' m</td><td class="n">'+n0(D)+'″</td><td class="n">'+f(W/o.resW*1000,1)+'</td><td class="n">'+n0(lux)+'</td><td class="'+(iss.length?'bad':'')+'">'+(iss.length?iss.map(esc).join(' '):'OK')+'</td></tr>')});
-  $('tbl').innerHTML='<tr><th>No.</th><th>Works on</th><th>Projector</th><th>Lens</th><th>Mounted</th><th class="n">Throw</th><th class="n">Picture at model</th><th class="n">Diagonal</th><th class="n">mm per pixel</th><th class="n">Lux</th><th>Check</th></tr>'+rows.join('');
-  li.push('<li class="'+(bad?'bad':'')+'"><b>'+S.pj.length+' projector'+(S.pj.length>1?'s':'')+', '+n0(lm)+' lumens in all.</b> '+(bad?bad+' of them '+(bad>1?'have':'has')+' a problem – see box W8.':'Every lens and lens shift is within range.')+'</li>');
+    rows.push('<tr data-sel="'+i+'" class="'+(MULTI.has(i)?'cur':'')+'"><td style="--c:'+COLS[i]+'"><i></i>'+(i+1)+'</td><td>'+esc(tpOf(i)?tpOf(i).name:'All ticked parts')+'</td><td>'+esc(o.m.m)+'</td><td>'+esc(o.ln[0])+'</td><td>'+(o.pt?'Portrait':'Landscape')+'</td><td class="n">'+f(o.dc,1)+' m</td><td class="n">'+f(W,1)+' × '+f(H,1)+' m</td><td class="n">'+n0(D)+'″</td><td class="n">'+f(W/o.resW*1000,1)+'</td><td class="n">'+n0(lux)+'</td><td class="n">'+crTxt(crOf(i).cr)+'</td><td class="'+(iss.length?'bad':'')+'">'+(iss.length?iss.map(esc).join(' '):'OK')+'</td></tr>')});
+  $('tbl').innerHTML='<tr><th>No.</th><th>Works on</th><th>Projector</th><th>Lens</th><th>Mounted</th><th class="n">Throw</th><th class="n">Picture at model</th><th class="n">Diagonal</th><th class="n">mm per pixel</th><th class="n">Lux</th><th class="n">Contrast</th><th>Check</th></tr>'+rows.join('');
+  li.push('<li class="'+(bad?'bad':'')+'"><b>'+S.pj.length+' projector'+(S.pj.length>1?'s':'')+', '+n0(lm)+' lumens in all.</b> '+(bad?bad+' of them '+(bad>1?'have':'has')+' a problem – see box W9.':'Every lens and lens shift is within range.')+'</li>');
+  {const all=S.pj.map((p,k)=>crOf(k).cr),lo=Math.min(...all),req=+S.crReq;li.push('<li class="'+(lo>=req?'':'bad')+'"><b>Contrast '+crTxt(lo)+' at the weakest projector.</b> '+(lo>=req?'Meets '+req+':1 ('+CRN[req]+').':'Below the requirement '+req+':1 ('+CRN[req]+'). Less light on the model, a brighter projector or a smaller picture raises it.')+'</li>')}
   if(COV!=null){const pc=Math.round(COV*100);li.push('<li class="'+(pc>=97?'':pc>=80?'warn':'bad')+'"><b>'+pc+' % of what the audience sees is lit.</b>'+(pc>=97?'':' The rest is in shadow or outside every picture.')+'</li>')}
   if(COVALL!=null){const pc=Math.round(COVALL*100);li.push('<li class="'+(pc>=95?'':pc>=75?'warn':'bad')+'"><b>'+pc+' % is lit when you walk all the way round.</b>'+(pc>=95?'':' Roofs and inner faces that no projector can see stay dark. More projectors, or higher positions, close the gaps.')+'</li>')}
   if(+S.map===0)li.push('<li class="warn"><b>No warp.</b> Each flat picture bends over the model, and lines break at every edge. Choose «On the model, straight on every side» to see the corrected result.</li>');
@@ -512,10 +582,10 @@ function verdict(){const li=[],rows=[];let bad=0,lm=0;
   const gr=new Map();S.pj.forEach((p,i)=>{const t=tpOf(i);(gr.get(t)||gr.set(t,[]).get(t)).push(i)});const kit=new Map(),pr=[];
   S.pj.forEach((p,i)=>{const k=OPT[i].m.m+'|'+OPT[i].ln[0];kit.set(k,(kit.get(k)||0)+1)});
   for(const[t,idx]of gr){const ms=[...new Set(idx.map(i=>OPT[i].m.m))],lx=idx.map(i=>OPT[i].m.lum/(OPT[i].Tw*OPT[i].dc*OPT[i].Th*OPT[i].dc)),b=idx.filter(i=>issues(i,OPT[i]).length).length,sz=(t?t.wb:BOX).getSize(V()),u=UNITS[S.unit];
-    pr.push('<tr data-selgrp="'+idx.join(',')+'"><td>'+esc(t?t.name:'All ticked parts')+'</td><td class="n">'+[sz.x,sz.y,sz.z].map(v=>f(v/u[0],u[1])).join(' × ')+' '+u[2]+'</td><td>'+idx.map(i=>'<i style="--c:'+COLS[i]+'"></i>'+(i+1)).join(' ')+'</td><td>'+ms.map(esc).join(', ')+'</td><td class="n">'+n0(Math.min(...lx))+(n0(Math.max(...lx))!==n0(Math.min(...lx))?'–'+n0(Math.max(...lx)):'')+'</td><td class="'+(b?'bad':'')+'">'+(b?b+' with a problem':'OK')+'</td></tr>')}
+    pr.push('<tr data-selgrp="'+idx.join(',')+'"><td>'+esc(t?t.name:'All ticked parts')+'</td><td class="n">'+[sz.x,sz.y,sz.z].map(v=>f(v/u[0],u[1])).join(' × ')+' '+u[2]+'</td><td>'+idx.map(i=>'<i style="--c:'+COLS[i]+'"></i>'+(i+1)).join(' ')+'</td><td>'+ms.map(esc).join(', ')+'</td><td class="n">'+n0(Math.min(...lx))+(n0(Math.max(...lx))!==n0(Math.min(...lx))?'–'+n0(Math.max(...lx)):'')+'</td><td class="n">'+crTxt(Math.min(...idx.map(i=>crOf(i).cr)))+'</td><td class="'+(b?'bad':'')+'">'+(b?b+' with a problem':'OK')+'</td></tr>')}
   const dark=PARTS.filter(p=>p.show&&!p.on).length,gone=PARTS.filter(p=>!p.show).length;
   $('totLine').innerHTML='<li class="'+(bad?'bad':'')+'"><b>'+S.pj.length+' projector'+(S.pj.length>1?'s':'')+' on '+PARTS.filter(p=>p.show&&p.on).length+' part'+(PARTS.filter(p=>p.show&&p.on).length===1?'':'s')+', '+n0(lm)+' lumens in all.</b>'+(dark?' '+dark+' part'+(dark>1?'s are':' is')+' shown but left dark.':'')+(gone?' '+gone+' part'+(gone>1?'s are':' is')+' taken away.':'')+' The 3D view above shows everything at once; click a row to select that group of projectors.</li>';
-  $('totParts').innerHTML='<tr><th>Part</th><th class="n">Size (w × h × d)</th><th>Projectors</th><th>Model</th><th class="n">Lux</th><th>Check</th></tr>'+pr.join('');
+  $('totParts').innerHTML='<tr><th>Part</th><th class="n">Size (w × h × d)</th><th>Projectors</th><th>Model</th><th class="n">Lux</th><th class="n">Contrast</th><th>Check</th></tr>'+pr.join('');
   $('totKit').innerHTML='<tr><th class="n">Number</th><th>Projector</th><th>Lens</th></tr>'+[...kit].map(([k,n])=>'<tr><td class="n">'+n+' ×</td><td>'+esc(k.split('|')[0])+'</td><td>'+esc(k.split('|')[1])+'</td></tr>').join('')}
 
 /* ---- UI ---- */
@@ -555,23 +625,28 @@ $('copy').onclick=()=>{const p=S.pj[S.sel];S.pj.forEach((q,i)=>{if(q!==p){q.mi=p
 $('sp360').onclick=()=>{S.arc=360;respread();update()};$('sp120').onclick=()=>{S.arc=120;respread();update()};
 $('selT').addEventListener('change',e=>{const t=PARTS[+e.target.value]||null;for(const i of MULTI){const p=S.pj[i];p.tp=t;p.ax=p.ay=p.ad=0;p.span=0;fitLens(i)}update()});
 document.addEventListener('click',e=>{const r=e.target.closest('[data-selgrp]');if(r&&r.dataset.selgrp){const idx=r.dataset.selgrp.split(',').map(Number);MULTI=new Set(idx);S.sel=idx[0];update()}});
-$('turn').onclick=()=>{S.turn=(S.turn+1)%4;layout(true);changed();update()};$('zup').onclick=()=>{S.zup=!S.zup;layout(true);changed();update()};
+$('turn').onclick=()=>{S.turn=(S.turn+1)%4;PARTS.forEach(p=>{p.off.applyAxisAngle(new THREE.Vector3(0,1,0),Math.PI/2);const q=new THREE.Quaternion().setFromAxisAngle(new THREE.Vector3(0,1,0),Math.PI/2).multiply(partQ(p)),e=new THREE.Euler().setFromQuaternion(q,'YXZ');p.rot=[e.x/RAD,e.y/RAD,e.z/RAD]});layout(true);changed();update()};$('zup').onclick=()=>{S.zup=!S.zup;layout(true);changed();update()};
 /* parts: sizes (typed in the chosen unit), show, project, split */
 function changed(){$('calcMsg').textContent='The model changed. Press Calculate to place the projectors and warp again.'}
 $('unit').addEventListener('change',e=>{S.unit=e.target.value;partsKey='';refresh();update()});
 $('allOn').onclick=()=>{PARTS.forEach(p=>{p.on=true});refresh();changed();update()};
-$('parts').addEventListener('input',e=>{const t=e.target;if(!t.dataset.pd)return;const[i,k]=t.dataset.pd.split(':'),m=t.valueAsNumber*UNITS[S.unit][0];if(!(m>0))return;
-  if(i==='all'){const cur=ABOX.getSize(new THREE.Vector3()).getComponent(+k);if(!(cur>0))return;S.g*=m/cur;layout(true)}
-  else{const p=PARTS[+i],cur=partBox(p).getSize(new THREE.Vector3()).getComponent(+k);if(!(cur>0))return;const r=m/cur;
+$('parts').addEventListener('input',e=>{const t=e.target,v=t.valueAsNumber;
+  if(t.dataset.po||t.dataset.pr){if(!Number.isFinite(v))return;const[i,k]=(t.dataset.po||t.dataset.pr).split(':'),p=PARTS[+i];SELP=+i;if(t.dataset.po)p.off.setComponent(+k,v*UNITS[S.unit][0]);else p.rot[+k]=v;applyPart(p);refresh();changed();update();return}
+  if(!t.dataset.pd)return;const[i,k]=t.dataset.pd.split(':'),m=t.valueAsNumber*UNITS[S.unit][0];if(!(m>0))return;
+  if(i==='all'){const cur=ABOX.getSize(new THREE.Vector3()).getComponent(+k);if(!(cur>0))return;const r=m/cur;S.g*=r;PARTS.forEach(p=>p.off.multiplyScalar(r));layout(true)}
+  else{const p=PARTS[+i],cur=partDim(p,+k);if(!(cur>0))return;const r=m/cur;
     if($('keep').checked)p.s.multiplyScalar(r);else{const j=axisMap()[+k][0];p.s.setComponent(j,p.s.getComponent(j)*r)}applyPart(p);refresh()}
   changed();update()});
 $('parts').addEventListener('change',e=>{const t=e.target;if(t.dataset.ps!=null){const p=PARTS[+t.dataset.ps];p.show=t.checked;applyPart(p)}else if(t.dataset.pp!=null)PARTS[+t.dataset.pp].on=t.checked;else return;refresh();changed();update()});
-$('parts').addEventListener('click',e=>{const b=e.target.closest('[data-split]');if(b){splitPart(+b.dataset.split);changed();update()}});
+$('parts').addEventListener('click',e=>{const b=e.target.closest('[data-split]');if(b){splitPart(+b.dataset.split);changed();update();return}
+  const k=e.target.closest('[data-pick]');if(k){SELP=+k.dataset.pick;if(GIZ!=='pmove'&&GIZ!=='prot')GIZ='pmove';update();return}
+  const r=e.target.closest('[data-pback]');if(r){const p=PARTS[+r.dataset.pback];p.off.set(0,0,0);p.rot=[0,0,0];applyPart(p);refresh();changed();update()}});
 $('vAud').onclick=()=>{cam.position.copy(vcam.position);orbit.target.copy(C);orbit.update();paint()};$('vFree').onclick=()=>{overview();paint()};
 $('vTop').onclick=()=>{cam.position.set(0,C.y+R*6.5,.01);orbit.target.copy(C);orbit.update();paint()};
-$('pat').onclick=()=>{pattern();update()};
+$('pat').onclick=()=>{IMGURL='';pattern();update()};
+$('k_pcr').addEventListener('input',e=>{S.pcr=Math.max(0,+e.target.value||0);update()});
 $('ex').addEventListener('change',e=>{$('file').value='';loadExample(e.target.value);update()});
-$('img').addEventListener('change',e=>{const fl=e.target.files[0];if(!fl)return;const rd=new FileReader();rd.onload=()=>{const im=new Image();im.onload=()=>{const c=pcv.getContext('2d'),s=Math.max(1600/im.width,1000/im.height),w=im.width*s,h=im.height*s;c.fillStyle='#000';c.fillRect(0,0,1600,1000);c.drawImage(im,(1600-w)/2,(1000-h)/2,w,h);tex.needsUpdate=true;update()};im.src=rd.result};rd.readAsDataURL(fl)});
+$('img').addEventListener('change',e=>{const fl=e.target.files[0];if(!fl)return;const rd=new FileReader();rd.onload=()=>{const im=new Image();im.onload=()=>{const c=pcv.getContext('2d'),s=Math.max(1600/im.width,1000/im.height),w=im.width*s,h=im.height*s;c.fillStyle='#000';c.fillRect(0,0,1600,1000);c.drawImage(im,(1600-w)/2,(1000-h)/2,w,h);tex.needsUpdate=true;try{IMGURL=pcv.toDataURL('image/jpeg',.8)}catch(x){IMGURL=''}update()};im.src=rd.result};rd.readAsDataURL(fl)});
 $('file').addEventListener('change',e=>{const fl=e.target.files[0];if(!fl)return;const ext=fl.name.split('.').pop().toLowerCase(),er=$('err'),fail=m=>{er.hidden=false;er.textContent=m},rd=new FileReader();er.hidden=true;
   rd.onerror=()=>fail('The file could not be read.');
   rd.onload=()=>{try{
@@ -581,7 +656,7 @@ $('file').addEventListener('change',e=>{const fl=e.target.files[0];if(!fl)return
     else fail('Use a .glb, .obj or .stl file.')}catch(x){fail('This file could not be opened as a 3D model. Try exporting it as .glb.')}};
   if(ext==='obj')rd.readAsText(fl);else rd.readAsArrayBuffer(fl)});
 addEventListener('resize',()=>{sizeView();paint()});
-/* arrow keys steer the camera while the mouse is over box W5 */
+/* arrow keys steer the camera while the mouse is over box W6 */
 let overView=false;$('w5').addEventListener('pointerenter',()=>{overView=true});$('w5').addEventListener('pointerleave',()=>{overView=false});
 addEventListener('keydown',e=>{if(!overView||e.ctrlKey||e.metaKey||e.altKey)return;const k=e.key,dx=k==='ArrowLeft'?-1:k==='ArrowRight'?1:0,dy=k==='ArrowUp'?1:k==='ArrowDown'?-1:0,dz=k==='+'||k==='='?-1:k==='-'?1:0;if(!dx&&!dy&&!dz)return;e.preventDefault();
   const off=cam.position.clone().sub(orbit.target),sp=new THREE.Spherical().setFromVector3(off);
