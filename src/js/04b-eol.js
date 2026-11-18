@@ -3,6 +3,11 @@ const TDC_IMG='https://docs.connect.panasonic.com/projector/calculator/tdc/img/'
 // aktuelle modeller (og optikkens plads), der kan bruge en af optikkens ET-numre
 const lensFits=l=>{const c=etCodes(l[0]);if(!c.length)return [];const r=[];
   for(let i=0;i<NCUR;i++){const li=MODELS[i].L.findIndex(x=>etCodes(x[0]).some(k=>c.includes(k)));if(li>=0)r.push([i,li])}return r};
+// fx «ET-ELT23/ET-ELT21»: hver kode for sig – koder med samme aktuelle projektorer samles på én linje (ELT21 passer ikke på MZ-serien)
+const lensFitGroups=l=>{const g=[];etCodes(l[0]).forEach(k=>{const f=[];
+    for(let i=0;i<NCUR;i++){const li=MODELS[i].L.findIndex(x=>etCodes(x[0]).includes(k));if(li>=0)f.push([i,li])}
+    const key=f.map(x=>x[0]).join(',');let x=g.find(y=>y.key===key);if(!x)g.push(x={key,codes:[],fits:f});x.codes.push(k)});
+  return g};
 // flyrammer: Panasonics gamle ET-PFD-rammer (data/mounts.json fra «Optional Accessories») + ET-RFD-rammerne i FRAMES
 const MOUNTS=/*__MOUNTS__*/;
 const pjNames=m=>m.m.split(' (')[0].split('/').map(p=>p.startsWith('PT-')?p:'PT-'+p);
@@ -28,7 +33,9 @@ function eolUI(ri){const b=$('eolBox'),m=ri.m,l=ri.ln,me=isEOL(m),le=lnEOL(l);eo
   let h='';
   if(me)h+=`<div class="eolhead"><span class="eoltag">EOL</span><b>Udgået projektormodel</b></div><p>${m.eol==='d'?'Sælges kun fra restlager.':m.eol==='x'?'Ikke i Panasonics aktuelle EU-sortiment.':'Ikke længere i Panasonics sortiment.'} Data fra Panasonics Throw Distance Calculator.</p>`;
   if(!code)h+=`<p>Standardoptikken sidder fast i projektoren og kan ikke flyttes til en anden model.</p>`;
-  else if(fits.length)h+=`<p class="eolq">${le?'<span class="eoltag">EOL</span> ':''}<b class="notr">${esc(code)}</b> passer på disse aktuelle projektorer:</p><div class="eolfit">${fits.map(([i,li])=>`<button type="button" class="chip notr" data-eolm="${i}" data-eoll="${li}" title="Skift til ${esc(MODELS[i].m)} med samme optik">${esc(MODELS[i].m.split(' (')[0])}</button>`).join('')}</div>`;
+  else if(fits.length)lensFitGroups(l).forEach(x=>{const c=esc(x.codes.join(' / '));
+    h+=x.fits.length?`<p class="eolq">${le?'<span class="eoltag">EOL</span> ':''}<b class="notr">${c}</b> passer på disse aktuelle projektorer:</p><div class="eolfit">${x.fits.map(([i,li])=>`<button type="button" class="chip notr" data-eolm="${i}" data-eoll="${li}" title="Skift til ${esc(MODELS[i].m)} med samme optik">${esc(MODELS[i].m.split(' (')[0])}</button>`).join('')}</div>`
+      :`<p class="eolq"><span class="eoltag">EOL</span> <b class="notr">${c}</b> er udgået – ingen aktuelle projektorer kan bruge den.</p>`});
   else h+=`<p class="eolq"><span class="eoltag">EOL</span> <b class="notr">${esc(code)}</b> er udgået – ingen aktuelle projektorer kan bruge den.</p>`;
   if(b.dataset.h!==h){b.dataset.h=h;b.innerHTML=h}}
 // boks 04: kan den udgåede projektors flyramme genbruges til en aktuel projektor?
