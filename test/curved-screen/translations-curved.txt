@@ -1,0 +1,28 @@
+﻿Buet lærred|Curved screen|曲面スクリーン
+(TEST · curved correction)|(TEST · curved correction)|（テスト・曲面補正）
+Buens retning|Arc direction|円弧の方向
+Vandret bue|Horizontal arc|水平円弧
+Lodret bue|Vertical arc|垂直円弧
+Begge|Both|両方
+Radius vandret bue (R#)|Horizontal arc radius (R#)|水平円弧の半径（R#）
+Radius lodret bue (R#)|Vertical arc radius (R#)|垂直円弧の半径（R#）
+Buet lærred set ovenfra|Curved screen seen from above|上から見た曲面スクリーン
+Buet lærred set fra siden|Curved screen seen from the side|横から見た曲面スクリーン
+Grænser fra tabellen «projection range» i projektorens manual. Lærredet skal være en cirkelbue (en del af en perfekt cirkel). Projektor-menu:|Limits from the «projection range» table in the projector's manual. The screen must be a circular arc (part of a perfect circle). Projector menu:|プロジェクター取扱説明書の「projection range」表による制限。スクリーンは真円の一部の円弧であること。プロジェクターメニュー：
+ikke oplyst i manualens tabel – kan ikke tjekkes.|not listed in the manual's table – cannot be checked.|取扱説明書の表に記載なし – 確認できません。
+kan ikke bruge curved correction (kun keystone).|cannot use curved correction (keystone only).|曲面補正は使用できません（台形補正のみ）。
+keystone og curved correction sammen|keystone and curved correction together|台形補正と曲面補正の併用
+kun curved correction|curved correction only|曲面補正のみ
+Manualen giver ingen grænse for keystone og curved correction sammen – slå keystone fra.|The manual gives no limit for keystone and curved correction together – turn keystone off.|取扱説明書に台形補正と曲面補正の併用時の制限がありません – 台形補正をオフにしてください。
+tilladt med buet lærred|allowed with curved screen|曲面スクリーンでの許容範囲
+Vandret bue (R#)|Horizontal arc (R#)|水平円弧（R#）
+Lodret bue (R#)|Vertical arc (R#)|垂直円弧（R#）
+for stærk bue|arc too strong|曲率が強すぎます
+mindste radius|minimum radius|最小半径
+buedybde|arc depth|円弧の深さ
+radius mindre end halv bredde|radius smaller than half the width|半径が幅の半分未満
+Uden keystone:|Without keystone:|台形補正なし：
+med keystone|with keystone|台形補正あり
+buet lærred|curved screen|曲面スクリーン
+kanter|edges|端部
+mm frem|mm forward|mm 前方

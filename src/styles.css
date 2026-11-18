@@ -601,7 +601,6 @@ th{background:transparent}
 
 /* Tema «Warping (TEST)» – kun i Avanceret: topbjælken og warp-siden (ramme) vises, resten af appen skjules */
 :root[data-venue="warp"] .wrap>:not(.uimode):not(.top):not(#warpBox){display:none!important}
-:root[data-venue="warp"] :is(#projSave,#projOpen,#pdfBtn,#qgBtn,.seg.lang){display:none}
 :root[data-ui="simple"] .venue [data-venue="warp"]{display:none}
 #warpBox{margin-top:10px}
 #warpFrame{display:block;width:100%;height:900px;border:0;background:var(--bg)}

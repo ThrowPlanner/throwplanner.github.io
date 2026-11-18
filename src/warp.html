@@ -103,6 +103,19 @@ tr[data-sel],tr[data-selgrp]{cursor:pointer}tr.cur td{background:var(--beam-soft
 .foot{color:var(--muted);font-size:12.5px;margin-top:16px;max-width:85ch}
 #err{color:var(--bad);font-size:13px;margin:8px 0 0}
 @media (max-width:900px){.wrap{grid-template-columns:minmax(0,1fr)}.col.right{order:-1}}
+/* Blød 3D som i appens andre temaer (src/styles.css): kasser presset ud af fladen, felter trykket ind */
+.wrap{gap:26px}.col{gap:24px}.split{gap:24px}
+.card{background:var(--bg);border-radius:20px;padding:18px 20px 20px;box-shadow:4px 4px 10px var(--lo),-3px -3px 8px var(--hi)}
+.card h3{font-stretch:110%;margin-bottom:12px}
+.no{border:0;border-radius:8px;padding:3px 7px;box-shadow:inset 1px 1px 2px var(--lo),inset -1px -1px 2px var(--hi)}
+select,.f input[type=number],.xyz input,.crnums div{border-color:transparent;background:var(--bg);border-radius:10px;box-shadow:inset 1.5px 1.5px 3px var(--lo),inset -1.5px -1.5px 3px var(--hi)}
+.btn,.chip{border-color:transparent;background:var(--bg);border-radius:12px;box-shadow:2px 2px 5px var(--lo),-2px -2px 4px var(--hi)}
+.btn:hover{border-color:transparent;color:var(--beam)}
+.btn:active,.btn[aria-pressed=true]{color:var(--beam);background:var(--bg);border-color:transparent;font-weight:600;box-shadow:inset 1.5px 1.5px 3px var(--lo),inset -1.5px -1.5px 3px var(--hi)}
+.chip.ok{color:var(--ok)}.chip.warn{color:var(--warn)}
+.pc{border-radius:10px;box-shadow:2px 2px 5px var(--lo),-2px -2px 4px var(--hi)}
+#view{border-radius:14px}
+.crview,#out{border:0;border-radius:14px;box-shadow:2px 2px 6px var(--lo),-2px -2px 5px var(--hi)}
 </style>
 </head>
 <body>
