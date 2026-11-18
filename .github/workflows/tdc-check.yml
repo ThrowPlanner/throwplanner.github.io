@@ -22,7 +22,9 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: '3.12'
-      - name: Sammenlign med Panasonic TDC
+      - name: Installer pypdf (curved-tabellen i manualerne)
+        run: pip install pypdf
+      - name: Sammenlign med Panasonic TDC (+ curved-tal for nye modeller/optikker)
         run: python tools/check_tdc.py tdc-report.md
       - name: Opret eller opdater issue ved ændringer
         if: hashFiles('tdc-report.md') != ''

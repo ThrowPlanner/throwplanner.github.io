@@ -26,7 +26,7 @@ def short(x): s = json.dumps(x, ensure_ascii=False); return s if len(s) < 90 els
 def main():
     D = load(); tdc, vmap, cat = D['tdc'], D['vmap'], D['cat']; PT = pantr()
     rep = {'Aktuelle modeller (data/catalog.json)': [], 'Officielle throw ratios (PANTR)': [], 'Udgåede modeller (data/catalog-eol.json)': [], 'Nye eller forsvundne modeller i TDC': []}
-    cur = rep['Aktuelle modeller (data/catalog.json)']
+    cur = rep['Aktuelle modeller (data/catalog.json)']; newl = []
     for m in cat['models']:
         nm = m['m'].split(' (')[0]; v = vmap.get(nm)
         if not v or v not in tdc: cur.append(f'**{nm}** findes ikke længere i TDC'); continue
@@ -34,7 +34,7 @@ def main():
         for k, lab in FIELDS.items():
             if t[k] != m[k] and t[k]: cur.append(f'**{nm}** {lab}: vi har `{short(m[k])}`, TDC har `{short(t[k])}`')
         ours = {l[0]: l for l in m['L']}; theirs = {l[0]: l for l in t['L'] if l[2] and any(r[0] > 0 for r in l[2])}
-        for n in theirs.keys() - ours.keys(): cur.append(f'**{nm}** ny optik i TDC: `{n}`')
+        for n in theirs.keys() - ours.keys(): cur.append(f'**{nm}** ny optik i TDC: `{n}`'); newl.append((m['m'], n))
         for n in ours.keys() - theirs.keys(): cur.append(f'**{nm}** optik findes ikke længere i TDC: `{n}`')
         for n in ours.keys() & theirs.keys():
             for i, lab in LENS.items():
@@ -70,6 +70,13 @@ def main():
             a, b = set(ours[n]['models']), set(theirs[n]['models'])
             if a != b: mt.append(f'**{n}** projektorer: +{", ".join(sorted(b - a)) or "–"} / −{", ".join(sorted(a - b)) or "–"}')
             elif ours[n] != theirs[n]: mt.append(f'**{n}** type/note/status ændret')
+    # buet lærred: nye modeller/optikker uden tal fra manualens curved correction-tabel (tools/check_curved.py)
+    try:
+        from check_curved import check as check_curved
+        cv = check_curved(cat, newl)
+    except Exception as e:
+        cv = [f'Curved-tjekket kunne ikke køre: {type(e).__name__}: {e}']
+    if cv: rep['Buet lærred – curved correction-tabellen i manualen'] = cv
     n = sum(len(v) for v in rep.values())
     if not n:
         if os.path.exists(OUT): os.remove(OUT)
@@ -77,7 +84,7 @@ def main():
     md = [f'Ugentligt tjek fandt **{n} ændring(er)** i forhold til [Panasonics Throw Distance Calculator](https://docs.connect.panasonic.com/projector/calculator/tdc/).', '']
     for h, rows in rep.items():
         if rows: md += [f'### {h}', *[f'- {r}' for r in rows[:150]], *(['- …'] if len(rows) > 150 else []), '']
-    md += ['Rettes med `python tools/fetch_eol.py` (udgåede) og `python tools/fetch_mounts.py` (beslag). Aktuelle modeller rettes i `data/catalog.json` efter tjek hos Panasonic.']
+    md += ['Rettes med `python tools/fetch_eol.py` (udgåede) og `python tools/fetch_mounts.py` (beslag). Aktuelle modeller rettes i `data/catalog.json` efter tjek hos Panasonic. Curved-tal sættes ind i `26-curved.js` (put-linjerne) efter tjek i manualen.']
     open(OUT, 'w', encoding='utf-8', newline='\n').write('\n'.join(md) + '\n')
     print(f'ÆNDRINGER: {n} – se {OUT}')
 
