@@ -190,7 +190,7 @@ function drawFront(r){IMMPJ=null;if(S.venue==='golf')GCUR=golfCalc(r);
   // loftstruss ved loftmontering
   function truss(){let s='';if(S.ceil){const zt=(r.outFront+r.outBack)/2,a=PJ(-w,h-0.12,zt),b=PJ(w,h-0.42,zt);s+=`<rect x="${a[0]}" y="${a[1]}" width="${b[0]-a[0]}" height="${b[1]-a[1]}" fill="none" style="stroke:var(--r-truss)" stroke-width="2"/>`;
     const n=Math.round(S.rw/0.5);for(let i=0;i<n;i++){const x0=a[0]+(b[0]-a[0])*i/n,x1=a[0]+(b[0]-a[0])*(i+1)/n;s+=`<line x1="${x0}" y1="${a[1]}" x2="${x1}" y2="${b[1]}" style="stroke:var(--r-truss)" stroke-width="1"/>`}
-    r.pjs.filter(p=>!p.s).forEach(p=>{const t=PJ(p.lx,p.ly+r.F.y1,zt),u=PJ(p.lx,h-0.42,zt);s+=`<line class="Lpj" x1="${t[0]}" y1="${t[1]}" x2="${u[0]}" y2="${u[1]}" style="stroke:var(--r-truss)" stroke-width="2.5"/>`})}return s};
+    r.pjs.filter(p=>!p.s).forEach(p=>{const ax=p.lx+(r.F.x0+r.F.x1)/2,t=PJ(ax,p.ly+r.F.y1,zt),u=PJ(ax,h-0.42,zt);/* armen sidder midt på kabinettet/rammen (ikke på en drejet L-linse) */s+=`<line class="Lpj" x1="${t[0]}" y1="${t[1]}" x2="${u[0]}" y2="${u[1]}" style="stroke:var(--r-truss)" stroke-width="2.5"/>`})}return s};
   if(!rear&&!NS&&VN!=='golf')s+=truss();
   // afstand mellem projektorer (edge blend)
   if(!NS&&S.blend&&(r.N>1||r.R>1)){s+='<g class="Ldim">';const zb=r.outBack,oh=r.outer[1],ow=r.outer[0];
@@ -301,6 +301,11 @@ function seatRow(P,z,xs){let back='',front='';const zb=z+0.5,zt=z+0.58,zs0=z+0.0
 function person(P,x,z,mode){const k=(P(1,0,z)[0]-P(0,0,z)[0]);const [bx,by]=P(x,0,z);const hgt=1.76*k;
   return `<g style="fill:var(--r-person)"><circle cx="${bx}" cy="${by-hgt+.11*k}" r="${.11*k}"/><path d="M${bx-.21*k},${by-hgt+.28*k} q${.21*k},-${.06*k} ${.42*k},0 l${.03*k},${.62*k} h-${.1*k} l-${.02*k},${.82*k} h-${.13*k} l-${.02*k},-${.6*k} l-${.02*k},${.6*k} h-${.13*k} l-${.02*k},-${.82*k} h-${.1*k} z"/></g>`}
 function projector3D(P,r,p){let s='';const B=r.B;const z1=S.L+B.z0,z2=S.L+B.z1,x0=p.lx+B.x0,x1=p.lx+B.x1,y0=p.ly+B.y0,y1=p.ly+B.y1;
+  // L-formet linse: linsehovedet og halsen ind til kabinettet (ses ved siden af kabinettet, når det er drejet)
+  if(r.kind==='l'){const R=(ax,ay,bx,by,z)=>{const a=P(Math.min(ax,bx),Math.max(ay,by),z),b=P(Math.max(ax,bx),Math.min(ay,by),z);return `<rect x="${a[0]}" y="${a[1]}" width="${b[0]-a[0]}" height="${b[1]-a[1]}" rx="2" style="fill:var(--pj-hi);stroke:var(--pj-dk)" stroke-width="1"/>`};
+    const lx=p.lx,ly=p.ly,n=.055,zc=S.L+B.z0+.06;
+    if(x0>lx)s+=R(lx,ly-n,x0,ly+n,zc);else if(x1<lx)s+=R(x1,ly-n,lx,ly+n,zc);else if(y0>ly)s+=R(lx-n,ly,lx+n,y0,zc);else if(y1<ly)s+=R(lx-n,y1,lx+n,ly,zc);
+    s+=R(lx-.09,ly-.09,lx+.09,ly+.09,S.L+.04)}
   const side=(x)=>pts([P(x,y0,z1),P(x,y1,z1),P(x,y1,z2),P(x,y0,z2)]);
   if(x0>0)s+=`<polygon points="${side(x0)}" style="fill:var(--pj-dk)"/>`; if(x1<0)s+=`<polygon points="${side(x1)}" style="fill:var(--pj-dk)"/>`;
   const yy=1.6>y1?y1:(1.6<y0?y0:null);if(yy!=null)s+=`<polygon points="${pts([P(x0,yy,z1),P(x1,yy,z1),P(x1,yy,z2),P(x0,yy,z2)])}" style="fill:var(--pj-hi)"/>`;

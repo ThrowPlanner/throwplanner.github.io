@@ -76,7 +76,7 @@ function drawSide(r){
       s+=`<line x1="${x0}" y1="${y0}" x2="${x0+fd*sc}" y2="${y0+fh*sc}" style="stroke:var(--frame)" stroke-width="1" opacity=".55"/><line x1="${x0+fd*sc}" y1="${y0}" x2="${x0}" y2="${y0+fh*sc}" style="stroke:var(--frame)" stroke-width="1" opacity=".55"/>`}
     s+=`<rect x="${X(S.L+B.z0)}" y="${Y(ly+B.y1)}" width="${(B.z1-B.z0)*sc}" height="${(B.y1-B.y0)*sc}" rx="3" fill="url(#pjgs)"/>`;
     if(r.kind==='n'){const lh=Math.min((B.y1-B.y0)*.6,.2);s+=`<rect x="${X(S.L)}" y="${Y(ly+lh/2)}" width="${Math.max(2,r.prot*sc)}" height="${lh*sc}" rx="1.5" style="fill:var(--pj-hi)"/>`}
-    else if(r.kind==='l'){const yb=S.ceil?ly+B.y0:ly+B.y1,lw=.16;s+=`<rect x="${X(S.L)}" y="${Y(ly+lw/2)}" width="${.22*sc}" height="${lw*sc}" rx="2" style="fill:var(--pj-hi)"/><rect x="${X(S.L+.06)}" y="${Y(Math.max(ly,yb))}" width="${.11*sc}" height="${Math.abs(yb-ly)*sc}" style="fill:var(--pj-hi)"/>`}
+    else if(r.kind==='l'){const yb=B.y1<0?ly+B.y1:B.y0>0?ly+B.y0:ly,lw=.16;s+=`<rect x="${X(S.L)}" y="${Y(ly+lw/2)}" width="${.22*sc}" height="${lw*sc}" rx="2" style="fill:var(--pj-hi)"/>`+(yb!==ly?`<rect x="${X(S.L+.06)}" y="${Y(Math.max(ly,yb))}" width="${.11*sc}" height="${Math.abs(yb-ly)*sc}" style="fill:var(--pj-hi)"/>`:'')}
     if(kRot)s+='</g>';
     {const e=beamExit(r,ly,S.L,p.ty);s+=`<circle cx="${X(e[0])}" cy="${Y(e[1])}" r="3.5" style="fill:var(--beam)"/>`}});
   {const p0=r.pjs[0];const z0=Math.min(r.outFront,S.L)-.1,z1=Math.max(r.outBack,S.L)+.1,y0=p0.ly+r.F.y0-.1,y1=p0.ly+r.F.y1+.1;s+=`<rect x="${X(z0)}" y="${Y(y1)}" width="${(z1-z0)*sc}" height="${(y1-y0)*sc}" fill="transparent"/>`;}

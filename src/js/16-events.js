@@ -270,6 +270,7 @@ const zero=(k,e)=>{e.preventDefault();const r=calc();if(k==='sv')guardShift({py:
    guardShift(o,n);if(!sideRaf)sideRaf=requestAnimationFrame(()=>{sideRaf=0;render()})});
  ['pointerup','pointercancel'].forEach(t=>$('front').addEventListener(t,()=>{if(pjDrag){pjDrag=null;save()}}));
  $('pjCenter').addEventListener('click',()=>{zeroShift();render();save()});
+ document.querySelectorAll('.pjrot').forEach(b=>b.addEventListener('click',()=>{S.lrot=((S.lrot||0)+1)&3;render();save()}));
  $('front').addEventListener('pointerdown',e=>{if(!FRONT||S.venue==='immersive')return;const q=fp(e);const r=calc();if(Math.abs(q.x-r.cx)>r.CW/2||q.y<S.sb||q.y>S.sb+r.CH)return;scrDrag={dy:q.y-S.sb,dx:q.x-r.cx,pt:fp,h:true};$('front').setPointerCapture(e.pointerId);e.preventDefault()});
  $('front').addEventListener('pointermove',e=>{if(scrDrag){const q=scrDrag.pt(e);moveScreen(q.y-scrDrag.dy,scrDrag.h?q.x-scrDrag.dx:null);return}if(!FRONT||S.venue==='immersive')return;const q=fp(e),r=calc();$('front').style.cursor=(Math.abs(q.x-r.cx)<=r.CW/2&&q.y>=S.sb&&q.y<=S.sb+r.CH)?(planActive()?'ns-resize':'move'):''});
  ['pointerup','pointercancel'].forEach(t=>$('front').addEventListener(t,()=>{if(scrDrag){scrDrag=null;save()}}));}

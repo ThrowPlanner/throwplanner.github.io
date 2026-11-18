@@ -89,6 +89,9 @@ Supplied lens|Supplied lens|付属レンズ
 linse rager # mm frem|lens protrudes # mm|レンズ突出 # mm
 ultrakort kast (kabinet foran spejlet)|ultra short throw (cabinet in front of the mirror)|超短焦点（ミラー前に本体）
 L-formet linse (kabinet lodret)|L-shaped lens (cabinet vertical)|L字型レンズ（本体は縦置き）
+L-formet linse (kabinet vandret)|L-shaped lens (cabinet horizontal)|L字型レンズ（本体は横置き）
+⟳ Rotér|⟳ Rotate|⟳ 回転
+Drej projektorens kabinet 90° om den L-formede linse (lodret/vandret)|Rotate the projector cabinet 90° around the L-shaped lens (vertical/horizontal)|L字型レンズを軸に本体を90°回転（縦置き/横置き）
 Montering og flyramme|Mounting and flying frame|設置とフライングフレーム
 Montering|Mounting|設置
 Loft · linse # m|Ceiling · lens # m|天吊り · レンズ # m

@@ -213,6 +213,7 @@
               <div class="sunrow"><span class="hint">☀ op</span><input type="range" id="sunT" min="0" max="1000" step="1" aria-label="Solens position fra solopgang til solnedgang"><span class="hint">ned</span></div></div>
           </div>
           <button type="button" class="btn" id="pjCenter" title="Centrér projektoren på lærredet (lens shift 0)">Centrér</button>
+          <button type="button" class="btn pjrot" hidden title="Drej projektorens kabinet 90° om den L-formede linse (lodret/vandret)">⟳ Rotér</button>
           <div class="seg" role="group" aria-label="Indhold på lærredet">
             <button type="button" data-content="none" aria-pressed="true">Lærred</button>
             <span class="tpdd"><button type="button" id="tpBtn" data-content="test" aria-pressed="false" aria-haspopup="menu" aria-expanded="false">Testbillede<span class="car" aria-hidden="true">▾</span></button>
@@ -274,7 +275,7 @@
       </section>
 
       <section class="view">
-        <div class="vhead"><h2><span class="no">10</span>Snit gennem lokalet</h2><span class="cap" id="sideCap" style="flex:1;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-variant-numeric:tabular-nums"></span></div>
+        <div class="vhead"><h2><span class="no">10</span>Snit gennem lokalet</h2><span class="cap" id="sideCap" style="flex:1;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-variant-numeric:tabular-nums"></span><button type="button" class="btn pjrot" hidden title="Drej projektorens kabinet 90° om den L-formede linse (lodret/vandret)">⟳ Rotér</button></div>
         <div class="shiftbar" id="shiftBar">
           <span class="sbl">Lens shift</span>
           <label class="sbr"><span class="notr">V</span><span class="sbmin" id="svMin"></span><input type="range" id="svR" step="0.5" aria-label="Lodret lens shift"><span class="sbmax" id="svMax"></span><b id="svVal"></b><button class="btn z0" type="button" id="sv0" title="Lodret lens shift 0 %">0 %</button></label>

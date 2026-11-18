@@ -90,12 +90,15 @@ function calc(){
   // kabinet som boks i linsens koordinater: x til højre, y op, z væk fra lærredet (verden: afstand = L + z)
   let B;
   if(kind==='u'){const u=ln[7][1].map(v=>v/1000);B={x0:u[0],x1:u[1],y0:u[2],y1:u[3],z0:u[4],z1:u[5]}}           // ultrakort kast: kabinet mellem spejl og lærred (Panasonic RearProjPjBodyTable)
-  else if(kind==='l'){const c=0.02;B={x0:-dim[0]/2,x1:dim[0]/2,y0:-(prot+dim[2]),y1:-prot,z0:c,z1:c+dim[1]}}   // L-formet linse: kabinet lodret under linsehovedet
+  // L-formet linse – Rotér (S.lrot): 0 = kabinet lodret under linsehovedet, 1 = fladt liggende til højre, 2 = lodret over, 3 = fladt til venstre
+  const lr=kind==='l'?(S.lrot||0)&3:0, flat=lr&1;
+  if(kind==='l'){const c=0.02;B=flat?{x0:prot,x1:prot+dim[2],y0:-dim[1]/2,y1:dim[1]/2,z0:c,z1:c+dim[0]}:{x0:-dim[0]/2,x1:dim[0]/2,y0:-(prot+dim[2]),y1:-prot,z0:c,z1:c+dim[1]}}
   else B={x0:-dim[0]/2,x1:dim[0]/2,y0:-dim[1]/2,y1:dim[1]/2,z0:prot,z1:prot+dim[2]};
   const fd3=S.frame?[S.fw/1000,S.fh/1000,S.fd/1000]:dim;
-  const fx=fd3[0],fy=kind==='l'?fd3[2]:fd3[1],fz=kind==='l'?fd3[1]:fd3[2];
+  const fx=kind==='l'&&flat?fd3[2]:fd3[0],fy=kind==='l'&&!flat?fd3[2]:fd3[1],fz=kind==='l'?fd3[flat?0:1]:fd3[2];
   const bc=[(B.x0+B.x1)/2,(B.y0+B.y1)/2,(B.z0+B.z1)/2];
   let F=S.frame?{x0:bc[0]-fx/2,x1:bc[0]+fx/2,y0:bc[1]-fy/2,y1:bc[1]+fy/2,z0:bc[2]-fz/2,z1:bc[2]+fz/2}:{...B};
+  if(lr>=2){const mir=lr===2?b=>({...b,y0:-b.y1,y1:-b.y0}):b=>({...b,x0:-b.x1,x1:-b.x0});B=mir(B);F=mir(F)}
   const flip=b=>S.ceil?{x0:-b.x1,x1:-b.x0,y0:-b.y1,y1:-b.y0,z0:b.z0,z1:b.z1}:b;
   if(PT){const rot=b=>({x0:b.y0,x1:b.y1,y0:b.x0,y1:b.x1,z0:b.z0,z1:b.z1});B=rot(B);F=rot(F)}
   B=flip(B);F=flip(F);
