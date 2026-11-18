@@ -35,6 +35,7 @@ Jura: produktbilleder vises direkte fra Panasonics TDC-server (kopiér dem aldri
 | Kontrast og sollys | `10-contrast.js`, `14-sun.js` |
 | Plantegning (boks 08) | `11-floorplan.js` |
 | Edge blend og portræt (boks 05) | `03-calc.js`, `blendAuto` i `04-ui.js` |
+| Buet lærred / curved (boks 05, tegnes i 08/09/10) | `src/js/26-curved.js` (manual-tabel i `put`-linjer), nye tal meldes af `tools/check_curved.py` i det ugentlige TDC-tjek |
 | Katalog og throw ratios | `data/catalog.json`, `PANTR` i `04-ui.js` |
 | Løsninger (boks 11) | `15-solutions.js` |
 | Projektfil (JSON) | `17-project-file.js` |
