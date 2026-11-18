@@ -586,6 +586,10 @@ th{background:transparent}
 /* testbillede-dropdown (boks 09) */
 .tpdd{position:relative;flex:1;display:flex}
 .tpdd>button{flex:1}.tpdd .car{margin-left:4px;font-size:10px;opacity:.7}
+.dropdim{cursor:pointer}.dropdim:hover text,.dropdim:focus text{text-decoration:underline}
+.dropico circle{transition:filter .15s}.dropdim:hover .dropico circle,.dropdim:focus .dropico circle{filter:brightness(1.2)}
+.droppop{position:fixed;z-index:60;display:flex;flex-direction:column;gap:8px;padding:10px 12px;background:var(--surface);border:1px solid var(--line);border-radius:10px;box-shadow:0 8px 24px rgba(0,0,0,.35);font-size:12.5px;color:var(--ink)}
+.droppop label{display:flex;align-items:center;gap:8px}.droppop input[type=number]{width:84px;font:inherit}.droppop .btn{align-self:flex-end}
 .tpmenu{position:absolute;top:calc(100% + 6px);left:0;z-index:40;min-width:200px;display:flex;flex-direction:column;gap:2px;padding:5px;background:var(--surface);border:1px solid var(--line);border-radius:10px;box-shadow:0 8px 24px rgba(0,0,0,.35)}
 .tpmenu[hidden]{display:none}
 .seg .tpmenu button{flex:none;text-align:left;padding:7px 10px 7px 26px;border-radius:6px;color:var(--ink);background:transparent;box-shadow:none;font-weight:400;position:relative}

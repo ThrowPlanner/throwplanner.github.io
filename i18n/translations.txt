@@ -91,6 +91,10 @@ ultrakort kast (kabinet foran spejlet)|ultra short throw (cabinet in front of th
 L-formet linse (kabinet lodret)|L-shaped lens (cabinet vertical)|L字型レンズ（本体は縦置き）
 L-formet linse (kabinet vandret)|L-shaped lens (cabinet horizontal)|L字型レンズ（本体は横置き）
 ⟳ Rotér|⟳ Rotate|⟳ 回転
+Loft til projektor|Ceiling to projector|天井からプロジェクターまで
+Lås afstanden|Lock distance|距離を固定
+Klik for at angive mål og låse afstanden|Click to enter a value and lock the distance|クリックして値を入力し、距離を固定
+Afstand fra loft til projektor – klik for at angive mål|Distance from ceiling to projector – click to enter a value|天井からプロジェクターまでの距離 – クリックして入力
 Drej projektorens kabinet 90° om den L-formede linse (lodret/vandret)|Rotate the projector cabinet 90° around the L-shaped lens (vertical/horizontal)|L字型レンズを軸に本体を90°回転（縦置き/横置き）
 Montering og flyramme|Mounting and flying frame|設置とフライングフレーム
 Montering|Mounting|設置

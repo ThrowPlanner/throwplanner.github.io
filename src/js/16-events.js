@@ -270,6 +270,22 @@ const zero=(k,e)=>{e.preventDefault();const r=calc();if(k==='sv')guardShift({py:
    guardShift(o,n);if(!sideRaf)sideRaf=requestAnimationFrame(()=>{sideRaf=0;render()})});
  ['pointerup','pointercancel'].forEach(t=>$('front').addEventListener(t,()=>{if(pjDrag){pjDrag=null;save()}}));
  $('pjCenter').addEventListener('click',()=>{zeroShift();render();save()});
+ /* boks 10: klik på målet loft → projektor: skriv afstanden (fx loftbeslagets mål) og lås den evt. */
+ {const T=t=>I18.tr(t,S.lang);let pop=null;const close=()=>{if(pop){pop.remove();pop=null}};
+  const open=(x,y)=>{close();const r=calc();pop=document.createElement('div');pop.className='droppop';
+    pop.innerHTML=`<label><span>${esc(T('Loft til projektor'))}</span><span class="inl"><input type="number" step="0.001" min="0" max="${S.rh}" value="${(S.rh-r.topY).toFixed(3)}"><span class="unit">m</span></span></label>`+
+      `<label class="dlk"><input type="checkbox"${S.drop!=null?' checked':''}> ${esc(T('Lås afstanden'))}</label><button type="button" class="btn">OK</button>`;
+    document.body.appendChild(pop);const w=pop.offsetWidth,h=pop.offsetHeight;
+    pop.style.left=Math.max(8,Math.min(innerWidth-w-8,x-w/2))+'px';pop.style.top=Math.max(8,Math.min(innerHeight-h-8,y+12))+'px';
+    const inp=pop.querySelector('input[type=number]'),lk=pop.querySelector('.dlk input');inp.focus();inp.select();
+    const ok=()=>{const v=parseFloat(String(inp.value).replace(',','.'));if(!(v>=0&&v<S.rh)){inp.focus();return}
+      const r1=calc();S.drop=null;S.py=S.rh-v-(r1.topY-S.py);if(lk.checked)S.drop=Math.round(v*1000)/1000;close();render();save()};
+    pop.querySelector('button').addEventListener('click',ok);
+    lk.addEventListener('change',()=>{if(!lk.checked&&S.drop!=null){S.drop=null;render();save()}});
+    pop.addEventListener('keydown',e=>{if(e.key==='Enter')ok();else if(e.key==='Escape')close()})};
+  $('side').addEventListener('click',e=>{const d=e.target.closest('.dropdim');if(d){e.stopPropagation();open(e.clientX,e.clientY)}});
+  $('side').addEventListener('keydown',e=>{const d=e.target.closest('.dropdim');if(d&&(e.key==='Enter'||e.key===' ')){e.preventDefault();const b=d.getBoundingClientRect();open(b.left+b.width/2,b.top+b.height/2)}});
+  document.addEventListener('pointerdown',e=>{if(pop&&!pop.contains(e.target)&&!e.target.closest('.dropdim'))close()})}
  document.querySelectorAll('.pjrot').forEach(b=>b.addEventListener('click',()=>{S.lrot=((S.lrot||0)+1)&3;render();save()}));
  $('front').addEventListener('pointerdown',e=>{if(!FRONT||S.venue==='immersive')return;const q=fp(e);const r=calc();if(Math.abs(q.x-r.cx)>r.CW/2||q.y<S.sb||q.y>S.sb+r.CH)return;scrDrag={dy:q.y-S.sb,dx:q.x-r.cx,pt:fp,h:true};$('front').setPointerCapture(e.pointerId);e.preventDefault()});
  $('front').addEventListener('pointermove',e=>{if(scrDrag){const q=scrDrag.pt(e);moveScreen(q.y-scrDrag.dy,scrDrag.h?q.x-scrDrag.dx:null);return}if(!FRONT||S.venue==='immersive')return;const q=fp(e),r=calc();$('front').style.cursor=(Math.abs(q.x-r.cx)<=r.CW/2&&q.y>=S.sb&&q.y<=S.sb+r.CH)?(planActive()?'ns-resize':'move'):''});
