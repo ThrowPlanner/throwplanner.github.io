@@ -211,6 +211,7 @@ function drawFront(r){IMMPJ=null;if(S.venue==='golf')GCUR=golfCalc(r);
           `<rect x="${o[0]-bw/2}" y="${o[1]-bh/2}" width="${bw}" height="${bh}" rx="2" style="fill:var(--pj-hi);stroke:${c}" stroke-width="1.6"/>`+
           `<rect x="${o[0]-bw/2-6}" y="${o[1]-bh/2-6}" width="${bw+12}" height="${bh+12}" fill="transparent"/>`+
           (many?'':`<text x="${o[0]}" y="${o[1]-bh/2-4}" text-anchor="middle" style="font:700 11px var(--f-mono);fill:${c};paint-order:stroke;stroke:#05060A;stroke-width:3px">${t.id}</text>`)+'</g>'}}
+    if(typeof window.airImm09==='function')s+=window.airImm09(IMMPJ,P);   // krog til testudgaven «luft ind/ud» (ingen effekt i appen)
     const ML=(vis,full)=>full-vis>.1?`${f3(vis)} m (billede ${f3(full)} m)`:`${f3(full)} m`;
     // målestok på billedet fra den projektor, musen holdes over (vises via pointerover – ellers for meget oven i hinanden)
     let DIMS='';
