@@ -643,5 +643,6 @@ th{background:transparent}
 .fgviews button{display:inline-flex;align-items:center;gap:7px;font-size:13.5px;font-weight:600;padding:8px 14px}
 .fghint{padding:7px 16px 10px;font-size:12px;color:var(--muted);border-top:1px solid var(--line)}
 .fgmsg{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;color:var(--muted);font-size:14px}
-.fgmsg[hidden],#fgFhW[hidden]{display:none}
+.fgmsg[hidden],#fgFhW[hidden],#fgTp[hidden],.fgcont [hidden]{display:none}
+.fgcont{border-top:1px solid var(--line)}.fgcont select{width:auto;flex:0 0 auto}
 @media (max-width:600px){.fgviews button{padding:7px 10px;font-size:12.5px}}

@@ -186,7 +186,10 @@ function fgInit(){const d=$('dPlan');if(!d||$('fgWrap'))return;
     <div class="pinfo fgcurv" id="fgCurvOut" hidden></div>
     <div class="fgstage" id="fgStage"><canvas id="fgCv" tabindex="0" aria-label="Free Grid: tomt rum med projektorer i 3D"></canvas>
       <div class="seg fgviews" role="group" aria-label="Visning">${vb('3d','3D')}${vb('top','Ovenfra')}${vb('side','Fra siden')}</div>
-      <div class="fgmsg" id="fgMsg">Indlæser 3D…</div><div class="fghint" id="fgHint"></div></div>`;
+      <div class="fgmsg" id="fgMsg">Indlæser 3D…</div><div class="fghint" id="fgHint"></div></div>
+    <div class="ptool fgtool fgcont"><span class="hint">Indhold på lærredet</span>
+      <div class="seg" role="group" aria-label="Indhold på lærredet"><button type="button" data-fgc="none">Lærred</button><button type="button" data-fgc="test">Testbillede</button><button type="button" data-fgc="golf" hidden>Golfbane</button><button type="button" data-fgc="img">Eget billede</button></div>
+      <select id="fgTp" aria-label="Testbillede" hidden><option value="std">ANSI og farver</option><option value="focus">Fokus</option><option value="bars">Farvebjælker</option></select></div>`;
   tabs.after(w);
   document.querySelectorAll('[data-fgt]').forEach(b=>b.addEventListener('click',()=>{FG.tab=b.dataset.fgt;if(FG.tab==='grid'&&!FG.pjs.length)fgAdd();fgDraw()}));
   document.querySelectorAll('[data-fgv]').forEach(b=>b.addEventListener('click',()=>{if(G3.R)fg3View(b.dataset.fgv,b.dataset.fgv===FG.view);else FG.view=b.dataset.fgv}));
@@ -194,6 +197,9 @@ function fgInit(){const d=$('dPlan');if(!d||$('fgWrap'))return;
   const num=(id,f)=>$(id).addEventListener('change',()=>{const v=val(id);if(Number.isFinite(v))f(v);fgDraw()});
   $('fgGrid').addEventListener('change',()=>{FG.grid=+$('fgGrid').value;fgDraw()});$('fgSnap').addEventListener('change',()=>{FG.snap=$('fgSnap').checked});
   $('fgAddB').addEventListener('click',()=>fgAdd());$('fgDup').addEventListener('click',()=>fgAdd());$('fgDelB').addEventListener('click',fgDel);
+  // indhold på lærredet: samme valg som i boks 09 (S.content, S.tp og det valgte billede IMG) – vises på lærrederne i Free Grid
+  document.querySelectorAll('[data-fgc]').forEach(b=>b.addEventListener('click',()=>{const again=S.content==='img';S.content=b.dataset.fgc;if(S.content==='img'&&(!IMG||again))$('file').click();render()}));
+  $('fgTp').addEventListener('change',()=>{S.tp=$('fgTp').value;S.content='test';render()});
   $('fgClr').addEventListener('click',()=>{FG.pjs=[];FG.sel=-1;fgDraw()});
   const P=()=>FG.pjs[FG.sel];
   // låse: optikken skifter ikke af sig selv / lærredet bliver stående, når projektoren flyttes
@@ -233,6 +239,8 @@ function fgDraw(){const on=FG.tab==='grid',d=$('dPlan');if(!d)return;
   d.classList.toggle('fgOn',on);
   document.querySelectorAll('[data-fgt]').forEach(b=>b.setAttribute('aria-pressed',b.dataset.fgt===FG.tab));
   if(!on)return;
+  {const c=fgContent();document.querySelectorAll('[data-fgc]').forEach(b=>{b.setAttribute('aria-pressed',b.dataset.fgc===(c?S.content:'none'));if(b.dataset.fgc==='golf')b.hidden=S.venue!=='golf'});
+   $('fgTp').hidden=S.content!=='test';$('fgTp').value=fgTpKind();document.querySelector('[data-fgc="img"]').title=IMG?'Klik igen for at skifte billede':'Vælg et billede fra din computer'}
   FG.pjs.forEach(p=>{if(p.down)p.h=fgR3(p.L+fgFh(p))});   // top/down: linsehøjden er afstanden til fladen + fladens højde
   fg0102Show();
   const nAll=FG.pjs.reduce((a,p)=>a+fgSpec(p).n,0);
@@ -329,6 +337,22 @@ function fgLabel(t,c,pos,h,back){t=I18.tr(t,S.lang);const key=t+'|'+c;let tx=FGL
 function fgBodyTex(t,c){const key='body|'+t+'|'+c;let tx=FGLB.get(key);if(tx)return tx;const cv=document.createElement('canvas');cv.width=256;cv.height=128;const g=cv.getContext('2d');
   g.font='800 92px "JetBrains Mono",ui-monospace,monospace';g.textAlign='center';g.textBaseline='middle';g.lineWidth=12;g.strokeStyle='rgba(10,16,24,.85)';g.strokeText(t,128,68);g.fillStyle=c;g.fillText(t,128,68);
   tx=new THREE.CanvasTexture(cv);tx.minFilter=THREE.LinearFilter;FGLB.set(key,tx);return tx}
+/* indhold på lærredet (som boks 09): eget billede, testbillede eller golfbane – tegnes ind i et canvas og lægges på lærredet som tekstur.
+   Eget billede dækker lærredet (beskæres som i 09, «slice»); testbillede og golfbane strækkes ud over hele lærredet. */
+const fgTpKind=()=>{const k=S.tp||'std';return k==='blend'?'std':k};   // (edge blend-mønstret hører til appens egen projektor)
+const fgContent=()=>S.content==='img'&&IMG?'img':S.content==='test'?'test':S.content==='golf'&&S.venue==='golf'?'golf':null;
+const FGTX={key:'',e:null,cut:new Map()};
+function fgContentTex(){const c=fgContent();if(!c)return null;const key=c==='img'?'img|'+IMG.length+'|'+IMG.slice(-64):c==='test'?'test|'+fgTpKind():'golf';
+  if(FGTX.key===key)return FGTX.e&&FGTX.e.ok?FGTX.e:null;
+  if(FGTX.e&&FGTX.e.tex)FGTX.e.tex.dispose();FGTX.cut.forEach(t=>t.dispose());FGTX.cut.clear();FGTX.key=key;const e=FGTX.e={ok:false},im=new Image();
+  im.onload=()=>{if(FGTX.e!==e)return;const cv=document.createElement('canvas');let w=1600,h=1000;
+    if(c==='img'){const f=Math.min(1,2048/Math.max(im.naturalWidth,im.naturalHeight));w=Math.max(1,Math.round(im.naturalWidth*f));h=Math.max(1,Math.round(im.naturalHeight*f));e.asp=w/h}else e.asp=0;
+    cv.width=w;cv.height=h;cv.getContext('2d').drawImage(im,0,0,w,h);e.tex=new THREE.CanvasTexture(cv);e.tex.minFilter=THREE.LinearFilter;e.ok=true;if(FG.tab==='grid'&&G3.R){fg3Build();fg3Paint()}};
+  im.src=c==='img'?IMG:c==='test'?testURI(fgTpKind()):'data:image/svg+xml;charset=utf-8,'+encodeURIComponent(`<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 1000" width="1600" height="1000" preserveAspectRatio="none">${golfScene(0,0,1600,1000,'fg')}</svg>`);
+  return null}
+// tekstur til et lærred med formatet a (bredde/højde): eget billede beskæres midt på (som «slice»), så det dækker lærredet uden at blive forvrænget
+function fgContentFor(a){const e=fgContentTex();if(!e)return null;if(!e.asp)return e.tex;const k=a.toFixed(3);let t=FGTX.cut.get(k);if(t)return t;
+  t=e.tex.clone();t.needsUpdate=true;const r=a/e.asp;if(r<1){t.repeat.set(r,1);t.offset.set((1-r)/2,0)}else{t.repeat.set(1,1/r);t.offset.set(0,(1-1/r)/2)}FGTX.cut.set(k,t);return t}
 const fgV=(x,y,z)=>new THREE.Vector3(x,y,z);
 function fgLines(pts,color,o={}){const m=new THREE.LineSegments(new THREE.BufferGeometry().setFromPoints(pts),new THREE.LineBasicMaterial({color,transparent:o.op!=null,opacity:o.op??1,depthTest:o.dt!==false}));if(o.dt===false)m.renderOrder=6;return m}
 // en (evt. buet) flade over lærredets koordinater u (vandret) og v (lodret)
@@ -358,7 +382,8 @@ function fg3Build(){const g=G3.root,T=fgTheme(),W=FG.w,D=FG.d,Hr=FG.hgt,lh=fgCl(
     // lærredet selv (fladt eller buet): præcis det samlede billedes størrelse (billedet fylder altid lærredet ud), lige bag billedet
     // buet: grønt/rødt omrids efter manualens grænse · fladt: neutralt omrids
     {const u0=-sp.Wt/2,u1=sp.Wt/2,v0=-sp.Ht/2,v1=sp.Ht/2;
-      g.add(fgSurf((u,v)=>S3(u,v,.015),u0,u1,v0,v1,su,sv,new THREE.MeshLambertMaterial({color:T.scr,side:THREE.DoubleSide})));
+      const map=fgContentFor(sp.Wt/sp.Ht);   // indhold på lærredet (ikke lyst op af scenens lys – som et projiceret billede)
+      g.add(fgSurf((u,v)=>S3(u,v,.015),u0,u1,v0,v1,su,sv,map?new THREE.MeshBasicMaterial({map,side:THREE.DoubleSide}):new THREE.MeshLambertMaterial({color:T.scr,side:THREE.DoubleSide})));
       g.add(fgLines(fgEdge((u,v)=>S3(u,v,.01),u0,u1,v0,v1,curved?32:1),curved?(cv.st==='ok'?0x17834F:0xC23A22):0x6B7480));
       // top/down på en hævet flade (fx et bord): en klods fra gulvet op til fladen, lige så stor som billedet
       if(dn&&sp.fh>.01){const tb=new THREE.Mesh(new THREE.BoxGeometry(sp.Wt,sp.fh,sp.Ht),new THREE.MeshLambertMaterial({color:T.scr,transparent:true,opacity:.55}));tb.position.set(C3.x,sp.fh/2,C3.z);tb.rotation.y=ry;g.add(tb);
@@ -379,7 +404,7 @@ function fg3Build(){const g=G3.root,T=fgTheme(),W=FG.w,D=FG.d,Hr=FG.hgt,lh=fgCl(
       // lyskeglen og billedet (overlap i edge blend ses som de tættere farvede felter)
       const cs=[S3(u0,v1),S3(u1,v1),S3(u1,v0),S3(u0,v0)],bp=[];cs.forEach(v=>bp.push(Lc,v));g.add(fgLines(bp.concat(fgEdge(S3,u0,u1,v0,v1,curved?16:1)),bad?0xC23A22:col,{op:sel?.95:.6}));
       g.add(new THREE.Mesh(new THREE.BufferGeometry().setFromPoints(cs.flatMap((v,j)=>[Lc,v,cs[(j+1)%4]])),new THREE.MeshBasicMaterial({color:c,transparent:true,opacity:sel?.1:.06,side:THREE.DoubleSide,depthWrite:false})));
-      const im=fgSurf(S3,u0,u1,v0,v1,Math.max(1,Math.round(su*sp.W/sp.Wt)),Math.max(1,Math.round(sv*sp.H/sp.Ht)),new THREE.MeshBasicMaterial({color:c,transparent:true,opacity:sp.n>1?(sel?.42:.3):(sel?.62:.45),side:THREE.DoubleSide,depthWrite:false}));
+      const im=fgSurf(S3,u0,u1,v0,v1,Math.max(1,Math.round(su*sp.W/sp.Wt)),Math.max(1,Math.round(sv*sp.H/sp.Ht)),new THREE.MeshBasicMaterial({color:c,transparent:true,opacity:fgContent()?(sel?.16:.1):sp.n>1?(sel?.42:.3):(sel?.62:.45),side:THREE.DoubleSide,depthWrite:false}));   // med indhold: kun en svag farve, så billedet ses
       im.userData={fg:'img',i};g.add(im);G3.pick.push(im)});
     // lod fra hver projektor ned til gulvet / op til loftet (i et sæt: fra hver af dem, ikke fra sættets midte)
     if(!dn){const lp=[];tiles.forEach(t=>{const B=B0.clone().addScaledVector(n3,t.xc).addScaledVector(Y,t.yr);lp.push(B,fgV(B.x,p.inv?Hr:0,B.z))});g.add(fgLines(lp,col,{op:.6}))}
@@ -471,7 +496,8 @@ const fg05=()=>{const c=S.curv||{};return {port:!!S.portrait,bl:!!S.blend,bc:Mat
 function fgSync05(){const n=fg05(),o=FG.s05;FG.s05=n;const p=FG.pjs[FG.sel];if(!o||FG.tab!=='grid'||!p)return;const ch=k=>n[k]!==o[k];if(!Object.keys(n).some(ch))return;
   if(ch('port')){const sp=fgSpec(p),s=fgScr(p,sp);p.port=n.port;if(p.lockS)fgKeepScr(p,s);else{fgSetLW(p,p.L,sp.W);fgSetSvFor(p,sp.yc)}}
   if(ch('bl')||ch('bc')||ch('br')||ch('ov')||ch('ba')||ch('th')){const Wt=fgSpec(p).Wt;p.bl=p.bl||{c:2,r:1,ov:15,auto:false,th:0};const b=p.bl;
-    if(ch('bl'))b.on=n.bl;if(ch('ov'))b.ov=fgCl(n.ov,0,50);if(ch('ba'))b.auto=n.ba;if(ch('th')&&n.th>0)b.th=n.th;
+    // slås edge blend til, tages alle tal fra boks 05 (ellers står fx overlap på projektorens gamle/standardværdi, mens boks 05 viser noget andet)
+    if(ch('bl')){b.on=n.bl;if(n.bl){b.ov=fgCl(n.ov,0,50);b.auto=n.ba;if(n.th>0)b.th=n.th}}if(ch('ov'))b.ov=fgCl(n.ov,0,50);if(ch('ba'))b.auto=n.ba;if(ch('th')&&n.th>0)b.th=n.th;
     if(!b.auto){if(ch('bc')||ch('bl'))b.c=fgCl(n.bc,1,8);if(ch('br')||ch('bl'))b.r=fgCl(n.br,1,4)}if(b.on&&!b.auto&&b.c*b.r<2)b.c=2;
     fgSize(p,Wt/fgSpec(p).kx);if(b.auto&&!(b.th>0))b.th=Math.round(fgSpec(p).Ht*100)/100;fgAuto(p)}
   if(ch('so')||ch('sk')){p.st=p.st||{k:2};if(ch('so'))p.st.on=n.so;p.st.k=fgCl(n.sk,2,4)}
