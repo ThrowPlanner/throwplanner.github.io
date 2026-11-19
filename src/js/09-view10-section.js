@@ -71,11 +71,15 @@ function drawSide(r){
   rowsP.forEach(p=>{const ly=p.ly,B=r.B;
     // keystone: projektoren tegnes vippet om linsen (op = r.kv·inv)
     const kRot=r.kv?(r.kv*r.inv*Math.sign(X(S.L+1)-X(S.L))):0;if(kRot)s+=`<g transform="rotate(${kRot.toFixed(2)} ${X(S.L)} ${Y(ly)})">`;
-    if(S.frame){const fd=r.outer[2],fh=r.outer[1];const x0=X(r.outFront),y0=Y(ly+r.F.y1);
+    if(S.frame){const fd=r.outer[2],fh=r.outer[1];const x0=X(S.L+r.F.z0),y0=Y(ly+r.F.y1);
       s+=`<rect x="${x0}" y="${y0}" width="${fd*sc}" height="${fh*sc}" rx="2" fill="none" style="stroke:var(--frame)" stroke-width="2.6"/>`;
       s+=`<line x1="${x0}" y1="${y0}" x2="${x0+fd*sc}" y2="${y0+fh*sc}" style="stroke:var(--frame)" stroke-width="1" opacity=".55"/><line x1="${x0+fd*sc}" y1="${y0}" x2="${x0}" y2="${y0+fh*sc}" style="stroke:var(--frame)" stroke-width="1" opacity=".55"/>`}
-    s+=`<rect x="${X(S.L+B.z0)}" y="${Y(ly+B.y1)}" width="${(B.z1-B.z0)*sc}" height="${(B.y1-B.y0)*sc}" rx="3" fill="url(#pjgs)"/>`;
-    if(r.kind==='n'){const lh=Math.min((B.y1-B.y0)*.6,.2);s+=`<rect x="${X(S.L)}" y="${Y(ly+lh/2)}" width="${Math.max(2,r.prot*sc)}" height="${lh*sc}" rx="1.5" style="fill:var(--pj-hi)"/>`}
+    {const K=r.UB||B;s+=`<rect x="${X(S.L+K.z0)}" y="${Y(ly+K.y1)}" width="${(K.z1-K.z0)*sc}" height="${(K.y1-K.y0)*sc}" rx="3" fill="url(#pjgs)"/>`}
+    // ultrakort kast: optikken stikker ud bag kabinettet (væk fra lærredet) med spejlet bagerst – lyset vendes tilbage over kabinettet
+    if(r.UL){const U=r.UL,up=S.ceil?-1:1,yS=up>0?U.y1:U.y0,yB=up>0?U.y0:U.y1,mh=Math.min(.09,(U.y1-U.y0)*.55);
+      s+=`<rect x="${X(S.L+U.z0)}" y="${Y(ly+U.y1)}" width="${(U.z1-U.z0)*sc}" height="${(U.y1-U.y0)*sc}" rx="2.5" style="fill:var(--pj-hi);stroke:var(--pj-dk)" stroke-width="1"/>`+
+        `<path d="M${X(S.L+U.z1)},${Y(ly+yS)} Q${X(S.L+U.z1+.035)},${Y(ly+yS-up*mh/2)} ${X(S.L+U.z1)},${Y(ly+yS-up*mh)}" fill="none" style="stroke:var(--pj-dk)" stroke-width="2.4" stroke-linecap="round"/>`}
+    if(r.kind==='n'){const lh=r.LD?r.LD[1]:Math.min((B.y1-B.y0)*.6,.2);s+=`<rect x="${X(S.L)}" y="${Y(ly+lh/2)}" width="${Math.max(2,r.prot*sc)}" height="${lh*sc}" rx="1.5" style="fill:var(--pj-hi);stroke:var(--pj-dk)" stroke-width=".8"/>`}   // optikkens officielle højde (TDC)
     else if(r.kind==='l'){const yb=B.y1<0?ly+B.y1:B.y0>0?ly+B.y0:ly,lw=.16;s+=`<rect x="${X(S.L)}" y="${Y(ly+lw/2)}" width="${.22*sc}" height="${lw*sc}" rx="2" style="fill:var(--pj-hi)"/>`+(yb!==ly?`<rect x="${X(S.L+.06)}" y="${Y(Math.max(ly,yb))}" width="${.11*sc}" height="${Math.abs(yb-ly)*sc}" style="fill:var(--pj-hi)"/>`:'')}
     if(kRot)s+='</g>';
     {const e=beamExit(r,ly,S.L,p.ty);s+=`<circle cx="${X(e[0])}" cy="${Y(e[1])}" r="3.5" style="fill:var(--beam)"/>`}});

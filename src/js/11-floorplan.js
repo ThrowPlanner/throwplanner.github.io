@@ -125,10 +125,11 @@ $('planZoom').hidden=!has;if(document.activeElement!==$('calM'))$('calM').value=
     // stablede enheder ligger oven på hinanden – set ovenfra tegnes kun den nederste i stakken, med et mærke
     r.pjs.forEach((pj,i)=>{if(pj.s)return;const lens=P(pj.lx,S.L),e1=P(pj.tx-r.W/2,0),e2=P(pj.tx+r.W/2,0);
       s+=`<polygon points="${poly([lens,e1,e2])}" fill="#F2A81D" fill-opacity=".22" stroke="#D98300" stroke-width="${1.2*k}"/>`;
-      const B=r.B,bw=B.x1-B.x0,z1=S.L+B.z0,z2=S.L+B.z1;
+      const B=r.UB||r.B,bw=B.x1-B.x0,z1=S.L+B.z0,z2=S.L+B.z1;
       s+=`<g class="pjgrab" data-pj="${i}"><polygon points="${poly([P(pj.lx+B.x0,z1),P(pj.lx+B.x1,z1),P(pj.lx+B.x1,z2),P(pj.lx+B.x0,z2)])}" fill="#2F4D6C" stroke="#0F1821" stroke-width="${k}"/>`;
-      if(r.kind==='n'){const lw=Math.min(bw*.35,.18);s+=`<polygon points="${poly([P(pj.lx-lw/2,S.L),P(pj.lx+lw/2,S.L),P(pj.lx+lw/2,z1),P(pj.lx-lw/2,z1)])}" fill="#4C719A"/>`}
-      if(S.frame){s+=`<polygon points="${poly([P(pj.lx+r.F.x0,r.outFront),P(pj.lx+r.F.x1,r.outFront),P(pj.lx+r.F.x1,r.outBack),P(pj.lx+r.F.x0,r.outBack)])}" fill="none" stroke="#3F4B57" stroke-width="${2.2*k}"/>`}
+      if(r.UL){const U=r.UL;s+=`<polygon points="${poly([P(pj.lx+U.x0,S.L+U.z0),P(pj.lx+U.x1,S.L+U.z0),P(pj.lx+U.x1,S.L+U.z1),P(pj.lx+U.x0,S.L+U.z1)])}" fill="#4C719A" stroke="#0F1821" stroke-width="${k}"/>`}   // ultrakort kast: optikken stikker ud bag kabinettet
+      if(r.kind==='n'){const lw=r.LD?r.LD[0]:Math.min(bw*.35,.18);s+=`<polygon points="${poly([P(pj.lx-lw/2,S.L),P(pj.lx+lw/2,S.L),P(pj.lx+lw/2,z1),P(pj.lx-lw/2,z1)])}" fill="#4C719A"/>`}
+      if(S.frame){s+=`<polygon points="${poly([P(pj.lx+r.F.x0,S.L+r.F.z0),P(pj.lx+r.F.x1,S.L+r.F.z0),P(pj.lx+r.F.x1,S.L+r.F.z1),P(pj.lx+r.F.x0,S.L+r.F.z1)])}" fill="none" stroke="#3F4B57" stroke-width="${2.2*k}"/>`}
       s+=`<circle cx="${lens[0]}" cy="${lens[1]}" r="${4*k}" fill="#D98300"/><circle cx="${P(pj.lx,(r.outFront+r.outBack)/2)[0]}" cy="${P(pj.lx,(r.outFront+r.outBack)/2)[1]}" r="${Math.max(14*k,bw*sc*.6)}" fill="transparent"/></g>`});
     if(r.stk>1)r.pjs.forEach(pj=>{if(pj.s)return;const q=P(pj.lx,r.outBack+0.3);s+=tag(q[0],q[1],`stak ${r.stk} × ${mm(r.outer[1])} mm`,'#3F4B57')});
     const m0=P(S.px,0),m1=P(S.px,S.L);const off=-(r.body[0]/2+.35)*sc;const d0=[m0[0]+g.u[0]*off,m0[1]+g.u[1]*off],d1=[m1[0]+g.u[0]*off,m1[1]+g.u[1]*off];

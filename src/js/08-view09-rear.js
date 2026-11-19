@@ -300,7 +300,7 @@ function seatRow(P,z,xs){let back='',front='';const zb=z+0.5,zt=z+0.58,zs0=z+0.0
   return front+back}
 function person(P,x,z,mode){const k=(P(1,0,z)[0]-P(0,0,z)[0]);const [bx,by]=P(x,0,z);const hgt=1.76*k;
   return `<g style="fill:var(--r-person)"><circle cx="${bx}" cy="${by-hgt+.11*k}" r="${.11*k}"/><path d="M${bx-.21*k},${by-hgt+.28*k} q${.21*k},-${.06*k} ${.42*k},0 l${.03*k},${.62*k} h-${.1*k} l-${.02*k},${.82*k} h-${.13*k} l-${.02*k},-${.6*k} l-${.02*k},${.6*k} h-${.13*k} l-${.02*k},-${.82*k} h-${.1*k} z"/></g>`}
-function projector3D(P,r,p){let s='';const B=r.B;const z1=S.L+B.z0,z2=S.L+B.z1,x0=p.lx+B.x0,x1=p.lx+B.x1,y0=p.ly+B.y0,y1=p.ly+B.y1;
+function projector3D(P,r,p){let s='';const B=r.UB||r.B;const z1=S.L+B.z0,z2=S.L+B.z1,x0=p.lx+B.x0,x1=p.lx+B.x1,y0=p.ly+B.y0,y1=p.ly+B.y1;
   // L-formet linse: linsehovedet og halsen ind til kabinettet (ses ved siden af kabinettet, når det er drejet)
   if(r.kind==='l'){const R=(ax,ay,bx,by,z)=>{const a=P(Math.min(ax,bx),Math.max(ay,by),z),b=P(Math.max(ax,bx),Math.min(ay,by),z);return `<rect x="${a[0]}" y="${a[1]}" width="${b[0]-a[0]}" height="${b[1]-a[1]}" rx="2" style="fill:var(--pj-hi);stroke:var(--pj-dk)" stroke-width="1"/>`};
     const lx=p.lx,ly=p.ly,n=.055,zc=S.L+B.z0+.06;
@@ -311,7 +311,12 @@ function projector3D(P,r,p){let s='';const B=r.B;const z1=S.L+B.z0,z2=S.L+B.z1,x
   const yy=1.6>y1?y1:(1.6<y0?y0:null);if(yy!=null)s+=`<polygon points="${pts([P(x0,yy,z1),P(x1,yy,z1),P(x1,yy,z2),P(x0,yy,z2)])}" style="fill:var(--pj-hi)"/>`;
   const a=P(x0,y1,z2),b=P(x1,y0,z2);s+=`<rect x="${a[0]}" y="${a[1]}" width="${b[0]-a[0]}" height="${b[1]-a[1]}" rx="${(b[0]-a[0])*.04}" fill="url(#pjgf)"/>`;
   for(let i=1;i<6;i++){const yv=a[1]+(b[1]-a[1])*(0.2+i*0.1);s+=`<line x1="${a[0]+(b[0]-a[0])*.12}" y1="${yv}" x2="${a[0]+(b[0]-a[0])*.5}" y2="${yv}" style="stroke:var(--pj-dk)" stroke-width="1.2"/>`}
-  if(S.frame){const fx0=p.lx+r.F.x0,fx1=p.lx+r.F.x1,fy0=p.ly+r.F.y0,fy1=p.ly+r.F.y1,fz0=r.outFront,fz1=r.outBack;
+  // ultrakort kast: optikken stikker ud bag kabinettet (mod beskueren) – sider, top/bund og bagflade med spejlet
+  if(r.UL){const U=r.UL,u0=p.lx+U.x0,u1=p.lx+U.x1,v0=p.ly+U.y0,v1=p.ly+U.y1,w0=S.L+U.z0,w1=S.L+U.z1,F=(q,c)=>`<polygon points="${pts(q)}" style="fill:var(${c});stroke:var(--pj-dk)" stroke-width=".8"/>`;
+    if(u0>0)s+=F([P(u0,v0,w0),P(u0,v1,w0),P(u0,v1,w1),P(u0,v0,w1)],'--pj-dk');if(u1<0)s+=F([P(u1,v0,w0),P(u1,v1,w0),P(u1,v1,w1),P(u1,v0,w1)],'--pj-dk');
+    const yv=1.6>v1?v1:(1.6<v0?v0:null);if(yv!=null)s+=F([P(u0,yv,w0),P(u1,yv,w0),P(u1,yv,w1),P(u0,yv,w1)],'--pj-hi');
+    s+=F([P(u0,v0,w1),P(u1,v0,w1),P(u1,v1,w1),P(u0,v1,w1)],'--pj-hi')}
+  if(S.frame){const fx0=p.lx+r.F.x0,fx1=p.lx+r.F.x1,fy0=p.ly+r.F.y0,fy1=p.ly+r.F.y1,fz0=S.L+r.F.z0,fz1=S.L+r.F.z1;
     const E=[[[fx0,fy0,fz0],[fx0,fy0,fz1]],[[fx1,fy0,fz0],[fx1,fy0,fz1]],[[fx0,fy1,fz0],[fx0,fy1,fz1]],[[fx1,fy1,fz0],[fx1,fy1,fz1]],
       [[fx0,fy0,fz0],[fx1,fy0,fz0]],[[fx0,fy1,fz0],[fx1,fy1,fz0]],[[fx0,fy0,fz0],[fx0,fy1,fz0]],[[fx1,fy0,fz0],[fx1,fy1,fz0]],
       [[fx0,fy0,fz1],[fx1,fy0,fz1]],[[fx0,fy1,fz1],[fx1,fy1,fz1]],[[fx0,fy0,fz1],[fx0,fy1,fz1]],[[fx1,fy0,fz1],[fx1,fy1,fz1]]];
@@ -338,7 +343,8 @@ function ustInset(r){const p0=r.pjs[0],B=r.B,yb=p0.ty-r.H/2,near=Math.min(r.outF
   s+=`<polygon points="${X(e2[0])},${Y(e2[1])} ${X(0)},${Y(top)} ${X(0)},${Y(yb)} ${X(e1[0])},${Y(e1[1])}" fill="url(#ug)"/><line x1="${X(e2[0])}" y1="${Y(e2[1])}" x2="${X(0)}" y2="${Y(top)}" style="stroke:var(--beam)"/>`;
   s+=`<line x1="${X(S.L)}" y1="${Y(p0.ly)}" x2="${X(e2[0])}" y2="${Y(e2[1])}" style="stroke:var(--beam)" stroke-dasharray="3 3" opacity=".8"/>`;
   s+=`<line x1="${X(S.L)}" y1="${Y(p0.ly)}" x2="${X(e1[0])}" y2="${Y(e1[1])}" style="stroke:var(--beam)" stroke-dasharray="3 3" opacity=".8"/><line x1="${X(e1[0])}" y1="${Y(e1[1])}" x2="${X(0)}" y2="${Y(yb)}" style="stroke:var(--beam)"/>`;
-  s+=`<rect x="${X(S.L+B.z0)}" y="${Y(yTop)}" width="${(B.z1-B.z0)*sc}" height="${(yTop-yBot)*sc}" rx="3" fill="url(#pjgs)"/>`;
+  {const K=r.UB||B;s+=`<rect x="${X(S.L+K.z0)}" y="${Y(p0.ly+K.y1)}" width="${(K.z1-K.z0)*sc}" height="${(K.y1-K.y0)*sc}" rx="3" fill="url(#pjgs)"/>`;
+   if(r.UL){const U=r.UL;s+=`<rect x="${X(S.L+U.z0)}" y="${Y(p0.ly+U.y1)}" width="${(U.z1-U.z0)*sc}" height="${(U.y1-U.y0)*sc}" rx="2.5" style="fill:var(--pj-hi);stroke:var(--pj-dk)" stroke-width="1"/>`}}
   s+=`<circle cx="${X(S.L)}" cy="${Y(p0.ly)}" r="3.5" style="fill:var(--beam)"/><text class="m" x="${X(S.L)+6}" y="${Y(p0.ly)-6}" style="font-size:10px">spejl</text>`;
   s+=`</g>`;
   const dimY=Y(Math.min(yBot,yb))+18;

@@ -20,6 +20,8 @@ Jura: produktbilleder vises direkte fra Panasonics TDC-server (kopiér dem aldri
     07-golf (Golf Sim), 08-view09-rear (`drawFront`, boks 09), 09-view10-section (`drawSide`, boks 10) – i aud/museum/teater står snittet øverst og numrene er byttet (10 = bagfra, 09 = snit), 10-contrast (boks 06),
     11-floorplan (boks 08), 12/13 træk og lens shift-bar, 14-sun, 15-solutions (boks 11), 16-events, 17-project-file (JSON), 17b-freegrid (Free Grid i boks 08), 18-start, 19-quick-guide (rundvisning).
 - `data/catalog.json` katalog: `{cats, models}`; optikrække `[A,B,At,Bt,minD",maxD"]`, kast L = A·D + B.
+  Optik: `[navn, F/Z, rækker, shift-polygon, offset, udragning mm, billede, [type, ust-boks], [B,H,L mm]]` – felt 8 = optikkens officielle mål (TDC «Diameter»), kun til tegning.
+  Ultrakort kast (type `u`): optikken skyder bagud; ust-boks = kabinet + optik (samlet længde = kabinetdybde + udragning).
 - `i18n/translations.txt`: dansk er kildesproget i koden. Ny dansk tekst i UI → tilføj linje `dansk|english|日本語`
   (tal skrives som `#`; `=` foran = kun hele tekster). Standardsprog for brugere er engelsk.
 - Temaer (`S.venue`): `aud`, `museum`, `theater`, `immersive`, `golf` (knap «Golf Sim»). `data-venue` på `<html>` styrer CSS pr. tema.

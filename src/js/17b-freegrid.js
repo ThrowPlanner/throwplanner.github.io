@@ -19,6 +19,15 @@ const FGSV={},FGSH={};
 function fgSvR(m,ln,pt,sh=0){if(Object.keys(FGSV).length>3000)for(const k in FGSV)delete FGSV[k];const q=sh.toFixed(3),k=m.m+'|'+ln[0]+'|'+(pt?1:0)+'|'+q;if(!FGSV[k])FGSV[k]=svRange(+q,fgP(ln,pt))||[0,0];return FGSV[k]}   // regnes for den afrundede værdi (= nøglen), så svaret ikke afhænger af, hvad der blev regnet først
 function fgShR(m,ln,pt,sv=0){if(Object.keys(FGSH).length>3000)for(const k in FGSH)delete FGSH[k];const q=sv.toFixed(3),k=m.m+'|'+ln[0]+'|'+(pt?1:0)+'|'+q;if(!FGSH[k])FGSH[k]=shRange(+q,fgP(ln,pt))||[0,0];return FGSH[k]}
 const fgBl=p=>p.bl&&p.bl.on?p.bl:null,fgStk=p=>p.st&&p.st.on?fgCl(Math.round(p.st.k||2),2,4):1;
+/* kabinettets dybde (Dp) og linsens afstand fra kabinettets midte mod lærredet (Lo). Ultrakort kast (ET-DLE035, ET-C1U200 …) skyder bagud:
+   spejlet sidder bagest, og kabinettet står mellem spejl og lærred (Panasonic RearProjPjBodyTable, som calc) → Lo er negativ */
+// ul: optikken som boks (officielle mål fra TDC, felt 8), c = afstand fra linsepunktet til optikkens midte mod lærredet
+function fgBz(m,ln){const k=ln&&ln[7],Dp=m.dim[2]/1000,ld=Array.isArray(ln&&ln[8])?ln[8].map(v=>v/1000):null,prot=(ln&&ln[5]||0)/1000;
+  if(k&&k[0]==='u'&&k[1]){const z0=k[1][4]/1000,z1=k[1][5]/1000,D=Math.min(Dp,z1-z0),len=z1-(z0+D);   // samlet længde z1−z0 = kabinet + optikkens udragning (som calc)
+    return {Dp:D,Lo:z0+D/2,top:z1,bot:z0,ul:len>.005?{len,c:len/2-z1,w:ld?ld[0]:Math.min(.22,m.dim[0]/1000*.45),h:Math.min(ld?ld[1]:.2,(k[1][3]-k[1][2])/1000)}:null}}
+  // almindelig optik: rager prot frem foran kabinettet (som calc: kabinettet starter prot bag linsen)
+  if((!k||k[0]==='n')&&prot>.005)return {Dp,Lo:Dp/2+prot,top:Dp+prot,bot:0,ul:{len:prot,c:-prot/2,w:ld?ld[0]:Math.min(.16,m.dim[0]/1000*.4),h:ld?ld[1]:Math.min(.16,m.dim[1]/1000*.6)}};
+  return {Dp,Lo:Dp/2,top:Dp,bot:0,ul:null}}
 function fgSpec(p){const m=MODELS[p.mi],ln=m.L[p.li]||m.L[0],pt=!!p.port,{row,aw,ah,hy,asp}=fgRow(m,ln,pt),fixed=ln[1]==='F',z=fixed?0:fgCl(p.z,0,1);
   const D=diagFor(row,p.L,z),W=D*IN*aw/hy,H=D*IN*ah/hy,ok=D>=row[4]-.5&&D<=row[5]+.5;
   // afstande ved denne zoom, hvor billedet har optikkens mindste/største diagonal
@@ -29,8 +38,8 @@ function fgSpec(p){const m=MODELS[p.mi],ln=m.L[p.li]||m.L[0],pt=!!p.port,{row,aw
   // vandret shift: billedets midte flyttes sh × billedbredde til højre for optikken
   // top/down: projektoren peger lodret ned, billedet ligger på gulvet (linsehøjde = afstand); lodret shift flytter billedet frem/tilbage (fo) langs gulvet
   const dn=!!p.down,sh=p.sh||0,svR=fgSvR(m,ln,pt,sh),off=pt?0:(ln[4]||0),sg=dn?1:p.inv?-1:1,sv=fgCl(p.sv||0,svR[0],svR[1]),fh=dn?fgFh(p):0,yc=dn?fh+.03:p.h+sg*(sv+off)*H;
-  const B=m.dim[0]/1000,Hb=m.dim[1]/1000;
-  return {m,ln,row,aw,ah,hy,asp,fixed,z,D,W,H,ok,tr:W>0?p.L/W:0,lo:Math.min(a,b),hi:Math.max(a,b),B,Hb,Dp:m.dim[2]/1000,bw:pt?Hb:B,bh:pt?B:Hb,
+  const B=m.dim[0]/1000,Hb=m.dim[1]/1000,bz=fgBz(m,ln);
+  return {m,ln,row,aw,ah,hy,asp,fixed,z,D,W,H,ok,tr:W>0?p.L/W:0,lo:Math.min(a,b),hi:Math.max(a,b),B,Hb,Dp:bz.Dp,Lo:bz.Lo,top:bz.top,bot:bz.bot,ul:bz.ul,port:pt,bw:pt?Hb:B,bh:pt?B:Hb,
     // vandret som calc: billedets midte flyttes sg·(sh + offH)·W til siden (loftmonteret: spejlet; portræt: optikkens offset er vandret)
     offH:pt?(ln[4]||0):0,ox:sg*(sh+(pt?(ln[4]||0):0))*W,
     svR,off,sg,sv,sh,yc,dn,fh,fo:(sv+off)*H,pt,c,r,o,kx,ky,Wt:W*kx,Ht:H*ky,stk,n:c*r*stk,shOK:shiftOK(sh,sv,fgP(ln,pt))}}
@@ -39,7 +48,7 @@ const fgFh=p=>fgCl(p.fh||0,0,Math.max(0,FG.hgt-.3));
 function fgSetSvFor(p,yc){if(p.down)return;const sp=fgSpec(p);p.sv=Math.round(fgCl((yc-p.h)*sp.sg/sp.H-sp.off,sp.svR[0],sp.svR[1])*1000)/1000}
 // retning: 0° = mod den øverste væg (plan-y = 0); u = fremad, n = til højre (set ovenfra). 3D: x = plan-x, y = højde, z = plan-y
 const fgDir=p=>{const a=p.rot*FGR;return {u:[Math.sin(a),-Math.cos(a)],n:[Math.cos(a),Math.sin(a)]}};
-function fgGeo(p,sp=fgSpec(p)){const {u,n}=fgDir(p),h=sp.dn?0:sp.Dp/2,at=(f,s)=>[p.x+u[0]*f+n[0]*s,p.y+u[1]*f+n[1]*s],ox=sp.ox,f=sp.dn?sp.fo:h+p.L;   // top/down: linsen lige under kabinettets midte
+function fgGeo(p,sp=fgSpec(p)){const {u,n}=fgDir(p),h=sp.dn?0:sp.Lo,at=(f,s)=>[p.x+u[0]*f+n[0]*s,p.y+u[1]*f+n[1]*s],ox=sp.ox,f=sp.dn?sp.fo:h+p.L;   // top/down: linsen lige under kabinettets midte
   return {u,n,at,lens:at(h,0),img:at(f,ox),e1:at(f,ox-sp.Wt/2),e2:at(f,ox+sp.Wt/2)}}
 /* --- lærred og projektor hænger sammen via afstand, optik, zoom og lens shift ---
    lærredet (scr): midte c (plan), højde yc, bredde W pr. billede og retning rot */
@@ -52,7 +61,7 @@ function fgLensFor(p,W,L,exact){const m=MODELS[p.mi],fit=i=>{const ln=m.L[i],{ro
   const ord=m.L.map((l,i)=>i).sort((a,b)=>(lnEOL(m.L[a])?1:0)-(lnEOL(m.L[b])?1:0));for(const i of ord){if(i===p.li)continue;z=fit(i);if(z!=null)return {li:i,z}}return null}
 // projektoren (kabinettets midte x,y og linsehøjde h) over for lærredet scr: afstand, optik, zoom og shift regnes ud.
 // strict: null, hvis ingen optik kan, eller billedet er uden for optikkens lens shift
-function fgFit(p,scr,x,y,h,strict=true){const m=MODELS[p.mi],{u,n}=fgDir(scr),dn=!!p.down,Dp=dn?0:m.dim[2]/1000,lx=x+u[0]*Dp/2,ly=y+u[1]*Dp/2,dx=scr.c[0]-lx,dy=scr.c[1]-ly,fw=dx*u[0]+dy*u[1],d=dx*n[0]+dy*n[1];
+function fgFit(p,scr,x,y,h,strict=true){const m=MODELS[p.mi],{u,n}=fgDir(scr),dn=!!p.down,Lo=dn?0:fgBz(m,m.L[p.li]||m.L[0]).Lo,lx=x+u[0]*Lo,ly=y+u[1]*Lo,dx=scr.c[0]-lx,dy=scr.c[1]-ly,fw=dx*u[0]+dy*u[1],d=dx*n[0]+dy*n[1];
   // top/down: afstanden er linsehøjden over fladen (fladens højde følger lærredets højde scr.yc), og billedet frem/tilbage langs fladen er lodret shift
   const fh=dn?fgCl((scr.yc??.03)-.03,0,Math.max(0,FG.hgt-.3)):0,L=dn?h-fh:fw;
   if(!(L>.1))return null;let lf=fgLensFor(p,scr.W,L,!!strict);
@@ -77,7 +86,7 @@ function fgKeepScr(p,scr){let L=p.L;const lf=fgLensFor(p,scr.W,L);
   p.L=fgR3(L);fgPlace(p,scr)}
 function fgPlace(p,scr){const {u,n}=fgDir(p),sp=fgSpec(p),ox=sp.ox;
   if(p.down){p.x=fgR3(scr.c[0]-n[0]*ox-u[0]*sp.fo);p.y=fgR3(scr.c[1]-n[1]*ox-u[1]*sp.fo);p.h=fgR3(p.L+sp.fh);return}
-  constlx=scr.c[0]-u[0]*p.L-n[0]*ox,ly=scr.c[1]-u[1]*p.L-n[1]*ox;p.x=fgR3(lx-u[0]*sp.Dp/2);p.y=fgR3(ly-u[1]*sp.Dp/2);fgSetSvFor(p,scr.yc)}
+  const lx=scr.c[0]-u[0]*p.L-n[0]*ox,ly=scr.c[1]-u[1]*p.L-n[1]*ox;p.x=fgR3(lx-u[0]*sp.Lo);p.y=fgR3(ly-u[1]*sp.Lo);fgSetSvFor(p,scr.yc)}
 // ny billedbredde (pr. billede): låst lærred → lærredet bliver stående, ellers holdes afstanden og billedet følger med
 function fgSize(p,W){if(p.lockS){const s=fgScr(p);fgKeepScr(p,{...s,W})}else fgSetLW(p,p.L,W)}
 // lodret lens shift et trin (andel af billedhøjden, op = billedet op i forhold til optikken): låst lærred → billedet bliver stående, og projektoren flyttes op/ned
@@ -106,7 +115,7 @@ function fgWarn(p,sp=fgSpec(p)){const g=fgGeo(p,sp),w=[];if(!sp.ok)w.push('bille
   if(sp.dn){// top/down: billedets fire hjørner på gulvet og kabinetterne (linsen nederst, sættet breder sig ud langs gulvet)
     const P=(a,b)=>[g.img[0]+g.n[0]*a+g.u[0]*b,g.img[1]+g.n[1]*a+g.u[1]*b];if(![[-1,-1],[1,-1],[1,1],[-1,1]].every(([a,b])=>fgIn(P(a*sp.Wt/2,b*sp.Ht/2))))w.push('billedet rækker uden for rummet');
     const xm=(sp.c-1)/2*sp.W*(1-sp.o)+sp.bw/2,ym=(sp.r-1)/2*sp.H*(1-sp.o)+(sp.stk-1)*sp.bh*1.08,Q=(a,b)=>[p.x+g.n[0]*a+g.u[0]*b,p.y+g.n[1]*a+g.u[1]*b];
-    if(p.h<-.01||p.h+sp.Dp>FG.hgt+.01||![[-1,-1],[1,-1],[1,1],[-1,1]].every(([a,b])=>fgIn(Q(a*xm,b*ym))))w.push('en projektor står uden for rummet')}
+    if(p.h<-.01||p.h+sp.top>FG.hgt+.01||p.h+sp.bot<sp.fh-.01||![[-1,-1],[1,-1],[1,1],[-1,1]].every(([a,b])=>fgIn(Q(a*xm,b*ym))))w.push('en projektor står uden for rummet')}
   else{if(!fgIn(g.e1)||!fgIn(g.e2))w.push('billedet rækker uden for rummet');
   if(sp.yc-sp.Ht/2<-.01)w.push('billedet går under gulvet');if(sp.yc+sp.Ht/2>FG.hgt+.01)w.push('billedet går over loftet');
   // kabinetterne (alle i sættet, med stak) skal stå inde i rummet
@@ -220,12 +229,12 @@ function fgInit(){const d=$('dPlan');if(!d||$('fgWrap'))return;
   // top/down: projektoren peger lodret ned mod gulvet. Slås til: den hænger lige under loftet, billedbredden holdes så vidt muligt (zoom/afstand), intet shift.
   // Slås fra: tilbage til vandret med linsen i 1,2 m og billedets underkant ca. 0,8 m over gulvet
   $('fgDown').addEventListener('click',()=>{const p=P();if(!p)return;const sp=fgSpec(p),W=sp.W;
-    if(!p.down){p.down=true;p.inv=false;p.sv=0;p.sh=0;const fh=fgFh(p);p.L=fgR3(Math.max(.5,FG.hgt-sp.Dp-.15-fh));fgSetLW(p,p.L,W);p.h=fgR3(p.L+fh)}
+    if(!p.down){p.down=true;p.inv=false;p.sv=0;p.sh=0;const fh=fgFh(p);p.L=fgR3(Math.max(.5,FG.hgt-sp.top-.15-fh));fgSetLW(p,p.L,W);p.h=fgR3(p.L+fh)}
     else{p.down=false;p.h=Math.min(1.2,FG.hgt-.05);p.sv=0;const H=fgSpec(p).H;fgSetSvFor(p,Math.min(FG.hgt-.2-H/2,.8+H/2))}
     fgAuto(p);fgDraw()});
   // fladens højde (top/down): projektoren følger med op/ned, så billedet bliver det samme. Låst projektor (eller loftet nås): zoom/optik regnes om
   num('fgFh',v=>{const p=P();if(!p||!p.down)return;const sp=fgSpec(p),fh=fgCl(v,0,Math.max(0,FG.hgt-.3)),nh=p.h+fh-sp.fh;
-    if(!p.lockP&&nh+sp.Dp<=FG.hgt+1e-6){p.fh=fh;p.h=fgR3(nh);return}const s0=fgScr(p,sp);fgMoveScr(p,s0,{...s0,yc:fh+.03})});
+    if(!p.lockP&&nh+sp.top<=FG.hgt+1e-6){p.fh=fh;p.h=fgR3(nh);return}const s0=fgScr(p,sp);fgMoveScr(p,s0,{...s0,yc:fh+.03})});
   $('fgInv').addEventListener('change',()=>{const p=P();if(!p)return;const yc=fgSpec(p).yc;p.inv=$('fgInv').checked;if(p.inv&&p.h<FG.hgt/2)p.h=Math.max(.05,FG.hgt-.4);if(!p.inv&&p.h>FG.hgt/2)p.h=1.2;fgSetSvFor(p,yc);fgDraw()});
   num('fgX',v=>{const p=P();if(!p||p.lockP)return;if(p.lockS)mvTo(p,v,p.y,p.h);else p.x=fgCl(v,0,FG.w)});num('fgY',v=>{const p=P();if(!p||p.lockP)return;if(p.lockS)mvTo(p,p.x,v,p.h);else p.y=fgCl(v,0,FG.d)});
   // markeringerne af boks 05 åbner boks 05 (dér ændres de)
@@ -389,10 +398,13 @@ function fg3Build(){const g=G3.root,T=fgTheme(),W=FG.w,D=FG.d,Hr=FG.hgt,lh=fgCl(
       if(dn&&sp.fh>.01){const tb=new THREE.Mesh(new THREE.BoxGeometry(sp.Wt,sp.fh,sp.Ht),new THREE.MeshLambertMaterial({color:T.scr,transparent:true,opacity:.55}));tb.position.set(C3.x,sp.fh/2,C3.z);tb.rotation.y=ry;g.add(tb);
         const te=new THREE.LineSegments(new THREE.EdgesGeometry(tb.geometry),new THREE.LineBasicMaterial({color:0x6B7480}));te.position.copy(tb.position);te.rotation.y=ry;g.add(te)}}   // radius og tjek står i 05-markeringen og under felterne
     // B0: kabinettets midte (top/down: linsen nederst ved linsehøjden, kabinettet over den)
-    const tiles=fgTiles(sp),B0=fgV(p.x,p.h+(dn?sp.Dp/2:0),p.y),stH=sp.bh*1.08*sp.sg;
-    tiles.forEach((t,k)=>{const Bc=B0.clone().addScaledVector(n3,t.xc).addScaledVector(V3,t.yr),Lc=Bc.clone().addScaledVector(F3,sp.Dp/2),u0=t.xc-hw,u1=t.xc+hw,v0=t.yr-hh,v1=t.yr+hh;
+    const tiles=fgTiles(sp),B0=fgV(p.x,p.h+(dn?sp.Lo:0),p.y),stH=sp.bh*1.08*sp.sg;
+    tiles.forEach((t,k)=>{const Bc=B0.clone().addScaledVector(n3,t.xc).addScaledVector(V3,t.yr),Lc=Bc.clone().addScaledVector(F3,sp.Lo),u0=t.xc-hw,u1=t.xc+hw,v0=t.yr-hh,v1=t.yr+hh;
       // kabinetter: én pr. billede, og ved stacking flere oven på hinanden (under hinanden når loftmonteret; top/down: bag hinanden)
       for(let s=0;s<sp.stk;s++){const bm=new THREE.Mesh(dn?new THREE.BoxGeometry(sp.bw,sp.Dp,sp.bh):new THREE.BoxGeometry(sp.bw,sp.bh,sp.Dp),new THREE.MeshLambertMaterial({color:sel?0x3F6E9C:0x2F4D6C}));bm.position.copy(Bc).addScaledVector(V3,s*stH);bm.rotation.y=ry;bm.userData={fg:'body',i};g.add(bm);G3.pick.push(bm);
+        // optikken (officielle mål): almindelig optik rager frem mod lærredet; ultrakort kast stikker ud bag kabinettet op til spejlet, som vender lyset tilbage
+        if(sp.ul){const U=sp.ul,lm=new THREE.Mesh(dn?new THREE.BoxGeometry(sp.port?U.h:U.w,U.len,sp.port?U.w:U.h):new THREE.BoxGeometry(sp.port?U.h:U.w,sp.port?U.w:U.h,U.len),new THREE.MeshLambertMaterial({color:0x6E8FB3}));
+          lm.position.copy(Lc).addScaledVector(V3,s*stH).addScaledVector(F3,U.c);lm.rotation.y=ry;lm.userData={fg:'body',i};g.add(lm);G3.pick.push(lm)}
         if(sel){const e=new THREE.LineSegments(new THREE.EdgesGeometry(bm.geometry),new THREE.LineBasicMaterial({color:c}));e.position.copy(bm.position);e.rotation.y=ry;g.add(e)}
         // navnet (P1 …) står på selve kabinettet: oven på og bagpå – læses bagfra, set fra projektorens plads
         {const tx=fgBodyTex(`P${i+1}`,col),tw=Math.min(sp.bw*.85,sp.Dp*1.6),th=tw/2,mt=()=>new THREE.MeshBasicMaterial({map:tx,transparent:true,depthWrite:false});
@@ -431,7 +443,7 @@ function fg3Build(){const g=G3.root,T=fgTheme(),W=FG.w,D=FG.d,Hr=FG.hgt,lh=fgCl(
        // (afstandene min/max står i infolinjen – ikke som skilte i 3D)
        // lodret lens shift: to pile ved projektoren (længst til højre i et sæt) – klik = 1 %, Shift-klik = 10 %, hold for at blive ved
        // (top/down: pilene peger frem/tilbage langs gulvet – den vej billedet flytter sig)
-       const L0=B0.clone().addScaledVector(V3,last.yr).addScaledVector(F3,sp.Dp/2).addScaledVector(n3,last.xc+sp.bw/2+lh*.9);
+       const L0=B0.clone().addScaledVector(V3,last.yr).addScaledVector(F3,sp.Lo).addScaledVector(n3,last.xc+sp.bw/2+lh*.9);
        if(svr[1]-svr[0]>.005){const cone=(dir,y)=>{const m=new THREE.Mesh(new THREE.ConeGeometry(lh*.3,lh*.55,16),new THREE.MeshBasicMaterial({color:0x2FA3D6,depthTest:false}));
            m.position.copy(L0).addScaledVector(V3,y);m.quaternion.setFromUnitVectors(Y,V3.clone().multiplyScalar(dir));m.renderOrder=9;m.userData={fg:dir>0?'svUp':'svDn',i};g.add(m);G3.pick.push(m);
            const hp=new THREE.Mesh(new THREE.SphereGeometry(lh*.45,10,8),new THREE.MeshBasicMaterial({visible:false}));hp.position.copy(m.position);hp.userData=m.userData;g.add(hp);G3.pick.push(hp)};
@@ -442,7 +454,7 @@ function fg3Build(){const g=G3.root,T=fgTheme(),W=FG.w,D=FG.d,Hr=FG.hgt,lh=fgCl(
       if(!p.lockS&&!p.lockP&&FG.view!=='side'){const rp=S3(sp.Wt/2+lh*1.4,0),tr=new THREE.Mesh(new THREE.TorusGeometry(lh*.38,lh*.09,8,28),new THREE.MeshBasicMaterial({color:c,depthTest:false}));tr.position.copy(rp);tr.rotation.x=-Math.PI/2;tr.renderOrder=8;g.add(tr);
         const tp=new THREE.Mesh(new THREE.SphereGeometry(lh*.55,12,8),new THREE.MeshBasicMaterial({visible:false}));tp.position.copy(rp);tp.userData={fg:'rot',i};g.add(tp);G3.pick.push(tp)}}
     g.add(fgLabel(`${f3(sp.Wt,2)} × ${f3(sp.Ht,2)} m${fgBl(p)?` · overlap ${fgBl(p).ov} %`:''}${p.lockS?' · låst':''}`,bad?'#C23A22':col,S3(0,sp.Ht/2).add(fgV(0,lh*.8,0)),lh));
-    if(sel){const mp=fgV(p.x,p.h,p.y).addScaledVector(u3,dn?0:sp.Dp/2).lerp(C3,.5).add(fgV(0,lh*.9,0));g.add(fgLabel(`L ${f3(p.L)} m`,col,mp,lh))}});
+    if(sel){const mp=fgV(p.x,p.h,p.y).addScaledVector(u3,dn?0:sp.Lo).lerp(C3,.5).add(fgV(0,lh*.9,0));g.add(fgLabel(`L ${f3(p.L)} m`,col,mp,lh))}});
   g.updateMatrixWorld(true)}   // så der kan sigtes på det nye med det samme (før næste tegning)
 const fgPlane=(n,c)=>new THREE.Plane(n,c);
 // under et træk bruges rudens placering fra trækkets start: skifter infolinjen over 3D-billedet højde (fx en advarsel), må punktet ikke hoppe
@@ -513,7 +525,7 @@ document.addEventListener('change',e=>{const cb=e.target;if(!cb||cb.id!=='curvOn
 /* Boks 01 (afstand og billedstørrelse) og boks 02 (rummet) viser og ændrer Free Grid, mens fanen er åben – som boks 05.
    Indtastningen fanges før appens egne lyttere, så appens egne tal (S.L, S.cw, S.rd …) ikke røres; tilbage på Plantegning viser felterne appens tal igen. */
 // ny linsehøjde (ulåst lærred): top/down → afstanden følger med (zoomen holdes, billedet bliver større/mindre)
-function fgSetH(p,h){if(p.down){const fh=fgFh(p);p.h=fgR3(fgCl(h,fh+.1,FG.hgt-fgSpec(p).Dp));p.L=fgR3(p.h-fh)}else p.h=fgR3(fgCl(h,.05,FG.hgt-.05))}
+function fgSetH(p,h){if(p.down){const fh=fgFh(p);p.h=fgR3(fgCl(h,fh+.1,FG.hgt-fgSpec(p).top));p.L=fgR3(p.h-fh)}else p.h=fgR3(fgCl(h,.05,FG.hgt-.05))}
 function fgMvTo(p,x,y,h){fgMoveTo(p,fgScr(p),[fgCl(x,0,FG.w),fgCl(y,0,FG.d),fgCl(h,.05,FG.hgt-.05)])}
 function fgSetDist(p,v){
   // låst projektor: billedet flyttes langs projektorens akse (inden for zoom/optik)
@@ -557,15 +569,19 @@ function fgKPI(p,sp){const hint=$('sizeHint'),kp=$('kpis');if(!hint||!kp)return;
    videre til genindlæsningen via sessionStorage (som resten af projektet) og læses ved start. */
 {const pd0=projData;projData=function(){const d=pd0.apply(this,arguments);
    if(FG.app05&&d.state){const a=FG.app05;F05.forEach(k=>{d.state[k]=a[k]});d.state.curv=JSON.parse(JSON.stringify(a.curv))}
-   if(FG.pjs.length)d.freegrid={w:FG.w,d:FG.d,hgt:FG.hgt,grid:FG.grid,snap:FG.snap,sel:FG.sel,pjs:FG.pjs.map(p=>{const m=MODELS[p.mi];return {...JSON.parse(JSON.stringify(p)),model:m?m.m:'',lens:m&&m.L[p.li]?m.L[p.li][0]:''}})};
+   if(FG.pjs.length)d.freegrid={bz:2,w:FG.w,d:FG.d,hgt:FG.hgt,grid:FG.grid,snap:FG.snap,sel:FG.sel,pjs:FG.pjs.map(p=>{const m=MODELS[p.mi];return {...JSON.parse(JSON.stringify(p)),model:m?m.m:'',lens:m&&m.L[p.li]?m.L[p.li][0]:''}})};
    return d};
  const lp0=loadProject;loadProject=function(txt){let f=null;try{const d=JSON.parse(txt);f=d&&d.freegrid||null}catch(e){}
    try{if(f)sessionStorage.setItem('kasteplan_nextfg',JSON.stringify(f));else sessionStorage.removeItem('kasteplan_nextfg')}catch(e){}
    fgLoadData(f);return lp0.apply(this,arguments)}}
-function fgLoadData(f){FG.pjs=[];FG.sel=-1;FG.tab='plan';FG.app05=null;FG.s05=null;FG.sel05=undefined;   // (det indlæste projekts egne 05-tal må ikke overskrives)if(!f||!Array.isArray(f.pjs))return;
+function fgLoadData(f){FG.pjs=[];FG.sel=-1;FG.tab='plan';FG.app05=null;FG.s05=null;FG.sel05=undefined;   // (det indlæste projekts egne 05-tal må ikke overskrives)
+  if(!f||!Array.isArray(f.pjs))return;
   FG.w=fgCl(+f.w||20,2,200);FG.d=fgCl(+f.d||20,2,200);FG.hgt=fgCl(+f.hgt||6,2,60);if(f.grid>0)FG.grid=+f.grid;FG.snap=!!f.snap;
   for(const q of f.pjs){let mi=MODELS.findIndex(m=>m.m===q.model);if(mi<0)mi=MODELS[q.mi]?q.mi:0;const m=MODELS[mi];let li=m.L.findIndex(l=>l[0]===q.lens);if(li<0)li=m.L[q.li]?q.li:0;
-    const p={...fgNew(FG.w/2,FG.d/2),...q,mi,li};delete p.model;delete p.lens;FG.pjs.push(p)}
+    const p={...fgNew(FG.w/2,FG.d/2),...q,mi,li};delete p.model;delete p.lens;
+    // ældre projektfiler (før bz:2) regnede linsen ved kabinettets forkant (Lo = dybde/2) – flyt kabinettet, så linsen og billedet står samme sted
+    if(f.bz!==2&&!p.down){const {u}=fgDir(p),dl=fgBz(m,m.L[li]).Lo-m.dim[2]/2000;if(Math.abs(dl)>1e-6){p.x=fgR3(p.x-u[0]*dl);p.y=fgR3(p.y-u[1]*dl)}}
+    FG.pjs.push(p)}
   FG.sel=FG.pjs.length?fgCl(+f.sel||0,0,FG.pjs.length-1):-1}
 try{const t=sessionStorage.getItem('kasteplan_nextfg');sessionStorage.removeItem('kasteplan_nextfg');if(t)fgLoadData(JSON.parse(t))}catch(e){}
 fgInit();

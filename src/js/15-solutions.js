@@ -31,7 +31,7 @@ Størrelse:   B = D·w/√(w²+h²),  H = D·h/√(w²+h²)
 Throw ratio: L / B = ${f2(S.L/r.W)}
 Edge blend:  samlet bredde = n·B − (n−1)·overlap·B  →  B = ${f2(r.CW)} / ${f2(r.kx,3)} = ${f2(r.W,3)} m
 Lens shift:  V = (lærredcentrum − linsehøjde)/H − offset = ${f2(r.sv*100,1)} %
-Fysisk:      ${r.kind==='u'?'ultrakort kast: L måles til spejlet, kabinettet står mellem spejl og lærred (Panasonic-mål)':r.kind==='l'?'L-formet linse: kabinettet står lodret under linsehovedet':'linse rager '+mm(r.prot)+' mm frem foran kabinettet'} · kabinet ${r.m.dim.join('×')} mm${S.frame?` · ramme ${Math.round(S.fw)}×${Math.round(S.fh)}×${Math.round(S.fd)} mm`:''}
+Fysisk:      ${r.kind==='u'?'ultrakort kast: L måles til spejlet, kabinettet står mellem spejl og lærred (Panasonic-mål)'+(r.UL?' · optikken rager '+mm(r.prot)+' mm ud bag kabinettet':'')+' · samlet længde '+mm(r.B.z1-r.B.z0)+' mm':r.kind==='l'?'L-formet linse: kabinettet står lodret under linsehovedet':'linse rager '+mm(r.prot)+' mm frem foran kabinettet'} · kabinet ${r.m.dim.join('×')} mm${S.frame?` · ramme ${Math.round(S.fw)}×${Math.round(S.fh)}×${Math.round(S.fd)} mm`:''}
              nærmest lærred ${f2(Math.min(r.outFront,S.L),3)} m · bagkant ${f2(r.outBack,3)} m
 Skygge:      strålens underkant ved række z: y = lærred_underkant + (linsehøjde − lærred_underkant)·z/L  < 1,32 m → hoved i lyset
 Belysning:   lux = lumen / (B·H) = ${fi(r.lm)} / ${f2(r.W*r.H,3)} = ${fi(r.lux)}

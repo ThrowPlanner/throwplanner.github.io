@@ -88,22 +88,31 @@ function calc(){
     const a=cy-inv*e0*Hs,b=cy-inv*e1*Hs;pyRange=[Math.min(a,b),Math.max(a,b)]}
   const dim=m.dim.map(v=>v/1000), prot=(ln[5]||0)/1000, kind=(ln[7]&&ln[7][0])||'n';
   // kabinet som boks i linsens koordinater: x til højre, y op, z væk fra lærredet (verden: afstand = L + z)
-  let B;
-  if(kind==='u'){const u=ln[7][1].map(v=>v/1000);B={x0:u[0],x1:u[1],y0:u[2],y1:u[3],z0:u[4],z1:u[5]}}           // ultrakort kast: kabinet mellem spejl og lærred (Panasonic RearProjPjBodyTable)
+  // optikkens officielle mål (TDC «Diameter»: bredde × højde × længde) – kun til tegning, påvirker ikke kast/throw ratio
+  const ld=Array.isArray(ln[8])?ln[8].map(v=>v/1000):null;
+  let B,UB=null,UL=null;
+  // ultrakort kast: optikken skyder bagud – kabinettet står mellem spejl og lærred (Panasonic RearProjPjBodyTable = samlet kabinet + optik).
+  // Samlet længde = kabinettets dybde + optikkens udragning (prot); optikken stikker prot ud bag kabinettet, spejlet sidder bagest (z ≈ 0)
+  if(kind==='u'){const u=ln[7][1].map(v=>v/1000);B={x0:u[0],x1:u[1],y0:u[2],y1:u[3],z0:u[4],z1:u[5]};
+    const bz1=Math.min(B.z1,B.z0+dim[2]),bx0=Math.max(B.x0,Math.min(-dim[0]/2,B.x1-dim[0]));
+    UB={x0:bx0,x1:bx0+dim[0],y0:B.y0,y1:Math.min(B.y1,B.y0+dim[1]),z0:B.z0,z1:bz1};
+    if(B.z1-bz1>.005){const lw=(ld?ld[0]:Math.min(.22,dim[0]*.45))/2,lh=Math.min(ld?ld[1]:.2,B.y1-B.y0);UL={x0:-lw,x1:lw,y0:Math.max(B.y0,B.y1-lh),y1:B.y1,z0:bz1,z1:B.z1}}}
   // L-formet linse – Rotér (S.lrot): 0 = kabinet lodret under linsehovedet, 1 = fladt liggende til højre, 2 = lodret over, 3 = fladt til venstre
   const lr=kind==='l'?(S.lrot||0)&3:0, flat=lr&1;
   if(kind==='l'){const c=0.02;B=flat?{x0:prot,x1:prot+dim[2],y0:-dim[1]/2,y1:dim[1]/2,z0:c,z1:c+dim[0]}:{x0:-dim[0]/2,x1:dim[0]/2,y0:-(prot+dim[2]),y1:-prot,z0:c,z1:c+dim[1]}}
-  else B={x0:-dim[0]/2,x1:dim[0]/2,y0:-dim[1]/2,y1:dim[1]/2,z0:prot,z1:prot+dim[2]};
+  else if(kind!=='u')B={x0:-dim[0]/2,x1:dim[0]/2,y0:-dim[1]/2,y1:dim[1]/2,z0:prot,z1:prot+dim[2]};
   const fd3=S.frame?[S.fw/1000,S.fh/1000,S.fd/1000]:dim;
   const fx=kind==='l'&&flat?fd3[2]:fd3[0],fy=kind==='l'&&!flat?fd3[2]:fd3[1],fz=kind==='l'?fd3[flat?0:1]:fd3[2];
-  const bc=[(B.x0+B.x1)/2,(B.y0+B.y1)/2,(B.z0+B.z1)/2];
+  const BB=UB||B,bc=[(BB.x0+BB.x1)/2,(BB.y0+BB.y1)/2,(BB.z0+BB.z1)/2];
   let F=S.frame?{x0:bc[0]-fx/2,x1:bc[0]+fx/2,y0:bc[1]-fy/2,y1:bc[1]+fy/2,z0:bc[2]-fz/2,z1:bc[2]+fz/2}:{...B};
   if(lr>=2){const mir=lr===2?b=>({...b,y0:-b.y1,y1:-b.y0}):b=>({...b,x0:-b.x1,x1:-b.x0});B=mir(B);F=mir(F)}
   const flip=b=>S.ceil?{x0:-b.x1,x1:-b.x0,y0:-b.y1,y1:-b.y0,z0:b.z0,z1:b.z1}:b;
-  if(PT){const rot=b=>({x0:b.y0,x1:b.y1,y0:b.x0,y1:b.x1,z0:b.z0,z1:b.z1});B=rot(B);F=rot(F)}
-  B=flip(B);F=flip(F);
+  if(PT){const rot=b=>b&&({x0:b.y0,x1:b.y1,y0:b.x0,y1:b.x1,z0:b.z0,z1:b.z1});B=rot(B);F=rot(F);UB=rot(UB);UL=rot(UL)}
+  B=flip(B);F=flip(F);if(UB)UB=flip(UB);if(UL)UL=flip(UL);
+  // ramme om et ultrakort kast-kabinet: rammen dækker kabinettet, optikken stikker ud – samlet yderkant = ramme ∪ optik
+  const FE=S.frame&&UB?{x0:Math.min(F.x0,B.x0),x1:Math.max(F.x1,B.x1),y0:Math.min(F.y0,B.y0),y1:Math.max(F.y1,B.y1),z0:Math.min(F.z0,B.z0),z1:Math.max(F.z1,B.z1)}:F;
   const body=[B.x1-B.x0,B.y1-B.y0,B.z1-B.z0], outer=[F.x1-F.x0,F.y1-F.y0,F.z1-F.z0];
-  const bodyFront=S.L+B.z0, outFront=S.L+F.z0, outBack=S.L+F.z1;
+  const bodyFront=S.L+B.z0, outFront=S.L+FE.z0, outBack=S.L+FE.z1;
   // stacking: enhed 0 sidder ved ophænget (loft: øverst, bord: nederst), de næste stables væk fra det med kabinettets/rammens højde
   // hver enhed rammer samme billede med lodret lens shift – alle skal kunne nå det
   const stk=stackN(), stkDir=S.ceil?-1:1, stkPitch=outer[1];
@@ -113,8 +122,8 @@ function calc(){
     pjs.push({c,r,s,tx,ty,lx:tx+dX+BD(c),ly:ty+dY+stkDir*s*stkPitch})}
   const pitchX=W*(1-o), pitchY=H*(1-o);
   const clashX=N>1&&[...Array(N-1).keys()].some(c=>outer[0]>pitchX+BD(c+1)-BD(c)-1e-6), clashY=R>1&&stk*outer[1]>pitchY;
-  const ys=pjs.map(p=>p.ly);const topY=Math.max(...ys)+F.y1, botY=Math.min(...ys)+F.y0;
-  const xs=pjs.map(p=>p.lx);const leftX=Math.min(...xs)+F.x0, rightX=Math.max(...xs)+F.x1;
+  const ys=pjs.map(p=>p.ly);const topY=Math.max(...ys)+FE.y1, botY=Math.min(...ys)+FE.y0;
+  const xs=pjs.map(p=>p.lx);const leftX=Math.min(...xs)+FE.x0, rightX=Math.max(...xs)+FE.x1;
   const roomIssues=[];
   if(outBack>DEPTH())roomIssues.push(REAR()?'bagscenen er for lav':'for dybt');
   if(topY>S.rh)roomIssues.push('over loftet');
@@ -141,6 +150,6 @@ function calc(){
   const [ew0,eh0]=effRes(PT?[m.res[1],m.res[0]]:m.res,aw,ah), ew=Math.round(ew0*dzS), eh=Math.round(eh0*dzS), pxW=Math.round(ew*kx), pxH=Math.round(eh*ky), ksLost=Math.round(ew*eh*(1-ksUse)), lm0=(m.lc||m.lm)*stk, bzPx=Math.round(ew*o);
   const seatsRow=stand?0:Math.max(0,Math.floor((S.rw-1.6-1.2)/0.56));
   return {m,ln,ai,aspOK,row,aw,ah,fixed,N,R,o,kx,ky,W,H,Ws,Hs,CW,CH,D,Lw,Lt,LtO,dz,dzQ,dzS,dzUse,ew0,eh0,z,zoomOK,sizeOK,Dzw,Dzt,cy,cx,inv,off,dX,dY,sv,sh,P,shOK,pyRange,
-    body,prot,outer,B,F,kind,bodyFront,outFront,outBack,pjs,shC,PT,offH,KL,kon,kv,kh,tv,th,ksUse,ksLost,lm0,ksBad,pitchX,pitchY,clashX,clashY,topY,botY,roomIssues,rows,hit,presHit,presZ,presX,stand,lm,lux,amb,pcr,stk,blk,blk2,blk4,cr2,cr4,nits,cr,ew,eh,pxW,pxH,bzPx,seatsRow};
+    body,prot,outer,B,F,UB,UL,LD:ld&&(PT?[ld[1],ld[0],ld[2]]:ld),kind,bodyFront,outFront,outBack,pjs,shC,PT,offH,KL,kon,kv,kh,tv,th,ksUse,ksLost,lm0,ksBad,pitchX,pitchY,clashX,clashY,topY,botY,roomIssues,rows,hit,presHit,presZ,presX,stand,lm,lux,amb,pcr,stk,blk,blk2,blk4,cr2,cr4,nits,cr,ew,eh,pxW,pxH,bzPx,seatsRow};
 }
 

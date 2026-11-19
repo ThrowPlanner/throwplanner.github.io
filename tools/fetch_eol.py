@@ -68,6 +68,12 @@ def row(a, fixed):
     s1 = -1 if a['MinCaluclateValue3'] == 'minus' else 1; s2 = -1 if a['MaxCaluclateValue3'] == 'minus' else 1
     return [num(a['MinCaluclateValue1']), num(s1 * f(a['MinCaluclateValue2'])), num(a['MaxCaluclateValue1']), num(s2 * f(a['MaxCaluclateValue2'])), num(a['MinMinScreenSize']), num(a['MinMaxScreenSize'])]
 
+def lens_dim(l):
+    """Optikkens officielle maal fra TDC ('Diameter': «132 × 102 × 311 mm (…)») → [bredde, hoejde, laengde] i mm, ellers None."""
+    s = re.split(r'[(\[]', (l.get('Diameter') or '').replace(',', ''))[0]
+    v = [num(x) for x in re.findall(r'\d+(?:\.\d+)?', s)]
+    return v[:3] if len(v) >= 3 and all(x > 0 for x in v[:3]) else None
+
 def lens(l, ust):
     fixed = 'Fixed' in l['LensType']; img = l['ProjectionDistanceImage']
     kind = 'u' if 'ust' in img else 'l' if 'l_shape' in img else 'n'; k = [kind]
@@ -78,8 +84,10 @@ def lens(l, ust):
     la = l['LightAxisRatio']; la = f(la) if re.fullmatch(r'-?[\d.]+', la or '') else 0
     poly = [[num(f(p['x'])), num(f(p['y']))] for p in l['LensShiftVp']]
     if all(p == [0, 0] for p in poly): poly = []
-    return [l['LensName'], 'F' if fixed else 'Z', [row(a, fixed) for a in l['AspectRatio']], poly, num(f(l['LensShiftOffsetV']) or la),
-            num(f(l['Protrudes'])) if l['Protrudes'] else 0, l['ProductImage'] or 'NONE', k]
+    out = [l['LensName'], 'F' if fixed else 'Z', [row(a, fixed) for a in l['AspectRatio']], poly, num(f(l['LensShiftOffsetV']) or la),
+           num(f(l['Protrudes'])) if l['Protrudes'] else 0, l['ProductImage'] or 'NONE', k]
+    d = lens_dim(l)
+    return out + [d] if d else out   # felt 8: optikkens maal B×H×L mm (TDC «Diameter»)
 
 def official_tr(s, name=None, asp=None):
     """Panasonics ThrowRatio-tekst («0.548–0.650:1 for PT-… (17:9 aspect ratio)<br>…») → [min, max|None, format].

@@ -327,6 +327,8 @@ linsehøjde|lens height|レンズ高さ
 Fysisk:|Physical:|物理寸法：
 mm frem foran kabinettet|mm in front of the cabinet|mm 本体から突出
 linse rager|lens protrudes|レンズ突出
+optikken rager # mm ud bag kabinettet|the lens protrudes # mm behind the cabinet|レンズは本体の後方に # mm 突出
+samlet længde # mm|total length # mm|全長 # mm
 ultrakort kast: L måles til spejlet, kabinettet står mellem spejl og lærred (Panasonic-mål)|ultra short throw: L is measured to the mirror, the cabinet stands between mirror and screen (Panasonic dimensions)|超短焦点：L はミラーまでの距離、本体はミラーとスクリーンの間（パナソニック寸法）
 L-formet linse: kabinettet står lodret under linsehovedet|L-shaped lens: the cabinet stands vertically below the lens head|L字型レンズ：本体はレンズヘッドの下に縦置き
 kabinet|cabinet|本体
