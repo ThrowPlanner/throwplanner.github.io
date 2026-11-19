@@ -18,7 +18,7 @@ Jura: produktbilleder vises direkte fra Panasonics TDC-server (kopiér dem aldri
   - 00-data (katalog-indlæsning), 01-core (Panasonic-formler), 02-state (`S`, temaer; intet gemmes mellem besøg – kun disclaimer-valget `kasteplan_disc` i 22-disclaimer),
     03-calc (`calc()`), 04-ui (lister, `fitLens`, `constrain`), 05-i18n (`I18`, `render()`), 06-draw-helpers,
     07-golf (Golf Sim), 08-view09-rear (`drawFront`, boks 09), 09-view10-section (`drawSide`, boks 10) – i aud/museum/teater står snittet øverst og numrene er byttet (10 = bagfra, 09 = snit), 10-contrast (boks 06),
-    11-floorplan (boks 08), 12/13 træk og lens shift-bar, 14-sun, 15-solutions (boks 11), 16-events, 17-project-file (JSON), 18-start, 19-quick-guide (rundvisning).
+    11-floorplan (boks 08), 12/13 træk og lens shift-bar, 14-sun, 15-solutions (boks 11), 16-events, 17-project-file (JSON), 17b-freegrid (Free Grid i boks 08), 18-start, 19-quick-guide (rundvisning).
 - `data/catalog.json` katalog: `{cats, models}`; optikrække `[A,B,At,Bt,minD",maxD"]`, kast L = A·D + B.
 - `i18n/translations.txt`: dansk er kildesproget i koden. Ny dansk tekst i UI → tilføj linje `dansk|english|日本語`
   (tal skrives som `#`; `=` foran = kun hele tekster). Standardsprog for brugere er engelsk.
@@ -34,6 +34,7 @@ Jura: produktbilleder vises direkte fra Panasonics TDC-server (kopiér dem aldri
 | Digital Zoom Extender | `dzeSpec`/`DZE_MIN` i `03-calc.js` (lens shift regnes i `r.Hs`/`r.Ws`), visning i `13-lensshift-bar.js`, `dzeSet` i `16-events.js` |
 | Kontrast og sollys | `10-contrast.js`, `14-sun.js` |
 | Plantegning (boks 08) | `11-floorplan.js` |
+| Free Grid (fane i boks 08, 3D-rum med flere projektorer, top/down) | `src/js/17b-freegrid.js` (`FG`, `fgSpec`/`fgFit`/`fg3Build`; boks 01/02/05/07 viser den valgte projektor, mens fanen er åben), `.fg*` i `src/styles.css`, 3D fra `web/warp-three.js` (artifactet skal have filen med som ekstra fil) |
 | Edge blend og portræt (boks 05) | `03-calc.js`, `blendAuto` i `04-ui.js` |
 | Buet lærred / curved (boks 05, tegnes i 08/09/10) | `src/js/26-curved.js` (manual-tabel i `put`-linjer), nye tal meldes af `tools/check_curved.py` i det ugentlige TDC-tjek |
 | Katalog og throw ratios | `data/catalog.json`, `PANTR` i `04-ui.js` |
