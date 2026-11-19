@@ -787,6 +787,7 @@ Passer til # projektor|Fits # projector|対応プロジェクター #台
 =Projektorens målestok er ikke nøjagtig.|The scale of the projector is not accurate.|プロジェクターの縮尺は正確ではありません。
 =Beregningsresultatet er målt fra projektorens linsecentrum.|The calculation result is from the lens center of the projector.|計算結果はプロジェクターのレンズ中心からの値です。
 =Linsens placering varierer fra projektor til projektor.|Lens layout varies depending on the projector.|レンズの配置はプロジェクターによって異なります。
+=Bekræft altid resultatet hos Panasonic eller en autoriseret Panasonic-forhandler før køb og installation.|Always confirm your results with Panasonic or an authorised Panasonic dealer before purchase and installation.|ご購入・設置の前に、必ずパナソニックまたはパナソニック正規販売店に結果をご確認ください。
 =Det du indtaster, gemmes ikke – hverken på din enhed eller eksternt. Brug «Gem projekt» for at beholde dit projekt.|Your input is not stored – neither on your device nor remotely. Use «Save project» to keep your project.|入力内容は保存されません（端末にも外部にも）。プロジェクトを残すには「プロジェクトを保存」を使用してください。
 =Vis ikke igen|Don't show again|今後表示しない
 =# % overlap er industristandard.|#% overlap is the industry standard.|#% のオーバーラップが業界標準です。

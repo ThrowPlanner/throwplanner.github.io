@@ -5,6 +5,7 @@ const DISC=['De beregnede værdier kan variere afhængigt af brug og omgivelsesf
   'Projektorens målestok er ikke nøjagtig.',
   'Beregningsresultatet er målt fra projektorens linsecentrum.',
   'Linsens placering varierer fra projektor til projektor.',
+  'Bekræft altid resultatet hos Panasonic eller en autoriseret Panasonic-forhandler før køb og installation.',
   'Det du indtaster, gemmes ikke – hverken på din enhed eller eksternt. Brug «Gem projekt» for at beholde dit projekt.'];
 const discList=()=>'<ul>'+DISC.map(t=>`<li>${t}</li>`).join('')+'</ul>';
 $('disc').innerHTML='<h2>Ansvarsfraskrivelse</h2>'+discList();
