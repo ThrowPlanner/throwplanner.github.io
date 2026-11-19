@@ -1,0 +1,41 @@
+/* ===== FREE GRID (TEST) ===== */
+.fgtabs{display:flex;padding:10px 16px 0}
+.fgtabs .seg{flex:0 0 auto}
+.fgtest{font-size:9.5px;font-weight:700;letter-spacing:.06em;padding:1px 5px;border-radius:4px;background:var(--warn-bg);color:var(--warn);margin-left:4px;vertical-align:1px}
+#fgWrap{display:none}
+#dPlan.fgOn>#fgWrap{display:block}
+#dPlan.fgOn>.ptool,#dPlan.fgOn>#planInfo,#dPlan.fgOn>#planStage{display:none!important}
+.fgsel.none>*:not(.fgpjs){opacity:.45}
+.fgpjs{display:inline-flex;gap:6px;align-items:center;flex-wrap:wrap}
+.fgadd{font:inherit;font-size:12.5px;font-weight:700;padding:4px 11px;border-radius:6px;border:1px dashed var(--beam);background:var(--beam-soft);color:var(--beam);cursor:pointer;white-space:nowrap}
+.fgadd:hover{border-style:solid}
+.fgsel.none>.fgpjs{opacity:1}
+.fgchips{display:flex;gap:4px;flex-wrap:wrap}
+/* låse: optik og lærred */
+.fglocks{display:inline-flex;gap:6px}
+.fglock{display:inline-flex;align-items:center;gap:5px;font:inherit;font-size:12.5px;padding:5px 10px;border-radius:7px;border:1px solid var(--line);background:var(--bg2);color:var(--muted);cursor:pointer;white-space:nowrap}
+.fglock .shk{transform:translate(4px,-2px) rotate(18deg);transform-origin:16px 11px}
+.fglock[aria-pressed=true]{color:var(--beam);border-color:var(--beam);background:var(--beam-soft);font-weight:600}
+.fglock[aria-pressed=true] .shk{transform:none}
+.fgchips:empty{display:none}
+.fgchips button{font:inherit;font-size:12px;font-weight:700;font-family:var(--f-mono);padding:4px 9px;border-radius:6px;border:1px solid var(--line);background:var(--bg2);color:var(--c);cursor:pointer}
+.fgchips button[aria-pressed=true]{background:var(--c);color:#fff;border-color:var(--c)}
+/* boks 05 for den valgte projektor */
+.fgb05{gap:8px 16px}
+.fgno{font-family:var(--f-mono);font-size:11.5px;font-weight:700;color:var(--beam);padding:2px 7px;border-radius:6px;background:var(--bg2);border:1px solid var(--line)}
+.fgb05:empty{display:none}
+/* markering af det, der er slået til i boks 05 (klik åbner boks 05) */
+.fgpill{font:inherit;font-size:12px;font-weight:600;padding:4px 10px;border-radius:999px;border:1px solid var(--beam);background:var(--beam-soft);color:var(--beam);cursor:pointer}
+.fgpill.ok{border-color:var(--ok);background:var(--ok-bg);color:var(--ok)}.fgpill.bad{border-color:var(--bad);background:var(--bad-bg);color:var(--bad)}
+.fg05go{margin-left:auto;font:inherit;font-size:12px;color:var(--muted);background:none;border:0;cursor:pointer;text-decoration:underline}
+.fgcurv p{margin:2px 0;font-size:12.5px}.fgcurv .cok{color:var(--ok)}.fgcurv .cbad{color:var(--bad)}
+.fgstage{position:relative;background:var(--bg);touch-action:none;min-height:320px}
+.fgstage canvas{display:block;width:100%;outline:none;cursor:grab}
+.fgstage canvas:active{cursor:grabbing}
+/* visningsknapperne: store og tydelige, øverst til venstre i 3D-billedet */
+.fgviews{position:absolute;top:12px;left:12px;z-index:2;box-shadow:0 2px 10px rgba(0,0,0,.25)}
+.fgviews button{display:inline-flex;align-items:center;gap:7px;font-size:13.5px;font-weight:600;padding:8px 14px}
+.fghint{padding:7px 16px 10px;font-size:12px;color:var(--muted);border-top:1px solid var(--line)}
+.fgmsg{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;color:var(--muted);font-size:14px}
+.fgmsg[hidden]{display:none}
+@media (max-width:600px){.fgviews button{padding:7px 10px;font-size:12.5px}}
