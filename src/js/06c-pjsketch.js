@@ -73,8 +73,10 @@ function pkModel(r,o={}){
 const pkR=n=>Math.round(n*10)/10;
 /* Retvinklet visning (snit, plantegning, UST-detalje). V = {u,v,d,sd}: skærmens akser og hvilken vej man ser (sd=+1: man ser fladen med største d).
    map(u,v) → [sx,sy] i px (må gerne være drejet). Detaljeniveau følger størrelsen: små tegninger viser kun omrids, optik og fødder. */
-function pkOrtho(M,V,map){
-  const o=map(0,0),e=map(1,0),s=Math.hypot(e[0]-o[0],e[1]-o[1])/1000,sw=pkR(Math.max(.5,Math.min(1.2,s*1.4)));
+// zf: boksens zoom (Z9L) – tegningen forstørres på skærmen, så detaljeniveauet (s = px pr. mm på skærmen) følger med; stregtykkelsen følger tegningens egne enheder
+// su (valgfri): tegningens enheder pr. skærm-px (plantegningen, hvor billedets px ≠ skærmens) – så stregerne holder samme tykkelse på skærmen
+function pkOrtho(M,V,map,zf,su){
+  const o=map(0,0),e=map(1,0),s0=Math.hypot(e[0]-o[0],e[1]-o[1])/1000,s=s0*(zf||1),sw=su?Math.round(Math.max(.5,Math.min(1.2,s*1.4))*su*100)/100:pkR(Math.max(.5,Math.min(1.2,s0*1.4)));
   const pt=(u,v)=>{const q=map(u,v);return pkR(q[0])+','+pkR(q[1])};
   const quad=(r,c)=>`<polygon points="${pt(r.u0,r.v0)} ${pt(r.u1,r.v0)} ${pt(r.u1,r.v1)} ${pt(r.u0,r.v1)}" class="${c}" stroke-width="${sw}"/>`;
   const ln=(u0,v0,u1,v1,c,w=sw)=>{const a=map(u0,v0),b=map(u1,v1);return `<line x1="${pkR(a[0])}" y1="${pkR(a[1])}" x2="${pkR(b[0])}" y2="${pkR(b[1])}" class="${c}" stroke-width="${pkR(w)}"/>`};
@@ -84,16 +86,17 @@ function pkOrtho(M,V,map){
   M.forEach((p,i)=>{if(p.t==='deco'){if(p.n[0]!==V.d||p.n[1]!==V.sd)return;it.push({p,i,r:R(p.b),d:R(p.b).d+1e-4});return}
     const r=R(p.b);it.push({p,i,r,ax:p.t==='cyl'&&p.axis===V.d,d:p.hid?1e9:r.d+(p.pri||0)*1e-4})});
   it.sort((a,b)=>a.d-b.d||a.i-b.i);
-  let out='';const px=v=>v*1000*s;
+  let out='';const px=v=>v*1000*s;   // længde på skærmen i px (med zoom)
   for(const {p,r,ax} of it){const W=px(r.u1-r.u0),H=px(r.v1-r.v0);
     if(p.t==='deco'){const k=p.k;
-      if(k==='seam'){if(s>.12)out+=ln(r.u0,r.v0,r.u1,r.v1,'pk-ln',sw*.8);continue}
-      if(k==='led'){if(s>.25)out+=ell(r.u0,r.v0,.003,.003,'pk-glass',sw*.6,8);continue}
+      // små tegninger (rummet i 100 %): gitre og panel vises stadig, men med færre og grovere striber, så projektoren ikke ser «plain» ud
+      if(k==='seam'){if(s>.04)out+=ln(r.u0,r.v0,r.u1,r.v1,'pk-ln',sw*.8);continue}
+      if(k==='led'){if(s>.12)out+=ell(r.u0,r.v0,.003,.003,'pk-glass',sw*.6,8);continue}
       if(k==='win'){out+=quad(r,'pk-glass');continue}
-      if(k==='handle'){if(s>.1)out+=quad(r,'pk-foot');continue}
-      if(k==='panel'){if(s>.06)out+=quad(r,'pk-foot');if(s>.3){const n=5;for(let j=0;j<n;j++){const cu=r.u0+(r.u1-r.u0)*(j+.5)/n,rr=Math.min(.005,(r.u1-r.u0)/(n*2.6));out+=ell(cu,(r.v0+r.v1)/2,rr,rr,'pk-cab',sw*.7,8)}}continue}
-      if(k==='slats'||k==='dots'){if(s<.06)continue;out+=quad(r,'pk-vent');const st=.009;
-        if(k==='slats'&&s*9>=2.6){if(p.al===V.u){for(let v=r.v0+st/2;v<r.v1;v+=st)out+=ln(r.u0+.004,v,r.u1-.004,v,'pk-ln',sw*.7)}else{for(let u=r.u0+st/2;u<r.u1;u+=st)out+=ln(u,r.v0+.004,u,r.v1-.004,'pk-ln',sw*.7)}}
+      if(k==='handle'){if(s>.04)out+=quad(r,'pk-foot');continue}
+      if(k==='panel'){if(s>.025)out+=quad(r,'pk-foot');if(s>.3){const n=5;for(let j=0;j<n;j++){const cu=r.u0+(r.u1-r.u0)*(j+.5)/n,rr=Math.min(.005,(r.u1-r.u0)/(n*2.6));out+=ell(cu,(r.v0+r.v1)/2,rr,rr,'pk-cab',sw*.7,8)}}continue}
+      if(k==='slats'||k==='dots'){if(s<.025)continue;out+=quad(r,'pk-vent');const st=Math.max(.009,2.6/(1000*s)),sl=k==='slats'||s*9<3.2,ins=Math.min(.004,st*.25);   // striber mindst 2,6 px fra hinanden
+        if(sl&&px(st)>=2.6&&Math.max(W,H)>=6){if(p.al===V.u){for(let v=r.v0+st/2;v<r.v1;v+=st)out+=ln(r.u0+ins,v,r.u1-ins,v,'pk-ln',sw*.7)}else{for(let u=r.u0+st/2;u<r.u1;u+=st)out+=ln(u,r.v0+ins,u,r.v1-ins,'pk-ln',sw*.7)}}
         if(k==='dots'&&s*9>=3.2){for(let u=r.u0+st/2;u<r.u1;u+=st)for(let v=r.v0+st/2;v<r.v1;v+=st)out+=ell(u,v,.0022,.0022,'pk-dot',0,6)}}
       continue}
     if(ax){const cu=(r.u0+r.u1)/2,cv=(r.v0+r.v1)/2,ru=(r.u1-r.u0)/2,rv=(r.v1-r.v0)/2;if(p.c==='hid')continue;
@@ -110,18 +113,18 @@ function pkOrtho(M,V,map){
   return `<g class="pk">${out}</g>`}
 
 /* Perspektiv (boks 09): P3(x,y,z) i rummets koordinater, projektoren står i (lx,ly,S.L). Beskueren står bag projektoren (stor z) i øjenhøjde 1,6 m. */
-function pk3D(M,P3,lx,ly){
+function pk3D(M,P3,lx,ly,zf){zf=zf||1;   // zf: boksens zoom – detaljeniveauet følger størrelsen på skærmen
   const W=(x,y,z)=>P3(lx+x,ly+y,S.L+z),pts=a=>a.map(q=>pkR(q[0])+','+pkR(q[1])).join(' ');
   const face=(a,c)=>`<polygon points="${pts(a)}" class="${c}" stroke-width=".8"/>`;
   const it=M.filter(p=>!p.hid&&p.c!=='glass'&&(p.t!=='deco'||(p.n[0]==='z'&&p.n[1]>0))).map((p,i)=>({p,i,d:p.b.z1+(p.t==='deco'?1e-4:0)+(p.pri||0)*1e-4}));
   it.sort((a,b)=>a.d-b.d||a.i-b.i);
   let s='';
   for(const {p} of it){const b=p.b,z1=b.z1,z0=b.z0;
-    if(p.t==='deco'){const q=[W(b.x0,b.y0,z1),W(b.x1,b.y0,z1),W(b.x1,b.y1,z1),W(b.x0,b.y1,z1)],sc=Math.abs(W(1,0,z1)[0]-W(0,0,z1)[0])/1000;
-      if(p.k==='seam'){if(sc>.12)s+=`<line x1="${pkR(q[0][0])}" y1="${pkR(q[0][1])}" x2="${pkR(q[2][0])}" y2="${pkR(q[2][1])}" class="pk-ln" stroke-width=".7"/>`;continue}
-      if(sc<.05)continue;
+    if(p.t==='deco'){const q=[W(b.x0,b.y0,z1),W(b.x1,b.y0,z1),W(b.x1,b.y1,z1),W(b.x0,b.y1,z1)],sc=Math.abs(W(1,0,z1)[0]-W(0,0,z1)[0])/1000*zf;
+      if(p.k==='seam'){if(sc>.04)s+=`<line x1="${pkR(q[0][0])}" y1="${pkR(q[0][1])}" x2="${pkR(q[2][0])}" y2="${pkR(q[2][1])}" class="pk-ln" stroke-width=".7"/>`;continue}
+      if(sc<.025)continue;
       s+=face(q,p.k==='slats'?'pk-vent':'pk-foot');
-      if(p.k==='slats'&&sc*9>=2.6){const st=.009;for(let y=b.y0+st/2;y<b.y1;y+=st){const a=W(b.x0+.004,y,z1),c=W(b.x1-.004,y,z1);s+=`<line x1="${pkR(a[0])}" y1="${pkR(a[1])}" x2="${pkR(c[0])}" y2="${pkR(c[1])}" class="pk-ln" stroke-width=".6"/>`}}
+      if(p.k==='slats'){const st=Math.max(.009,2.6/(1000*sc)),ins=Math.min(.004,st*.25);if((b.y1-b.y0)*1000*sc>=6)for(let y=b.y0+st/2;y<b.y1;y+=st){const a=W(b.x0+ins,y,z1),c=W(b.x1-ins,y,z1);s+=`<line x1="${pkR(a[0])}" y1="${pkR(a[1])}" x2="${pkR(c[0])}" y2="${pkR(c[1])}" class="pk-ln" stroke-width=".6"/>`}}
       continue}
     const X0=lx+b.x0,X1=lx+b.x1,Y0=ly+b.y0,Y1=ly+b.y1,cls='pk-'+p.c;
     if(X0>0)s+=face([W(b.x0,b.y0,z0),W(b.x0,b.y1,z0),W(b.x0,b.y1,z1),W(b.x0,b.y0,z1)],'pk-side');
@@ -139,7 +142,25 @@ function pkBox(M){let b=null;for(const p of M){if(p.t==='deco'||p.hid||p.c==='fo
 /* Free Grid (three.js): samme skitse som 3D-legemer. W3(x,y,z) = rummets punkt for linsens koordinater, Q = drejning (x→højre, y→op, z→væk fra lærredet) */
 function pkQuat(n3,V3,F3){return new THREE.Quaternion().setFromRotationMatrix(new THREE.Matrix4().makeBasis(n3,V3,F3.clone().negate()))}
 const PK3C={cab:0xDDE3E9,foot:0xAEB9C4,lens:0xC5CDD5,cap:0xC5CDD5,ring:0xA3AEB9,glass:0x2B4860,deco:0x8995A2};   // samme farver som .pk-* i styles.css
+/* Skitse-streger til Free Grid: kanter på kabinet/fødder/optik, ringe på cylindre og striber i gitrene – som i boks 08/09/10.
+   Regnes én gang pr. model (linsens koordinater, cache) og samles i ét LineSegments-objekt pr. projektor (ét draw call). */
+const PKL=new WeakMap();
+function pkLines(M){if(PKL.has(M))return PKL.get(M);const a=[],seg=(p,q)=>a.push(p.x,p.y,p.z,q.x,q.y,q.z),P=(x,y,z)=>({x,y,z}),ax=['x','y','z'];
+  for(const p of M){if(p.hid||p.c==='glass')continue;const b=p.b;
+    if(p.t==='box'){const xs=[b.x0,b.x1],ys=[b.y0,b.y1],zs=[b.z0,b.z1];
+      for(const y of ys)for(const z of zs)seg(P(b.x0,y,z),P(b.x1,y,z));for(const x of xs)for(const z of zs)seg(P(x,b.y0,z),P(x,b.y1,z));for(const x of xs)for(const y of ys)seg(P(x,y,b.z0),P(x,y,b.z1));continue}
+    if(p.t==='cyl'){const A=p.axis,[U,V]=ax.filter(k=>k!==A),c={},r={};for(const k of[U,V]){c[k]=(b[k+'0']+b[k+'1'])/2;r[k]=(b[k+'1']-b[k+'0'])/2}const n=24;
+      for(const e of[b[A+'0'],b[A+'1']])for(let i=0;i<n;i++){const t0=i/n*2*Math.PI,t1=(i+1)/n*2*Math.PI,q0={},q1={};q0[A]=q1[A]=e;q0[U]=c[U]+r[U]*Math.cos(t0);q0[V]=c[V]+r[V]*Math.sin(t0);q1[U]=c[U]+r[U]*Math.cos(t1);q1[V]=c[V]+r[V]*Math.sin(t1);seg(q0,q1)}
+      continue}
+    if(p.t==='deco'&&(p.k==='slats'||p.k==='dots'||p.k==='seam')){const [N,sg]=p.n,w=b[N+(sg>0?'1':'0')]+sg*.003,L=p.al&&p.al!==N?p.al:ax.find(k=>k!==N),O=ax.find(k=>k!==N&&k!==L);
+      const mk=(l,o)=>{const q={};q[N]=w;q[L]=l;q[O]=o;return q};
+      if(p.k==='seam'){const q0={},q1={};q0[N]=q1[N]=w;for(const k of[L,O]){q0[k]=b[k+'0'];q1[k]=b[k+'1']}seg(q0,q1);continue}
+      const st=p.k==='dots'?.008:.011,o0=b[O+'0'],o1=b[O+'1'],ins=.004;if(o1-o0<.006)continue;
+      for(let o=o0+st/2;o<o1;o+=st)seg(mk(b[L+'0']+ins,o),mk(b[L+'1']-ins,o))}}
+  const f=new Float32Array(a);PKL.set(M,f);return f}
 function pkThree(M,W3,Q,sel){const g=new THREE.Group();let cab=null;
+  {const L=pkLines(M),pos=new Float32Array(L.length);for(let i=0;i<L.length;i+=3){const w=W3(L[i],L[i+1],L[i+2]);pos[i]=w.x;pos[i+1]=w.y;pos[i+2]=w.z}
+   const geo=new THREE.BufferGeometry();geo.setAttribute('position',new THREE.BufferAttribute(pos,3));g.add(new THREE.LineSegments(geo,new THREE.LineBasicMaterial({color:0x4F5B67})))}
   for(const p of M){if(p.hid)continue;let b=p.b,col;
     if(p.t==='deco'){if(!['slats','dots','panel','handle','win'].includes(p.k))continue;const [a,sg]=p.n;b={...b};b[a+(sg>0?'0':'1')]+=sg*.0005;b[a+(sg>0?'1':'0')]+=sg*.0025;col=p.k==='win'?PK3C.glass:PK3C.deco}
     else col=p.cab&&sel?0xBFD6EC:(PK3C[p.c]??PK3C.lens);
@@ -147,6 +168,6 @@ function pkThree(M,W3,Q,sel){const g=new THREE.Group();let cab=null;
     if(p.t==='cyl'){geo=new THREE.CylinderGeometry(.5,.5,1,24);const ax=p.axis;
       if(ax==='y')geo.scale(sx,sy,sz);else if(ax==='z'){geo.scale(sx,sz,sy);geo.rotateX(Math.PI/2)}else{geo.scale(sy,sx,sz);geo.rotateZ(Math.PI/2)}}
     else geo=new THREE.BoxGeometry(sx,sy,sz);
-    const me=new THREE.Mesh(geo,new THREE.MeshLambertMaterial({color:col}));me.position.copy(W3((b.x0+b.x1)/2,(b.y0+b.y1)/2,(b.z0+b.z1)/2));me.quaternion.copy(Q);g.add(me);
+    const me=new THREE.Mesh(geo,new THREE.MeshLambertMaterial({color:col,polygonOffset:true,polygonOffsetFactor:1,polygonOffsetUnits:1}));me.position.copy(W3((b.x0+b.x1)/2,(b.y0+b.y1)/2,(b.z0+b.z1)/2));me.quaternion.copy(Q);g.add(me);
     if(p.cab)cab=me}
   return {g,cab}}

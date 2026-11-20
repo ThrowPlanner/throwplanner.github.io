@@ -127,7 +127,7 @@ $('planZoom').hidden=!has;if(document.activeElement!==$('calM'))$('calM').value=
       s+=`<polygon points="${poly([lens,e1,e2])}" fill="#F2A81D" fill-opacity=".22" stroke="#D98300" stroke-width="${1.2*k}"/>`;
       const B=r.UB||r.B,bw=B.x1-B.x0,z1=S.L+B.z0,z2=S.L+B.z1;
       // projektorskitse set ovenfra ud fra de officielle mål – se 06c-pjsketch.js
-      s+=`<g class="pjgrab" data-pj="${i}">`+pkOrtho(pkModel(r),{u:'x',v:'z',d:'y',sd:1},(u,v)=>P(pj.lx+u,S.L+v));
+      s+=`<g class="pjgrab" data-pj="${i}">`+pkOrtho(pkModel(r),{u:'x',v:'z',d:'y',sd:1},(u,v)=>P(pj.lx+u,S.L+v),1/k,k);   // 1/k: tegningens px → skærm-px (detaljer følger zoom)
       if(S.frame){s+=`<polygon points="${poly([P(pj.lx+r.F.x0,S.L+r.F.z0),P(pj.lx+r.F.x1,S.L+r.F.z0),P(pj.lx+r.F.x1,S.L+r.F.z1),P(pj.lx+r.F.x0,S.L+r.F.z1)])}" fill="none" stroke="#3F4B57" stroke-width="${2.2*k}"/>`}
       {const f=P(pj.lx,S.L-1);s+=halfDot(lens[0],lens[1],4*k,f[0]-lens[0],f[1]-lens[1],'fill="#D98300"')}   // halv cirkel foran optikken
       s+=`<circle cx="${P(pj.lx,(r.outFront+r.outBack)/2)[0]}" cy="${P(pj.lx,(r.outFront+r.outBack)/2)[1]}" r="${Math.max(14*k,bw*sc*.6)}" fill="transparent"/></g>`});

@@ -303,7 +303,7 @@ function person(P,x,z,mode){const k=(P(1,0,z)[0]-P(0,0,z)[0]);const [bx,by]=P(x,
   return `<g style="fill:var(--r-person)"><circle cx="${bx}" cy="${by-hgt+.11*k}" r="${.11*k}"/><path d="M${bx-.21*k},${by-hgt+.28*k} q${.21*k},-${.06*k} ${.42*k},0 l${.03*k},${.62*k} h-${.1*k} l-${.02*k},${.82*k} h-${.13*k} l-${.02*k},-${.6*k} l-${.02*k},${.6*k} h-${.13*k} l-${.02*k},-${.82*k} h-${.1*k} z"/></g>`}
 function projector3D(P,r,p){let s='';const B=r.UB||r.B;const z1=S.L+B.z0,z2=S.L+B.z1,x0=p.lx+B.x0,x1=p.lx+B.x1,y0=p.ly+B.y0,y1=p.ly+B.y1;
   // projektorskitse i perspektiv ud fra de officielle mål (kabinet, optik, udragning) – se 06c-pjsketch.js
-  const a=P(x0,y1,z2),b=P(x1,y0,z2);s+=pk3D(pkModel(r),P,p.lx,p.ly);
+  const a=P(x0,y1,z2),b=P(x1,y0,z2);s+=pk3D(pkModel(r),P,p.lx,p.ly,Z9L[Z9]);
   if(S.frame){const fx0=p.lx+r.F.x0,fx1=p.lx+r.F.x1,fy0=p.ly+r.F.y0,fy1=p.ly+r.F.y1,fz0=S.L+r.F.z0,fz1=S.L+r.F.z1;
     const E=[[[fx0,fy0,fz0],[fx0,fy0,fz1]],[[fx1,fy0,fz0],[fx1,fy0,fz1]],[[fx0,fy1,fz0],[fx0,fy1,fz1]],[[fx1,fy1,fz0],[fx1,fy1,fz1]],
       [[fx0,fy0,fz0],[fx1,fy0,fz0]],[[fx0,fy1,fz0],[fx1,fy1,fz0]],[[fx0,fy0,fz0],[fx0,fy1,fz0]],[[fx1,fy0,fz0],[fx1,fy1,fz0]],

@@ -246,6 +246,8 @@ function fgDraw(){const on=FG.tab==='grid',d=$('dPlan');if(!d)return;
   d.classList.toggle('fgOn',on);
   document.querySelectorAll('[data-fgt]').forEach(b=>b.setAttribute('aria-pressed',b.dataset.fgt===FG.tab));
   if(!on)return;
+  // Free Grid har skiftet model/optik på den valgte projektor (fx automatisk optikvalg, når den flyttes med låst lærred): boks 03 skal vise det
+  {const p=FG.pjs[FG.sel],k=p?p.mi+'|'+p.li:'';if(k!==FG.k03){FG.k03=k;if(p&&$('lens').value!==String(p.li)||p&&$('model').value!==String(p.mi)){render();return}}}
   {const c=fgContent();document.querySelectorAll('[data-fgc]').forEach(b=>{b.setAttribute('aria-pressed',b.dataset.fgc===(c?S.content:'none'));if(b.dataset.fgc==='golf')b.hidden=S.venue!=='golf'});
    $('fgTp').hidden=S.content!=='test';$('fgTp').value=fgTpKind();document.querySelector('[data-fgc="img"]').title=IMG?'Klik igen for at skifte billede':'Vælg et billede fra din computer'}
   FG.pjs.forEach(p=>{if(p.down)p.h=fgR3(p.L+fgFh(p))});   // top/down: linsehøjden er afstanden til fladen + fladens højde

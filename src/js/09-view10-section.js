@@ -76,7 +76,7 @@ function drawSide(r){
       s+=`<rect x="${x0}" y="${y0}" width="${fd*sc}" height="${fh*sc}" rx="2" fill="none" style="stroke:var(--frame)" stroke-width="2.6"/>`;
       s+=`<line x1="${x0}" y1="${y0}" x2="${x0+fd*sc}" y2="${y0+fh*sc}" style="stroke:var(--frame)" stroke-width="1" opacity=".55"/><line x1="${x0+fd*sc}" y1="${y0}" x2="${x0}" y2="${y0+fh*sc}" style="stroke:var(--frame)" stroke-width="1" opacity=".55"/>`}
     // projektorskitse ud fra de officielle mål (kabinet, optik, udragning) – se 06c-pjsketch.js
-    s+=pkOrtho(pkModel(r),{u:'z',v:'y',d:'x',sd:1},(u,v)=>[X(S.L+u),Y(ly+v)]);
+    s+=pkOrtho(pkModel(r),{u:'z',v:'y',d:'x',sd:1},(u,v)=>[X(S.L+u),Y(ly+v)],Z9L[Z10]);
     // linsens midtpunkt: halv cirkel foran optikken (ultrakort kast: på kabinettets top/bund, hvor lyset går ud)
     {const e=beamExit(r,ly,S.L,p.ty),up=e[1]!==ly;s+=halfDot(X(e[0]),Y(e[1]),3.5,up?0:X(0)-X(S.L),up?Y(e[1])-Y(ly):0,'style="fill:var(--beam)"')}
     if(kRot)s+='</g>'});
