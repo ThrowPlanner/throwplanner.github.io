@@ -28,7 +28,8 @@ const AIR={};AIR_DATA.forEach(([ks,v])=>ks.forEach(k=>AIR[k]=v));
 const airFor=m=>m&&AIR[pjSlug(m.m)]||null;
 const AIR_IN='#2F8FE8',AIR_OUT='#E5483B';
 // knappen i boks 03: dropdown lukket, pile og mål slået fra, til brugeren sætter flueben
-const AIR_UI={open:false,arrows:false,zones:false};
+// luft ind/ud findes kun i Avanceret: i Simpel er pile, mål og advarsler slået fra (valget huskes til man skifter tilbage)
+const AIR_UI={open:false,_a:false,_z:false,get arrows(){return S.ui==='adv'&&this._a},set arrows(v){this._a=v},get zones(){return S.ui==='adv'&&this._z},set zones(v){this._z=v}};
 // zonefarve: rød = udblæsning, blå = indtag, grå = kun krav om fri plads (ingen luft ind/ud på den side)
 const AIR_FREE='#8A939E',airCol=(A,sd)=>A.out.includes(sd)?AIR_OUT:A.in.includes(sd)?AIR_IN:AIR_FREE;
 const airLbl=(x,y,t,col,an='middle')=>`<text class="airlbl" x="${x.toFixed(1)}" y="${y.toFixed(1)}" fill="${col}" font-size="10" font-weight="600" text-anchor="${an}" dominant-baseline="middle" paint-order="stroke" stroke="var(--bg)" stroke-width="3">${t} mm</text>`;
@@ -105,7 +106,7 @@ function airInfo(){let el=document.getElementById('airInfo');if(!el){const t=doc
       <label class="airchk"><input type="checkbox" data-air="zones"> <span>Vis mål for mindste fri afstand</span></label></div>`;
     el.querySelector('#airBtn').addEventListener('click',()=>{AIR_UI.open=!AIR_UI.open;airInfo()});
     el.addEventListener('change',e=>{const k=e.target.dataset&&e.target.dataset.air;if(!k)return;AIR_UI[k]=e.target.checked;render();if(typeof FG!=='undefined'&&FG.tab==='grid')fgDraw()})}
-  el.hidden=S.venue==='warp';
+  el.hidden=S.venue==='warp'||S.ui!=='adv';
   el.querySelector('#airBtn').setAttribute('aria-expanded',AIR_UI.open);el.querySelector('#airDrop').hidden=!AIR_UI.open;el.classList.toggle('on',AIR_UI.open);
   el.querySelectorAll('[data-air]').forEach(c=>{c.checked=!!AIR_UI[c.dataset.air]});
   const m=MODELS[S.mi],A=airFor(m);el.querySelectorAll('.airchk').forEach(l=>{l.hidden=!A});el=el.querySelector('#airTxt');
