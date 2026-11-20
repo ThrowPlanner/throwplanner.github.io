@@ -574,9 +574,9 @@ th{background:transparent}
 @media print{.card,.view,.kpi,.gear figure,.crview{box-shadow:none;border:1px solid var(--line)}}
 /* zoom i boks 09 – i legend-rækken, helt til højre; rammen kan rulles, når der er zoomet */
 .canvas.zoomed{overflow:auto}.canvas.zoomed svg.draw{max-width:none}
-.lgtog .z9{margin-left:auto;padding:2px;gap:2px}
-.lgtog .z9 button{border:0;border-radius:6px;padding:4px 8px;min-width:30px;box-shadow:none;background:transparent;justify-content:center}
-.lgtog .z9 button:disabled{opacity:.35;cursor:default}
+.lgtog .z9{margin-left:auto;padding:2px;gap:2px}.vhead .zv{padding:2px;gap:2px}   /* .zv: samme zoom i snittets overskrift */
+:is(.lgtog .z9,.vhead .zv) button{border:0;border-radius:6px;padding:4px 8px;min-width:30px;box-shadow:none;background:transparent;justify-content:center}
+:is(.lgtog .z9,.vhead .zv) button:disabled{opacity:.35;cursor:default}
 .imgsave{padding:6px 10px}.imgsave .car{margin-left:4px;font-size:10px;opacity:.7}
 /* gem som BMP-dropdown (åbner mod venstre, da knappen sidder yderst til højre) */
 .bmpdd{position:relative;display:inline-flex;margin-left:6px}.bmpdd .tpmenu{left:auto;right:0;min-width:180px}
@@ -657,3 +657,17 @@ th{background:transparent}
 .airinfo small{color:var(--muted,inherit);opacity:.8}.airinfo a{color:inherit}
 .airchk{display:flex;align-items:center;gap:8px;margin-top:8px;font-size:12px;color:var(--ink);cursor:pointer}
 .airchk[hidden]{display:none}.airchk input{width:16px;height:16px;margin:0;accent-color:var(--beam,#2F8FE8)}
+/* projektorskitse (src/js/06c-pjsketch.js) – kabinet og optik i boks 08/09/10 */
+.pk polygon,.pk line{stroke-linejoin:round}
+.pk-cab{fill:var(--pj);stroke:var(--pj-dk)}
+.pk-foot{fill:var(--pj-dk);stroke:var(--pj-dk)}
+.pk-lens,.pk-cap{fill:var(--pj-hi);stroke:var(--pj-dk)}
+.pk-ring{fill:var(--pj);stroke:var(--pj-dk)}
+.pk-glass{fill:#0E1B27;stroke:var(--pj-dk)}
+.pk-hid{fill:none;stroke:var(--pj-hi);stroke-dasharray:3 2;opacity:.7}
+.pk-vent{fill:var(--pj-dk);stroke:none;opacity:.55}
+.pk-dot{fill:var(--pj-hi);stroke:none;opacity:.8}
+.pk-ln{fill:none;stroke:var(--pj-dk);opacity:.9}
+.pk-mir{stroke:var(--beam,#2F8FE8);stroke-linecap:round}
+.pk-side{fill:var(--pj-dk);stroke:var(--pj-dk)}
+.pk-top{fill:var(--pj-hi);stroke:var(--pj-dk)}

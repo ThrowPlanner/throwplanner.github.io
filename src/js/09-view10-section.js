@@ -75,13 +75,8 @@ function drawSide(r){
     if(S.frame){const fd=r.outer[2],fh=r.outer[1];const x0=X(S.L+r.F.z0),y0=Y(ly+r.F.y1);
       s+=`<rect x="${x0}" y="${y0}" width="${fd*sc}" height="${fh*sc}" rx="2" fill="none" style="stroke:var(--frame)" stroke-width="2.6"/>`;
       s+=`<line x1="${x0}" y1="${y0}" x2="${x0+fd*sc}" y2="${y0+fh*sc}" style="stroke:var(--frame)" stroke-width="1" opacity=".55"/><line x1="${x0+fd*sc}" y1="${y0}" x2="${x0}" y2="${y0+fh*sc}" style="stroke:var(--frame)" stroke-width="1" opacity=".55"/>`}
-    {const K=r.UB||B;s+=`<rect x="${X(S.L+K.z0)}" y="${Y(ly+K.y1)}" width="${(K.z1-K.z0)*sc}" height="${(K.y1-K.y0)*sc}" rx="3" fill="url(#pjgs)"/>`}
-    // ultrakort kast: optikken stikker ud bag kabinettet (væk fra lærredet) med spejlet bagerst – lyset vendes tilbage over kabinettet
-    if(r.UL){const U=r.UL,up=S.ceil?-1:1,yS=up>0?U.y1:U.y0,yB=up>0?U.y0:U.y1,mh=Math.min(.09,(U.y1-U.y0)*.55);
-      s+=`<rect x="${X(S.L+U.z0)}" y="${Y(ly+U.y1)}" width="${(U.z1-U.z0)*sc}" height="${(U.y1-U.y0)*sc}" rx="2.5" style="fill:var(--pj-hi);stroke:var(--pj-dk)" stroke-width="1"/>`+
-        `<path d="M${X(S.L+U.z1)},${Y(ly+yS)} Q${X(S.L+U.z1+.035)},${Y(ly+yS-up*mh/2)} ${X(S.L+U.z1)},${Y(ly+yS-up*mh)}" fill="none" style="stroke:var(--pj-dk)" stroke-width="2.4" stroke-linecap="round"/>`}
-    if(r.kind==='n'){const lh=r.LD?r.LD[1]:Math.min((B.y1-B.y0)*.6,.2);s+=`<rect x="${X(S.L)}" y="${Y(ly+lh/2)}" width="${Math.max(2,r.prot*sc)}" height="${lh*sc}" rx="1.5" style="fill:var(--pj-hi);stroke:var(--pj-dk)" stroke-width=".8"/>`}   // optikkens officielle højde (TDC)
-    else if(r.kind==='l'){const yb=B.y1<0?ly+B.y1:B.y0>0?ly+B.y0:ly,lw=.16;s+=`<rect x="${X(S.L)}" y="${Y(ly+lw/2)}" width="${.22*sc}" height="${lw*sc}" rx="2" style="fill:var(--pj-hi)"/>`+(yb!==ly?`<rect x="${X(S.L+.06)}" y="${Y(Math.max(ly,yb))}" width="${.11*sc}" height="${Math.abs(yb-ly)*sc}" style="fill:var(--pj-hi)"/>`:'')}
+    // projektorskitse ud fra de officielle mål (kabinet, optik, udragning) – se 06c-pjsketch.js
+    s+=pkOrtho(pkModel(r),{u:'z',v:'y',d:'x',sd:1},(u,v)=>[X(S.L+u),Y(ly+v)]);
     if(kRot)s+='</g>';
     {const e=beamExit(r,ly,S.L,p.ty);s+=`<circle cx="${X(e[0])}" cy="${Y(e[1])}" r="3.5" style="fill:var(--beam)"/>`}});
   if(typeof window.airSide==='function')s+=window.airSide(r,X,Y,sc);   // luft ind/ud (17c-airflow.js)
@@ -119,6 +114,10 @@ function drawSide(r){
   s+=`<text class="m" x="${X(S.rd)}" y="${Y(S.rh+T)-8}" text-anchor="end">snit ${f3(S.rd,1)} × ${f3(S.rh,1)} m</text>`;
   if(rear)s+=`<text class="blink notr" x="${X(0)}" y="${Y(S.rh+T)-7}">!</text><text class="m bad" x="${X(0)+12}" y="${Y(S.rh+T)-8}">bagprojektion: ca. 30–50 % lystab</text>`;
   $('side').innerHTML=s;
+  // zoom (snittet): som i bagfra-visningen – tegningen gøres z gange større i en rulbar ramme med samme højde; Z10C = lærredets midte
+  {const z=Z9L[Z10],sv=$('side'),cv=sv.parentElement;Z10C={x:NS?.5:X(RZ())/vw,y:NS?.5:Y(r.cy)/vh};
+   sv.style.width=z>1?z*100+'%':'';cv.classList.toggle('zoomed',z>1);cv.style.height=z>1?Math.round(cv.clientWidth*vh/vw)+'px':'';$('z10v').textContent=Math.round(z*100)+' %';
+   document.querySelector('[data-z10="-1"]').disabled=Z10<=0;document.querySelector('[data-z10="1"]').disabled=Z10>=Z9L.length-1}
 }
 function chairSide(X,Y,sc,z){const u=sc;return `<path d="M${X(z)},${Y(.45)} h${.48*u} l${.06*u},-${.53*u} h${.05*u} l-${.05*u},${.6*u} v${.38*u} h-${.04*u} v-${.36*u} h-${.4*u} v${.36*u} h-${.04*u} z" style="fill:var(--r-seat)"/>`}
 function sitter(X,Y,sc,z,hit){const u=sc,hx=X(z+.35),hy=Y(1.2);return `<g style="fill:${hit?'var(--bad)':'var(--r-person)'}"><circle cx="${hx}" cy="${hy}" r="${.11*u}"/><path d="M${X(z+.22)},${Y(1.05)} q${.12*u},-${.04*u} ${.24*u},0 l${.04*u},${.55*u} h-${.38*u} l-${.06*u},${.38*u} h-${.08*u} l${.04*u},-${.45*u} h${.12*u} z"/></g>`}

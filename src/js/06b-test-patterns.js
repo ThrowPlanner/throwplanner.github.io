@@ -1,6 +1,6 @@
 /* ===== TESTBILLEDER (boks 09): vælges i dropdown og kan hentes som PNG i præcis den opløsning, der står i boks 05 ===== */
 // billedet i pixels: N×R projektorer à ew×eh, blend-zoner bx/by px, samlet W×H (sættes i render)
-const Z9L=[1,1.5,2,3,4,6];let Z9=0,Z9C={x:.5,y:.5};   // zoomtrin i boks 09 og lærredets midte (brøkdel af tegningen)
+const Z9L=[1,1.5,2,3,4,6];let Z9=0,Z9C={x:.5,y:.5},Z10=0,Z10C={x:.5,y:.5};   // Z10: samme zoom i snittet   // zoomtrin i boks 09 og lærredets midte (brøkdel af tegningen)
 let TPI={N:1,R:1,ew:1920,eh:1200,bx:0,by:0,W:1920,H:1200};
 const tpBlendOK=()=>S.blend&&S.venue!=='immersive';
 function tpInfo(r){const bl=tpBlendOK(),N=bl?r.N:1,R=bl?r.R:1,ew=r.ew||1920,eh=r.eh||1200,bx=bl&&N>1?Math.round(ew*r.o):0,by=bl&&R>1?Math.round(eh*r.o):0;

@@ -275,7 +275,12 @@
       </section>
 
       <section class="view">
-        <div class="vhead"><h2><span class="no">10</span>Snit gennem lokalet</h2><span class="cap" id="sideCap" style="flex:1;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-variant-numeric:tabular-nums"></span><button type="button" class="btn pjrot" hidden title="Drej projektorens kabinet 90° om den L-formede linse (lodret/vandret)">⟳ Rotér</button></div>
+        <div class="vhead"><h2><span class="no">10</span>Snit gennem lokalet</h2><span class="cap" id="sideCap" style="flex:1;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-variant-numeric:tabular-nums"></span>
+          <span class="seg zseg zv" role="group" aria-label="Zoom">
+            <button type="button" data-z10="-1" title="Zoom ud" aria-label="Zoom ud"><svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true"><circle cx="10.5" cy="10.5" r="6.5" fill="none" stroke="currentColor" stroke-width="2"/><path d="M15.5 15.5 21 21M7.5 10.5h6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></button>
+            <button type="button" data-z10="0" id="z10v" class="notr" title="Vis hele lokalet">100 %</button>
+            <button type="button" data-z10="1" title="Zoom ind på lærredet" aria-label="Zoom ind"><svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true"><circle cx="10.5" cy="10.5" r="6.5" fill="none" stroke="currentColor" stroke-width="2"/><path d="M15.5 15.5 21 21M7.5 10.5h6M10.5 7.5v6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></button>
+          </span><button type="button" class="btn pjrot" hidden title="Drej projektorens kabinet 90° om den L-formede linse (lodret/vandret)">⟳ Rotér</button></div>
         <div class="shiftbar" id="shiftBar">
           <span class="sbl">Lens shift</span>
           <label class="sbr"><span class="notr">V</span><span class="sbmin" id="svMin"></span><input type="range" id="svR" step="0.5" aria-label="Lodret lens shift"><span class="sbmax" id="svMax"></span><b id="svVal"></b><button class="btn z0" type="button" id="sv0" title="Lodret lens shift 0 %">0 %</button></label>

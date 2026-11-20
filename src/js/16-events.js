@@ -107,6 +107,9 @@ num('stD',v=>S.stageD=Math.max(1,v));num('stH',v=>S.stageH=Math.max(0.2,Math.min
 // zoom i boks 09 (ikke gemt – kun til at læse detaljer, fx tallene i testbilledet)
 document.querySelectorAll('[data-z9]').forEach(b=>b.addEventListener('click',()=>{const d=+b.dataset.z9;Z9=d?Math.max(0,Math.min(Z9L.length-1,Z9+d)):0;render();
   const cv=$('front').parentElement;cv.scrollLeft=Z9C.x*cv.scrollWidth-cv.clientWidth/2;cv.scrollTop=Z9C.y*cv.scrollHeight-cv.clientHeight/2}));
+// samme zoom i snittet
+document.querySelectorAll('[data-z10]').forEach(b=>b.addEventListener('click',()=>{const d=+b.dataset.z10;Z10=d?Math.max(0,Math.min(Z9L.length-1,Z10+d)):0;render();
+  const cv=$('side').parentElement;cv.scrollLeft=Z10C.x*cv.scrollWidth-cv.clientWidth/2;cv.scrollTop=Z10C.y*cv.scrollHeight-cv.clientHeight/2}));
 // gem som BMP: dropdown med farvedybde
 {const M=$('bmpMenu'),B=$('imgSave'),open=o=>{M.hidden=!o;B.setAttribute('aria-expanded',o)};
  B.addEventListener('click',e=>{e.stopPropagation();open(M.hidden)});
