@@ -17,7 +17,7 @@ function fovH(m,l,r){const o=(PANTR[m.m.split(' (')[0].split('/')[0]]||m.tr||{})
   return 2*Math.atan(1/(2*tr))*180/Math.PI}
 function lensTR(m,l){const o=(PANTR[m.m.split(' (')[0].split('/')[0]]||m.tr||{})[l[0]];
   return o?'TR '+trTxt(o[0])+(o[1]&&o[1]!==o[0]?'–'+trTxt(o[1]):'')+':1'+(o[2]&&o[2]!=='16:10'?` (${o[2]})`:''):''}
-function fillLens(){fillLens.mi=slotMI();const m=MODELS[fillLens.mi];if(!SLOT()&&S.li>=m.L.length)S.li=0;$('lens').innerHTML=m.L.map((l,i)=>{const tr=lensTR(m,l);return `<option value="${i}">${l[0]}${lnEOL(l)?' · EOL':''} · ${l[1]==='Z'?'zoom':'fast'}${tr?' · '+tr:''}</option>`}).join('')}
+function fillLens(){fillLens.mi=slotMI();const m=MODELS[fillLens.mi];if(!SLOT()&&!fgSlotPj()&&S.li>=m.L.length)S.li=0;$('lens').innerHTML=m.L.map((l,i)=>{const tr=lensTR(m,l);return `<option value="${i}">${l[0]}${lnEOL(l)?' · EOL':''} · ${l[1]==='Z'?'zoom':'fast'}${tr?' · '+tr:''}</option>`}).join('')}
 function fillAspect(){$('aspect').innerHTML=ASPECTS.map(a=>`<option value="${a}">${a}</option>`).join('')}
 function fillFrames(){const fr=framesFor(M());$('frameSel').innerHTML=fr.map(f=>`<option value="${f.id}">Panasonic ${f.id}${f.dim?'':' (mål ikke offentliggjort)'}</option>`).join('')+'<option value="custom">Egen ramme – indtast mål</option>';$('frameSel').value=S.frameId}
 /* ny projektor/optik: start altid uden zoom (zoomfaktor 1,0 – optikkens vidvinkelende): afstanden sættes til vidvinkel-kastet,

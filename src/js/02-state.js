@@ -146,7 +146,8 @@ const M=()=>MODELS[S.mi], LN=()=>M().L[S.li];
 /* immersive: egen projektor/optik pr. flade (S.immPj[k]={mi,li}); uden = standard (S.mi/S.li) */
 const SLOT=()=>S.venue==='immersive'&&S.immSel&&S.immSel!=='all'?S.immSel:null;
 const ownPj=k=>{const o=S.immPj&&S.immPj[k];return o&&MODELS[o.mi]&&MODELS[o.mi].L[o.li]?o:null};
-const slotMI=()=>{const k=SLOT(),o=k&&ownPj(k);return o?o.mi:S.mi}, slotLI=()=>{const k=SLOT(),o=k&&ownPj(k);return o?o.li:S.li};
+// boks 03 viser den projektor, der arbejdes på: Immersive-slot, valgt Free Grid-projektor (fgSlotPj i 17b-freegrid.js) eller appens egen
+const slotMI=()=>{const f=fgSlotPj();if(f)return f.mi;const k=SLOT(),o=k&&ownPj(k);return o?o.mi:S.mi}, slotLI=()=>{const f=fgSlotPj();if(f)return f.li;const k=SLOT(),o=k&&ownPj(k);return o?o.li:S.li};
 function immR(k,r){const o=S.venue==='immersive'&&ownPj(k);if(!o)return r;const m=MODELS[o.mi],ln=m.L[o.li];let ai=aiFor(m);if(ai<0)ai=0;
   const [aw,ah]=ratioOf(m.asp[ai]);return {m,ln,row:ln[2][ai],aw,ah,fixed:ln[1]==='F',pcr:o.mi===S.mi&&S.pcr?S.pcr:m.cr}}
 const aiFor=m=>m.asp.findIndex(a=>keyOf(a)===S.ak);

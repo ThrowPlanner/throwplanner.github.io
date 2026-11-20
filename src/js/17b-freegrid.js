@@ -163,7 +163,6 @@ function fgInit(){const d=$('dPlan');if(!d||$('fgWrap'))return;
   d.querySelector('summary').after(tabs);
   // overskriften: «Floor Plan & Free Grid»
   {const h=d.querySelector('summary h2');if(h)[...h.childNodes].forEach(n=>{if(n.nodeType===3&&n.nodeValue.trim())n.nodeValue='Plantegning & Free Grid'})}
-  const cats=CAT_ORDER.filter(c=>c!==7).map(c=>{const ms=MODELS.map((m,i)=>[m,i]).filter(([m])=>m.c===c);return ms.length?`<optgroup label="${esc(CATS[c]||'')}">${ms.map(([m,i])=>`<option value="${i}">${esc(m.m)}</option>`).join('')}</optgroup>`:''}).join('');
   const ico={'3d':'<path d="M12 3 20 7.5v9L12 21l-8-4.5v-9z M4 7.5 12 12l8-4.5 M12 12v9"/>',top:'<rect x="4" y="4" width="16" height="16" rx="1.5"/><path d="M4 10h16M10 4v16"/>',side:'<path d="M3 20h18M5 20V8h14v12M9 20v-6h6v6"/>'};
   const vb=(k,t)=>`<button type="button" data-fgv="${k}" aria-pressed="false"><svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round">${ico[k]}</svg>${t}</button>`;
   const ck=(id,t,cls='')=>`<label class="inl hint fgck ${cls}"><input type="checkbox" id="${id}">${t}</label>`,nf=(id,t,u,a,cls='',w=58)=>`<span class="inl ${cls}"><span class="hint">${t}</span><input type="number" id="${id}" ${a} style="width:${w}px">${u?`<span class="unit">${u}</span>`:''}</span>`;
@@ -177,8 +176,6 @@ function fgInit(){const d=$('dPlan');if(!d||$('fgWrap'))return;
     </div>
     <div class="ptool fgtool fgsel" id="fgSel">
       <span class="fgpjs"><span class="fgchips" id="fgChips"></span><button type="button" class="fgadd" id="fgAddB" title="Tilføj en projektor mere (samme model som den valgte, ved siden af)">+ Projektor</button></span>
-      <span class="inl"><span class="hint">Model</span><select id="fgModel" class="notr">${cats}</select></span>
-      <span class="inl"><span class="hint">Optik</span><select id="fgLens" class="notr"></select></span>
       <span class="fglocks"><button type="button" class="fglock" id="fgLockO" aria-pressed="false" title="Lås optikken – så skifter appen den ikke automatisk">${lk}Lås optik</button><button type="button" class="fglock" id="fgLockS" aria-pressed="false" title="Lås lærredet – billedet bliver stående, når projektoren flyttes">${lk}Lås lærred</button><button type="button" class="fglock" id="fgLockP" aria-pressed="false" title="Lås projektoren – den bliver stående, og billedet kan flyttes inden for lens shift og zoom">${lk}Lås projektor</button></span>
       <span class="inl"><span class="hint">Zoom</span><input type="range" id="fgZ" min="0" max="100" step="1" style="width:90px"><span class="unit" id="fgZv"></span></span>
       <span class="inl"><span class="hint">Retning</span><input type="number" id="fgRot" step="1" style="width:64px"><span class="unit">°</span></span>
@@ -218,9 +215,6 @@ function fgInit(){const d=$('dPlan');if(!d||$('fgWrap'))return;
   $('fgLockO').addEventListener('click',()=>{const p=P();if(p){p.lockO=!p.lockO;fgDraw()}});
   $('fgLockS').addEventListener('click',()=>{const p=P();if(p){p.lockS=!p.lockS;if(p.lockS)p.lockP=false;fgDraw()}});
   $('fgLockP').addEventListener('click',()=>{const p=P();if(p){p.lockP=!p.lockP;if(p.lockP)p.lockS=false;fgDraw()}});
-  $('fgModel').addEventListener('change',()=>{const p=P();if(!p)return;const s=fgScr(p);p.mi=+$('fgModel').value;fgFitLens(p,s.W);if(p.lockS)fgKeepScr(p,s);fgAuto(p);fgDraw()});
-  // valgt optik holdes (også når den ikke kan på den nuværende afstand – så flyttes projektoren, hvis lærredet er låst)
-  $('fgLens').addEventListener('change',()=>{const p=P();if(!p)return;const s=fgScr(p);p.li=+$('fgLens').value;if(p.lockS){const lo=p.lockO;p.lockO=true;fgKeepScr(p,s);p.lockO=lo}else fgSetLW(p,p.L,s.W);fgAuto(p);fgDraw()});
   const mvTo=fgMvTo;
   $('fgZ').addEventListener('input',()=>{const p=P();if(!p)return;const sp=fgSpec(p);if(sp.fixed)return;const z=+$('fgZ').value/100;
     if(p.lockS){const s=fgScr(p,sp);p.z=z;p.L=fgR3(distAt(sp.row,sp.D,z));fgPlace(p,s)}   // låst lærred: zoomen flytter projektoren
@@ -266,9 +260,7 @@ function fgDraw(){const on=FG.tab==='grid',d=$('dPlan');if(!d)return;
   $('fgSel').querySelectorAll('select,input,#fgDup,#fgDelB').forEach(el=>el.disabled=!p);$('fgAddB').disabled=false;
   let info,cvOut='';
   if(p){const sp=fgSpec(p),m=sp.m,bl=fgBl(p),cu=p.curv&&p.curv.on?p.curv:null;
-    $('fgModel').value=p.mi;
-    if($('fgLens').dataset.mi!==String(p.mi)){$('fgLens').dataset.mi=p.mi;$('fgLens').innerHTML=m.L.map((l,i)=>{const t=lensTR(m,l);return `<option value="${i}">${esc(l[0])} · ${l[1]==='Z'?'zoom':'fast'}${t?' · '+esc(t):''}</option>`}).join('')}
-    $('fgLens').value=p.li;set('fgRot',Math.round(p.rot));set('fgX',p.x.toFixed(2));set('fgY',p.y.toFixed(2));
+    set('fgRot',Math.round(p.rot));set('fgX',p.x.toFixed(2));set('fgY',p.y.toFixed(2));
     set('fgH',p.h.toFixed(2));set('fgSv',Math.round(sp.sv*100));$('fgSvR').textContent=`% (${Math.round(sp.svR[0]*100)}…${Math.round(sp.svR[1]*100)})`;$('fgInv').checked=!!p.inv;$('fgInv').disabled=!!p.down;$('fgDown').setAttribute('aria-pressed',!!p.down);$('fgFhW').hidden=!p.down;set('fgFh',fgFh(p).toFixed(2));
     $('fgLockO').setAttribute('aria-pressed',!!p.lockO);$('fgLockS').setAttribute('aria-pressed',!!p.lockS);$('fgLockP').setAttribute('aria-pressed',!!p.lockP);$('fgRot').disabled=!!p.lockS;
     ['fgX','fgY','fgH'].forEach(id=>{$(id).disabled=!!p.lockP;$(id).title=p.lockP?'Projektoren er låst – lås den op for at flytte den':''});
@@ -541,10 +533,17 @@ function fgSetDist(p,v){
   if(p.lockP){const s0=fgScr(p),{u}=fgDir(p),dl=Math.max(.1,v)-p.L;fgMoveScr(p,s0,{...s0,c:[s0.c[0]+u[0]*dl,s0.c[1]+u[1]*dl]});fgAuto(p);return}
   if(p.lockS){const {u}=fgDir(p),dl=p.L-Math.max(.1,v);fgMvTo(p,p.x+u[0]*dl,p.y+u[1]*dl,p.h)}else fgSetLW(p,v,fgSpec(p).W);fgAuto(p)}
 function fgSetWt(p,Wt){if(p.lockS||!(Wt>0))return;const sp=fgSpec(p);fgSetLW(p,p.L,Wt/sp.kx);fgAuto(p)}   // billedbredde = det samlede billede
+// den valgte Free Grid-projektor, mens fanen er åben (boks 03 viser og ændrer den) – ellers null. Kan kaldes før FG findes (opstart)
+function fgSlotPj(){try{return FG.tab==='grid'&&FG.pjs[FG.sel]||null}catch(e){return null}}
 const FG0102={dist:(p,v)=>p&&fgSetDist(p,v),cw:(p,v)=>p&&fgSetWt(p,v),
   ch:(p,v)=>{if(!p)return;const sp=fgSpec(p);fgSetWt(p,v*sp.Wt/sp.Ht)},cd:(p,v)=>{if(!p)return;const sp=fgSpec(p);fgSetWt(p,v*IN*sp.Wt/Math.hypot(sp.Wt,sp.Ht))},
+  // boks 03 (model og optik) styrer den valgte Free Grid-projektor – Free Grid har ikke sine egne valg
+  model:(p,v)=>{if(!p)return;const s=fgScr(p);p.mi=v;fgFitLens(p,s.W);if(p.lockS)fgKeepScr(p,s);fgAuto(p);fgDraw()},
+  // valgt optik holdes (også når den ikke kan på den nuværende afstand – så flyttes projektoren, hvis lærredet er låst)
+  lens:(p,v)=>{if(!p)return;const s=fgScr(p);p.li=v;if(p.lockS){const lo=p.lockO;p.lockO=true;fgKeepScr(p,s);p.lockO=lo}else fgSetLW(p,p.L,s.W);fgAuto(p);fgDraw()},
   rw:(p,v)=>{FG.w=fgCl(v,2,200)},rd:(p,v)=>{FG.d=fgCl(v,2,200)},rh:(p,v)=>{FG.hgt=fgCl(v,2,60);FG.pjs.forEach(q=>{q.h=Math.min(q.h,FG.hgt-.05)})}};
 function fg0102In(e){const el=e.target;if(FG.tab!=='grid'||!el||!FG0102[el.id])return;if(e.type==='keydown'&&e.key!=='Enter')return;
+  if((el.id==='model'||el.id==='lens')&&(e.type!=='change'||!FG.pjs[FG.sel]))return;   // ingen projektor valgt: boks 03 vælger appens projektor (som nye Free Grid-projektorer starter med)
   e.stopImmediatePropagation();if(e.type==='keydown')e.preventDefault();const v=parseFloat(String(el.value).replace(',','.'));
   if(Number.isFinite(v))FG0102[el.id](FG.pjs[FG.sel],v);render();if(e.type==='keydown')el.select()}
 document.addEventListener('change',fg0102In,true);document.addEventListener('keydown',fg0102In,true);

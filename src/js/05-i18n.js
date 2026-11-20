@@ -24,7 +24,10 @@ function render(){
    ['dist','cw','ch','cd','sb','bsd'].forEach(id=>{const el=$('ha_'+id);el.hidden=!A[id];el.textContent=A[id]||'';el.title=A[id]?'Grænsen for rummet er nået':''})}
   const r=calc();TPI=tpInfo(r);
   const set=(id,v)=>{const el=$(id);if(document.activeElement!==el)el.value=v};
-  if(fillLens.mi!==slotMI())fillLens();$('model').value=slotMI();$('lens').value=slotLI();{const o=$('lens').selectedOptions[0];if(o)$('lens').title=o.textContent}
+  if(fillLens.mi!==slotMI())fillLens();
+  // Free Grid-projektoren kan have en model uden for boks 03's filter (kategori/lumen) – så vises den alligevel øverst i listen
+  if(![...$('model').options].some(o=>+o.value===slotMI())){const m=MODELS[slotMI()],o=document.createElement('option');o.value=slotMI();o.textContent=m.m;$('model').prepend(o)}
+  $('model').value=slotMI();$('lens').value=slotLI();{const o=$('lens').selectedOptions[0];if(o)$('lens').title=o.textContent}
   {const lk=!!S.lockLens;$('lens').disabled=lk;$('lensLock3').setAttribute('aria-pressed',lk);$('lensLock3').title=lk?'Optikken er låst – klik for at låse op':'Lås optikken – så skifter appen den ikke automatisk'}$('aspect').value=S.ak;$('cat').value=S.cat;$('minLm').value=S.minLm;
   // 3 decimaler (mm) som Panasonics Throw Distance Calculator
   set('dist',S.L.toFixed(3));set('cw',S.cw.toFixed(3));set('ch',r.CH.toFixed(3));set('cd',Math.round(Math.hypot(r.CW,r.CH)/IN));
