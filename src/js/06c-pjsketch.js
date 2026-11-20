@@ -138,11 +138,11 @@ function pkBox(M){let b=null;for(const p of M){if(p.t==='deco'||p.hid||p.c==='fo
 
 /* Free Grid (three.js): samme skitse som 3D-legemer. W3(x,y,z) = rummets punkt for linsens koordinater, Q = drejning (x→højre, y→op, z→væk fra lærredet) */
 function pkQuat(n3,V3,F3){return new THREE.Quaternion().setFromRotationMatrix(new THREE.Matrix4().makeBasis(n3,V3,F3.clone().negate()))}
-const PK3C={cab:0x2F4D6C,foot:0x1F354B,lens:0x6E8FB3,cap:0x6E8FB3,ring:0x4C719A,glass:0x0E1B27,deco:0x24384D};
+const PK3C={cab:0xDDE3E9,foot:0xAEB9C4,lens:0xC5CDD5,cap:0xC5CDD5,ring:0xA3AEB9,glass:0x2B4860,deco:0x8995A2};   // samme farver som .pk-* i styles.css
 function pkThree(M,W3,Q,sel){const g=new THREE.Group();let cab=null;
   for(const p of M){if(p.hid)continue;let b=p.b,col;
     if(p.t==='deco'){if(!['slats','dots','panel','handle','win'].includes(p.k))continue;const [a,sg]=p.n;b={...b};b[a+(sg>0?'0':'1')]+=sg*.0005;b[a+(sg>0?'1':'0')]+=sg*.0025;col=p.k==='win'?PK3C.glass:PK3C.deco}
-    else col=p.cab&&sel?0x3F6E9C:(PK3C[p.c]??PK3C.lens);
+    else col=p.cab&&sel?0xBFD6EC:(PK3C[p.c]??PK3C.lens);
     const sx=Math.max(b.x1-b.x0,.001),sy=Math.max(b.y1-b.y0,.001),sz=Math.max(b.z1-b.z0,.001);let geo;
     if(p.t==='cyl'){geo=new THREE.CylinderGeometry(.5,.5,1,24);const ax=p.axis;
       if(ax==='y')geo.scale(sx,sy,sz);else if(ax==='z'){geo.scale(sx,sz,sy);geo.rotateX(Math.PI/2)}else{geo.scale(sy,sx,sz);geo.rotateZ(Math.PI/2)}}

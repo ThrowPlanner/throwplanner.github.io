@@ -657,17 +657,36 @@ th{background:transparent}
 .airinfo small{color:var(--muted,inherit);opacity:.8}.airinfo a{color:inherit}
 .airchk{display:flex;align-items:center;gap:8px;margin-top:8px;font-size:12px;color:var(--ink);cursor:pointer}
 .airchk[hidden]{display:none}.airchk input{width:16px;height:16px;margin:0;accent-color:var(--beam,#2F8FE8)}
-/* projektorskitse (src/js/06c-pjsketch.js) – kabinet og optik i boks 08/09/10 */
+/* projektorskitse (src/js/06c-pjsketch.js) – kabinet og optik i boks 08/09/10: lysegråt kabinet, grå optik, mørkeblåt glas, tynde mørke streger (ens i lys og mørk tilstand) */
+:root{--sk-body:#dde3e9;--sk-body2:#aeb9c4;--sk-lens:#c5cdd5;--sk-lens2:#a3aeb9;--sk-glass:#2b4860;--sk-ink:#26313c;--sk-vent:#b3bdc7;--sk-hl:#a9cde8;--sk-side:#b9c3cd;--sk-top:#eef1f4}
 .pk polygon,.pk line{stroke-linejoin:round}
-.pk-cab{fill:var(--pj);stroke:var(--pj-dk)}
-.pk-foot{fill:var(--pj-dk);stroke:var(--pj-dk)}
-.pk-lens,.pk-cap{fill:var(--pj-hi);stroke:var(--pj-dk)}
-.pk-ring{fill:var(--pj);stroke:var(--pj-dk)}
-.pk-glass{fill:#0E1B27;stroke:var(--pj-dk)}
-.pk-hid{fill:none;stroke:var(--pj-hi);stroke-dasharray:3 2;opacity:.7}
-.pk-vent{fill:var(--pj-dk);stroke:none;opacity:.55}
-.pk-dot{fill:var(--pj-hi);stroke:none;opacity:.8}
-.pk-ln{fill:none;stroke:var(--pj-dk);opacity:.9}
-.pk-mir{stroke:var(--beam,#2F8FE8);stroke-linecap:round}
-.pk-side{fill:var(--pj-dk);stroke:var(--pj-dk)}
-.pk-top{fill:var(--pj-hi);stroke:var(--pj-dk)}
+.pk-cab{fill:var(--sk-body);stroke:var(--sk-ink)}
+.pk-foot{fill:var(--sk-body2);stroke:var(--sk-ink)}
+.pk-lens,.pk-cap{fill:var(--sk-lens);stroke:var(--sk-ink)}
+.pk-ring{fill:var(--sk-lens2);stroke:var(--sk-ink)}
+.pk-glass{fill:var(--sk-glass);stroke:var(--sk-ink)}
+.pk-hid{fill:none;stroke:#6f7d8b;stroke-dasharray:4 3;opacity:.9}
+.pk-vent{fill:var(--sk-vent);stroke:none}
+.pk-dot{fill:var(--sk-ink);stroke:none;opacity:.45}
+.pk-ln{fill:none;stroke:var(--sk-ink);opacity:.55}
+.pk-mir{stroke:var(--sk-hl);stroke-linecap:round}
+.pk-side{fill:var(--sk-side);stroke:var(--sk-ink)}
+.pk-top{fill:var(--sk-top);stroke:var(--sk-ink)}
+/* målsat projektordetalje (src/js/06d-pjdetail.js): lille kort øverst til højre i boks 08/09/10 */
+:root{--skd-bg:#192027;--skd-line:#2b353f;--skd-fg:#e2e8ee;--skd-mut:#8e9bab;--skd-dim:#4fc0c8}
+@media (prefers-color-scheme: light){:root:not([data-theme="dark"]){--skd-bg:#fff;--skd-line:#cdd5dd;--skd-fg:#1b232c;--skd-mut:#5b6876;--skd-dim:#0e6f78}}
+:root[data-theme="light"]{--skd-bg:#fff;--skd-line:#cdd5dd;--skd-fg:#1b232c;--skd-mut:#5b6876;--skd-dim:#0e6f78}
+.canvas:has(>.skd),.skwrap{position:relative}
+.skd{position:absolute;top:6px;right:6px;width:min(180px,26%);background:var(--skd-bg);border:1px solid var(--skd-line);border-radius:6px;padding:3px 6px 4px;line-height:1.25;z-index:3;box-shadow:0 1px 6px rgba(0,0,0,.25);font-family:system-ui,"Segoe UI",sans-serif;opacity:.94}
+.skd svg{display:block;width:100%;height:auto}
+.skd-h{display:flex;justify-content:space-between;align-items:center;gap:4px;font-size:10px;color:var(--skd-fg);white-space:nowrap;overflow:hidden}
+.skd-h span{overflow:hidden;text-overflow:ellipsis}
+.skd-c{font-size:8.5px;text-transform:uppercase;letter-spacing:.05em;color:var(--skd-mut)}
+.skd-x{background:none;border:0;color:var(--skd-mut);font-size:14px;line-height:1;cursor:pointer;padding:0 2px}
+.skd.skd-min{width:auto;padding:0;background:none;border:0;box-shadow:none}
+.skd-btn{font:500 10px system-ui,sans-serif;background:var(--skd-bg);color:var(--skd-fg);border:1px solid var(--skd-line);border-radius:999px;padding:2px 8px;cursor:pointer}
+.skd-dl{stroke:var(--skd-dim);stroke-width:1.6}
+.skd-ext{stroke:var(--skd-dim);stroke-width:1;opacity:.6}
+.skd-dt{fill:var(--skd-dim);font:16px ui-monospace,Consolas,monospace;text-anchor:middle}
+#dPlan.fgOn .skd{display:none}
+@media print{.skd{display:none}}
