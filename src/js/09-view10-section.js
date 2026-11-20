@@ -22,7 +22,7 @@ function drawSide(r){
     if(f.on&&f.ok){const c=IMC.f;const seen=new Set();for(const t of immPos(f)){const key=t.u0.toFixed(2);if(seen.has(key))continue;seen.add(key);const [x,y,z]=t.pj;
         s+=`<polygon points="${X(z)},${Y(y)} ${X(t.u1)},${Y(0)} ${X(t.u0)},${Y(0)}" style="fill:${c}" opacity=".15"/>`+pb(z,y,c)+`<rect x="${X(t.u0)}" y="${Y(0)-3}" width="${(t.u1-t.u0)*sc}" height="3" style="fill:${c}" opacity=".8"/>`}
       LB.push([c,`gulv: ${f.n} projektorer, ${f3(f.L)} m over gulvet`])}
-    if(typeof window.airImm10==='function')s+=window.airImm10(IM,X,Y);   // krog til testudgaven «luft ind/ud» (ingen effekt i appen)
+    if(typeof window.airImm10==='function')s+=window.airImm10(IM,X,Y);   // luft ind/ud (17c-airflow.js)
     LB.forEach(([c,t],i)=>{const y=Y(0)+T*sc+20+i*16;s+=`<rect x="${X(0)}" y="${y-9}" width="10" height="10" rx="2" style="fill:${c}"/><text class="m" x="${X(0)+16}" y="${y}" style="font-size:11px;fill:var(--ink)">${t}</text>`})}
   else if(VN==='golf'){}
   else for(let z=0.6;z<S.rd-0.6;z+=1.25){if(z>0.8&&z<1.95)continue;s+=`<rect x="${X(z)}" y="${Y(S.rh-0.55)}" width="${1.05*sc}" height="${(S.rh-1)*sc}" style="fill:var(--r-panel)"/>`}
@@ -84,7 +84,7 @@ function drawSide(r){
     else if(r.kind==='l'){const yb=B.y1<0?ly+B.y1:B.y0>0?ly+B.y0:ly,lw=.16;s+=`<rect x="${X(S.L)}" y="${Y(ly+lw/2)}" width="${.22*sc}" height="${lw*sc}" rx="2" style="fill:var(--pj-hi)"/>`+(yb!==ly?`<rect x="${X(S.L+.06)}" y="${Y(Math.max(ly,yb))}" width="${.11*sc}" height="${Math.abs(yb-ly)*sc}" style="fill:var(--pj-hi)"/>`:'')}
     if(kRot)s+='</g>';
     {const e=beamExit(r,ly,S.L,p.ty);s+=`<circle cx="${X(e[0])}" cy="${Y(e[1])}" r="3.5" style="fill:var(--beam)"/>`}});
-  if(typeof window.airSide==='function')s+=window.airSide(r,X,Y,sc);   // krog til testudgaven «luft ind/ud» (ingen effekt i appen)
+  if(typeof window.airSide==='function')s+=window.airSide(r,X,Y,sc);   // luft ind/ud (17c-airflow.js)
   {const p0=r.pjs[0];const z0=Math.min(r.outFront,S.L)-.1,z1=Math.max(r.outBack,S.L)+.1,y0=p0.ly+r.F.y0-.1,y1=p0.ly+r.F.y1+.1;s+=`<rect x="${X(z0)}" y="${Y(y1)}" width="${(z1-z0)*sc}" height="${(y1-y0)*sc}" fill="transparent"/>`;}
   s+='</g>';
   // ophæng / bord

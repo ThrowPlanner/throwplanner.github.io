@@ -39,6 +39,7 @@ Jura: produktbilleder vises direkte fra Panasonics TDC-server (kopiér dem aldri
 | Free Grid (fane i boks 08, 3D-rum med flere projektorer, top/down) | `src/js/17b-freegrid.js` (`FG`, `fgSpec`/`fgFit`/`fg3Build`; boks 01/02/05/07 viser den valgte projektor, mens fanen er åben), `.fg*` i `src/styles.css`, 3D fra `web/warp-three.js` (artifactet skal have filen med som ekstra fil) |
 | Edge blend og portræt (boks 05) | `03-calc.js`, `blendAuto` i `04-ui.js` |
 | Buet lærred / curved (boks 05, tegnes i 08/09/10) | `src/js/26-curved.js` (manual-tabel i `put`-linjer), nye tal meldes af `tools/check_curved.py` i det ugentlige TDC-tjek |
+| Luft ind/ud (knap i boks 03: pile, fri zoner, advarsler i alle temaer undtagen Warping) | `src/js/17c-airflow.js` (`AIR_DATA` fra Panasonics manualer: sider + mm + sidetal; wrapper `calc`/`render`/`projector3D`/`fgWarn`, kroge `airSide`/`airImm09`/`airImm10`/`airFG` i 08/09/17b), `.air*` i `src/styles.css` |
 | Katalog og throw ratios | `data/catalog.json`, `PANTR` i `04-ui.js` |
 | Løsninger (boks 11) | `15-solutions.js` |
 | Projektfil (JSON) | `17-project-file.js` |

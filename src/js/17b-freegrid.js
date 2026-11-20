@@ -405,7 +405,7 @@ function fg3Build(){const g=G3.root,T=fgTheme(),W=FG.w,D=FG.d,Hr=FG.hgt,lh=fgCl(
         // optikken (officielle mål): almindelig optik rager frem mod lærredet; ultrakort kast stikker ud bag kabinettet op til spejlet, som vender lyset tilbage
         if(sp.ul){const U=sp.ul,lm=new THREE.Mesh(dn?new THREE.BoxGeometry(sp.port?U.h:U.w,U.len,sp.port?U.w:U.h):new THREE.BoxGeometry(sp.port?U.h:U.w,sp.port?U.w:U.h,U.len),new THREE.MeshLambertMaterial({color:0x6E8FB3}));
           lm.position.copy(Lc).addScaledVector(V3,s*stH).addScaledVector(F3,U.c);lm.rotation.y=ry;lm.userData={fg:'body',i};g.add(lm);G3.pick.push(lm)}
-        if(typeof window.airFG==='function')window.airFG(g,p,sp,bm.position,{u3,n3,V3,F3,dn,ry,i});   // krog til testudgaven «luft ind/ud»
+        if(typeof window.airFG==='function')window.airFG(g,p,sp,bm.position,{u3,n3,V3,F3,dn,ry,i});   // luft ind/ud (17c-airflow.js)
         if(sel){const e=new THREE.LineSegments(new THREE.EdgesGeometry(bm.geometry),new THREE.LineBasicMaterial({color:c}));e.position.copy(bm.position);e.rotation.y=ry;g.add(e)}
         // navnet (P1 …) står på selve kabinettet: oven på og bagpå – læses bagfra, set fra projektorens plads
         {const tx=fgBodyTex(`P${i+1}`,col),tw=Math.min(sp.bw*.85,sp.Dp*1.6),th=tw/2,mt=()=>new THREE.MeshBasicMaterial({map:tx,transparent:true,depthWrite:false});

@@ -26,6 +26,8 @@ def translations_plus(orig=build.translations):
     return json.dumps(rows, ensure_ascii=False)
 
 def main():
+    if not os.path.exists(build.p(*T, f'{NAME}.js')):
+        sys.exit(f'Ingen testudgave: src/test/{NAME}.js findes ikke (luft ind/ud er flyttet ind i appen som src/js/17c-airflow.js). Sæt NAME til den nye test.')
     build.main()
     build.translations = translations_plus
     s = build.page()

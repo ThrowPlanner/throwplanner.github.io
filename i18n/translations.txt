@@ -954,3 +954,47 @@ længde|length|長さ
 højde|height|高さ
 afstand|distance|距離
 projektorer|projectors|台
+Luft ind/ud|Air in/out|吸気／排気
+ingen data for denne projektor|no data for this projector|このプロジェクターのデータはありません
+indtag:|intake:|吸気：
+udblæsning:|exhaust:|排気：
+mindste fri afstand:|minimum clearance:|最小離隔距離：
+mellem projektorer|between projectors|プロジェクター間
+=foran|front|前面
+=bagpå|rear|背面
+=venstre side|left side|左側面
+=højre side|right side|右側面
+=oven på|top|上面
+=under|bottom|底面
+bagpå # mm|rear # mm|背面 # mm
+venstre side # mm|left side # mm|左側面 # mm
+højre side # mm|right side # mm|右側面 # mm
+oven på # mm|top # mm|上面 # mm
+udblæsning: for tæt på bagvæggen (min. # mm)|exhaust: too close to the rear wall (min. # mm)|排気：後方の壁に近すぎます（最小 # mm）
+luft: for tæt på bagvæggen (min. # mm)|air: too close to the rear wall (min. # mm)|吸気：後方の壁に近すぎます（最小 # mm）
+udblæsning: for tæt på lærredsvæggen (min. # mm)|exhaust: too close to the screen wall (min. # mm)|排気：スクリーン側の壁に近すぎます（最小 # mm）
+luft: for tæt på lærredsvæggen (min. # mm)|air: too close to the screen wall (min. # mm)|吸気：スクリーン側の壁に近すぎます（最小 # mm）
+udblæsning: for tæt på loftet (min. # mm)|exhaust: too close to the ceiling (min. # mm)|排気：天井に近すぎます（最小 # mm）
+luft: for tæt på loftet (min. # mm)|air: too close to the ceiling (min. # mm)|吸気：天井に近すぎます（最小 # mm）
+udblæsning: for tæt på gulvet (min. # mm)|exhaust: too close to the floor (min. # mm)|排気：床に近すぎます（最小 # mm）
+luft: for tæt på gulvet (min. # mm)|air: too close to the floor (min. # mm)|吸気：床に近すぎます（最小 # mm）
+udblæsning: for tæt på sidevæggen (min. # mm)|exhaust: too close to the side wall (min. # mm)|排気：側面の壁に近すぎます（最小 # mm）
+luft: for tæt på sidevæggen (min. # mm)|air: too close to the side wall (min. # mm)|吸気：側面の壁に近すぎます（最小 # mm）
+for lidt luft mellem projektorerne (min. # mm)|too little space between the projectors (min. # mm)|プロジェクター間の間隔が不足（最小 # mm）
+stak: for lidt luft mellem projektorerne (min. # mm)|stack: too little space between the projectors (min. # mm)|スタック：プロジェクター間の間隔が不足（最小 # mm）
+blæser varm luft mod P# (udblæsning bagpå, min. # mm)|blows hot air at P# (exhaust rear, min. # mm)|P# に熱風が当たります（背面排気、最小 # mm）
+blæser varm luft mod P# (udblæsning venstre side, min. # mm)|blows hot air at P# (exhaust left side, min. # mm)|P# に熱風が当たります（左側面排気、最小 # mm）
+blæser varm luft mod P# (udblæsning højre side, min. # mm)|blows hot air at P# (exhaust right side, min. # mm)|P# に熱風が当たります（右側面排気、最小 # mm）
+luft: bagpå for tæt på væg/loft/gulv (min. # mm)|air: rear too close to wall/ceiling/floor (min. # mm)|吸排気：背面が壁・天井・床に近すぎます（最小 # mm）
+luft: venstre side for tæt på væg/loft/gulv (min. # mm)|air: left side too close to wall/ceiling/floor (min. # mm)|吸排気：左側面が壁・天井・床に近すぎます（最小 # mm）
+luft: højre side for tæt på væg/loft/gulv (min. # mm)|air: right side too close to wall/ceiling/floor (min. # mm)|吸排気：右側面が壁・天井・床に近すぎます（最小 # mm）
+luft: oven på for tæt på væg/loft/gulv (min. # mm)|air: top too close to wall/ceiling/floor (min. # mm)|吸排気：上面が壁・天井・床に近すぎます（最小 # mm）
+udblæsning: for tæt på væggen (min. # mm)|exhaust: too close to the wall (min. # mm)|排気：壁に近すぎます（最小 # mm）
+luft: for tæt på væggen (min. # mm)|air: too close to the wall (min. # mm)|吸気：壁に近すぎます（最小 # mm）
+manual|manual|取扱説明書
+=indtag|intake|吸気
+=udblæsning|exhaust|排気
+kun fri plads (ingen luft ind/ud)|clearance only (no air in/out)|離隔のみ（吸排気なし）
+Vis pile for luft ind/ud|Show air in/out arrows|吸気・排気の矢印を表示
+Vis mål for mindste fri afstand|Show minimum clearance dimensions|最小離隔距離の寸法を表示
+s. #|p. #|#ページ

@@ -1,4 +1,4 @@
-/* ===== TEST: luft ind/ud (air intake/exhaust) – kun i testudgaven (tools/build_test.py), ikke i appen =====
+/* ===== Luft ind/ud (air intake/exhaust) – knap i boks 03, pile/mål i boks 09, 10, Immersive og Free Grid, advarsler under «Rum» =====
    Data aflæst i Panasonics manualer (Operating Instructions, links i MAN_PJ): siden «Projector body» (hvor projektoren suger ind og blæser ud)
    og «Precautions for use» (mindste afstand til vægge og genstande). Kun fakta (sider og mm) – ingen tegninger eller tekst fra manualerne.
    Sider er set bagfra i projektorens egen retning (venstre/højre som bag projektoren, foran = optikkens side).
@@ -48,7 +48,6 @@ function airDir(side,r,A){if(r.kind==='l')return airDirL(side,r);const rev=r.kin
 function airArrowSVG(x1,y1,x2,y2,col){const a=Math.atan2(y2-y1,x2-x1),h=7,w=4.5;
   const p=[[x2,y2],[x2-h*Math.cos(a)+w*Math.sin(a),y2-h*Math.sin(a)-w*Math.cos(a)],[x2-h*Math.cos(a)-w*Math.sin(a),y2-h*Math.sin(a)+w*Math.cos(a)]];
   return `<line x1="${x1.toFixed(1)}" y1="${y1.toFixed(1)}" x2="${x2.toFixed(1)}" y2="${y2.toFixed(1)}" stroke="${col}" stroke-width="2.4" stroke-linecap="round"/><polygon points="${p.map(q=>q[0].toFixed(1)+','+q[1].toFixed(1)).join(' ')}" fill="${col}"/>`}
-// L-formet optik: kabinettet står drejet – pile og zoner vises ikke (endnu) i testen
 // alle temaer undtagen Warping (egen side i en ramme)
 const airOK=(r,A)=>A&&!r.PT&&S.venue!=='warp';
 window.airSide=function(r,X,Y,sc){const A=airFor(r.m);if(!airOK(r,A)||!(AIR_UI.arrows||AIR_UI.zones))return '';const K=r.UB||r.B;let s='<g class="airL" pointer-events="none">';
@@ -115,13 +114,13 @@ function airInfo(){let el=document.getElementById('airInfo');if(!el){const t=doc
   const u=MAN_PJ[pjSlug(m.m)],url=u?(/^https?:/.test(u)?u:MAN_B+u):'',lnk=n=>url?`<a href="${url}#page=${n}" target="_blank" rel="noopener noreferrer">s. ${n}</a>`:`s. ${n}`;
   const cs=['rear','left','right','top'].filter(k=>A.c[k]).map(k=>`<span>${AIR_DA[k]} ${A.c[k]} mm</span>`).join(' · ');
   el.innerHTML=`<i style="color:${AIR_IN}">▶</i> <span>indtag:</span> ${A.in.map(k=>`<span>${AIR_DA[k]}</span>`).join(', ')} · <i style="color:${AIR_OUT}">▶</i> <span>udblæsning:</span> ${A.out.map(k=>`<span>${AIR_DA[k]}</span>`).join(', ')}`+
-    `<br><span>mindste fri afstand:</span> ${cs}${A.mellem?` · <span>mellem projektorer</span> ${A.mellem} mm`:''} <small>(manual ${lnk(A.p[0])}, ${lnk(A.p[1])} · TEST)</small>`+
+    `<br><span>mindste fri afstand:</span> ${cs}${A.mellem?` · <span>mellem projektorer</span> ${A.mellem} mm`:''} <small>(manual ${lnk(A.p[0])}, ${lnk(A.p[1])})</small>`+
     `<br><small><i style="color:${AIR_IN}">■</i> <span>indtag</span> · <i style="color:${AIR_OUT}">■</i> <span>udblæsning</span> · <i style="color:${AIR_FREE}">■</i> <span>kun fri plads (ingen luft ind/ud)</span></small>`}
 const airR0=render;
 // mm-tallene lægges øverst i tegningen, så appens egne målmærker ikke dækker dem
 function airLblTop(){document.querySelectorAll('text.airlbl').forEach(t=>{const s=t.ownerSVGElement;if(!s||t.parentNode===s&&s.lastElementChild===t)return;
   const m=t.getCTM(),sm=s.getCTM();if(!m||!sm)return;const k=sm.inverse().multiply(m);t.setAttribute('transform',`matrix(${k.a} ${k.b} ${k.c} ${k.d} ${k.e} ${k.f})`);s.appendChild(t)})}
-// Immersive: appens statuslinje viser ikke «Rum:»-advarsler – testen tilføjer luft-advarslerne selv
+// Immersive: statuslinjen viser ikke «Rum:»-advarsler – luft-advarslerne tilføjes her
 function airImmStatus(){if(S.venue!=='immersive'||!airWarnOn())return;const el=document.getElementById('topStatus');if(!el)return;
   const iss=calc().roomIssues.filter(t=>/luft|udblæsning/.test(t));if(!iss.length)return;
   el.querySelectorAll('.pill.ok').forEach(p=>p.remove());el.insertAdjacentHTML('beforeend',pill('warn','Rum: '+iss.join(', ')))}
