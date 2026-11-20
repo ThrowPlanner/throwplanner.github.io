@@ -4,16 +4,18 @@
    (ingen Panasonic-tegninger eller -design). Kun til tegning – påvirker ikke beregningen.
    Koordinater som calc(): meter, linsen i (0,0,0), x til højre, y op, z væk fra lærredet. */
 const PKC=new Map();
-function pkModel(r){
-  const m=r.m,ln=r.ln,kind=r.kind,lr=kind==='l'?(S.lrot||0)&3:0,flat=lr&1,PT=!!r.PT,CE=!!S.ceil;
+// r = {m, ln, kind, PT} (fx calc()); o.ceil / o.lrot overstyrer S (Free Grid har sin egen loftmontering pr. projektor)
+function pkModel(r,o={}){
+  const m=r.m,ln=r.ln,kind=r.kind||(ln[7]&&ln[7][0])||'n',lr=kind==='l'?((o.lrot??S.lrot)||0)&3:0,flat=lr&1,PT=!!r.PT,CE=!!(o.ceil??S.ceil);
   const key=[m.m,ln[0],kind,lr,CE?1:0,PT?1:0].join('|');if(PKC.has(key))return PKC.get(key);
   const [W,H,D]=m.dim,P=ln[5]||0,ld=Array.isArray(ln[8])&&ln[8].length===3?ln[8]:null,zoom=ln[1]==='Z',big=W>=540;
-  const cl=(v,a,b)=>Math.max(a,Math.min(b,v)),c0=20;
+  const cl=(v,a,b)=>Math.max(a,Math.min(b,v)),c0=20,LO=kind==='n'?lensOff(m):{x:0,y:0,f:null},lx=LO.x,ly=LO.y+H/2;   // lx/ly: linsens midte i kabinettets lokale mål
   // kabinettets lokale akser (X bredde, Y højde, Z dybde fra fronten) → linsens koordinater (mm), samme placering som calc()
   let f;
   if(kind==='l')f=flat?{o:{x:P,y:-H/2,z:c0+W/2},X:['z',-1],Y:['y',1],Z:['x',1]}:{o:{x:0,y:-P,z:c0+H},X:['x',1],Y:['z',-1],Z:['y',-1]};
-  else if(kind==='u'){const u=ln[7][1],bz1=Math.min(u[5],u[4]+D),bx0=Math.max(u[0],Math.min(-W/2,u[1]-W));f={o:{x:bx0+W/2,y:u[2],z:bz1},X:['x',-1],Y:['y',1],Z:['z',-1],bz1,u}}
-  else f={o:{x:0,y:-H/2,z:P},X:['x',1],Y:['y',1],Z:['z',1]};
+  // ultrakort kast: kabinettet = TDC-dybden fra fronten u[4] (som calc). Indbygget spejl (ingen udragning): ust-boksens ekstra højde er fødderne
+  else if(kind==='u'){const u=ln[7][1],bz1=u[4]+D,bx0=Math.max(u[0],Math.min(-W/2,u[1]-W)),own=!(ld&&P>0),yb=own?Math.max(u[2],u[3]-H):u[2];f={o:{x:bx0+W/2,y:yb,z:bz1},X:['x',-1],Y:['y',1],Z:['z',-1],bz1,u,ft:own&&yb-u[2]>2?yb-u[2]:0}}
+  else f={o:{x:-LO.x,y:-LO.y-H/2,z:P},X:['x',1],Y:['y',1],Z:['z',1]};   // optikken sidder ikke altid i midten (LENSPOS i 03-calc.js)
   const L2W=(x,y,z)=>{const p={...f.o};p[f.X[0]]+=f.X[1]*x;p[f.Y[0]]+=f.Y[1]*y;p[f.Z[0]]+=f.Z[1]*z;return p};
   const bx=(a,b)=>({x0:Math.min(a.x,b.x),x1:Math.max(a.x,b.x),y0:Math.min(a.y,b.y),y1:Math.max(a.y,b.y),z0:Math.min(a.z,b.z),z1:Math.max(a.z,b.z)});
   const LB=(x0,x1,y0,y1,z0,z1)=>bx(L2W(x0,y0,z0),L2W(x1,y1,z1));
@@ -22,16 +24,18 @@ function pkModel(r){
   const cyl=(axis,c,d,a0,a1,cls,o={})=>{const b={};for(const a of['x','y','z']){if(a===axis){b[a+'0']=Math.min(a0,a1);b[a+'1']=Math.max(a0,a1)}else{b[a+'0']=c[a]-d[a]/2;b[a+'1']=c[a]+d[a]/2}}pr.push({t:'cyl',axis,b,c:cls,...o})};
   const sc=(d,k)=>Object.fromEntries(Object.entries(d).map(([a,v])=>[a,v*k]));
   // kabinet (officielle mål er uden fødder – fødderne står uden for)
-  const fh=cl(H*.05,6,16),fw=cl(W*.07,22,55),fd=cl(D*.07,22,55);
+  const fh=f.ft||cl(H*.05,6,16),fw=cl(W*.07,22,55),fd=cl(D*.07,22,55);
   box(LB(-W/2,W/2,0,H,0,D),'cab',{cab:1});
   for(const sx of[-1,1])for(const zz of[.1,.9])box(LB(sx*W*.4-fw/2,sx*W*.4+fw/2,-fh,0,zz*D-fd/2,zz*D+fd/2),'foot');
   const lip=H*.86;
-  for(const s of[-1,1]){const x=s*W/2,fc=s>0?'X+':'X-';deco(fc,LB(x,x,lip,lip,0,D),'seam');deco(fc,LB(x,x,H*.22,H*.74,D*.5,D*.93),'slats');if(big)deco(fc,LB(x,x,H*.3,H*.62,D*.06,D*.2),'slats')}
+  // sider: gitre (generiske) – kendt filterplacering (LENSPOS) tegnes som ét langt gitter på siden med optikken
+  for(const s of[-1,1]){const x=s*W/2,fc=s>0?'X+':'X-',fs=LO.f&&s===Math.sign(LO.x||1);deco(fc,LB(x,x,lip,lip,0,D),'seam');
+    if(fs)deco(fc,LB(x,x,H*.14,H*.8,LO.f[0],LO.f[1]),'slats');else{deco(fc,LB(x,x,H*.22,H*.74,D*.5,D*.93),'slats');if(big)deco(fc,LB(x,x,H*.3,H*.62,D*.06,D*.2),'slats')}}
   // bagside: gitter og tilslutningspanel
   deco('Z+',LB(-W*.42,-W*.06,H*.2,H*.78,D,D),'slats',f.X[0]);deco('Z+',LB(W*.06,W*.42,H*.24,H*.66,D,D),'panel');deco('Z+',LB(-W/2,W/2,lip,lip,D,D),'seam');
   const lr0=(ld?Math.max(ld[0],ld[1]):Math.min(H*.55,W*.24))/2;
-  if(kind==='n'){for(const s of[-1,1]){const a=s*(lr0+W*.05),b=s*(W/2-W*.05);if(Math.abs(b)-Math.abs(a)>W*.08)deco('Z-',LB(Math.min(a,b),Math.max(a,b),H*.2,H*.8,0,0),'dots')}
-    deco('Z-',LB(-W/2,W/2,lip,lip,0,0),'seam');deco('Z-',LB(W*.45,W*.45,H*.92,H*.92,0,0),'led')}
+  if(kind==='n'){for(const s of[-1,1]){const a=lx+s*(lr0+W*.05),b=s*(W/2-W*.05);if(s*(b-a)>W*.08)deco('Z-',LB(Math.min(a,b),Math.max(a,b),H*.2,H*.8,0,0),'dots')}
+    deco('Z-',LB(-W/2,W/2,lip,lip,0,0),'seam');const xl=lx>0?-W*.45:W*.45;deco('Z-',LB(xl,xl,H*.92,H*.92,0,0),'led')}
   deco('Y+',LB(W*.18,W*.44,H,H,D*.66,D*.88),'panel');
   if(big)for(const zz of[[.03,.08],[.92,.97]])deco('Y+',LB(-W*.28,W*.28,H,H,zz[0]*D,zz[1]*D),'handle');
   // optik: a0 = forenden (mod lærredet/spejlet), a1 = ved kabinettet
@@ -55,9 +59,8 @@ function pkModel(r){
       const hw=Math.min(ld[0]*1.1,u[1]-u[0]);box({x0:xc-hw/2,x1:xc+hw/2,y0:yc-ld[1]/2,y1:u[3],z0:u[5]-hd,z1:u[5]},'lens',{mir:[{x:xc,z:u[5]-4,y:u[3]-4},{x:xc,z:u[5]-hd+6,y:yc-ld[1]*.25}]});
       pr.push({t:'deco',b:{x0:xc-hw*.38,x1:xc+hw*.38,y0:yc+ld[1]*.42,y1:u[3]-8,z0:u[5]-hd,z1:u[5]-hd},n:['z',-1],k:'win'});
       if(I>0)cyl('z',{x:xc,y:yc},sc(d0,.78),bz1-I,bz1,'hid',{hid:1})}
-    else{const top=Math.min(u[3],u[2]+H),hw=W*.36;   // indbygget spejl: hætte bagest på toppen
-      if(u[3]-top>3)box({x0:xc-hw,x1:xc+hw,y0:top,y1:u[3],z0:u[5]-D*.26,z1:u[5]},'lens',{mir:[{x:xc,z:u[5]-4,y:u[3]-2},{x:xc,z:u[5]-D*.24,y:top+1}]});
-      pr.push({t:'deco',b:{x0:xc-hw*.8,x1:xc+hw*.8,y0:u[3],y1:u[3],z0:u[5]-D*.25,z1:u[5]-D*.1},n:['y',1],k:'win'})}}
+    else{const hw=W*.36,top=f.o.y+H;   // indbygget spejl: udgangsvindue i toppen lige foran spejlpunktet (z = u[5])
+      pr.push({t:'deco',b:{x0:xc-hw*.8,x1:xc+hw*.8,y0:top,y1:top,z0:u[5]-D*.25,z1:u[5]-D*.04},n:['y',1],k:'win'})}}
   // samme drejning/spejling som calc(): L-linse vendt (lrot 2/3), portræt (x↔y), loft (x,y vendes) – og mm → m
   const tv=v=>{let {x,y,z}=v;if(lr===2)y=-y;else if(lr===3)x=-x;if(PT)[x,y]=[y,x];if(CE){x=-x;y=-y}return {x,y,z}};
   const tp=p=>{const q=tv(p);return {x:q.x/1000,y:q.y/1000,z:q.z/1000}};
@@ -128,3 +131,22 @@ function pk3D(M,P3,lx,ly){
     if(p.t==='cyl'&&p.axis==='z'){const cx=(b.x0+b.x1)/2,cy=(b.y0+b.y1)/2,rx=(b.x1-b.x0)/2,ry=(b.y1-b.y0)/2,q=[];for(let k=0;k<20;k++){const t=k/20*2*Math.PI;q.push(W(cx+rx*Math.cos(t),cy+ry*Math.sin(t),z1))}s+=face(q,cls)}
     else s+=face([W(b.x0,b.y0,z1),W(b.x1,b.y0,z1),W(b.x1,b.y1,z1),W(b.x0,b.y1,z1)],cls)}
   return `<g class="pk">${s}</g>`}
+
+// samlet udstrækning (kabinet + optik, uden fødder) i linsens koordinater – til rum-tjek
+function pkBox(M){let b=null;for(const p of M){if(p.t==='deco'||p.hid||p.c==='foot')continue;const q=p.b;
+  b=b?{x0:Math.min(b.x0,q.x0),x1:Math.max(b.x1,q.x1),y0:Math.min(b.y0,q.y0),y1:Math.max(b.y1,q.y1),z0:Math.min(b.z0,q.z0),z1:Math.max(b.z1,q.z1)}:{...q}}return b}
+
+/* Free Grid (three.js): samme skitse som 3D-legemer. W3(x,y,z) = rummets punkt for linsens koordinater, Q = drejning (x→højre, y→op, z→væk fra lærredet) */
+function pkQuat(n3,V3,F3){return new THREE.Quaternion().setFromRotationMatrix(new THREE.Matrix4().makeBasis(n3,V3,F3.clone().negate()))}
+const PK3C={cab:0x2F4D6C,foot:0x1F354B,lens:0x6E8FB3,cap:0x6E8FB3,ring:0x4C719A,glass:0x0E1B27,deco:0x24384D};
+function pkThree(M,W3,Q,sel){const g=new THREE.Group();let cab=null;
+  for(const p of M){if(p.hid)continue;let b=p.b,col;
+    if(p.t==='deco'){if(!['slats','dots','panel','handle','win'].includes(p.k))continue;const [a,sg]=p.n;b={...b};b[a+(sg>0?'0':'1')]+=sg*.0005;b[a+(sg>0?'1':'0')]+=sg*.0025;col=p.k==='win'?PK3C.glass:PK3C.deco}
+    else col=p.cab&&sel?0x3F6E9C:(PK3C[p.c]??PK3C.lens);
+    const sx=Math.max(b.x1-b.x0,.001),sy=Math.max(b.y1-b.y0,.001),sz=Math.max(b.z1-b.z0,.001);let geo;
+    if(p.t==='cyl'){geo=new THREE.CylinderGeometry(.5,.5,1,24);const ax=p.axis;
+      if(ax==='y')geo.scale(sx,sy,sz);else if(ax==='z'){geo.scale(sx,sz,sy);geo.rotateX(Math.PI/2)}else{geo.scale(sy,sx,sz);geo.rotateZ(Math.PI/2)}}
+    else geo=new THREE.BoxGeometry(sx,sy,sz);
+    const me=new THREE.Mesh(geo,new THREE.MeshLambertMaterial({color:col}));me.position.copy(W3((b.x0+b.x1)/2,(b.y0+b.y1)/2,(b.z0+b.z1)/2));me.quaternion.copy(Q);g.add(me);
+    if(p.cab)cab=me}
+  return {g,cab}}

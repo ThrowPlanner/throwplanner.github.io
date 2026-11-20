@@ -4,6 +4,9 @@ const esc=s=>String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;');
 function TW(t){const s=typeof I18!=='undefined'?I18.tr(t,S.lang):t;let u=0;for(const c of s)u+=/[\u3000-\u9fff\uff00-\uffef]/.test(c)?1.8:1;return u}
 function lbl(x,y,t,cls='d',anchor='middle',rot=0){const w=TW(t)*7.3+10;const bx=anchor==='middle'?-w/2:anchor==='end'?-w:0;
   return `<g transform="translate(${x},${y}) rotate(${rot})"><rect x="${bx}" y="-9" width="${w}" height="18" rx="4" style="fill:var(--surface)" opacity=".9"/><text class="${cls}" x="${bx+w/2}" y="4.5" text-anchor="middle">${esc(t)}</text></g>`}
+// linsens midtpunkt som en halv cirkel: den flade side ligger på optikkens front, buen peger i lysets retning (dx,dy) – så den ikke dækker optikken
+function halfDot(cx,cy,r,dx,dy,attr){const n=Math.hypot(dx,dy)||1,ux=dx/n,uy=dy/n,a=[cx-uy*r,cy+ux*r],b=[cx+uy*r,cy-ux*r],f=v=>Math.round(v*100)/100;
+  return `<path d="M${f(a[0])},${f(a[1])} A${f(r)},${f(r)} 0 0 0 ${f(b[0])},${f(b[1])} Z" ${attr}/>`}
 function dimH(x1,x2,y,t,ext1,ext2){const a=Math.min(x1,x2),b=Math.max(x1,x2);let s='';
   if(ext1!=null)s+=`<line x1="${x1}" y1="${ext1}" x2="${x1}" y2="${y}" style="stroke:var(--dim)" stroke-width=".8" opacity=".6"/>`;
   if(ext2!=null)s+=`<line x1="${x2}" y1="${ext2}" x2="${x2}" y2="${y}" style="stroke:var(--dim)" stroke-width=".8" opacity=".6"/>`;

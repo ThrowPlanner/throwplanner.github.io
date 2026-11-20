@@ -129,7 +129,8 @@ $('planZoom').hidden=!has;if(document.activeElement!==$('calM'))$('calM').value=
       // projektorskitse set ovenfra ud fra de officielle mål – se 06c-pjsketch.js
       s+=`<g class="pjgrab" data-pj="${i}">`+pkOrtho(pkModel(r),{u:'x',v:'z',d:'y',sd:1},(u,v)=>P(pj.lx+u,S.L+v));
       if(S.frame){s+=`<polygon points="${poly([P(pj.lx+r.F.x0,S.L+r.F.z0),P(pj.lx+r.F.x1,S.L+r.F.z0),P(pj.lx+r.F.x1,S.L+r.F.z1),P(pj.lx+r.F.x0,S.L+r.F.z1)])}" fill="none" stroke="#3F4B57" stroke-width="${2.2*k}"/>`}
-      s+=`<circle cx="${lens[0]}" cy="${lens[1]}" r="${4*k}" fill="#D98300"/><circle cx="${P(pj.lx,(r.outFront+r.outBack)/2)[0]}" cy="${P(pj.lx,(r.outFront+r.outBack)/2)[1]}" r="${Math.max(14*k,bw*sc*.6)}" fill="transparent"/></g>`});
+      {const f=P(pj.lx,S.L-1);s+=halfDot(lens[0],lens[1],4*k,f[0]-lens[0],f[1]-lens[1],'fill="#D98300"')}   // halv cirkel foran optikken
+      s+=`<circle cx="${P(pj.lx,(r.outFront+r.outBack)/2)[0]}" cy="${P(pj.lx,(r.outFront+r.outBack)/2)[1]}" r="${Math.max(14*k,bw*sc*.6)}" fill="transparent"/></g>`});
     if(r.stk>1)r.pjs.forEach(pj=>{if(pj.s)return;const q=P(pj.lx,r.outBack+0.3);s+=tag(q[0],q[1],`stak ${r.stk} × ${mm(r.outer[1])} mm`,'#3F4B57')});
     const m0=P(S.px,0),m1=P(S.px,S.L);const off=-(r.body[0]/2+.35)*sc;const d0=[m0[0]+g.u[0]*off,m0[1]+g.u[1]*off],d1=[m1[0]+g.u[0]*off,m1[1]+g.u[1]*off];
     s+=`<line x1="${d0[0]}" y1="${d0[1]}" x2="${d1[0]}" y2="${d1[1]}" stroke="#0B6E9C" stroke-width="${1.5*k}" marker-start="url(#par)" marker-end="url(#par)"/>`+tag((d0[0]+d1[0])/2,(d0[1]+d1[1])/2,`L ${f3(S.L)} m`);

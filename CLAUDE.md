@@ -36,7 +36,7 @@ Jura: produktbilleder vises direkte fra Panasonics TDC-server (kopiér dem aldri
 | Digital Zoom Extender | `dzeSpec`/`DZE_MIN` i `03-calc.js` (lens shift regnes i `r.Hs`/`r.Ws`), visning i `13-lensshift-bar.js`, `dzeSet` i `16-events.js` |
 | Kontrast og sollys | `10-contrast.js`, `14-sun.js` |
 | Plantegning (boks 08) | `11-floorplan.js` |
-| Projektorskitse (kabinet + optik i boks 08/09/10 og UST-detaljen) | `src/js/06c-pjsketch.js` (`pkModel` ud fra `m.dim`, optik felt 5/7/8; `pkOrtho` retvinklet, `pk3D` perspektiv), `.pk-*` i `src/styles.css`. Generiske detaljer – ingen Panasonic-tegninger |
+| Projektorskitse (kabinet + optik i boks 08/09/10, UST-detaljen og Free Grid 3D) | `src/js/06c-pjsketch.js` (`pkModel` ud fra `m.dim`, optik felt 5/7/8; `pkOrtho` retvinklet, `pk3D` perspektiv, `pkThree` three.js i Free Grid, `pkBox` udstrækning til Free Grids rum-tjek), `.pk-*` i `src/styles.css`. Generiske detaljer – ingen Panasonic-tegninger. Optik der ikke sidder i midten (VMQ/VMZ) + filterside: `LENSPOS`/`lensOff` i `03-calc.js` (tal fra Panasonics CAD-PDF under modellens Resources) |
 | Free Grid (fane i boks 08, 3D-rum med flere projektorer, top/down) | `src/js/17b-freegrid.js` (`FG`, `fgSpec`/`fgFit`/`fg3Build`; boks 01/02/05/07 viser den valgte projektor, mens fanen er åben), `.fg*` i `src/styles.css`, 3D fra `web/warp-three.js` (artifactet skal have filen med som ekstra fil) |
 | Edge blend og portræt (boks 05) | `03-calc.js`, `blendAuto` i `04-ui.js` |
 | Buet lærred / curved (boks 05, tegnes i 08/09/10) | `src/js/26-curved.js` (manual-tabel i `put`-linjer), nye tal meldes af `tools/check_curved.py` i det ugentlige TDC-tjek |

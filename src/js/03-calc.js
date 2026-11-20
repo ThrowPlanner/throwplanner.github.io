@@ -37,6 +37,23 @@ function dzeSpec(m){const n=m.m.toUpperCase();
 const dzeOn=m=>!!(S.dze&&S.venue!=='immersive'&&dzeSpec(m));
 // ultrakort kast (UST): Panasonics «u»-kabinet eller throw ratio under 0,5:1
 const isUST=(row,aw,ah,kind)=>kind==='u'||row[0]*Math.hypot(aw,ah)/(IN*aw)<.5;
+/* Optikkens placering i kabinettet – fra Panasonics officielle CAD-tegninger (docs.connect.panasonic.com › modellen › Resources › CAD PDF, frontvisningen).
+   Felter: [model, x, y, filter]. x/y = linsens midte i forhold til midten af TDC-kassen (B×H) i mm: x + = til højre set bagfra (= til venstre set fra lærredet), y + = op.
+   Højden regnes fra kabinettets top (fødderne er nederst i TDC-højden). filter = [mm fra fronten, mm fra fronten] for sidegitteret med filteret på optikkens side, ellers null.
+   Aflæst nov 2026 (mm, tegningens tal → x/y):
+   VMQ85/VMZ82-serien: 104 fra venstre (B 399), 51 over bunden (H 115) → 95,5 / −6,5 · filter skiftes fra siden («FILTER REPLACE SPACE» 492), gitter 255 lang, 64 fra bagkanten
+   VMZ51S: 104 / 64 fra toppen (TDC-H 133 med fødder) → 95,5 / 2,5 · VMZ7ST/6ST: 119 fra venstre (B 414), 64 fra toppen (TDC-H 122) → 88 / −3 · filter som VMZ82 («507»)
+   LMZ460/420: 117 fra venstre (B 349), 42 fra toppen (H 105) → 57,5 / 10,5 · TMZ400: 117, 73 fra toppen (H 138) → 57,5 / −4
+   REQ15/REZ15-serien: midt (249/498), 90 fra toppen (H 196) → 0 / 8 · RQ7/RZ7-serien: midt, 81 fra toppen (H 170) → 0 / 4
+   RQ45K/RZ44K: midt (299/598), 128 fra toppen (H 352) → 0 / 48 · RQ35K2/RZ34K2: 128 fra toppen (H 353) → 0 / 48,5
+   MZ20KL-serien: midt (325/650), 98 fra toppen (H 185) → 0 / −5,5 · MZ882-serien: midt (281/561), 103 fra toppen (H 190) → 0 / −8
+   FRQ60/FRZ60-serien: midt, 74 fra toppen (H 168) → 0 / 10 · RQ25K-serien og HTQ20: midt i begge retninger (275/550, 110/220 · 295/590, 110/220) → ingen post
+   Ikke med: RQ50K (L-optik) og CMZ50 (ultrakort kast) har deres egne mål; VW545N: ingen CAD-tegning fundet. */
+const LENSPOS=[[/^PT-VM(Q85|Q75|Q65|Z82|Z72|Z62)$/,95.5,-6.5,[29,284]],[/^PT-VMZ51S/,95.5,2.5,null],[/^PT-VMZ[76]ST$/,88,-3,[105,360]],
+  [/^PT-LMZ4[26]0$/,57.5,10.5,null],[/^PT-TMZ400$/,57.5,-4,null],[/^PT-RE[QZ](15|12|10|80)$/,0,8,null],[/^PT-R[QZ][76]L$/,0,4,null],
+  [/^PT-R(Q45K|Z44K)$/,0,48,null],[/^PT-R(Q35K2|Z34K2)$/,0,48.5,null],[/^PT-MZ(20|17|14|11)KL$/,0,-5.5,null],[/^PT-MZ[876]82$/,0,-8,null],[/^PT-FR[QZ][65]0$/,0,10,null]];
+// linsens forskydning fra kabinettets midte i mm (x: + = til højre set bagfra, y: + = op) og filtrets placering
+function lensOff(m){const e=m&&LENSPOS.find(r=>r[0].test(m.m));return e?{x:e[1],y:e[2],f:e[3]}:{x:0,y:0,f:null}}
 function calc(){
   const m=M(),ln=LN();
   let ai=aiFor(m);const aspOK=ai>=0;if(!aspOK)ai=0;
@@ -93,14 +110,15 @@ function calc(){
   let B,UB=null,UL=null;
   // ultrakort kast: optikken skyder bagud – kabinettet står mellem spejl og lærred (Panasonic RearProjPjBodyTable = samlet kabinet + optik).
   // Samlet længde = kabinettets dybde + optikkens udragning (prot); optikken stikker prot ud bag kabinettet, spejlet sidder bagest (z ≈ 0)
+  // Kabinettet er altid TDC's fulde dybde (m.dim[2]) fra fronten B.z0. Med indbygget spejl (fx PT-CMZ50: front −400,5 mm, dybde 421 mm) rækker kabinettet bag spejlpunktet
   if(kind==='u'){const u=ln[7][1].map(v=>v/1000);B={x0:u[0],x1:u[1],y0:u[2],y1:u[3],z0:u[4],z1:u[5]};
-    const bz1=Math.min(B.z1,B.z0+dim[2]),bx0=Math.max(B.x0,Math.min(-dim[0]/2,B.x1-dim[0]));
+    const bz1=B.z0+dim[2];if(bz1>B.z1)B.z1=bz1;const bx0=Math.max(B.x0,Math.min(-dim[0]/2,B.x1-dim[0]));
     UB={x0:bx0,x1:bx0+dim[0],y0:B.y0,y1:Math.min(B.y1,B.y0+dim[1]),z0:B.z0,z1:bz1};
     if(B.z1-bz1>.005){const lw=(ld?ld[0]:Math.min(.22,dim[0]*.45))/2,lh=Math.min(ld?ld[1]:.2,B.y1-B.y0);UL={x0:-lw,x1:lw,y0:Math.max(B.y0,B.y1-lh),y1:B.y1,z0:bz1,z1:B.z1}}}
   // L-formet linse – Rotér (S.lrot): 0 = kabinet lodret under linsehovedet, 1 = fladt liggende til højre, 2 = lodret over, 3 = fladt til venstre
   const lr=kind==='l'?(S.lrot||0)&3:0, flat=lr&1;
   if(kind==='l'){const c=0.02;B=flat?{x0:prot,x1:prot+dim[2],y0:-dim[1]/2,y1:dim[1]/2,z0:c,z1:c+dim[0]}:{x0:-dim[0]/2,x1:dim[0]/2,y0:-(prot+dim[2]),y1:-prot,z0:c,z1:c+dim[1]}}
-  else if(kind!=='u')B={x0:-dim[0]/2,x1:dim[0]/2,y0:-dim[1]/2,y1:dim[1]/2,z0:prot,z1:prot+dim[2]};
+  else if(kind!=='u'){const lo=lensOff(m),ox=lo.x/1000,oy=lo.y/1000;B={x0:-ox-dim[0]/2,x1:-ox+dim[0]/2,y0:-oy-dim[1]/2,y1:-oy+dim[1]/2,z0:prot,z1:prot+dim[2]}}
   const fd3=S.frame?[S.fw/1000,S.fh/1000,S.fd/1000]:dim;
   const fx=kind==='l'&&flat?fd3[2]:fd3[0],fy=kind==='l'&&!flat?fd3[2]:fd3[1],fz=kind==='l'?fd3[flat?0:1]:fd3[2];
   const BB=UB||B,bc=[(BB.x0+BB.x1)/2,(BB.y0+BB.y1)/2,(BB.z0+BB.z1)/2];

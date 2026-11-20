@@ -23,8 +23,8 @@ const fgBl=p=>p.bl&&p.bl.on?p.bl:null,fgStk=p=>p.st&&p.st.on?fgCl(Math.round(p.s
    spejlet sidder bagest, og kabinettet står mellem spejl og lærred (Panasonic RearProjPjBodyTable, som calc) → Lo er negativ */
 // ul: optikken som boks (officielle mål fra TDC, felt 8), c = afstand fra linsepunktet til optikkens midte mod lærredet
 function fgBz(m,ln){const k=ln&&ln[7],Dp=m.dim[2]/1000,ld=Array.isArray(ln&&ln[8])?ln[8].map(v=>v/1000):null,prot=(ln&&ln[5]||0)/1000;
-  if(k&&k[0]==='u'&&k[1]){const z0=k[1][4]/1000,z1=k[1][5]/1000,D=Math.min(Dp,z1-z0),len=z1-(z0+D);   // samlet længde z1−z0 = kabinet + optikkens udragning (som calc)
-    return {Dp:D,Lo:z0+D/2,top:z1,bot:z0,ul:len>.005?{len,c:len/2-z1,w:ld?ld[0]:Math.min(.22,m.dim[0]/1000*.45),h:Math.min(ld?ld[1]:.2,(k[1][3]-k[1][2])/1000)}:null}}
+  if(k&&k[0]==='u'&&k[1]){const z0=k[1][4]/1000,z1=k[1][5]/1000,D=Dp,len=z1-(z0+D);   // kabinet = TDC-dybden fra fronten (z0); optikken rager len ud bagved (som calc). Indbygget spejl: kabinettet kan række bag spejlpunktet
+    return {Dp:D,Lo:z0+D/2,top:Math.max(z1,z0+D),bot:z0,ul:len>.005?{len,c:len/2-z1,w:ld?ld[0]:Math.min(.22,m.dim[0]/1000*.45),h:Math.min(ld?ld[1]:.2,(k[1][3]-k[1][2])/1000)}:null}}
   // almindelig optik: rager prot frem foran kabinettet (som calc: kabinettet starter prot bag linsen)
   if((!k||k[0]==='n')&&prot>.005)return {Dp,Lo:Dp/2+prot,top:Dp+prot,bot:0,ul:{len:prot,c:-prot/2,w:ld?ld[0]:Math.min(.16,m.dim[0]/1000*.4),h:ld?ld[1]:Math.min(.16,m.dim[1]/1000*.6)}};
   return {Dp,Lo:Dp/2,top:Dp,bot:0,ul:null}}
@@ -39,7 +39,9 @@ function fgSpec(p){const m=MODELS[p.mi],ln=m.L[p.li]||m.L[0],pt=!!p.port,{row,aw
   // top/down: projektoren peger lodret ned, billedet ligger på gulvet (linsehøjde = afstand); lodret shift flytter billedet frem/tilbage (fo) langs gulvet
   const dn=!!p.down,sh=p.sh||0,svR=fgSvR(m,ln,pt,sh),off=pt?0:(ln[4]||0),sg=dn?1:p.inv?-1:1,sv=fgCl(p.sv||0,svR[0],svR[1]),fh=dn?fgFh(p):0,yc=dn?fh+.03:p.h+sg*(sv+off)*H;
   const B=m.dim[0]/1000,Hb=m.dim[1]/1000,bz=fgBz(m,ln);
-  return {m,ln,row,aw,ah,hy,asp,fixed,z,D,W,H,ok,tr:W>0?p.L/W:0,lo:Math.min(a,b),hi:Math.max(a,b),B,Hb,Dp:bz.Dp,Lo:bz.Lo,top:bz.top,bot:bz.bot,ul:bz.ul,port:pt,bw:pt?Hb:B,bh:pt?B:Hb,
+  // lodret udstrækning over/under linsen (kabinet + optik, som skitsen) – L-formet optik: kabinettet hænger under linsehovedet
+  const pb=pkBox(pkModel({m,ln,PT:pt},{ceil:false,lrot:0})),vy=[pb.y0,pb.y1];
+  return {m,ln,vy,row,aw,ah,hy,asp,fixed,z,D,W,H,ok,tr:W>0?p.L/W:0,lo:Math.min(a,b),hi:Math.max(a,b),B,Hb,Dp:bz.Dp,Lo:bz.Lo,top:bz.top,bot:bz.bot,ul:bz.ul,port:pt,bw:pt?Hb:B,bh:pt?B:Hb,
     // vandret som calc: billedets midte flyttes sg·(sh + offH)·W til siden (loftmonteret: spejlet; portræt: optikkens offset er vandret)
     offH:pt?(ln[4]||0):0,ox:sg*(sh+(pt?(ln[4]||0):0))*W,
     svR,off,sg,sv,sh,yc,dn,fh,fo:(sv+off)*H,pt,c,r,o,kx,ky,Wt:W*kx,Ht:H*ky,stk,n:c*r*stk,shOK:shiftOK(sh,sv,fgP(ln,pt))}}
@@ -119,7 +121,7 @@ function fgWarn(p,sp=fgSpec(p)){const g=fgGeo(p,sp),w=[];if(!sp.ok)w.push('bille
   else{if(!fgIn(g.e1)||!fgIn(g.e2))w.push('billedet rækker uden for rummet');
   if(sp.yc-sp.Ht/2<-.01)w.push('billedet går under gulvet');if(sp.yc+sp.Ht/2>FG.hgt+.01)w.push('billedet går over loftet');
   // kabinetterne (alle i sættet, med stak) skal stå inde i rummet
-  {const ym=(sp.r-1)/2*sp.H*(1-sp.o),xm=(sp.c-1)/2*sp.W*(1-sp.o),st=(sp.stk-1)*sp.bh*1.08,lo=p.h-ym-sp.bh/2-(p.inv?st:0),hi=p.h+ym+sp.bh/2+(p.inv?0:st);
+  {const ym=(sp.r-1)/2*sp.H*(1-sp.o),xm=(sp.c-1)/2*sp.W*(1-sp.o),st=(sp.stk-1)*sp.bh*1.08,lo=p.h-ym+(p.inv?-sp.vy[1]:sp.vy[0])-(p.inv?st:0),hi=p.h+ym+(p.inv?-sp.vy[0]:sp.vy[1])+(p.inv?0:st);
    if(lo<-.01||hi>FG.hgt+.01||!fgIn([p.x-g.n[0]*xm,p.y-g.n[1]*xm])||!fgIn([p.x+g.n[0]*xm,p.y+g.n[1]*xm]))w.push('en projektor står uden for rummet')}}
   const cv=fgCurv(p,sp);if(cv&&cv.st==='bad')w.push('buen er for stærk til optikken');if(cv&&cv.st==='none')w.push('optikken kan ikke bruge curved correction');if(cv&&cv.st==='unknown')w.push('optikken står ikke i manualens tabel');
   return w}
@@ -144,7 +146,7 @@ function fgNew(x,y,from){const mi=from?from.mi:(MODELS[S.mi]&&!isEOL(MODELS[S.mi
   const p={mi,li,x,y,rot:from?from.rot:0,L:5,z:.5,h:from?from.h:1.2,sv:from?from.sv:0,sh:from?from.sh||0:0,inv:from?from.inv:false,down:from?!!from.down:false,fh:from?from.fh||0:0,port:from?from.port:false,
     lockS:from?!!from.lockS:false,lockO:from?!!from.lockO:false,lockP:false,bl:fgCopy(from&&from.bl),st:fgCopy(from&&from.st),curv:fgCopy(from&&from.curv)};
   if(from){p.L=from.L;p.z=from.z}else{const {row,aw,hy}=fgRow(MODELS[mi],MODELS[mi].L[li]),D=fgCl(Math.min(4,FG.w/3)/(IN*aw/hy),row[4],row[5]);p.z=MODELS[mi].L[li][1]==='F'?0:.5;p.L=fgR3(distAt(row,D,p.z));
-    const H=fgSpec(p).H;fgSetSvFor(p,Math.min(FG.hgt-.2-H/2,.8+H/2))}   // billedets underkant ca. 0,8 m over gulvet
+    const sp0=fgSpec(p),H=sp0.H;p.h=fgR3(Math.max(p.h,.1-sp0.vy[0]));fgSetSvFor(p,Math.min(FG.hgt-.2-H/2,.8+H/2))}   // billedets underkant ca. 0,8 m over gulvet
   return p}
 function fgAdd(at){let p;const s=FG.pjs[FG.sel];
   if(at)p=fgNew(at[0],at[1],s);
@@ -235,7 +237,9 @@ function fgInit(){const d=$('dPlan');if(!d||$('fgWrap'))return;
   // fladens højde (top/down): projektoren følger med op/ned, så billedet bliver det samme. Låst projektor (eller loftet nås): zoom/optik regnes om
   num('fgFh',v=>{const p=P();if(!p||!p.down)return;const sp=fgSpec(p),fh=fgCl(v,0,Math.max(0,FG.hgt-.3)),nh=p.h+fh-sp.fh;
     if(!p.lockP&&nh+sp.top<=FG.hgt+1e-6){p.fh=fh;p.h=fgR3(nh);return}const s0=fgScr(p,sp);fgMoveScr(p,s0,{...s0,yc:fh+.03})});
-  $('fgInv').addEventListener('change',()=>{const p=P();if(!p)return;const yc=fgSpec(p).yc;p.inv=$('fgInv').checked;if(p.inv&&p.h<FG.hgt/2)p.h=Math.max(.05,FG.hgt-.4);if(!p.inv&&p.h>FG.hgt/2)p.h=1.2;fgSetSvFor(p,yc);fgDraw()});
+  $('fgInv').addEventListener('change',()=>{const p=P();if(!p)return;const yc=fgSpec(p).yc;p.inv=$('fgInv').checked;
+    // ny linsehøjde, så hele projektoren er i rummet (L-formet optik: kabinettet står over/under linsen – fgSpec.vy)
+    const vy=fgSpec(p).vy;if(p.inv&&p.h<FG.hgt/2)p.h=fgR3(Math.max(.05,Math.min(FG.hgt-.4,FG.hgt-.1+vy[0])));if(!p.inv&&p.h>FG.hgt/2)p.h=fgR3(Math.max(1.2,.1-vy[0]));fgSetSvFor(p,yc);fgDraw()});
   num('fgX',v=>{const p=P();if(!p||p.lockP)return;if(p.lockS)mvTo(p,v,p.y,p.h);else p.x=fgCl(v,0,FG.w)});num('fgY',v=>{const p=P();if(!p||p.lockP)return;if(p.lockS)mvTo(p,p.x,v,p.h);else p.y=fgCl(v,0,FG.d)});
   // markeringerne af boks 05 åbner boks 05 (dér ændres de)
   $('fgB05').addEventListener('click',e=>{if(!e.target.closest('[data-go05]'))return;const b=$('dBlend');if(!b)return;b.open=true;b.scrollIntoView({behavior:'smooth',block:'center'})})}
@@ -401,19 +405,23 @@ function fg3Build(){const g=G3.root,T=fgTheme(),W=FG.w,D=FG.d,Hr=FG.hgt,lh=fgCl(
     const tiles=fgTiles(sp),B0=fgV(p.x,p.h+(dn?sp.Lo:0),p.y),stH=sp.bh*1.08*sp.sg;
     tiles.forEach((t,k)=>{const Bc=B0.clone().addScaledVector(n3,t.xc).addScaledVector(V3,t.yr),Lc=Bc.clone().addScaledVector(F3,sp.Lo),u0=t.xc-hw,u1=t.xc+hw,v0=t.yr-hh,v1=t.yr+hh;
       // kabinetter: én pr. billede, og ved stacking flere oven på hinanden (under hinanden når loftmonteret; top/down: bag hinanden)
-      for(let s=0;s<sp.stk;s++){const bm=new THREE.Mesh(dn?new THREE.BoxGeometry(sp.bw,sp.Dp,sp.bh):new THREE.BoxGeometry(sp.bw,sp.bh,sp.Dp),new THREE.MeshLambertMaterial({color:sel?0x3F6E9C:0x2F4D6C}));bm.position.copy(Bc).addScaledVector(V3,s*stH);bm.rotation.y=ry;bm.userData={fg:'body',i};g.add(bm);G3.pick.push(bm);
-        // optikken (officielle mål): almindelig optik rager frem mod lærredet; ultrakort kast stikker ud bag kabinettet op til spejlet, som vender lyset tilbage
-        if(sp.ul){const U=sp.ul,lm=new THREE.Mesh(dn?new THREE.BoxGeometry(sp.port?U.h:U.w,U.len,sp.port?U.w:U.h):new THREE.BoxGeometry(sp.port?U.h:U.w,sp.port?U.w:U.h,U.len),new THREE.MeshLambertMaterial({color:0x6E8FB3}));
-          lm.position.copy(Lc).addScaledVector(V3,s*stH).addScaledVector(F3,U.c);lm.rotation.y=ry;lm.userData={fg:'body',i};g.add(lm);G3.pick.push(lm)}
+      // projektoren tegnes som skitsen i boks 08/09/10 (06c-pjsketch.js): kabinet, optik og detaljer ud fra TDC-målene – også L-formet optik og ultrakort kast
+      const PK=pkModel({m:sp.m,ln:sp.ln,PT:sp.port},{ceil:!!p.inv,lrot:0}),PQ=pkQuat(n3,V3,F3);
+      for(let s=0;s<sp.stk;s++){const L0=Lc.clone().addScaledVector(V3,s*stH),W3=(x,y,z)=>L0.clone().addScaledVector(n3,x).addScaledVector(V3,y).addScaledVector(F3,-z);
+        const sk=pkThree(PK,W3,PQ,sel);g.add(sk.g);const cb=sk.cab.geometry.parameters,cs=[cb.width,cb.height,cb.depth];   // cs: kabinettets udstrækning (højre, op, bagud)
+        // usynlig greb-kasse om kabinettet (navn, luft ind/ud og markering bruger den)
+        const bm=new THREE.Mesh(new THREE.BoxGeometry(...cs),new THREE.MeshBasicMaterial({visible:false}));bm.position.copy(sk.cab.position);bm.quaternion.copy(PQ);bm.userData={fg:'body',i};g.add(bm);G3.pick.push(bm);
+        sk.g.traverse(o=>{if(o.isMesh){o.userData={fg:'body',i};G3.pick.push(o)}});
         if(typeof window.airFG==='function')window.airFG(g,p,sp,bm.position,{u3,n3,V3,F3,dn,ry,i});   // luft ind/ud (17c-airflow.js)
-        if(sel){const e=new THREE.LineSegments(new THREE.EdgesGeometry(bm.geometry),new THREE.LineBasicMaterial({color:c}));e.position.copy(bm.position);e.rotation.y=ry;g.add(e)}
+        if(sel){const e=new THREE.LineSegments(new THREE.EdgesGeometry(bm.geometry),new THREE.LineBasicMaterial({color:c}));e.position.copy(bm.position);e.quaternion.copy(PQ);g.add(e)}
         // navnet (P1 …) står på selve kabinettet: oven på og bagpå – læses bagfra, set fra projektorens plads
-        {const tx=fgBodyTex(`P${i+1}`,col),tw=Math.min(sp.bw*.85,sp.Dp*1.6),th=tw/2,mt=()=>new THREE.MeshBasicMaterial({map:tx,transparent:true,depthWrite:false});
-         if(dn){const tp=new THREE.Mesh(new THREE.PlaneGeometry(Math.min(tw,sp.bw*.85),Math.min(th,sp.bh*.8)),mt());tp.position.copy(bm.position).add(fgV(0,sp.Dp/2+.003,0));tp.rotation.set(-Math.PI/2,ry,0,'YXZ');g.add(tp)}
-         else{const tp=new THREE.Mesh(new THREE.PlaneGeometry(tw,Math.min(th,sp.Dp*.8)),mt());tp.position.copy(bm.position).add(fgV(0,(p.inv?-1:1)*(sp.bh/2+.003),0));tp.rotation.set(p.inv?Math.PI/2:-Math.PI/2,ry,0,'YXZ');g.add(tp);
-         const bk=new THREE.Mesh(new THREE.PlaneGeometry(Math.min(tw,sp.bh*1.7),Math.min(th,sp.bh*.85)),mt());bk.position.copy(bm.position).addScaledVector(u3,-(sp.Dp/2+.003));bk.rotation.y=ry;g.add(bk)}}}
+        {const tx=fgBodyTex(`P${i+1}`,col),tw=Math.min(cs[0]*.85,cs[2]*1.6),th=tw/2,mt=()=>new THREE.MeshBasicMaterial({map:tx,transparent:true,depthWrite:false});
+         if(dn){const tp=new THREE.Mesh(new THREE.PlaneGeometry(Math.min(tw,cs[0]*.85),Math.min(th,cs[1]*.8)),mt());tp.position.copy(bm.position).add(fgV(0,cs[2]/2+.003,0));tp.rotation.set(-Math.PI/2,ry,0,'YXZ');g.add(tp)}
+         else{const tp=new THREE.Mesh(new THREE.PlaneGeometry(tw,Math.min(th,cs[2]*.8)),mt());tp.position.copy(bm.position).add(fgV(0,(p.inv?-1:1)*(cs[1]/2+.003),0));tp.rotation.set(p.inv?Math.PI/2:-Math.PI/2,ry,0,'YXZ');g.add(tp);
+         const bk=new THREE.Mesh(new THREE.PlaneGeometry(Math.min(tw,cs[1]*1.7),Math.min(th,cs[1]*.85)),mt());bk.position.copy(bm.position).addScaledVector(u3,-(cs[2]/2+.003));bk.rotation.y=ry;g.add(bk)}}}
       {const px=new THREE.Mesh(new THREE.SphereGeometry(Math.max(lh*.7,sp.bw*.7),12,8),new THREE.MeshBasicMaterial({visible:false}));px.position.copy(Bc);px.userData={fg:'body',i};g.add(px);G3.pick.push(px)}   // større greb end selve kabinettet
-      const ln=new THREE.Mesh(new THREE.SphereGeometry(Math.max(.05,sp.bh*.25),16,10),new THREE.MeshBasicMaterial({color:c}));ln.position.copy(Lc);g.add(ln);
+      // linsens midtpunkt: en halv kugle foran optikken (buen peger mod lærredet), så den ikke går ind i optikken
+      const ln=new THREE.Mesh(new THREE.SphereGeometry(Math.max(.05,sp.bh*.25),16,8,0,Math.PI*2,0,Math.PI/2),new THREE.MeshBasicMaterial({color:c,side:THREE.DoubleSide}));ln.position.copy(Lc);ln.quaternion.setFromUnitVectors(fgV(0,1,0),F3.clone().normalize());g.add(ln);
       // lyskeglen og billedet (overlap i edge blend ses som de tættere farvede felter)
       const cs=[S3(u0,v1),S3(u1,v1),S3(u1,v0),S3(u0,v0)],bp=[];cs.forEach(v=>bp.push(Lc,v));g.add(fgLines(bp.concat(fgEdge(S3,u0,u1,v0,v1,curved?16:1)),bad?0xC23A22:col,{op:sel?.95:.6}));
       g.add(new THREE.Mesh(new THREE.BufferGeometry().setFromPoints(cs.flatMap((v,j)=>[Lc,v,cs[(j+1)%4]])),new THREE.MeshBasicMaterial({color:c,transparent:true,opacity:sel?.1:.06,side:THREE.DoubleSide,depthWrite:false})));

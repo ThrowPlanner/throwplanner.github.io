@@ -77,8 +77,9 @@ function drawSide(r){
       s+=`<line x1="${x0}" y1="${y0}" x2="${x0+fd*sc}" y2="${y0+fh*sc}" style="stroke:var(--frame)" stroke-width="1" opacity=".55"/><line x1="${x0+fd*sc}" y1="${y0}" x2="${x0}" y2="${y0+fh*sc}" style="stroke:var(--frame)" stroke-width="1" opacity=".55"/>`}
     // projektorskitse ud fra de officielle mål (kabinet, optik, udragning) – se 06c-pjsketch.js
     s+=pkOrtho(pkModel(r),{u:'z',v:'y',d:'x',sd:1},(u,v)=>[X(S.L+u),Y(ly+v)]);
-    if(kRot)s+='</g>';
-    {const e=beamExit(r,ly,S.L,p.ty);s+=`<circle cx="${X(e[0])}" cy="${Y(e[1])}" r="3.5" style="fill:var(--beam)"/>`}});
+    // linsens midtpunkt: halv cirkel foran optikken (ultrakort kast: på kabinettets top/bund, hvor lyset går ud)
+    {const e=beamExit(r,ly,S.L,p.ty),up=e[1]!==ly;s+=halfDot(X(e[0]),Y(e[1]),3.5,up?0:X(0)-X(S.L),up?Y(e[1])-Y(ly):0,'style="fill:var(--beam)"')}
+    if(kRot)s+='</g>'});
   if(typeof window.airSide==='function')s+=window.airSide(r,X,Y,sc);   // luft ind/ud (17c-airflow.js)
   {const p0=r.pjs[0];const z0=Math.min(r.outFront,S.L)-.1,z1=Math.max(r.outBack,S.L)+.1,y0=p0.ly+r.F.y0-.1,y1=p0.ly+r.F.y1+.1;s+=`<rect x="${X(z0)}" y="${Y(y1)}" width="${(z1-z0)*sc}" height="${(y1-y0)*sc}" fill="transparent"/>`;}
   s+='</g>';
