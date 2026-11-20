@@ -12,16 +12,19 @@ function dimH(x1,x2,y,t,ext1,ext2){const a=Math.min(x1,x2),b=Math.max(x1,x2);let
   if(ext2!=null)s+=`<line x1="${x2}" y1="${ext2}" x2="${x2}" y2="${y}" style="stroke:var(--dim)" stroke-width=".8" opacity=".6"/>`;
   s+=`<line x1="${a}" y1="${y}" x2="${b}" y2="${y}" style="stroke:var(--dim)" stroke-width="1.3" marker-start="url(#ar)" marker-end="url(#ar)"/>`;
   return s+(b-a>8?lbl((a+b)/2,y,t):'')}
-function dimV(x,y1,y2,t,ext1,ext2,hx){const a=Math.min(y1,y2),b=Math.max(y1,y2);let s='';
-  if(ext1!=null)s+=`<line x1="${ext1}" y1="${y1}" x2="${x}" y2="${y1}" style="stroke:var(--dim)" stroke-width=".8" opacity=".6"/>`;
-  if(ext2!=null)s+=`<line x1="${ext2}" y1="${y2}" x2="${x}" y2="${y2}" style="stroke:var(--dim)" stroke-width=".8" opacity=".6"/>`;
-  s+=`<line x1="${x}" y1="${a}" x2="${x}" y2="${b}" style="stroke:var(--dim)" stroke-width="1.3" marker-start="url(#ar)" marker-end="url(#ar)"/>`;
+// sm: små pile, hvor spidsen rammer præcis kanten (fx mål til projektorens top og bund)
+function dimV(x,y1,y2,t,ext1,ext2,hx,sm){const a=Math.min(y1,y2),b=Math.max(y1,y2),mk=sm?'ars':'ar';let s='';
+  const ov=e=>sm?4*Math.sign(x-e):0;   // små pile: hjælpelinjen går lidt forbi målelinjen
+  if(ext1!=null)s+=`<line x1="${ext1}" y1="${y1}" x2="${x+ov(ext1)}" y2="${y1}" style="stroke:var(--dim)" stroke-width=".8" opacity="${sm?.85:.6}"/>`;
+  if(ext2!=null)s+=`<line x1="${ext2}" y1="${y2}" x2="${x+ov(ext2)}" y2="${y2}" style="stroke:var(--dim)" stroke-width=".8" opacity="${sm?.85:.6}"/>`;
+  s+=`<line x1="${x}" y1="${a}" x2="${x}" y2="${b}" style="stroke:var(--dim)" stroke-width="1.3" marker-start="url(#${mk})" marker-end="url(#${mk})"/>`;
   // for kort til lodret tekst → vandret tekst over målet (eller ude ved hx med hjælpelinje)
   if(b-a>TW(t)*7.3+16)return s+lbl(x,(a+b)/2,t,'d','middle',-90);
   if(hx==null)return s+lbl(x,a-13,t);
   const m=(a+b)/2;return s+`<line x1="${x}" y1="${m}" x2="${hx}" y2="${m}" style="stroke:var(--dim)" stroke-width=".8" opacity=".6"/>`+lbl(hx,m,t,'d',hx>x?'start':'end')}
 const DEFS=id=>`<defs>
  <marker id="ar" viewBox="0 0 10 10" refX="5" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,1 L9,5 L0,9 z" style="fill:var(--dim)"/></marker>
+ <marker id="ars" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="4" markerHeight="4" orient="auto-start-reverse"><path d="M0,1 L9,5 L0,9 z" style="fill:var(--dim)"/></marker>
  <pattern id="hatch${id}" width="7" height="7" patternUnits="userSpaceOnUse" patternTransform="rotate(45)"><rect width="7" height="7" style="fill:var(--r-cut)"/><line x1="0" y1="0" x2="0" y2="7" style="stroke:var(--r-base)" stroke-width="1.4" opacity=".6"/></pattern>
  <pattern id="bz${id}" width="7" height="7" patternUnits="userSpaceOnUse" patternTransform="rotate(-45)"><rect width="7" height="7" style="fill:var(--beam-a)"/><line x1="0" y1="0" x2="0" y2="7" style="stroke:var(--beam)" stroke-width="1.4" opacity=".7"/></pattern>
  <linearGradient id="beamh${id}" x1="1" y1="0" x2="0" y2="0"><stop offset="0" style="stop-color:var(--beam);stop-opacity:.6"/><stop offset="1" style="stop-color:var(--beam);stop-opacity:.07"/></linearGradient>

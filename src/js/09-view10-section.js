@@ -99,15 +99,17 @@ function drawSide(r){
   s+=dimV(X(-T)-50,Y(S.sb),Y(S.sb+r.CH),`${f3(r.CH)} m`,X(-T),X(-T));}
   const dx=XP(Math.max(r.outBack,S.L))+dd*22;
   const fy=r.kind!=='u'?r.botY:p0.ly;// gulv → bund af projektor (kæden gulv/hus/loft)
-  s+=dimV(dx,Y(0),Y(fy),`${f3(fy)} m`,null,XP(r.outBack));
-  if(r.kind!=='u')s+=dimV(dx+dd*30,Y(r.botY),Y(r.topY),`${mm(r.topY-r.botY)} mm`,XP(r.outBack),XP(r.outBack),dx+dd*66);
+  // gulv → bund, projektorens højde og loft → top: små pile, så det ses at målet går til kabinettets kant
+  s+=dimV(dx,Y(0),Y(fy),`${f3(fy)} m`,null,XP(r.outBack),null,1);
+  // én sammenhængende målekæde på samme lodrette linje: gulv → bund, projektorens højde, top → loft (hjælpelinjerne fra top og bund rammer kæden)
+  if(r.kind!=='u')s+=dimV(dx,Y(r.botY),Y(r.topY),`${mm(r.topY-r.botY)} mm`,XP(r.outBack),XP(r.outBack),dx+dd*40,1);
   // loft → projektor: klik for at skrive målet (fx loftbeslagets længde) og låse det
-  if(S.ceil&&r.topY<S.rh){const xd=dx+dd*60,yt=Y(S.rh),yb=Y(r.topY),dt=`${f3(S.rh-r.topY)} m`,tw=TW(dt)*7.3,lng=yb-yt>tw+16;
+  if(S.ceil&&r.topY<S.rh){const xd=dx,yt=Y(S.rh),yb=Y(r.topY),dt=`${f3(S.rh-r.topY)} m`,tw=TW(dt)*7.3,lng=yb-yt>tw+16;
     const bx=lng?xd+dd*22:xd+dd*(tw/2+19),by=lng?(yt+yb)/2:yt-13;   // kort mål: teksten står vandret over målet → ikonet ved siden af teksten
     // ikon ved målet: blyant = kan rettes, hængelås = låst
     const ico=S.drop!=null?`<rect x="-4.5" y="-1" width="9" height="6.5" rx="1.2" style="fill:#fff"/><path d="M-2.6,-1v-2a2.6,2.6 0 0 1 5.2,0v2" fill="none" stroke="#fff" stroke-width="1.6"/>`
       :`<path d="M-4.6,4.6l.8-3.2 5.6-5.6 2.4,2.4-5.6,5.6z" style="fill:#fff"/><path d="M2.6,-5l1-1a1,1 0 0 1 1.4,0l1,1a1,1 0 0 1 0,1.4l-1,1z" style="fill:#fff"/>`;
-    s+=`<g class="dropdim" role="button" tabindex="0" aria-label="Afstand fra loft til projektor – klik for at angive mål">`+dimV(xd,yb,yt,dt,XP(r.outBack),null)+
+    s+=`<g class="dropdim" role="button" tabindex="0" aria-label="Afstand fra loft til projektor – klik for at angive mål">`+dimV(xd,yb,yt,dt,XP(r.outBack),null,null,1)+
     `<rect x="${Math.min(xd,bx)-14}" y="${Math.min(yt,by-10)}" width="${Math.abs(bx-xd)+28}" height="${Math.max(18,yb-Math.min(yt,by-10))}" fill="transparent"/>`+
     `<g class="dropico" transform="translate(${bx},${by})"><circle r="9.5" style="fill:var(--beam)"/>${ico}</g><title>Klik for at angive mål og låse afstanden</title></g>`}
   if(NS)s=s.slice(0,m3);
