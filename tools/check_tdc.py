@@ -14,6 +14,7 @@ sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 from fetch_eol import ROOT, load, model, official_tr, build_eol, f, num
 
 OUT = sys.argv[1] if len(sys.argv) > 1 else os.path.join(ROOT, 'tdc-report.md')
+STATUS = sys.argv[2] if len(sys.argv) > 2 else os.path.join(os.path.dirname(OUT) or '.', 'tdc-status.md')
 FIELDS = {'lm': 'lumen', 'lc': 'lumen (center)', 'cr': 'kontrast', 'asp': 'formater', 'res': 'opløsning',
           't': 'teknologi', 'dim': 'kabinetmål (B×H×D mm)', 'img': 'produktbillede'}
 LENS = {1: 'fast/zoom (F/Z)', 2: 'throw-formel', 3: 'lens shift', 4: 'optisk akse/offset', 5: 'udragning (mm)',
@@ -89,6 +90,18 @@ def main():
         cv = [f'Curved-tjekket kunne ikke køre: {type(e).__name__}: {e}']
     if cv: rep['Buet lærred – curved correction-tabellen i manualen'] = cv
     n = sum(len(v) for v in rep.values())
+    # ugentlig status – skrives altid (workflowen lægger den som kommentar på issuet «TDC ugentlig status»)
+    nl = sum(len(m['L']) for m in cat['models'])
+    nb = len(json.load(open(fm, encoding='utf-8'))) if os.path.exists(fm) else 0
+    nyt = [r for r in rep['Nye eller forsvundne modeller i TDC'] if r.startswith('Ny')] + [r for r in cur if 'ny optik' in r]
+    væk = [r for r in rep['Nye eller forsvundne modeller i TDC'] if 'væk' in r] + [r for r in cur if 'findes ikke længere' in r]
+    st = [f'**{"✅ Alt stemmer med Panasonic" if not n else f"⚠️ {n} afvigelse(r) fundet"}**', '',
+          f'Tjekket: {len(cat["models"])} aktuelle modeller · {nl} optikker · {len(eol)} udgåede/ikke-EU modeller · {nb} beslag.', '',
+          '| Område | Status |', '|---|---|',
+          *[f'| {h} | {"OK" if not rows else f"{len(rows)} afvigelse(r)"} |' for h, rows in rep.items()],
+          f'| Nye modeller/optikker | {len(nyt) or "ingen"} |', f'| Udgåede/forsvundne | {len(væk) or "ingen"} |', '']
+    if n: st += ['Detaljer står i det åbne issue med mærket `tdc-change`.']
+    open(STATUS, 'w', encoding='utf-8', newline='\n').write('\n'.join(st) + '\n')
     if not n:
         if os.path.exists(OUT): os.remove(OUT)
         print('OK  ingen ændringer i forhold til Panasonics Throw Distance Calculator'); return

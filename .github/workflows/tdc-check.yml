@@ -1,5 +1,6 @@
 # Hver tirsdag morgen: tjek at throw-data, lumen og lens shift stadig stemmer med Panasonics Throw Distance Calculator.
-# Ingen ændringer → intet sker. Ændringer (eller fejl i tjekket) → et GitHub-issue med mærket «tdc-change».
+# Altid → status som kommentar på issuet «TDC ugentlig status» (mærket «tdc-status»).
+# Ændringer (eller fejl i tjekket) → desuden et GitHub-issue med mærket «tdc-change» med detaljerne.
 # Kører uden AI og koster ingen tokens. Kan også startes i hånden: Actions → «TDC check» → Run workflow.
 name: TDC check
 
@@ -39,3 +40,16 @@ jobs:
           gh label create tdc-change --color D9822B --description "Panasonic TDC har ændret data" --force
           gh issue create --title "Panasonic TDC: tjekket fejlede $(date +%Y-%m-%d)" --label tdc-change \
             --body "Det ugentlige tjek kunne ikke gennemføres – måske er Panasonics beregner nede eller ændret. Se kørslen: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
+      # Altid: ugentlig status som kommentar på ét fast issue (mærket «tdc-status»), som den planlagte Claude-opgave læser.
+      - name: Ugentlig status
+        if: always()
+        run: |
+          run="${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
+          if [ "${{ job.status }}" != "success" ] || [ ! -f tdc-status.md ]; then
+            printf '**❌ Tjekket fejlede**\n\nDet ugentlige tjek kunne ikke gennemføres – måske er Panasonics beregner nede eller ændret.\n' > tdc-status.md
+          fi
+          printf '\n[Kørslen](%s) · %s\n' "$run" "$(date +%Y-%m-%d)" >> tdc-status.md
+          gh label create tdc-status --color 2B7BD9 --description "Ugentlig status fra TDC-tjekket" --force
+          n=$(gh issue list --label tdc-status --state all --json number --jq '.[0].number')
+          if [ -z "$n" ]; then n=$(gh issue create --title "TDC ugentlig status" --label tdc-status --body "Hver tirsdag skriver «TDC check» status her som en kommentar." | grep -o '[0-9]*$'); fi
+          gh issue comment "$n" --body-file tdc-status.md
