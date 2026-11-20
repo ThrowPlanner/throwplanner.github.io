@@ -11,11 +11,14 @@ Rettes med:  python tools/fetch_eol.py  (udgåede) – aktuelle modeller rettes 
 """
 import json, os, re, sys
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
-from fetch_eol import ROOT, load, model, official_tr, build_eol
+from fetch_eol import ROOT, load, model, official_tr, build_eol, f, num
 
 OUT = sys.argv[1] if len(sys.argv) > 1 else os.path.join(ROOT, 'tdc-report.md')
-FIELDS = {'lm': 'lumen', 'lc': 'lumen (center)', 'cr': 'kontrast', 'asp': 'formater', 'res': 'opløsning'}
-LENS = {2: 'throw-formel', 3: 'lens shift', 4: 'optisk akse/offset'}
+FIELDS = {'lm': 'lumen', 'lc': 'lumen (center)', 'cr': 'kontrast', 'asp': 'formater', 'res': 'opløsning',
+          't': 'teknologi', 'dim': 'kabinetmål (B×H×D mm)', 'img': 'produktbillede'}
+LENS = {1: 'fast/zoom (F/Z)', 2: 'throw-formel', 3: 'lens shift', 4: 'optisk akse/offset', 5: 'udragning (mm)',
+        6: 'optikbillede', 7: 'type/UST-boks', 8: 'optikmål (B×H×L mm)'}
+def fld(l, i): return l[i] if len(l) > i else None
 
 def pantr():
     src = open(os.path.join(ROOT, 'src', 'js', '04-ui.js'), encoding='utf-8').read()
@@ -36,9 +39,17 @@ def main():
         ours = {l[0]: l for l in m['L']}; theirs = {l[0]: l for l in t['L'] if l[2] and any(r[0] > 0 for r in l[2])}
         for n in theirs.keys() - ours.keys(): cur.append(f'**{nm}** ny optik i TDC: `{n}`'); newl.append((m['m'], n))
         for n in ours.keys() - theirs.keys(): cur.append(f'**{nm}** optik findes ikke længere i TDC: `{n}`')
+        raw = {l['LensName']: l for l in tdc[v]['lens']}
         for n in ours.keys() & theirs.keys():
+            # UST-boks: TDC's PjBody er en generisk kasse (±250 × −120…80) – kun L0 og afstanden L5−L0 er rigtige tal fra TDC.
+            # Husmålene i kataloget er vores egne (fra manualen), så kun type, L-afstand og L0 sammenlignes (±1 mm afrunding).
+            a, b = fld(ours[n], 7), fld(theirs[n], 7)
+            if a and b and a[0] == b[0] == 'u' and len(a) > 1:
+                r = raw[n]; tl = [num(round(-(f(r['L5']) - f(r['L0'])), 1)), num(f(r['L0']))]
+                if any(abs(x - y) > 1 for x, y in zip(a[1][4:6], tl)): cur.append(f'**{nm} · {n}** UST L5−L0 / L0: vi har `{short(a[1][4:6])}`, TDC har `{short(tl)}`')
             for i, lab in LENS.items():
-                if ours[n][i] != theirs[n][i]: cur.append(f'**{nm} · {n}** {lab}: vi har `{short(ours[n][i])}`, TDC har `{short(theirs[n][i])}`')
+                if i == 7 and a and b and a[0] == b[0] == 'u': continue
+                if fld(ours[n], i) != fld(theirs[n], i): cur.append(f'**{nm} · {n}** {lab}: vi har `{short(fld(ours[n], i))}`, TDC har `{short(fld(theirs[n], i))}`')
         # officiel throw ratio-tekst
         pt = PT.get(nm.split('/')[0], {})
         for l in tdc[v]['lens']:
